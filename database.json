@@ -1,0 +1,624 @@
+{
+  "types": {
+    "dgap": {
+      "field1": "System.Byte",
+      "field2": "System.Byte",
+      "field3": "System.Byte"
+    },
+    "meta2": {
+      "value": "System.Byte"
+    },
+    "meta3": {
+      "unk1": "System.Byte",
+      "unk2": "System.Byte",
+      "unk3": "System.Byte",
+      "address": "GaiaLabs.Address",
+      "unk4": "System.Byte"
+    }
+  },
+  "coplib": {
+    "codes": {
+      "00" : { "mnem": "00", "code": "00", "size": 0, "parts": "", "halt": false },
+      "01" : { "mnem": "01", "code": "01", "size": 4, "parts": "Ob", "halt": false },
+      "02" : { "mnem": "02", "code": "02", "size": 4, "parts": "Ob", "halt": false },
+      "03" : { "mnem": "03", "code": "03", "size": 5, "parts": "bww", "halt": false },
+      "04" : { "mnem": "04", "code": "04", "size": 1, "parts": "b", "halt": false },
+      "05" : { "mnem": "05", "code": "05", "size": 1, "parts": "b", "halt": false },
+      "06" : { "mnem": "06", "code": "06", "size": 1, "parts": "b", "halt": false },
+      "07" : { "mnem": "07", "code": "07", "size": 1, "parts": "b", "halt": false },
+      "08" : { "mnem": "08", "code": "08", "size": 2, "parts": "w", "halt": false },
+      "09" : { "mnem": "09", "code": "09", "size": 1, "parts": "b", "halt": false },
+      "0A" : { "mnem": "0A", "code": "0A", "size": 1, "parts": "b", "halt": false },
+      "0B" : { "mnem": "0B", "code": "0B", "size": 0, "parts": "", "halt": false },
+      "0C" : { "mnem": "0C", "code": "0C", "size": 0, "parts": "", "halt": false },
+      "0D" : { "mnem": "0D", "code": "0D", "size": 2, "parts": "bb", "halt": false },
+      "0E" : { "mnem": "0E", "code": "0E", "size": 2, "parts": "bb", "halt": false },
+      "0F" : { "mnem": "0F", "code": "0F", "size": 2, "parts": "bb", "halt": false },
+      "10" : { "mnem": "10", "code": "10", "size": 2, "parts": "bb", "halt": false },
+      "11" : { "mnem": "11", "code": "11", "size": 0, "parts": "", "halt": false },
+      "12" : { "mnem": "12", "code": "12", "size": 2, "parts": "bb", "halt": false },
+      "13" : { "mnem": "13", "code": "13", "size": 2, "parts": "c", "halt": false },
+      "14" : { "mnem": "14", "code": "14", "size": 4, "parts": "bbc", "halt": false },
+      "15" : { "mnem": "15", "code": "15", "size": 2, "parts": "c", "halt": false },
+      "16" : { "mnem": "16", "code": "16", "size": 2, "parts": "c", "halt": false },
+      "17" : { "mnem": "17", "code": "17", "size": 2, "parts": "c", "halt": false },
+      "18" : { "mnem": "18", "code": "18", "size": 2, "parts": "c", "halt": false },
+      "19" : { "mnem": "19", "code": "19", "size": 4, "parts": "bO", "halt": false },
+      "1A" : { "mnem": "1A", "code": "1A", "size": 3, "parts": "bc", "halt": false },
+      "1B" : { "mnem": "1B", "code": "1B", "size": 3, "parts": "bc", "halt": false },
+      "1C" : { "mnem": "1C", "code": "1C", "size": 3, "parts": "bc", "halt": false },
+      "1D" : { "mnem": "1D", "code": "1D", "size": 3, "parts": "bc", "halt": false },
+      "1E" : { "mnem": "1E", "code": "1E", "size": 3, "parts": "bc", "halt": false },
+      "1F" : { "mnem": "1F", "code": "1F", "size": 2, "parts": "c", "halt": false },
+      "20" : { "mnem": "20", "code": "20", "size": 4, "parts": "bbc", "halt": false },
+      "21" : { "mnem": "21", "code": "21", "size": 3, "parts": "bc", "halt": false },
+      "22" : { "mnem": "22", "code": "22", "size": 2, "parts": "bb", "halt": false },
+      "23" : { "mnem": "23", "code": "23", "size": 0, "parts": "", "halt": false },
+      "24" : { "mnem": "24", "code": "24", "size": 1, "parts": "b", "halt": false },
+      "25" : { "mnem": "25", "code": "25", "size": 2, "parts": "bb", "halt": false },
+      "26" : { "mnem": "26", "code": "26", "size": 8, "parts": "bwwbw", "halt": false },
+      "27" : { "mnem": "27", "code": "27", "size": 1, "parts": "b", "halt": false },
+      "28" : { "mnem": "28", "code": "28", "size": 6, "parts": "wwc", "halt": false },
+      "29" : { "mnem": "29", "code": "29", "size": 7, "parts": "bwwc", "halt": false },
+      "2A" : { "mnem": "2A", "code": "2A", "size": 8, "parts": "wccc", "halt": false },
+      "2B" : { "mnem": "2B", "code": "2B", "size": 8, "parts": "wccc", "halt": false },
+      "2C" : { "mnem": "2C", "code": "2C", "size": 4, "parts": "cc", "halt": false },
+      "2D" : { "mnem": "2D", "code": "2D", "size": 0, "parts": "", "halt": false },
+      "2E" : { "mnem": "2E", "code": "2E", "size": 2, "parts": "bb", "halt": false },
+      "2F" : { "mnem": "2F", "code": "2F", "size": 3, "parts": "bc", "halt": false },
+      "30" : { "mnem": "30", "code": "30", "size": 3, "parts": "bbbc", "halt": false },
+      "31" : { "mnem": "31", "code": "31", "size": 10, "parts": "ccccc", "halt": false },
+      "32" : { "mnem": "32", "code": "32", "size": 1, "parts": "b", "halt": false },
+      "33" : { "mnem": "33", "code": "33", "size": 0, "parts": "", "halt": false },
+      "34" : { "mnem": "34", "code": "34", "size": 0, "parts": "", "halt": false },
+      "35" : { "mnem": "35", "code": "35", "size": 0, "parts": "", "halt": false },
+      "36" : { "mnem": "36", "code": "36", "size": 0, "parts": "", "halt": false },
+      "37" : { "mnem": "37", "code": "37", "size": 1, "parts": "b", "halt": false },
+      "38" : { "mnem": "38", "code": "38", "size": 2, "parts": "bb", "halt": false },
+      "39" : { "mnem": "39", "code": "39", "size": 0, "parts": "", "halt": false },
+      "3A" : { "mnem": "3A", "code": "3A", "size": 0, "parts": "", "halt": false },
+      "3B" : { "mnem": "3B", "code": "3B", "size": 4, "parts": "bC", "halt": false },
+      "3C" : { "mnem": "3C", "code": "3C", "size": 3, "parts": "C", "halt": false },
+      "3D" : { "mnem": "3D", "code": "3D", "size": 0, "parts": "", "halt": false },
+      "3E" : { "mnem": "3E", "code": "3E", "size": 2, "parts": "w", "halt": false },
+      "3F" : { "mnem": "3F", "code": "3F", "size": 2, "parts": "w", "halt": false },
+      "40" : { "mnem": "40", "code": "40", "size": 4, "parts": "wc", "halt": false },
+      "41" : { "mnem": "41", "code": "41", "size": 4, "parts": "wc", "halt": false },
+      "42" : { "mnem": "42", "code": "42", "size": 3, "parts": "bbb", "halt": false },
+      "43" : { "mnem": "43", "code": "43", "size": 0, "parts": "", "halt": false },
+      "44" : { "mnem": "44", "code": "44", "size": 6, "parts": "bbbbc", "halt": false },
+      "45" : { "mnem": "45", "code": "45", "size": 6, "parts": "bbbbc", "halt": false },
+      "46" : { "mnem": "46", "code": "46", "size": 0, "parts": "", "halt": false },
+      "47" : { "mnem": "47", "code": "47", "size": 0, "parts": "", "halt": false },
+      "48" : { "mnem": "48", "code": "48", "size": 0, "parts": "", "halt": false },
+      "49" : { "mnem": "49", "code": "49", "size": 3, "parts": "bc", "halt": false },
+      "4A" : { "mnem": "4A", "code": "4A", "size": 0, "parts": "", "halt": false },
+      "4B" : { "mnem": "4B", "code": "4B", "size": 3, "parts": "bbb", "halt": false },
+      "4C" : { "mnem": "4C", "code": "4C", "size": 1, "parts": "b", "halt": false },
+      "4D" : { "mnem": "4D", "code": "4D", "size": 2, "parts": "w", "halt": false },
+      "4E" : { "mnem": "4E", "code": "4E", "size": 2, "parts": "w", "halt": false },
+      "4F" : { "mnem": "4F", "code": "4F", "size": 7, "parts": "Oww", "halt": false },
+      "50" : { "mnem": "50", "code": "50", "size": 6, "parts": "Obbb", "halt": false },
+      "51" : { "mnem": "51", "code": "51", "size": 6, "parts": "OO", "halt": false },
+      "52" : { "mnem": "52", "code": "52", "size": 3, "parts": "bbb", "halt": false },
+      "53" : { "mnem": "53", "code": "53", "size": 0, "parts": "", "halt": false },
+      "54" : { "mnem": "54", "code": "54", "size": 3, "parts": "wb", "halt": false },
+      "55" : { "mnem": "55", "code": "55", "size": 3, "parts": "bw", "halt": false },
+      "56" : { "mnem": "56", "code": "56", "size": 0, "parts": "", "halt": false },
+      "57" : { "mnem": "57", "code": "57", "size": 3, "parts": "C", "halt": false },
+      "58" : { "mnem": "58", "code": "58", "size": 2, "parts": "c", "halt": false },
+      "59" : { "mnem": "59", "code": "59", "size": 2, "parts": "c", "halt": false },
+      "5A" : { "mnem": "5A", "code": "5A", "size": 2, "parts": "c", "halt": false },
+      "5B" : { "mnem": "5B", "code": "5B", "size": 2, "parts": "w", "halt": false },
+      "5C" : { "mnem": "5C", "code": "5C", "size": 2, "parts": "w", "halt": false },
+      "5D" : { "mnem": "5D", "code": "5D", "size": 2, "parts": "c", "halt": false },
+      "5E" : { "mnem": "5E", "code": "5E", "size": 2, "parts": "c", "halt": false },
+      "5F" : { "mnem": "5F", "code": "5F", "size": 3, "parts": "wb", "halt": false },
+      "60" : { "mnem": "60", "code": "60", "size": 2, "parts": "bb", "halt": false },
+      "61" : { "mnem": "61", "code": "61", "size": 4, "parts": "Ob", "halt": false },
+      "62" : { "mnem": "62", "code": "62", "size": 3, "parts": "bc", "halt": false },
+      "63" : { "mnem": "63", "code": "63", "size": 3, "parts": "bbb", "halt": false },
+      "64" : { "mnem": "64", "code": "64", "size": 0, "parts": "", "halt": false },
+      "65" : { "mnem": "65", "code": "65", "size": 6, "parts": "wwbb", "halt": false },
+      "66" : { "mnem": "66", "code": "66", "size": 5, "parts": "wwb", "halt": false },
+      "67" : { "mnem": "67", "code": "67", "size": 2, "parts": "bb", "halt": false },
+      "68" : { "mnem": "68", "code": "68", "size": 2, "parts": "c", "halt": false },
+      "69" : { "mnem": "69", "code": "69", "size": 4, "parts": "w", "halt": false },
+      "6A" : { "mnem": "6A", "code": "6A", "size": 2, "parts": "c", "halt": false },
+      "6B" : { "mnem": "6B", "code": "6B", "size": 2, "parts": "o", "halt": false },
+      "6C" : { "mnem": "6C", "code": "6C", "size": 2, "parts": "bb", "halt": false },
+      "6D" : { "mnem": "6D", "code": "6D", "size": 2, "parts": "bb", "halt": false },
+      "6E" : { "mnem": "6E", "code": "6E", "size": 0, "parts": "", "halt": false },
+      "6F" : { "mnem": "6F", "code": "6F", "size": 0, "parts": "", "halt": false },
+      "80" : { "mnem": "80", "code": "80", "size": 1, "parts": "b", "halt": false },
+      "81" : { "mnem": "81", "code": "81", "size": 2, "parts": "bb", "halt": false },
+      "82" : { "mnem": "82", "code": "82", "size": 2, "parts": "bb", "halt": false },
+      "83" : { "mnem": "83", "code": "83", "size": 3, "parts": "bbb", "halt": false },
+      "84" : { "mnem": "84", "code": "84", "size": 2, "parts": "bb", "halt": false },
+      "85" : { "mnem": "85", "code": "85", "size": 3, "parts": "bbb", "halt": false },
+      "86" : { "mnem": "86", "code": "86", "size": 3, "parts": "bbb", "halt": false },
+      "87" : { "mnem": "87", "code": "87", "size": 4, "parts": "bbbb", "halt": false },
+      "88" : { "mnem": "88", "code": "88", "size": 3, "parts": "O", "halt": false },
+      "89" : { "mnem": "89", "code": "89", "size": 0, "parts": "", "halt": false },
+      "8A" : { "mnem": "8A", "code": "8A", "size": 0, "parts": "", "halt": false },
+      "8B" : { "mnem": "8B", "code": "8B", "size": 0, "parts": "", "halt": false },
+      "8C" : { "mnem": "8C", "code": "8C", "size": 1, "parts": "b", "halt": false },
+      "8D" : { "mnem": "8D", "code": "8D", "size": 1, "parts": "b", "halt": false },
+      "8E" : { "mnem": "8E", "code": "8E", "size": 1, "parts": "b", "halt": false },
+      "8F" : { "mnem": "8F", "code": "8F", "size": 1, "parts": "b", "halt": false },
+      "90" : { "mnem": "90", "code": "90", "size": 2, "parts": "bb", "halt": false },
+      "91" : { "mnem": "91", "code": "91", "size": 2, "parts": "bb", "halt": false },
+      "92" : { "mnem": "92", "code": "92", "size": 3, "parts": "bbb", "halt": false },
+      "93" : { "mnem": "93", "code": "93", "size": 0, "parts": "", "halt": false },
+      "94" : { "mnem": "94", "code": "94", "size": 4, "parts": "bbbb", "halt": false },
+      "95" : { "mnem": "95", "code": "95", "size": 0, "parts": "", "halt": false },
+      "96" : { "mnem": "96", "code": "96", "size": 2, "parts": "w", "halt": false },
+      "97" : { "mnem": "97", "code": "97", "size": 2, "parts": "w", "halt": false },
+      "98" : { "mnem": "98", "code": "98", "size": 2, "parts": "w", "halt": false },
+      "99" : { "mnem": "99", "code": "99", "size": 3, "parts": "C", "halt": false },
+      "9A" : { "mnem": "9A", "code": "9A", "size": 5, "parts": "Cw", "halt": false },
+      "9B" : { "mnem": "9B", "code": "9B", "size": 3, "parts": "C", "halt": false },
+      "9C" : { "mnem": "9C", "code": "9C", "size": 5, "parts": "Cw", "halt": false },
+      "9D" : { "mnem": "9D", "code": "9D", "size": 7, "parts": "wbww", "halt": false },
+      "9E" : { "mnem": "9E", "code": "9E", "size": 9, "parts": "Cwww", "halt": false },
+      "9F" : { "mnem": "9F", "code": "9F", "size": 7, "parts": "wbww", "halt": false },
+      "A0" : { "mnem": "A0", "code": "A0", "size": 9, "parts": "Cwww", "halt": false },
+      "A1" : { "mnem": "A1", "code": "A1", "size": 5, "parts": "Cw", "halt": false },
+      "A2" : { "mnem": "A2", "code": "A2", "size": 5, "parts": "Cw", "halt": false },
+      "A3" : { "mnem": "A3", "code": "A3", "size": 9, "parts": "Cwww", "halt": false },
+      "A4" : { "mnem": "A4", "code": "A4", "size": 7, "parts": "Cbbw", "halt": false },
+      "A5" : { "mnem": "A5", "code": "A5", "size": 7, "parts": "Cbbw", "halt": false },
+      "A6" : { "mnem": "A6", "code": "A6", "size": 8, "parts": "wbbbbw", "halt": false },
+      "A7" : { "mnem": "A7", "code": "A7", "size": 0, "parts": "", "halt": false },
+      "A8" : { "mnem": "A8", "code": "A8", "size": 0, "parts": "", "halt": false },
+      "A9" : { "mnem": "A9", "code": "A9", "size": 0, "parts": "", "halt": false },
+      "AA" : { "mnem": "AA", "code": "AA", "size": 1, "parts": "b", "halt": false },
+      "AB" : { "mnem": "AB", "code": "AB", "size": 1, "parts": "b", "halt": false },
+      "AC" : { "mnem": "AC", "code": "AC", "size": 2, "parts": "bb", "halt": false },
+      "AD" : { "mnem": "AD", "code": "AD", "size": 1, "parts": "b", "halt": false },
+      "AE" : { "mnem": "AE", "code": "AE", "size": 1, "parts": "b", "halt": false },
+      "AF" : { "mnem": "AF", "code": "AF", "size": 1, "parts": "b", "halt": false },
+      "B0" : { "mnem": "B0", "code": "B0", "size": 2, "parts": "bb", "halt": false },
+      "B1" : { "mnem": "B1", "code": "B1", "size": 0, "parts": "", "halt": false },
+      "B2" : { "mnem": "B2", "code": "B2", "size": 0, "parts": "", "halt": false },
+      "B3" : { "mnem": "B3", "code": "B3", "size": 0, "parts": "", "halt": false },
+      "B4" : { "mnem": "B4", "code": "B4", "size": 0, "parts": "", "halt": false },
+      "B5" : { "mnem": "B5", "code": "B5", "size": 0, "parts": "", "halt": false },
+      "B6" : { "mnem": "B6", "code": "B6", "size": 1, "parts": "b", "halt": false },
+      "B7" : { "mnem": "B7", "code": "B7", "size": 1, "parts": "b", "halt": false },
+      "B8" : { "mnem": "B8", "code": "B8", "size": 0, "parts": "", "halt": false },
+      "B9" : { "mnem": "B9", "code": "B9", "size": 0, "parts": "", "halt": false },
+      "BA" : { "mnem": "BA", "code": "BA", "size": 0, "parts": "", "halt": false },
+      "BB" : { "mnem": "BB", "code": "BB", "size": 0, "parts": "", "halt": false },
+      "BC" : { "mnem": "BC", "code": "BC", "size": 2, "parts": "bb", "halt": false },
+      "BD" : { "mnem": "BD", "code": "BD", "size": 3, "parts": "O", "halt": false },
+      "BE" : { "mnem": "BE", "code": "BE", "size": 4, "parts": "bbo", "halt": true },
+      "BF" : { "mnem": "BF", "code": "BF", "size": 2, "parts": "o", "halt": false },
+      "C0" : { "mnem": "C0", "code": "C0", "size": 2, "parts": "c", "halt": false },
+      "C1" : { "mnem": "C1", "code": "C1", "size": 0, "parts": "", "halt": false },
+      "C2" : { "mnem": "C2", "code": "C2", "size": 0, "parts": "", "halt": false },
+      "C3" : { "mnem": "C3", "code": "C3", "size": 5, "parts": "Cw", "halt": false },
+      "C4" : { "mnem": "C4", "code": "C4", "size": 3, "parts": "C", "halt": true },
+      "C5" : { "mnem": "C5", "code": "C5", "size": 0, "parts": "", "halt": true },
+      "C6" : { "mnem": "C6", "code": "C6", "size": 2, "parts": "c", "halt": false },
+      "C7" : { "mnem": "C7", "code": "C7", "size": 3, "parts": "C", "halt": false },
+      "C8" : { "mnem": "C8", "code": "C8", "size": 2, "parts": "c", "halt": false },
+      "C9" : { "mnem": "C9", "code": "C9", "size": 2, "parts": "c", "halt": false },
+      "CA" : { "mnem": "CA", "code": "CA", "size": 1, "parts": "b", "halt": false },
+      "CB" : { "mnem": "CB", "code": "CB", "size": 0, "parts": "", "halt": false },
+      "CC" : { "mnem": "CC", "code": "CC", "size": 1, "parts": "b", "halt": false },
+      "CD" : { "mnem": "CD", "code": "CD", "size": 2, "parts": "w", "halt": false },
+      "CE" : { "mnem": "CE", "code": "CE", "size": 1, "parts": "b", "halt": false },
+      "CF" : { "mnem": "CF", "code": "CF", "size": 2, "parts": "w", "halt": false },
+      "D0" : { "mne": "D0", "code": "D0", "size": 4, "parts": "bbc", "halt": false },
+      "D1" : { "mnem": "D1", "code": "D1", "size": 5, "parts": "wbc", "halt": false },
+      "D2" : { "mnem": "D2", "code": "D2", "size": 2, "parts": "bb", "halt": false },
+      "D3" : { "mnem": "D3", "code": "D3", "size": 3, "parts": "wb", "halt": false },
+      "D4" : { "mnem": "D4", "code": "D4", "size": 3, "parts": "bc", "halt": false },
+      "D5" : { "mnem": "D5", "code": "D5", "size": 1, "parts": "b", "halt": false },
+      "D6" : { "mnem": "D6", "code": "D6", "size": 3, "parts": "bc", "halt": false },
+      "D7" : { "mnem": "D7", "code": "D7", "size": 3, "parts": "bc", "halt": false },
+      "D8" : { "mnem": "D8", "code": "D8", "size": 0, "parts": "", "halt": false },
+      "D9" : { "mnem": "D9", "code": "D9", "size": 4, "parts": "wo", "halt": true },
+      "DA" : { "mnem": "DA", "code": "DA", "size": 1, "parts": "b", "halt": false },
+      "DB" : { "mnem": "DB", "code": "DB", "size": 2, "parts": "w", "halt": false },
+      "DC" : { "mnem": "DC", "code": "DC", "size": 0, "parts": "", "halt": false },
+      "DD" : { "mnem": "DD", "code": "DD", "size": 0, "parts": "", "halt": false },
+      "DE" : { "mnem": "DE", "code": "DE", "size": 0, "parts": "", "halt": false },
+      "DF" : { "mnem": "DF", "code": "DF", "size": 0, "parts": "", "halt": false },
+      "E0" : { "mnem": "E0", "code": "E0", "size": 0, "parts": "", "halt": true },
+      "E1" : { "mnem": "E1", "code": "E1", "size": 0, "parts": "", "halt": false },
+      "E2" : { "mnem": "E2", "code": "E2", "size": 3, "parts": "wb", "halt": false }
+    },
+    "formats": {
+      "Immediate": "{0} #{1:x}",
+      "Absolute": "{0} _{1:x4}",
+      "AbsoluteLong": "{0} @{1:x6}",
+      "DirectPage": "{0} {1:x4}",
+      "DirectPageIndirect": "{0} ({1:x4})",
+      "DirectPageIndirectLong": "{0} [{1:x4}]",
+      "AbsoluteIndexedX": "{0} _{1:x4}, X",
+      "AbsoluteLongIndexedX": "{0} @{1:x6}, X",
+      "AbsoluteIndexedY": "{0} _{1:x4}, Y",
+      "DirectPageIndexedX": "{0} {1:x4}, X",
+      "DirectPageIndexedIndirectX": "{0} ({1:x4}, X)",
+      "DirectPageIndirectIndexedY": "{0} ({1:x4}), Y",
+      "DirectPageIndirectLongIndexedY": "{0} [{1:x4}], X",
+      "StackRelative": "{0} sr, {1}",
+      "StackRelativeIndirectIndexedY": "{0} (sr, {1}), Y"
+    }
+  },
+  "blocks": [
+    {
+      "name": "chunk02D038",
+      "parts": [
+        {
+          "name": "sub02D038",
+          "type": "subroutine",
+          "start": "0x02D038",
+          "end": "0x02D0BC"
+        },
+        {
+          "name": "sub02D0BC",
+          "type": "Subroutine",
+          "start": "0x02D0BC",
+          "end": "0x02D0D4"
+        },
+        {
+          "name": "func02D0D4",
+          "type": "Code",
+          "start": "0x02D0D4",
+          "end": "0x02D122"
+        },
+        {
+          "name": "func02D122",
+          "type": "Code",
+          "start": "0x02D122",
+          "end": "0x02D188"
+        },
+        {
+          "name": "func02D188",
+          "type": "Code",
+          "start": "0x02D188",
+          "end": "0x02D1CE"
+        },
+        {
+          "name": "func02D1CE",
+          "type": "Code",
+          "start": "0x02D1CE",
+          "end": "0x02D1EC"
+        },
+        {
+          "name": "rep_stz_rts_1",
+          "type": "Code",
+          "start": "0x02D1EC",
+          "end": "0x02D1F2"
+        },
+        {
+          "name": "func02D1F2",
+          "type": "Code",
+          "start": "0x02D1F2",
+          "end": "0x02D238"
+        },
+        {
+          "name": "func02D238",
+          "type": "Code",
+          "start": "0x02D238",
+          "end": "0x02D240"
+        },
+        {
+          "name": "rep_stz_rts_2",
+          "type": "Code",
+          "start": "0x02D240",
+          "end": "0x02D246"
+        },
+        {
+          "name": "sub02D246",
+          "type": "Subroutine",
+          "start": "0x02D246",
+          "end": "0x02D257"
+        },
+        {
+          "name": "sub02D257_noref",
+          "type": "Subroutine",
+          "start": "0x02D257",
+          "end": "0x02D2BF"
+        },
+        {
+          "name": "sub02D2BF",
+          "type": "Subroutine",
+          "start": "0x02D2BF",
+          "end": "0x02D33B"
+        },
+        {
+          "name": "sub02D33B",
+          "type": "Subroutine",
+          "start": "0x02D33B",
+          "end": "0x02D354"
+        },
+        {
+          "name": "sub02D354",
+          "type": "Subroutine",
+          "start": "0x02D354",
+          "end": "0x02D376"
+        },
+        {
+          "name": "sub02D376",
+          "type": "Subroutine",
+          "start": "0x02D376",
+          "end": "0x02D3EA"
+        },
+        {
+          "name": "func02D3EA",
+          "type": "Code",
+          "start": "0x02D3EA",
+          "end": "0x02D3F7"
+        },
+        {
+          "name": "sub02D3F7",
+          "type": "Subroutine",
+          "start": "0x02D3F7",
+          "end": "0x02D40B"
+        },
+        {
+          "name": "func02D40B",
+          "type": "Code",
+          "start": "0x02D40B",
+          "end": "0x02D425"
+        },
+        {
+          "name": "func02D425",
+          "type": "Code",
+          "start": "0x02D425",
+          "end": "0x02D44E"
+        },
+        {
+          "name": "func02D44E",
+          "type": "Code",
+          "start": "0x02D44E",
+          "end": "0x02D47F"
+        },
+        {
+          "name": "func02D47F",
+          "type": "Code",
+          "start": "0x02D47F",
+          "end": "0x02D4DA"
+        },
+        {
+          "name": "func02D4DA",
+          "type": "Code",
+          "start": "0x02D4DA",
+          "end": "0x02D524"
+        },
+        {
+          "name": "func02D524",
+          "type": "Code",
+          "start": "0x02D524",
+          "end": "0x02D530"
+        },
+        {
+          "name": "rep_stz_rts_3",
+          "type": "Code",
+          "start": "0x02D530",
+          "end": "0x02D536"
+        },
+        {
+          "name": "func02D536",
+          "type": "Code",
+          "start": "0x02D536",
+          "end": "0x02D57C"
+        },
+        {
+          "name": "func02D57C",
+          "type": "Code",
+          "start": "0x02D57C",
+          "end": "0x02D57E"
+        },
+        {
+          "name": "rep_stz_rts_4",
+          "type": "Code",
+          "start": "0x02D57E",
+          "end": "0x02D584"
+        },
+        {
+          "name": "sub02D584",
+          "type": "Subroutine",
+          "start": "0x02D584",
+          "end": "0x02D5F9"
+        },
+        {
+          "name": "sub02D5F9",
+          "type": "Subroutine",
+          "start": "0x02D5F9",
+          "end": "0x02D655"
+        },
+        {
+          "name": "func02D655",
+          "type": "Code",
+          "start": "0x02D655",
+          "end": "0x02D69A"
+        },
+        {
+          "name": "func02D69A",
+          "type": "Code",
+          "start": "0x02D69A",
+          "end": "0x02D6DC"
+        },
+        {
+          "name": "func02D6DC",
+          "type": "Code",
+          "start": "0x02D6DC",
+          "end": "0x02D760"
+        },
+        {
+          "name": "sub02D760",
+          "type": "Subroutine",
+          "start": "0x02D760",
+          "end": "0x02D77C"
+        },
+        {
+          "name": "func02D77C",
+          "type": "Code",
+          "start": "0x02D77C",
+          "end": "0x02D799"
+        },
+        {
+          "name": "func02D799",
+          "type": "Code",
+          "start": "0x02D799",
+          "end": "0x02D7E1"
+        },
+        {
+          "name": "func02D7E1",
+          "type": "Code",
+          "start": "0x02D7E1",
+          "end": "0x02D7E7"
+        },
+        {
+          "name": "rep_stz_rts_5",
+          "type": "Code",
+          "start": "0x02D7E7",
+          "end": "0x02D7ED"
+        },
+        {
+          "name": "func02D7ED",
+          "type": "Code",
+          "start": "0x02D7ED",
+          "end": "0x02D83D"
+        },
+        {
+          "name": "rep_stz_rts_6",
+          "type": "Code",
+          "start": "0x02D83D",
+          "end": "0x02D843"
+        },
+        {
+          "name": "func02D843",
+          "type": "Code",
+          "start": "0x02D843",
+          "end": "0x02D93F"
+        },
+        {
+          "name": "func02D978",
+          "type": "Code",
+          "start": "0x02D978",
+          "end": "0x02D986"
+        },
+        {
+          "name": "func02D986",
+          "type": "Code",
+          "start": "0x02D986",
+          "end": "0x02DA8A"
+        },
+        {
+          "name": "func02DA8A",
+          "type": "Code",
+          "start": "0x02DA8A",
+          "end": "0x02DABF"
+        },
+        {
+          "name": "func02DABF",
+          "type": "Code",
+          "start": "0x02DABF",
+          "end": "0x02DACD"
+        },
+        {
+          "name": "sub02DACD",
+          "type": "Subroutine",
+          "start": "0x02DACD",
+          "end": "0x02DB22"
+        },
+        {
+          "name": "sub02DB22",
+          "type": "Subroutine",
+          "start": "0x02DB22",
+          "end": "0x02DB80"
+        },
+        {
+          "name": "sub02DB80",
+          "type": "Subroutine",
+          "start": "0x02DB80",
+          "end": "0x02DC10"
+        },
+        {
+          "name": "sub02DC10",
+          "type": "Subroutine",
+          "start": "0x02DC10",
+          "end": "0x02DC2C"
+        },
+        {
+          "name": "func02DC2C",
+          "type": "Code",
+          "start": "0x02DC2C",
+          "end": "0x02DC49"
+        },
+        {
+          "name": "sub02DC49",
+          "type": "Subroutine",
+          "start": "0x02DC49",
+          "end": "0x02DC2C"
+        },
+        {
+          "name": "func02DC2C",
+          "type": "Code",
+          "start": "0x02DC2C",
+          "end": "0x02DE51"
+        },
+        {
+          "name": "sub02DFA7",
+          "type": "Subroutine",
+          "start": "0x02DFA7",
+          "end": "0x02DFF6"
+        },
+        {
+          "name": "sub02DFF6",
+          "type": "Subroutine",
+          "start": "0x02DFF6",
+          "end": "0x02E060"
+        },
+        {
+          "name": "func02E060",
+          "type": "Code",
+          "start": "0x02E060",
+          "end": "0x02E0FA"
+        },
+        {
+          "name": "sub02E0FA",
+          "type": "Subroutine",
+          "start": "0x02E0FA",
+          "end": "0x02E102"
+        },
+        {
+          "name": "sub02E102_noref",
+          "type": "Subroutine",
+          "start": "0x02E102",
+          "end": "0x02E13F"
+        },
+        {
+          "name": "sub02E13F",
+          "type": "Subroutine",
+          "start": "0x02E13F",
+          "end": "0x02E154"
+        },
+        {
+          "name": "func02E154",
+          "type": "Code",
+          "start": "0x02E154",
+          "end": "0x02E15B"
+        },
+        {
+          "name": "sub02E15B",
+          "type": "Subroutine",
+          "start": "0x02E15B",
+          "end": "0x02E16E"
+        },
+        {
+          "name": "func02E16E",
+          "type": "Code",
+          "start": "0x02E16E",
+          "end": "0x02E183"
+        }
+      ]
+    }
+  ]
+}

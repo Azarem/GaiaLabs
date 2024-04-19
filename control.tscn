@@ -1,0 +1,67 @@
+[gd_scene load_steps=6 format=3 uid="uid://do1c8o3xqbgxt"]
+
+[ext_resource type="Script" path="res://src/control/ControlTest.cs" id="1_m5b74"]
+[ext_resource type="Script" path="res://src/control/MainMenu.cs" id="2_pr3ne"]
+[ext_resource type="Script" path="res://src/control/ResourceTree.cs" id="2_xpknw"]
+[ext_resource type="Script" path="res://src/control/PropertyPanel.cs" id="4_7r147"]
+[ext_resource type="Script" path="res://src/control/PreviewPanel.cs" id="5_fvr7i"]
+
+[node name="Control" type="Control"]
+texture_filter = 1
+texture_repeat = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m5b74")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuBar" type="MenuBar" parent="GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_pr3ne")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+split_offset = 300
+
+[node name="Tree" type="Tree" parent="GridContainer/HSplitContainer"]
+layout_mode = 2
+script = ExtResource("2_xpknw")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="GridContainer/HSplitContainer"]
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 3
+split_offset = 300
+
+[node name="GridContainer" type="GridContainer" parent="GridContainer/HSplitContainer/HSplitContainer"]
+layout_direction = 2
+layout_mode = 2
+columns = 2
+script = ExtResource("4_7r147")
+
+[node name="PanelContainer" type="PanelContainer" parent="GridContainer/HSplitContainer/HSplitContainer"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("5_fvr7i")

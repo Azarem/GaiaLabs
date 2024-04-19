@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Profile 1": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\Kassie\\Desktop\\Godot_v4.3-dev2_mono_win64\\Godot_v4.3-dev2_mono_win64.exe",
+      "workingDirectory": "C:\\Games\\GaiaLabs"
+    }
+  }
+}
