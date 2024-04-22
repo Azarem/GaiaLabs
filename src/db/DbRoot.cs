@@ -18,6 +18,8 @@ namespace GaiaLabs
             set { _blocks = value; foreach (var p in _blocks) p.Root = this; }
         }
 
+        public IEnumerable<DbFile> Files { get; set; }
+
         public IDictionary<string, DbStruct> Structs { get; set; }
 
     }
@@ -77,6 +79,15 @@ namespace GaiaLabs
         public string Struct { get; set; }
 
         public bool IsOutside(Location loc) => loc < Start || loc >= End;
+    }
+
+    public class DbFile
+    {
+        public string Name { get; set; }
+        public BinType Type { get; set; }
+        public Location Start { get; set; }
+        public Location End { get; set; }
+        public bool Compressed { get; set; }
     }
 
     public class CopLib
@@ -156,5 +167,17 @@ namespace GaiaLabs
         Word,
         Offset,
         Address
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum BinType
+    {
+        Bitmap,
+        Tilemap,
+        Tileset,
+        Palette,
+        Sound,
+        Music,
+        Unknown
     }
 }

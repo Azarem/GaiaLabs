@@ -200,6 +200,24 @@ namespace GaiaLabs
 
             RefList = new();
 
+            foreach (var file in DbRoot.Files)
+            {
+                RefList[file.Start] = file.Name;
+
+                using var fileStream = File.Create(Path.Combine(outPath, file.Name + ".bin"));
+
+                if (file.Compressed)
+                {
+                    var data = LZ77.Expand(_basePtr + (nint)file.Start.Offset);
+                    fixed(byte* dPtr = data)
+                        for(byte* ptr = dPtr, end = ptr + data.Length; ptr < end; ptr++)
+                            fileStream.WriteByte(*ptr);
+                }
+                else
+                    for (byte* ptr = _baseAddress + file.Start, end = _baseAddress + file.End; ptr < end; ptr++)
+                        fileStream.WriteByte(*ptr);
+            }
+
             foreach (var block in DbRoot.Blocks)
                 foreach (var part in block.Parts) //Analyze code and place markers
                 {
@@ -368,7 +386,7 @@ namespace GaiaLabs
                             {
                                 writer.Write($"  {part.Struct} < ");
                                 bool begin = true;
-                                foreach(var mem in obj)
+                                foreach (var mem in obj)
                                 {
                                     if (begin) begin = false;
                                     else writer.Write(", ");

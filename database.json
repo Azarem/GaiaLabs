@@ -1,21 +1,4 @@
 {
-  //"types": {
-  //  "dgap": {
-  //    "field1": "System.Byte",
-  //    "field2": "System.Byte",
-  //    "field3": "System.Byte"
-  //  },
-  //  "meta2": {
-  //    "value": "System.Byte"
-  //  },
-  //  "meta3": {
-  //    "unk1": "System.Byte",
-  //    "unk2": "System.Byte",
-  //    "unk3": "System.Byte",
-  //    "address": "GaiaLabs.Address",
-  //    "unk4": "System.Byte"
-  //  }
-  //},
   "coplib": {
     "codes": {
       "00" : { "mnem": "00", "code": "00", "size": 0, "parts": "", "halt": false },
@@ -254,11 +237,10 @@
     "d_gap": { "name": "d_gap", "parts": [ "unk1", "unk2", "unk3" ], "types": [ "Byte", "Byte", "Byte" ] }
   },
   "files":  [
-    { "start": "000000", "end": "000A00", "name": "bmp_000000", "type": "Bitmap", "compressed": false },
-    { "start": "000A00", "end": "001C00", "name": "file_000A00", "type": "", "compressed": false },
-    { "start": "001C00", "end": "001E00", "name": "file_001C00", "type": "", "compressed": false },
-    { "start": "001E00", "end": "002380", "name": "radar_layout_001E00", "type": "", "compressed": false },
-    { "start": "002380", "end": "002F3A", "name": "file_002380", "type": "", "compressed": true },
+    { "start": "000000", "end": "001C00", "name": "bmp_000000", "type": "Bitmap", "compressed": false },
+    { "start": "001C00", "end": "001E00", "name": "file_001C00", "type": "Unknown", "compressed": false },
+    { "start": "001E00", "end": "002380", "name": "radar_layout_001E00", "type": "Unknown", "compressed": false },
+    { "start": "002380", "end": "002F3A", "name": "file_002380", "type": "Unknown", "compressed": true },
     { "start": "002F3A", "end": "004A33", "name": "bmp_002F3A", "type": "Bitmap", "compressed": true },
     { "start": "004A33", "end": "006521", "name": "bmp_004A33", "type": "Bitmap", "compressed": true },
     { "start": "006521", "end": "007FFC", "name": "bmp_006521", "type": "Bitmap", "compressed": true },
@@ -279,10 +261,90 @@
     
     { "start": "030000", "end": "03190A", "name": "bmp_030000", "type": "Bitmap", "compressed": true },
     { "start": "03190A", "end": "0331E1", "name": "bmp_03190A", "type": "Bitmap", "compressed": true },
-    { "start": "0331E1", "end": "034AB8", "name": "file_0331E1", "type": "", "compressed": true },
+    { "start": "0331E1", "end": "034AB8", "name": "file_0331E1", "type": "Unknown", "compressed": true },
     { "start": "034AB8", "end": "03638B", "name": "bmp_034AB8", "type": "Bitmap", "compressed": true },
-    { "start": "03638B", "end": "037C5D", "name": "set_03638B", "type": "Tileset", "compressed": true },
-    { "start": "037C5D", "end": "037FF1", "name": "bmp_037C5D", "type": "Bitmap", "compressed": true }
+    { "start": "03638B", "end": "037C5D", "name": "bmp_03638B", "type": "Bitmap", "compressed": true },
+    { "start": "037C5D", "end": "037FF1", "name": "map_037C5D", "type": "Tilemap", "compressed": true },
+    
+    { "start": "040000", "end": "0418CC", "name": "bmp_040000", "type": "Bitmap", "compressed": true },
+    { "start": "0418CC", "end": "043191", "name": "bmp_0418CC", "type": "Bitmap", "compressed": true },
+    { "start": "043191", "end": "044A39", "name": "bmp_043191", "type": "Bitmap", "compressed": true },
+    { "start": "044A39", "end": "046283", "name": "bmp_044A39", "type": "Bitmap", "compressed": true },
+    { "start": "046283", "end": "047AC7", "name": "bmp_046283", "type": "Bitmap", "compressed": true },
+    { "start": "047AC7", "end": "047FF7", "name": "map_047AC7", "type": "Tilemap", "compressed": true },
+    
+    { "start": "0A0000", "end": "0A1836", "name": "bmp_0A0000", "type": "Bitmap", "compressed": true },
+    { "start": "0A1836", "end": "0A3062", "name": "bmp_0A1836", "type": "Bitmap", "compressed": true },
+    { "start": "0A3062", "end": "0A4877", "name": "bmp_0A3062", "type": "Bitmap", "compressed": true },
+    { "start": "0A4877", "end": "0A608B", "name": "bmp_0A4877", "type": "Bitmap", "compressed": true },
+    { "start": "0A608B", "end": "0A789F", "name": "bmp_0A608B", "type": "Bitmap", "compressed": true },
+    { "start": "0A789F", "end": "0A7FFF", "name": "map_0A789F", "type": "Tilemap", "compressed": true },
+    
+    { "start": "0B0000", "end": "0B180D", "name": "bmp_0B0000", "type": "Bitmap", "compressed": true },
+    { "start": "0B180D", "end": "0B2FBE", "name": "bmp_0B180D", "type": "Bitmap", "compressed": true },
+    { "start": "0B2FBE", "end": "0B472B", "name": "file_0B2FBE", "type": "Unknown", "compressed": true },
+    { "start": "0B472B", "end": "0B5E8E", "name": "bmp_0B472B", "type": "Bitmap", "compressed": true },
+    { "start": "0B5E8E", "end": "0B75D9", "name": "file_0B5E8E", "type": "Unknown", "compressed": true },
+    { "start": "0B75D9", "end": "0B7FF4", "name": "file_0B75D9", "type": "Unknown", "compressed": true },
+    
+    { "start": "0C0000", "end": "0C1734", "name": "bgm_0C0000", "type": "Music", "compressed": false },
+    { "start": "0C1734", "end": "0C2E2D", "name": "bmp_0C1734", "type": "Bitmap", "compressed": true },
+    { "start": "0C2E2D", "end": "0C4524", "name": "bmp_0C2E2D", "type": "Bitmap", "compressed": true },
+    { "start": "0C4524", "end": "0C5C16", "name": "file_0C4524", "type": "Unknown", "compressed": true },
+    { "start": "0C5C16", "end": "0C7308", "name": "bmp_0C5C16", "type": "Bitmap", "compressed": true },
+    { "start": "0C7308", "end": "0C7308", "name": "file_0C7308", "type": "Unknown", "compressed": true },
+
+    { "start": "0CF620", "end": "0D0000", "name": "bmp_0CF620_noref", "type": "Bitmap", "compressed": true },
+    
+    { "start": "0D0000", "end": "0D16E7", "name": "bmp_0D0000", "type": "Bitmap", "compressed": true },
+    { "start": "0D16E7", "end": "0D2D78", "name": "bmp_0D16E7", "type": "Bitmap", "compressed": true },
+    { "start": "0D2D78", "end": "0D43C4", "name": "bmp_0D2D78", "type": "Bitmap", "compressed": true },
+    { "start": "0D43C4", "end": "0D59EC", "name": "bmp_0D43C4", "type": "Bitmap", "compressed": true },
+    { "start": "0D59EC", "end": "0D7007", "name": "bmp_0D59EC", "type": "Bitmap", "compressed": true },
+    { "start": "0D7007", "end": "0D7D6B", "name": "bgm_0D7007", "type": "Music", "compressed": false },
+    { "start": "0D7D6B", "end": "0D7FED", "name": "map_0D7D6B", "type": "Tilemap", "compressed": true },
+
+    { "start": "0DAFFF", "end": "0DF001", "name": "bmp_0DAFFF", "type": "Bitmap", "compressed": false },
+    { "start": "0DF001", "end": "0DFF8B", "name": "bmp_0DF001", "type": "Bitmap", "compressed": true },
+    { "start": "0DFF8B", "end": "0E0000", "name": "map_0DFF8B", "type": "Tilemap", "compressed": true },
+    
+    { "start": "0E0000", "end": "0E15EA", "name": "bmp_0E0000", "type": "Bitmap", "compressed": true },
+    { "start": "0E15EA", "end": "0E2B7A", "name": "bmp_0E15EA", "type": "Bitmap", "compressed": true },
+    { "start": "0E2B7A", "end": "0E4106", "name": "bmp_0E2B7A", "type": "Bitmap", "compressed": true },
+    { "start": "0E4106", "end": "0E5687", "name": "bmp_0E4106", "type": "Bitmap", "compressed": true },
+    { "start": "0E5687", "end": "0E6BAB", "name": "bmp_0E5687", "type": "Bitmap", "compressed": true },
+    { "start": "0E6BAB", "end": "0E7FFC", "name": "bmp_0E6BAB", "type": "Bitmap", "compressed": true },
+    
+    { "start": "0ECADB", "end": "0ED9A6", "name": "file_0ECADB", "type": "Unknown", "compressed": true },
+    { "start": "0ED9A6", "end": "0EDA00", "name": "map_0ED9A6", "type": "Tilemap", "compressed": true },
+    { "start": "0EDD40", "end": "0EDFFC", "name": "map_0EDD40", "type": "Tilemap", "compressed": true },
+    { "start": "0EFDCF", "end": "0EFFF9", "name": "map_0EFDCF", "type": "Tilemap", "compressed": true },
+    
+    { "start": "0F0000", "end": "0F14D1", "name": "bmp_0F0000", "type": "Bitmap", "compressed": true },
+    { "start": "0F14D1", "end": "0F2937", "name": "bmp_0F14D1", "type": "Bitmap", "compressed": true },
+    { "start": "0F2937", "end": "0F3D62", "name": "bmp_0F2937", "type": "Bitmap", "compressed": true },
+    { "start": "0F3D62", "end": "0F517C", "name": "bmp_0F3D62", "type": "Bitmap", "compressed": true },
+    { "start": "0F517C", "end": "0F658E", "name": "bmp_0F517C", "type": "Bitmap", "compressed": true },
+    { "start": "0F658E", "end": "0F797F", "name": "bmp_0F658E", "type": "Bitmap", "compressed": true },
+    { "start": "0F797F", "end": "0F8000", "name": "set_0F797F", "type": "Tileset", "compressed": true },
+    
+    { "start": "0F90E5", "end": "0FBD26", "name": "bmp_0F90E5", "type": "Bitmap", "compressed": true },
+    { "start": "0FBD26", "end": "0FBFF9", "name": "map_0FBD26", "type": "Tilemap", "compressed": true },
+    { "start": "0FED85", "end": "0FFFBD", "name": "bmp_0FED85", "type": "Bitmap", "compressed": true },
+    { "start": "0FFFBD", "end": "100000", "name": "map_0FFFBD", "type": "Tilemap", "compressed": true },
+    
+    { "start": "100000", "end": "1013D6", "name": "bmp_100000", "type": "Bitmap", "compressed": true },
+    { "start": "1013D6", "end": "1026CE", "name": "bmp_1013D6", "type": "Bitmap", "compressed": true },
+    { "start": "1026CE", "end": "1039F8", "name": "bmp_1026CE", "type": "Bitmap", "compressed": true },
+    { "start": "1039F8", "end": "104C8F", "name": "bmp_1039F8", "type": "Bitmap", "compressed": true },
+    { "start": "104C8F", "end": "105F24", "name": "bmp_104C8F", "type": "Bitmap", "compressed": true },
+    { "start": "105F24", "end": "1071A0", "name": "file_105F24", "type": "Unknown", "compressed": true },
+    { "start": "1071A0", "end": "107E3B", "name": "bgm_1071A0", "type": "Music", "compressed": false },
+    { "start": "107E3B", "end": "107FFD", "name": "map_107E3B", "type": "Tilemap", "compressed": true },
+
+    { "start": "108F07", "end": "10C561", "name": "bmp_108F07", "type": "Bitmap", "compressed": true },
+    { "start": "10C561", "end": "10FB8B", "name": "bmp_10C561", "type": "Bitmap", "compressed": true },
+    { "start": "10FB8B", "end": "10FFFC", "name": "map_10FB8B", "type": "Tilemap", "compressed": true }
   ],
   "blocks": [
     {
@@ -326,7 +388,6 @@
         { "start": "02C8AA", "end": "02C8BD", "name": "func02C8AA", "type": "Code" },
         { "start": "02C8BD", "end": "02C93B", "name": "func02C8BD", "type": "Code" },
         { "start": "02C93B", "end": "02C9B7", "name": "func02C93B", "type": "Code" },
-        //{ "start": "02C969", "end": "02C9B7", "name": "func02C969", "type": "Code" },
         { "start": "02C9B7", "end": "02C9C5", "name": "func02C9B7", "type": "Code" },
         { "start": "02C9C5", "end": "02C9CA", "name": "func02C9C5", "type": "Code" },
         { "start": "02C9CA", "end": "02C9D8", "name": "func02C9CA", "type": "Code" },
@@ -427,8 +488,6 @@
         { "start": "02DE02", "end": "02DE43", "name": "func02DE02", "type": "Code" },
         { "start": "02DE43", "end": "02DE51", "name": "func02DE43", "type": "Code" },
         { "start": "02DE51", "end": "02DF5C", "name": "func02DE51", "type": "Code" },
-        //{ "start": "02DF4C", "end": "02DF54", "name": "func02DF4C", "type": "Code" },
-        //{ "start": "02DF54", "end": "02DF5C", "name": "func02DF54", "type": "Code" },
         { "start": "02DF5C", "end": "02DF99", "name": "func02DF5C", "type": "Code" },
         { "start": "02DF99", "end": "02DFA7", "name": "func02DF99", "type": "Code" },
         { "start": "02DFA7", "end": "02DFF6", "name": "sub02DFA7", "type": "Subroutine" },
