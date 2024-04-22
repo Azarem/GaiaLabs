@@ -1,21 +1,21 @@
 {
-  "types": {
-    "dgap": {
-      "field1": "System.Byte",
-      "field2": "System.Byte",
-      "field3": "System.Byte"
-    },
-    "meta2": {
-      "value": "System.Byte"
-    },
-    "meta3": {
-      "unk1": "System.Byte",
-      "unk2": "System.Byte",
-      "unk3": "System.Byte",
-      "address": "GaiaLabs.Address",
-      "unk4": "System.Byte"
-    }
-  },
+  //"types": {
+  //  "dgap": {
+  //    "field1": "System.Byte",
+  //    "field2": "System.Byte",
+  //    "field3": "System.Byte"
+  //  },
+  //  "meta2": {
+  //    "value": "System.Byte"
+  //  },
+  //  "meta3": {
+  //    "unk1": "System.Byte",
+  //    "unk2": "System.Byte",
+  //    "unk3": "System.Byte",
+  //    "address": "GaiaLabs.Address",
+  //    "unk4": "System.Byte"
+  //  }
+  //},
   "coplib": {
     "codes": {
       "00" : { "mnem": "00", "code": "00", "size": 0, "parts": "", "halt": false },
@@ -231,393 +231,238 @@
       "E2" : { "mnem": "E2", "code": "E2", "size": 3, "parts": "wb", "halt": false }
     },
     "formats": {
-      "Immediate": "{0} #{1:x}",
-      "Absolute": "{0} _{1:x4}",
-      "AbsoluteLong": "{0} @{1:x6}",
-      "DirectPage": "{0} {1:x4}",
-      "DirectPageIndirect": "{0} ({1:x4})",
-      "DirectPageIndirectLong": "{0} [{1:x4}]",
-      "AbsoluteIndexedX": "{0} _{1:x4}, X",
-      "AbsoluteLongIndexedX": "{0} @{1:x6}, X",
-      "AbsoluteIndexedY": "{0} _{1:x4}, Y",
-      "DirectPageIndexedX": "{0} {1:x4}, X",
-      "DirectPageIndexedIndirectX": "{0} ({1:x4}, X)",
-      "DirectPageIndirectIndexedY": "{0} ({1:x4}), Y",
-      "DirectPageIndirectLongIndexedY": "{0} [{1:x4}], X",
+      "Immediate": "{0} #{1:X}",
+      "Absolute": "{0} {1:X4}",
+      "AbsoluteLong": "{0} {1:X6}",
+      "DirectPage": "{0} {1:X4}",
+      "DirectPageIndirect": "{0} ({1:X4})",
+      "DirectPageIndirectLong": "{0} [{1:X4}]",
+      "AbsoluteIndexedX": "{0} {1:X4}, X",
+      "AbsoluteLongIndexedX": "{0} {1:X6}, X",
+      "AbsoluteIndexedY": "{0} {1:X4}, Y",
+      "DirectPageIndexedX": "{0} {1:X4}, X",
+      "DirectPageIndexedIndirectX": "{0} ({1:X4}, X)",
+      "DirectPageIndirectIndexedY": "{0} ({1:X4}), Y",
+      "DirectPageIndirectLongIndexedY": "{0} [{1:X4}], X",
       "StackRelative": "{0} sr, {1}",
-      "StackRelativeIndirectIndexedY": "{0} (sr, {1}), Y"
+      "StackRelativeIndirectIndexedY": "{0} (sr, {1}), Y",
+      "PCRelative": "{0} {1}",
+      "PCRelativeLong": "{0} {1}"
     }
   },
+  "structs": {
+    "d_gap": { "name": "d_gap", "parts": [ "unk1", "unk2", "unk3" ], "types": [ "Byte", "Byte", "Byte" ] }
+  },
+  "files":  [
+    { "start": "000000", "end": "000A00", "name": "bmp_000000", "type": "Bitmap", "compressed": false },
+    { "start": "000A00", "end": "001C00", "name": "file_000A00", "type": "", "compressed": false },
+    { "start": "001C00", "end": "001E00", "name": "file_001C00", "type": "", "compressed": false },
+    { "start": "001E00", "end": "002380", "name": "radar_layout_001E00", "type": "", "compressed": false },
+    { "start": "002380", "end": "002F3A", "name": "file_002380", "type": "", "compressed": true },
+    { "start": "002F3A", "end": "004A33", "name": "bmp_002F3A", "type": "Bitmap", "compressed": true },
+    { "start": "004A33", "end": "006521", "name": "bmp_004A33", "type": "Bitmap", "compressed": true },
+    { "start": "006521", "end": "007FFC", "name": "bmp_006521", "type": "Bitmap", "compressed": true },
+
+    { "start": "010000", "end": "01AEA0", "name": "bmp_010000", "type": "Bitmap", "compressed": true },
+    { "start": "01AEA0", "end": "01359A", "name": "bmp_01AEA0", "type": "Bitmap", "compressed": true },
+    { "start": "01359A", "end": "01500E", "name": "bmp_01359A", "type": "Bitmap", "compressed": true },
+    { "start": "01500E", "end": "016A81", "name": "bmp_01500E", "type": "Bitmap", "compressed": true },
+    { "start": "016A81", "end": "017FBE", "name": "bmp_016A81", "type": "Bitmap", "compressed": true },
+    { "start": "017FBE", "end": "017FFE", "name": "palette_017FBE", "type": "Palette", "compressed": false },
+    
+    { "start": "020000", "end": "021A20", "name": "bmp_020000", "type": "Bitmap", "compressed": true },
+    { "start": "021A20", "end": "0233BC", "name": "bmp_021A20", "type": "Bitmap", "compressed": true },
+    { "start": "0233BC", "end": "024D23", "name": "bmp_0233BC", "type": "Bitmap", "compressed": true },
+    { "start": "0233BC", "end": "026686", "name": "bmp_024D23", "type": "Bitmap", "compressed": true },
+    { "start": "026686", "end": "027FB1", "name": "bmp_026686", "type": "Bitmap", "compressed": true },
+    { "start": "027FB1", "end": "027FFA", "name": "map_027FB1", "type": "Tilemap", "compressed": true },
+    
+    { "start": "030000", "end": "03190A", "name": "bmp_030000", "type": "Bitmap", "compressed": true },
+    { "start": "03190A", "end": "0331E1", "name": "bmp_03190A", "type": "Bitmap", "compressed": true },
+    { "start": "0331E1", "end": "034AB8", "name": "file_0331E1", "type": "", "compressed": true },
+    { "start": "034AB8", "end": "03638B", "name": "bmp_034AB8", "type": "Bitmap", "compressed": true },
+    { "start": "03638B", "end": "037C5D", "name": "set_03638B", "type": "Tileset", "compressed": true },
+    { "start": "037C5D", "end": "037FF1", "name": "bmp_037C5D", "type": "Bitmap", "compressed": true }
+  ],
   "blocks": [
+    {
+      "name":  "chunk02C38F",
+      "parts": [
+        { "start": "02C38C", "end": "02C38F", "name": "head_02C38C", "type": "Struct", "struct": "d_gap" },
+        { "start": "02C38F", "end": "02C447", "name": "func02C38F", "type": "Code" },
+        { "start": "02C447", "end": "02C47F", "name": "table_02C447", "type": "Table" },
+        { "start": "02C47F", "end": "02C48A", "name": "func02C47F", "type": "Code" },
+        { "start": "02C48A", "end": "02C48F", "name": "func02C48A", "type": "Code" },
+        { "start": "02C48F", "end": "02C49A", "name": "func02C48F", "type": "Code" },
+        { "start": "02C49A", "end": "02C49F", "name": "func02C49A", "type": "Code" },
+        { "start": "02C49F", "end": "02C4AA", "name": "func02C49F", "type": "Code" },
+        { "start": "02C4AA", "end": "02C4AF", "name": "func02C4AA", "type": "Code" },
+        { "start": "02C4AF", "end": "02C4BA", "name": "func02C4AF", "type": "Code" },
+        { "start": "02C4BA", "end": "02C4DD", "name": "func02C4BA", "type": "Code" },
+        { "start": "02C4DD", "end": "02C524", "name": "func02C4DD", "type": "Code" },
+        { "start": "02C524", "end": "02C56C", "name": "func02C524", "type": "Code" },
+        { "start": "02C56C", "end": "02C5B5", "name": "func02C56C", "type": "Code" },
+        { "start": "02C5B5", "end": "02C5FF", "name": "func02C5B5", "type": "Code" },
+        { "start": "02C5FF", "end": "02C617", "name": "sub02C5FF", "type": "Subroutine" },
+        { "start": "02C617", "end": "02C61E", "name": "sub02C617", "type": "Subroutine" },
+        { "start": "02C61E", "end": "02C692", "name": "func02C61E", "type": "Code" },
+        { "start": "02C692", "end": "02C6AE", "name": "func02C692", "type": "Code" },
+        { "start": "02C6AE", "end": "02C6BC", "name": "sub02C6AE", "type": "Subroutine" },
+        { "start": "02C6BC", "end": "02C6D5", "name": "sub02C6BC", "type": "Subroutine" },
+        { "start": "02C6D5", "end": "02C6FA", "name": "func02C6D5", "type": "Code" },
+        { "start": "02C6FA", "end": "02C73F", "name": "func02C6FA", "type": "Code" },
+        { "start": "02C73F", "end": "02C751", "name": "func02C73F", "type": "Code" },
+        { "start": "02C751", "end": "02C75E", "name": "func02C751", "type": "Code" },
+        { "start": "02C75E", "end": "02C7B6", "name": "sub02C75E", "type": "Subroutine" },
+        { "start": "02C7B6", "end": "02C7E2", "name": "func02C7B6", "type": "Code" },
+        { "start": "02C7E2", "end": "02C80D", "name": "func02C7E2", "type": "Code" },
+        { "start": "02C80D", "end": "02C831", "name": "func02C80D", "type": "Code" },
+        { "start": "02C831", "end": "02C855", "name": "func02C831", "type": "Code" },
+        { "start": "02C855", "end": "02C860", "name": "func02C855", "type": "Code" },
+        { "start": "02C860", "end": "02C865", "name": "func02C860", "type": "Code" },
+        { "start": "02C865", "end": "02C870", "name": "func02C865", "type": "Code" },
+        { "start": "02C870", "end": "02C897", "name": "func02C870", "type": "Code" },
+        { "start": "02C897", "end": "02C8AA", "name": "func02C897", "type": "Code" },
+        { "start": "02C8AA", "end": "02C8BD", "name": "func02C8AA", "type": "Code" },
+        { "start": "02C8BD", "end": "02C93B", "name": "func02C8BD", "type": "Code" },
+        { "start": "02C93B", "end": "02C9B7", "name": "func02C93B", "type": "Code" },
+        //{ "start": "02C969", "end": "02C9B7", "name": "func02C969", "type": "Code" },
+        { "start": "02C9B7", "end": "02C9C5", "name": "func02C9B7", "type": "Code" },
+        { "start": "02C9C5", "end": "02C9CA", "name": "func02C9C5", "type": "Code" },
+        { "start": "02C9CA", "end": "02C9D8", "name": "func02C9CA", "type": "Code" },
+        { "start": "02C9D8", "end": "02CA19", "name": "func02C9D8", "type": "Code" },
+        { "start": "02CA19", "end": "02CA22", "name": "func02CA19", "type": "Code" },
+        { "start": "02CA22", "end": "02CA30", "name": "func02CA22", "type": "Code" },
+        { "start": "02CA30", "end": "02CA3E", "name": "func02CA30", "type": "Code" },
+        { "start": "02CA3E", "end": "02CA4C", "name": "func02CA3E", "type": "Code" },
+        { "start": "02CA4C", "end": "02CA82", "name": "func02CA4C", "type": "Code" },
+        { "start": "02CA82", "end": "02CA84", "name": "func02CA82", "type": "Code" },
+        { "start": "02CA84", "end": "02CA9A", "name": "func02CA84", "type": "Code" },
+        { "start": "02CA9A", "end": "02CAD2", "name": "func02CA9A", "type": "Code" },
+        { "start": "02CAD2", "end": "02CB0A", "name": "func02CAD2", "type": "Code" },
+        { "start": "02CB0A", "end": "02CB0C", "name": "func02CB0A", "type": "Code" },
+        { "start": "02CB0C", "end": "02CB22", "name": "func02CB0C", "type": "Code" },
+        { "start": "02CB22", "end": "02CB5A", "name": "func02CB22", "type": "Code" },
+        { "start": "02CB5A", "end": "02CB92", "name": "func02CB5A", "type": "Code" },
+        { "start": "02CB92", "end": "02CBB5", "name": "sub02CB92", "type": "Subroutine" },
+        { "start": "02CBB5", "end": "02CBD9", "name": "func02CBB5", "type": "Code" },
+        { "start": "02CBD9", "end": "02CBFF", "name": "sub02CBD9", "type": "Subroutine" },
+        { "start": "02CBFF", "end": "02CC52", "name": "func02CBFF", "type": "Code" },
+        { "start": "02CC52", "end": "02CCA5", "name": "func02CC52", "type": "Code" },
+        { "start": "02CCA5", "end": "02CCC2", "name": "sub02CCA5", "type": "Subroutine" },
+        { "start": "02CCC2", "end": "02CCDA", "name": "sub02CCC2", "type": "Subroutine" },
+        { "start": "02CCDA", "end": "02CD5B", "name": "func02CCDA", "type": "Code" },
+        { "start": "02CD5B", "end": "02CDDC", "name": "func02CD5B", "type": "Code" },
+        { "start": "02CDDC", "end": "02CE5A", "name": "func02CDDC", "type": "Code" },
+        { "start": "02CE5A", "end": "02CED8", "name": "func02CE5A", "type": "Code" },
+        { "start": "02CED8", "end": "02CEEE", "name": "func02CED8", "type": "Code" },
+        { "start": "02CEEE", "end": "02CF0F", "name": "sub02CEEE", "type": "Subroutine" },
+        { "start": "02CF0F", "end": "02CF4A", "name": "func02CF0F", "type": "Code" },
+        { "start": "02CF4A", "end": "02CF68", "name": "sub02CF4A", "type": "Subroutine" },
+        { "start": "02CF68", "end": "02CF82", "name": "func02CF68", "type": "Code" },
+        { "start": "02CF82", "end": "02CF9C", "name": "func02CF82", "type": "Code" },
+        { "start": "02CF9C", "end": "02CFB6", "name": "func02CF9C", "type": "Code" },
+        { "start": "02CFB6", "end": "02CFD0", "name": "func02CFB6", "type": "Code" }
+      ]
+    },
     {
       "name": "chunk02D038",
       "parts": [
-        {
-          "name": "sub02D038",
-          "type": "subroutine",
-          "start": "0x02D038",
-          "end": "0x02D0BC"
-        },
-        {
-          "name": "sub02D0BC",
-          "type": "Subroutine",
-          "start": "0x02D0BC",
-          "end": "0x02D0D4"
-        },
-        {
-          "name": "func02D0D4",
-          "type": "Code",
-          "start": "0x02D0D4",
-          "end": "0x02D122"
-        },
-        {
-          "name": "func02D122",
-          "type": "Code",
-          "start": "0x02D122",
-          "end": "0x02D188"
-        },
-        {
-          "name": "func02D188",
-          "type": "Code",
-          "start": "0x02D188",
-          "end": "0x02D1CE"
-        },
-        {
-          "name": "func02D1CE",
-          "type": "Code",
-          "start": "0x02D1CE",
-          "end": "0x02D1EC"
-        },
-        {
-          "name": "rep_stz_rts_1",
-          "type": "Code",
-          "start": "0x02D1EC",
-          "end": "0x02D1F2"
-        },
-        {
-          "name": "func02D1F2",
-          "type": "Code",
-          "start": "0x02D1F2",
-          "end": "0x02D238"
-        },
-        {
-          "name": "func02D238",
-          "type": "Code",
-          "start": "0x02D238",
-          "end": "0x02D240"
-        },
-        {
-          "name": "rep_stz_rts_2",
-          "type": "Code",
-          "start": "0x02D240",
-          "end": "0x02D246"
-        },
-        {
-          "name": "sub02D246",
-          "type": "Subroutine",
-          "start": "0x02D246",
-          "end": "0x02D257"
-        },
-        {
-          "name": "sub02D257_noref",
-          "type": "Subroutine",
-          "start": "0x02D257",
-          "end": "0x02D2BF"
-        },
-        {
-          "name": "sub02D2BF",
-          "type": "Subroutine",
-          "start": "0x02D2BF",
-          "end": "0x02D33B"
-        },
-        {
-          "name": "sub02D33B",
-          "type": "Subroutine",
-          "start": "0x02D33B",
-          "end": "0x02D354"
-        },
-        {
-          "name": "sub02D354",
-          "type": "Subroutine",
-          "start": "0x02D354",
-          "end": "0x02D376"
-        },
-        {
-          "name": "sub02D376",
-          "type": "Subroutine",
-          "start": "0x02D376",
-          "end": "0x02D3EA"
-        },
-        {
-          "name": "func02D3EA",
-          "type": "Code",
-          "start": "0x02D3EA",
-          "end": "0x02D3F7"
-        },
-        {
-          "name": "sub02D3F7",
-          "type": "Subroutine",
-          "start": "0x02D3F7",
-          "end": "0x02D40B"
-        },
-        {
-          "name": "func02D40B",
-          "type": "Code",
-          "start": "0x02D40B",
-          "end": "0x02D425"
-        },
-        {
-          "name": "func02D425",
-          "type": "Code",
-          "start": "0x02D425",
-          "end": "0x02D44E"
-        },
-        {
-          "name": "func02D44E",
-          "type": "Code",
-          "start": "0x02D44E",
-          "end": "0x02D47F"
-        },
-        {
-          "name": "func02D47F",
-          "type": "Code",
-          "start": "0x02D47F",
-          "end": "0x02D4DA"
-        },
-        {
-          "name": "func02D4DA",
-          "type": "Code",
-          "start": "0x02D4DA",
-          "end": "0x02D524"
-        },
-        {
-          "name": "func02D524",
-          "type": "Code",
-          "start": "0x02D524",
-          "end": "0x02D530"
-        },
-        {
-          "name": "rep_stz_rts_3",
-          "type": "Code",
-          "start": "0x02D530",
-          "end": "0x02D536"
-        },
-        {
-          "name": "func02D536",
-          "type": "Code",
-          "start": "0x02D536",
-          "end": "0x02D57C"
-        },
-        {
-          "name": "func02D57C",
-          "type": "Code",
-          "start": "0x02D57C",
-          "end": "0x02D57E"
-        },
-        {
-          "name": "rep_stz_rts_4",
-          "type": "Code",
-          "start": "0x02D57E",
-          "end": "0x02D584"
-        },
-        {
-          "name": "sub02D584",
-          "type": "Subroutine",
-          "start": "0x02D584",
-          "end": "0x02D5F9"
-        },
-        {
-          "name": "sub02D5F9",
-          "type": "Subroutine",
-          "start": "0x02D5F9",
-          "end": "0x02D655"
-        },
-        {
-          "name": "func02D655",
-          "type": "Code",
-          "start": "0x02D655",
-          "end": "0x02D69A"
-        },
-        {
-          "name": "func02D69A",
-          "type": "Code",
-          "start": "0x02D69A",
-          "end": "0x02D6DC"
-        },
-        {
-          "name": "func02D6DC",
-          "type": "Code",
-          "start": "0x02D6DC",
-          "end": "0x02D760"
-        },
-        {
-          "name": "sub02D760",
-          "type": "Subroutine",
-          "start": "0x02D760",
-          "end": "0x02D77C"
-        },
-        {
-          "name": "func02D77C",
-          "type": "Code",
-          "start": "0x02D77C",
-          "end": "0x02D799"
-        },
-        {
-          "name": "func02D799",
-          "type": "Code",
-          "start": "0x02D799",
-          "end": "0x02D7E1"
-        },
-        {
-          "name": "func02D7E1",
-          "type": "Code",
-          "start": "0x02D7E1",
-          "end": "0x02D7E7"
-        },
-        {
-          "name": "rep_stz_rts_5",
-          "type": "Code",
-          "start": "0x02D7E7",
-          "end": "0x02D7ED"
-        },
-        {
-          "name": "func02D7ED",
-          "type": "Code",
-          "start": "0x02D7ED",
-          "end": "0x02D83D"
-        },
-        {
-          "name": "rep_stz_rts_6",
-          "type": "Code",
-          "start": "0x02D83D",
-          "end": "0x02D843"
-        },
-        {
-          "name": "func02D843",
-          "type": "Code",
-          "start": "0x02D843",
-          "end": "0x02D93F"
-        },
-        {
-          "name": "func02D978",
-          "type": "Code",
-          "start": "0x02D978",
-          "end": "0x02D986"
-        },
-        {
-          "name": "func02D986",
-          "type": "Code",
-          "start": "0x02D986",
-          "end": "0x02DA8A"
-        },
-        {
-          "name": "func02DA8A",
-          "type": "Code",
-          "start": "0x02DA8A",
-          "end": "0x02DABF"
-        },
-        {
-          "name": "func02DABF",
-          "type": "Code",
-          "start": "0x02DABF",
-          "end": "0x02DACD"
-        },
-        {
-          "name": "sub02DACD",
-          "type": "Subroutine",
-          "start": "0x02DACD",
-          "end": "0x02DB22"
-        },
-        {
-          "name": "sub02DB22",
-          "type": "Subroutine",
-          "start": "0x02DB22",
-          "end": "0x02DB80"
-        },
-        {
-          "name": "sub02DB80",
-          "type": "Subroutine",
-          "start": "0x02DB80",
-          "end": "0x02DC10"
-        },
-        {
-          "name": "sub02DC10",
-          "type": "Subroutine",
-          "start": "0x02DC10",
-          "end": "0x02DC2C"
-        },
-        {
-          "name": "func02DC2C",
-          "type": "Code",
-          "start": "0x02DC2C",
-          "end": "0x02DC49"
-        },
-        {
-          "name": "sub02DC49",
-          "type": "Subroutine",
-          "start": "0x02DC49",
-          "end": "0x02DC2C"
-        },
-        {
-          "name": "func02DC2C",
-          "type": "Code",
-          "start": "0x02DC2C",
-          "end": "0x02DE51"
-        },
-        {
-          "name": "sub02DFA7",
-          "type": "Subroutine",
-          "start": "0x02DFA7",
-          "end": "0x02DFF6"
-        },
-        {
-          "name": "sub02DFF6",
-          "type": "Subroutine",
-          "start": "0x02DFF6",
-          "end": "0x02E060"
-        },
-        {
-          "name": "func02E060",
-          "type": "Code",
-          "start": "0x02E060",
-          "end": "0x02E0FA"
-        },
-        {
-          "name": "sub02E0FA",
-          "type": "Subroutine",
-          "start": "0x02E0FA",
-          "end": "0x02E102"
-        },
-        {
-          "name": "sub02E102_noref",
-          "type": "Subroutine",
-          "start": "0x02E102",
-          "end": "0x02E13F"
-        },
-        {
-          "name": "sub02E13F",
-          "type": "Subroutine",
-          "start": "0x02E13F",
-          "end": "0x02E154"
-        },
-        {
-          "name": "func02E154",
-          "type": "Code",
-          "start": "0x02E154",
-          "end": "0x02E15B"
-        },
-        {
-          "name": "sub02E15B",
-          "type": "Subroutine",
-          "start": "0x02E15B",
-          "end": "0x02E16E"
-        },
-        {
-          "name": "func02E16E",
-          "type": "Code",
-          "start": "0x02E16E",
-          "end": "0x02E183"
-        }
+        { "start": "02CFD0", "end": "02D038", "name": "sub02CFD0_badend", "type": "Subroutine" },
+        { "start": "02D038", "end": "02D0BC", "name": "sub02D038", "type": "Subroutine" },
+        { "start": "02D0BC", "end": "02D0D4", "name": "sub02D0BC", "type": "Subroutine" },
+        { "start": "02D0D4", "end": "02D0EE", "name": "func02D0D4", "type": "Code" },
+        { "start": "02D0EE", "end": "02D122", "name": "func02D0EE", "type": "Code" },
+        { "start": "02D122", "end": "02D188", "name": "func02D122", "type": "Code" },
+        { "start": "02D188", "end": "02D1CE", "name": "func02D188", "type": "Code" },
+        { "start": "02D1CE", "end": "02D1EC", "name": "func02D1CE", "type": "Code" },
+        { "start": "02D1EC", "end": "02D1F2", "name": "rep_stz_rts_1", "type": "Code" },
+        { "start": "02D1F2", "end": "02D238", "name": "func02D1F2", "type": "Code" },
+        { "start": "02D238", "end": "02D240", "name": "func02D238", "type": "Code" },
+        { "start": "02D240", "end": "02D246", "name": "rep_stz_rts_2", "type": "Code" },
+        { "start": "02D246", "end": "02D257", "name": "sub02D246", "type": "Subroutine" },
+        { "start": "02D257", "end": "02D2BF", "name": "sub02D257_noref", "type": "Subroutine" },
+        { "start": "02D2BF", "end": "02D33B", "name": "sub02D2BF", "type": "Subroutine" },
+        { "start": "02D33B", "end": "02D354", "name": "sub02D33B", "type": "Subroutine" },
+        { "start": "02D354", "end": "02D376", "name": "sub02D354", "type": "Subroutine" },
+        { "start": "02D376", "end": "02D3EA", "name": "sub02D376", "type": "Subroutine" },
+        { "start": "02D3EA", "end": "02D3F7", "name": "func02D3EA", "type": "Code" },
+        { "start": "02D3F7", "end": "02D40B", "name": "sub02D3F7", "type": "Subroutine" },
+        { "start": "02D40B", "end": "02D425", "name": "func02D40B", "type": "Code" },
+        { "start": "02D425", "end": "02D44E", "name": "func02D425", "type": "Code" },
+        { "start": "02D44E", "end": "02D47F", "name": "func02D44E", "type": "Code" },
+        { "start": "02D47F", "end": "02D4DA", "name": "func02D47F", "type": "Code" },
+        { "start": "02D4DA", "end": "02D524", "name": "func02D4DA", "type": "Code" },
+        { "start": "02D524", "end": "02D530", "name": "func02D524", "type": "Code" },
+        { "start": "02D530", "end": "02D536", "name": "rep_stz_rts_3", "type": "Code" },
+        { "start": "02D536", "end": "02D57C", "name": "func02D536", "type": "Code" },
+        { "start": "02D57C", "end": "02D57E", "name": "func02D57C", "type": "Code" },
+        { "start": "02D57E", "end": "02D584", "name": "rep_stz_rts_4", "type": "Code" },
+        { "start": "02D584", "end": "02D5F9", "name": "sub02D584", "type": "Subroutine" },
+        { "start": "02D5F9", "end": "02D655", "name": "sub02D5F9", "type": "Subroutine" },
+        { "start": "02D655", "end": "02D69A", "name": "func02D655", "type": "Code" },
+        { "start": "02D69A", "end": "02D6DC", "name": "func02D69A", "type": "Code" },
+        { "start": "02D6DC", "end": "02D760", "name": "func02D6DC", "type": "Code" },
+        { "start": "02D760", "end": "02D77C", "name": "sub02D760", "type": "Subroutine" },
+        { "start": "02D77C", "end": "02D799", "name": "func02D77C", "type": "Code" },
+        { "start": "02D799", "end": "02D7E1", "name": "func02D799", "type": "Code" },
+        { "start": "02D7E1", "end": "02D7E7", "name": "func02D7E1", "type": "Code" },
+        { "start": "02D7E7", "end": "02D7ED", "name": "rep_stz_rts_5", "type": "Code" },
+        { "start": "02D7ED", "end": "02D83D", "name": "func02D7ED", "type": "Code" },
+        { "start": "02D83D", "end": "02D843", "name": "rep_stz_rts_6", "type": "Code" },
+        { "start": "02D843", "end": "02D93F", "name": "func02D843", "type": "Code" },
+        { "start": "02D93F", "end": "02D978", "name": "func02D93F", "type": "Code" },
+        { "start": "02D978", "end": "02D986", "name": "func02D978", "type": "Code" },
+        { "start": "02D986", "end": "02DA8A", "name": "func02D986", "type": "Code" },
+        { "start": "02DA8A", "end": "02DABF", "name": "func02DA8A", "type": "Code" },
+        { "start": "02DABF", "end": "02DACD", "name": "func02DABF", "type": "Code" },
+        { "start": "02DACD", "end": "02DB22", "name": "sub02DACD", "type": "Subroutine" },
+        { "start": "02DB22", "end": "02DB80", "name": "sub02DB22", "type": "Subroutine" },
+        { "start": "02DB80", "end": "02DC10", "name": "sub02DB80", "type": "Subroutine" },
+        { "start": "02DC10", "end": "02DC2C", "name": "sub02DC10", "type": "Subroutine" },
+        { "start": "02DC2C", "end": "02DC49", "name": "func02DC2C", "type": "Code" },
+        { "start": "02DC49", "end": "02DC9D", "name": "func02DC49", "type": "Code" },
+        { "start": "02DC9D", "end": "02DCF3", "name": "func02DC9D", "type": "Code" },
+        { "start": "02DCF3", "end": "02DE02", "name": "func02DCF3", "type": "Code" },
+        { "start": "02DE02", "end": "02DE43", "name": "func02DE02", "type": "Code" },
+        { "start": "02DE43", "end": "02DE51", "name": "func02DE43", "type": "Code" },
+        { "start": "02DE51", "end": "02DF5C", "name": "func02DE51", "type": "Code" },
+        //{ "start": "02DF4C", "end": "02DF54", "name": "func02DF4C", "type": "Code" },
+        //{ "start": "02DF54", "end": "02DF5C", "name": "func02DF54", "type": "Code" },
+        { "start": "02DF5C", "end": "02DF99", "name": "func02DF5C", "type": "Code" },
+        { "start": "02DF99", "end": "02DFA7", "name": "func02DF99", "type": "Code" },
+        { "start": "02DFA7", "end": "02DFF6", "name": "sub02DFA7", "type": "Subroutine" },
+        { "start": "02DFF6", "end": "02E060", "name": "sub02DFF6", "type": "Subroutine" },
+        { "start": "02E060", "end": "02E0AB", "name": "func02E060", "type": "Code" },
+        { "start": "02E0AB", "end": "02E0FA", "name": "func02E0AB", "type": "Code" },
+        { "start": "02E0FA", "end": "02E102", "name": "sub02E0FA", "type": "Subroutine" },
+        { "start": "02E102", "end": "02E13F", "name": "sub02E102_noref", "type": "Subroutine" },
+        { "start": "02E13F", "end": "02E154", "name": "sub02E13F", "type": "Subroutine" },
+        { "start": "02E154", "end": "02E15B", "name": "func02E154", "type": "Code" },
+        { "start": "02E15B", "end": "02E16E", "name": "sub02E15B", "type": "Subroutine" },
+        { "start": "02E16E", "end": "02E183", "name": "func02E16E", "type": "Code" },
+        { "start": "02E183", "end": "02E1A9", "name": "sub02E183", "type": "Subroutine" },
+        { "start": "02E1A9", "end": "02E1CD", "name": "sub02E1A9", "type": "Subroutine" },
+        { "start": "02E1CD", "end": "02E1F1", "name": "sub02E1CD", "type": "Subroutine" },
+        { "start": "02E1F1", "end": "02E20D", "name": "sub02E1F1", "type": "Subroutine" },
+        { "start": "02E20D", "end": "02E237", "name": "sub02E20D", "type": "Subroutine" },
+        { "start": "02E237", "end": "02E263", "name": "sub02E237", "type": "Subroutine" },
+        { "start": "02E263", "end": "02E285", "name": "sub02E263", "type": "Subroutine" },
+        { "start": "02E285", "end": "02E2AF", "name": "sub02E285", "type": "Subroutine" },
+        { "start": "02E2AF", "end": "02E2FC", "name": "sub02E2AF", "type": "Subroutine" },
+        { "start": "02E2FC", "end": "02E313", "name": "sub02E2FC", "type": "Subroutine" },
+        { "start": "02E313", "end": "02E32B", "name": "sub02E313", "type": "Subroutine" },
+        { "start": "02E32B", "end": "02E343", "name": "sub02E32B", "type": "Subroutine" },
+        { "start": "02E343", "end": "02E35D", "name": "sub02E343", "type": "Subroutine" },
+        { "start": "02E35D", "end": "02E37C", "name": "sub02E35D", "type": "Subroutine" },
+        { "start": "02E37C", "end": "02E389", "name": "sub02E37C", "type": "Subroutine" },
+        { "start": "02E389", "end": "02E396", "name": "sub02E389", "type": "Subroutine" }
+      ]
+    },
+    {
+      "name": "chunk02E1A9",
+      "parts": [
+        { "start": "02E396", "end": "02E399", "name": "head_02E396", "type": "Struct", "struct": "d_gap" }
       ]
     }
   ]

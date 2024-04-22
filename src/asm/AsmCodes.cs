@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -321,36 +322,86 @@ namespace GaiaLabs
         public static unsafe Op Parse(byte* rom, Location loc, Registers reg, DbRoot db)
         {
             var ptr = rom + loc;
-            if (!OpCodes.TryGetValue(*ptr, out var code))
+            var opCode = *ptr++;
+            if (!OpCodes.TryGetValue(opCode, out var code))
                 throw new("Unknown OpCode");
 
-            ptr++;
-            List<uint> operands = [];
-            List<Location> refs = [];
-            int size = 1;
+            List<object> operands = new(8);
+            //List<Location> refs = [];
+            int size = code.Size;
+            //ushort value;
+            Location refLoc;
+
+
+            if (size == -2) //Handle variable-size operand
+                if ((code.Code & 0xF) == 0x9) //Accumulator operations?
+                    if (!(reg.AccumulatorFlag ?? false)) size = 3; //Check status of m flag
+                    else size = 2;
+                else if (!(reg.IndexFlag ?? false)) size = 3; //Check status of x flag
+                else size = 2;
+
+            var next = loc + (uint)size;
 
             switch (code.Mode)
             {
                 case AddressingMode.Immediate:
-
-                    if (size == -2) //Handle variable-size operand
-                        if ((code.Code & 0xF) == 0x9) //Accumulator operations?
-                            if ((reg.StatusFlags & StatusFlags.AccumulatorMode) == 0) goto bit16; //Check status of m flag
-                            else goto bit8;
-                        else if ((reg.StatusFlags & StatusFlags.IndexMode) == 0) goto bit16; //Check status of x flag
-                        else goto bit8;
-
+                    if (size == 3)
+                        operands.Add(*(ushort*)ptr);
+                    else
+                        operands.Add(*ptr);
                     break;
 
-                bit16:
-                    operands.Add(*(ushort*)ptr);
-                    size = 3;
-                    ptr += 2;
+                case AddressingMode.Absolute:
+                case AddressingMode.AbsoluteIndexedIndirect:
+                case AddressingMode.AbsoluteIndexedX:
+                case AddressingMode.AbsoluteIndexedY:
+                case AddressingMode.AbsoluteIndirect:
+                case AddressingMode.AbsoluteIndirectLong:
+                    refLoc = *(ushort*)ptr;
+                    if (code.Mnem.StartsWith('J'))
+                    {
+                        refLoc |= next & 0x3F0000u; //Add PC bank
+                        operands.Add(refLoc);
+                    }
+                    else
+                    {
+                        var addr = new Address(reg.Bank ?? 0x7E, (ushort)refLoc.Offset); //Add Data bank
+                        operands.Add(addr);
+                    }
+                    //operands.Add(refLoc);
+                    //refs.Add(refLoc);
                     break;
 
-                bit8:
-                    operands.Add(*ptr++);
-                    size += 1;
+                case AddressingMode.AbsoluteLong:
+                case AddressingMode.AbsoluteLongIndexedX:
+                    refLoc = *(ushort*)ptr | ((uint)ptr[2] << 16);
+                    operands.Add(refLoc);
+                    break;
+
+                case AddressingMode.DirectPage:
+                case AddressingMode.DirectPageIndexedIndirectX:
+                case AddressingMode.DirectPageIndexedX:
+                case AddressingMode.DirectPageIndexedY:
+                case AddressingMode.DirectPageIndirect:
+                case AddressingMode.DirectPageIndirectIndexedY:
+                case AddressingMode.DirectPageIndirectLong:
+                case AddressingMode.DirectPageIndirectLongIndexedY:
+                    operands.Add(*ptr); //Add DP register
+                    break;
+
+                case AddressingMode.PCRelative:
+                    refLoc = (uint)((int)next.Offset + *(sbyte*)ptr);
+                    operands.Add(refLoc);
+                    break;
+
+                case AddressingMode.PCRelativeLong:
+                    refLoc = (uint)((int)next.Offset + *(short*)ptr);
+                    operands.Add(refLoc);
+                    break;
+
+                case AddressingMode.StackRelative:
+                case AddressingMode.StackRelativeIndirectIndexedY:
+                    operands.Add(*ptr);
                     break;
 
                 case AddressingMode.StackInterrupt:
@@ -358,7 +409,12 @@ namespace GaiaLabs
                     operands.Add(cmd);
                     if (code.Mnem == "COP")
                     {
-                        var cop = db.CopLib.Codes[cmd];
+                        if (!db.CopLib.Codes.TryGetValue(cmd, out var cop))
+                        {
+                            size = 2;
+                            break;
+                        }
+                        //var cop = db.CopLib.Codes[cmd];
                         var parts = cop.Parts;
                         size = cop.Size + 2;
                         for (int i = 0; i < parts.Length; i++)
@@ -368,18 +424,19 @@ namespace GaiaLabs
                                     operands.Add(*ptr++);
                                     break;
                                 case 'c':
-                                    refs.Add((loc & ~0xFFFFu) | *(ushort*)ptr);
-                                    goto case 'w';
                                 case 'o':
+                                    refLoc = *(ushort*)ptr | (next.Offset & 0x3F0000u);
+                                    operands.Add(refLoc);
+                                    ptr += 2;
+                                    break;
                                 case 'w':
                                     operands.Add(*(ushort*)ptr);
                                     ptr += 2;
                                     break;
                                 case 'C':
-                                    refs.Add(*(ushort*)ptr | ((uint)ptr[2] << 16));
-                                    goto case 'O';
                                 case 'O':
-                                    operands.Add(*(ushort*)ptr | ((uint)ptr[2] << 16));
+                                    refLoc = *(ushort*)ptr | ((uint)ptr[2] << 16);
+                                    operands.Add(refLoc);
                                     ptr += 3;
                                     break;
                             }
@@ -387,7 +444,7 @@ namespace GaiaLabs
                     break;
             }
 
-            return new Op { Code = code, Size = (byte)size, References = refs };
+            return new Op { Location = loc, Code = code, Size = (byte)size, Operands = [.. operands] };
         }
 
     }
@@ -403,7 +460,7 @@ namespace GaiaLabs
     // c = Carry
 
     [Flags]
-    public enum StatusFlags
+    public enum StatusFlags : byte
     {
         /// <summary>
         /// Clear before starting addition or subtraction.
@@ -458,8 +515,9 @@ namespace GaiaLabs
 
     public class Registers
     {
-        public StatusFlags StatusFlags { get; set; }
-        public byte Bank { get; set; }
+        public bool? AccumulatorFlag { get; set; }
+        public bool? IndexFlag { get; set; }
+        public byte? Bank { get; set; }
     }
 
     public class Op
@@ -467,7 +525,7 @@ namespace GaiaLabs
         public OpCode Code { get; set; }
         public Location Location { get; set; }
         //public int Operand { get; set; }
-        public int[] Operands { get; set; }
+        public object[] Operands { get; set; }
         public byte Size { get; set; }
 
         private Op _prev;
@@ -477,7 +535,7 @@ namespace GaiaLabs
         public Op Next { get => _next; set { if (_next != value && (_next = value) != null) value._prev = this; } }
         //public Op Reference { get; set; }
 
-        internal IEnumerable<Location> References { get; set; }
+        //internal IEnumerable<Location> References { get; set; }
 
         public override string ToString()
         {
@@ -505,8 +563,11 @@ namespace GaiaLabs
             {
                 if (Code.Mnem == "COP")
                 {
-                    var cop = db.CopLib.Codes[(byte)Operands[0]];
-                    str = cop.GetFormat();
+                    if (!db.CopLib.Codes.TryGetValue((byte)Operands[0], out var cop))
+                        str = db.CopLib.Formats[AddressingMode.Immediate];
+                    //var cop = db.CopLib.Codes[(byte)Operands[0]];
+                    else
+                        str = cop.GetFormat();
                 }
                 else
                     str = "{0}";

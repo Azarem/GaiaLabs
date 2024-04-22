@@ -13,6 +13,15 @@ public partial class ControlTest : Control
 
         var ldr = RomLoader.Load("C:\\Games\\SNES\\Illusion Of Gaia.smc");
 
+        try
+        {
+            ldr.DumpDatabase("C:\\Games\\Dump");
+        }
+        catch (Exception ex)
+        {
+
+        }
+
         //var data = LZ77.Expand(ldr._basePtr + 0x176191, 0x800);
         //var data2 = LZ77.Expand(ldr._basePtr + 0x176852, 0x800);
         //var data3 = LZ77.Expand(ldr._basePtr + 0x176EFF, 0x800);

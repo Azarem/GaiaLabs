@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 
 namespace GaiaLabs
 {
-    //[JsonConverter(typeof(LocationConverter))]
+    [JsonConverter(typeof(LocationConverter))]
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public readonly struct Location :
         IComparable,
@@ -31,11 +31,11 @@ namespace GaiaLabs
 
         public byte Bank => (byte)(Offset >> 16);
 
-        public static Location MaxValue => uint.MaxValue;
+        public static Location MaxValue => 0x3FFFFFu;
 
-        public static Location MinValue => uint.MinValue;
+        public static Location MinValue => 0;
 
-        public Location(uint offset) { Offset = offset; }
+        public Location(uint offset) { Offset = offset & 0x3FFFFFu; }
 
         public static implicit operator Location(uint off) => new(off);
         public static implicit operator uint(Location loc) => loc.Offset;
@@ -48,6 +48,8 @@ namespace GaiaLabs
 
         public static Location operator +(Location loc, uint offset) => new(loc.Offset + offset);
         public static Location operator -(Location loc, uint offset) => new(loc.Offset - offset);
+        public static Location operator &(Location near, uint far) => new(near.Offset & far);
+        public static Location operator |(Location near, uint far) => new(near.Offset | far);
         public static bool operator >(Location near, uint far) => near.Offset > far;
         public static bool operator <(Location near, uint far) => near.Offset < far;
         public static bool operator >=(Location near, uint far) => near.Offset >= far;
@@ -61,6 +63,8 @@ namespace GaiaLabs
         public static bool operator <=(Location near, Location far) => near.Offset <= far.Offset;
         public static bool operator ==(Location near, Location far) => near.Offset == far.Offset;
         public static bool operator !=(Location near, Location far) => near.Offset != far.Offset;
+        public static Location operator &(Location near, Location far) => new(near.Offset & far.Offset);
+        public static Location operator |(Location near, Location far) => new(near.Offset | far.Offset);
 
         public override string ToString() => Offset.ToString("X");
 
@@ -111,14 +115,14 @@ namespace GaiaLabs
 
     }
 
-    //public class LocationConverter : JsonConverter<Location>
-    //{
-    //    public LocationConverter() { }
+    public class LocationConverter : JsonConverter<Location>
+    {
+        public LocationConverter() { }
 
-    //    public override Location Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    //        => uint.TryParse(reader.GetString(), NumberStyles.HexNumber, null, out uint loc) ? loc : 0;
+        public override Location Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            => uint.TryParse(reader.GetString(), NumberStyles.HexNumber, null, out uint loc) ? loc : 0;
 
-    //    public override void Write(Utf8JsonWriter writer, Location value, JsonSerializerOptions options)
-    //        => writer.WriteStringValue(value.ToString());
-    //}
+        public override void Write(Utf8JsonWriter writer, Location value, JsonSerializerOptions options)
+            => writer.WriteStringValue(value.ToString());
+    }
 }

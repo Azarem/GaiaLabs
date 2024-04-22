@@ -1,14 +1,8 @@
-﻿//using ICSharpCode.SharpZipLib.GZip;
-//using ICSharpCode.SharpZipLib.Zip;
-using System.IO.MemoryMappedFiles;
+﻿using System.IO.MemoryMappedFiles;
 using System.IO;
 using System;
 using System.Collections.Generic;
-using Godot;
-using System.Text.Json.Serialization;
 using System.Text.Json;
-using System.Reflection.Emit;
-using System.Collections.Specialized;
 
 namespace GaiaLabs
 {
@@ -26,6 +20,8 @@ namespace GaiaLabs
         public uint _offset;
         public DbRoot DbRoot;
         public Dictionary<Location, string> RefList = new();
+        public Dictionary<Location, bool?> AccumulatorFlags = new();
+        public Dictionary<Location, bool?> IndexFlags = new();
         //private bool _hasCopyHeader;
 
         public Dictionary<uint, DataEntry> Resources = new();
@@ -155,43 +151,182 @@ namespace GaiaLabs
             return entry as T;
         }
 
+        private static void UpdateFlags<T>(IDictionary<Location, T?> dictionary, Location loc, T? value) where T : struct
+        {
+            if (dictionary.TryGetValue(loc, out var entry)) //Look for existing value
+            {
+                if (entry == null)
+                    return; //Ignore entries with a hard unknown
+
+                if (value != null && !value.Equals(entry)) //Check for disagreements
+                    value = null; //Force hard unknown
+                else if (value.Equals(entry))
+                    return; //Ignore when value will not change
+            }
+
+            dictionary[loc] = value;
+        }
+
+        public string ResolveName(DbPart part, Location loc)
+        {
+            if (!RefList.TryGetValue(loc, out var name))
+            {
+                name = "loc_" + loc;
+                RefList[loc] = name;
+            }
+
+            if (part.Block.IsOutside(loc, out var p))
+            {
+                part.Includes.Add(p);
+                name = $"!{p.Block.Name}.{name}";
+            }
+            else if (!name.StartsWith("loc_"))
+                name = $"@{name}";
+
+            return name;
+        }
+
         public void DumpDatabase(string outPath, string dbFile = "database.json")
         {
             using (var file = File.OpenRead(dbFile))
-                DbRoot = JsonSerializer.Deserialize<DbRoot>(file);
+            {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    ReadCommentHandling = JsonCommentHandling.Skip
+                };
+                DbRoot = JsonSerializer.Deserialize<DbRoot>(file, options);
+            }
 
-            RefList = new ();
+            RefList = new();
 
             foreach (var block in DbRoot.Blocks)
                 foreach (var part in block.Parts) //Analyze code and place markers
                 {
-                    var reg = new Registers();
-                    Op prev = null;
-                    RefList.Add(part.Start, part.Name); //Add reference name
                     part.Includes = new List<DbPart>(); //Initialize part
-                    for (var loc = part.Start; loc < part.End; loc += prev.Size)
+                    RefList[part.Start] = part.Name; //Add reference name
+
+                    switch (part.Type)
                     {
-                        var op = Asm.Parse(_baseAddress + loc, reg, DbRoot); //Parse instruction
+                        case PartType.Table:
 
-                        if (prev == null)
-                            part.Head = op; //Set head
-                        else
-                            op.Prev = prev; //Set prev
+                            var table = new List<Location>();
+                            var bank = part.Start.Offset & 0x3F0000u;
+                            for (var loc = part.Start; loc < part.End; loc += 2)
+                                table.Add(bank | *(ushort*)(_baseAddress + loc));
+                            part.Table = [.. table];
+                            break;
 
-                        prev = op; //Advance prev
+                        case PartType.Struct:
+                            var struc = DbRoot.Structs[part.Struct];
+                            var strList = new List<object[]>();
+                            var types = struc.Types;
+                            var members = types.Length;
+                            var baseLoc = part.Start & 0x3F0000u;
+
+                            for (byte* ptr = _baseAddress + part.Start, end = _baseAddress + part.End; ptr < end;)
+                            {
+                                var parts = new object[members];
+                                for (int i = 0; i < members; i++)
+                                    switch (types[i])
+                                    {
+                                        case MemberType.Byte: parts[i] = *ptr++; break;
+                                        case MemberType.Word: parts[i] = *(ushort*)ptr; ptr += 2; break;
+                                        case MemberType.Offset: parts[i] = *(ushort*)ptr | baseLoc; ptr += 2; break;
+                                        case MemberType.Address:
+                                            parts[i] = (Location)(*(ushort*)ptr | ((uint)ptr[2] << 16));
+                                            ptr += 3;
+                                            break;
+                                        default: throw new("Invalid struct type");
+                                    }
+                                strList.Add(parts);
+                            }
+
+                            part.Structs = [.. strList];
+
+                            break;
+
+                        default:
+
+                            var reg = new Registers();
+                            Op prev = null;
+                            for (var loc = part.Start; loc < part.End; loc += prev.Size)
+                            {
+                                //Process branch adjustments before parse
+                                if (AccumulatorFlags.TryGetValue(loc, out var acc))
+                                    reg.AccumulatorFlag = acc;
+                                if (IndexFlags.TryGetValue(loc, out var ind))
+                                    reg.IndexFlag = ind;
+
+                                var op = Asm.Parse(_baseAddress, loc, reg, DbRoot); //Parse instruction
+
+                                if (op.Code.Mnem == "SEP")
+                                {
+                                    var flag = (StatusFlags)op.Operands[0];
+                                    if (flag.HasFlag(StatusFlags.AccumulatorMode))
+                                        UpdateFlags(AccumulatorFlags, loc + op.Size, true);
+                                    if (flag.HasFlag(StatusFlags.IndexMode))
+                                        UpdateFlags(IndexFlags, loc + op.Size, true);
+                                }
+                                else if (op.Code.Mnem == "REP")
+                                {
+                                    var flag = (StatusFlags)op.Operands[0];
+                                    if (flag.HasFlag(StatusFlags.AccumulatorMode))
+                                        UpdateFlags(AccumulatorFlags, loc + op.Size, false);
+                                    if (flag.HasFlag(StatusFlags.IndexMode))
+                                        UpdateFlags(IndexFlags, loc + op.Size, false);
+                                }
+
+                                foreach (var obj in op?.Operands)
+                                {
+                                    if (obj is Location r)
+                                    {
+                                        if (reg.AccumulatorFlag != null)
+                                            UpdateFlags(AccumulatorFlags, r, reg.AccumulatorFlag);
+                                        if (reg.IndexFlag != null)
+                                            UpdateFlags(IndexFlags, r, reg.IndexFlag);
+                                    }
+                                }
+
+                                if (prev == null)
+                                    part.Head = op; //Set head
+                                else
+                                    op.Prev = prev; //Set prev
+
+                                prev = op; //Advance prev
+                            }
+
+                            break;
                     }
                 }
 
             //Add code references
             foreach (var block in DbRoot.Blocks)
                 foreach (var part in block.Parts)
-                    for (var op = part.Head; op != null; op = op.Next)
-                        foreach (var loc in op?.References)
-                        {
-                            RefList.TryAdd(loc, "loc_" + loc);
-                            if (block.IsOutside(loc, out var p))
-                                part.Includes.Add(p);
-                        }
+                    switch (part.Type)
+                    {
+                        case PartType.Table:
+                            var tab = part.Table;
+                            for (int i = 0; i < tab.Length; i++)
+                                if (tab[i] is Location loc)
+                                    tab[i] = ResolveName(part, loc); //Replace location with name
+                            break;
+
+                        case PartType.Struct:
+                            foreach (var obj in part.Structs)
+                                for (int i = 0; i < obj.Length; i++)
+                                    if (obj[i] is Location loc)
+                                        obj[i] = ResolveName(part, loc);
+                            break;
+
+                        default:
+                            for (var op = part.Head; op != null; op = op.Next)
+                                if (op.Operands != null)
+                                    for (int i = 0; i < op.Operands.Length; i++)
+                                        if (op.Operands[i] is Location loc)
+                                            op.Operands[i] = ResolveName(part, loc);
+                            break;
+                    }
 
             //Write files
             foreach (var block in DbRoot.Blocks)
@@ -204,13 +339,74 @@ namespace GaiaLabs
                     writer.WriteLine("#include '{0}'", inc.Name); //Write includes
 
                 writer.WriteLine(); //Empty line
+                bool inBlock = false;
 
                 foreach (var part in block.Parts) //Iterate over each part
-                    for (var op = part.Head; op != null; op = op.Next) //Process each instruction in sequence
+                    switch (part.Type)
                     {
-                        if (RefList.TryGetValue(op.Location, out var label)) //Check for code label
-                            writer.WriteLine("{0}:", label); //Write label
-                        writer.WriteLine("  {0}", op); //Write instruction
+                        case PartType.Table:
+
+                            if (inBlock) writer.WriteLine("--------------------"); //Serparator
+                            else inBlock = true;
+
+                            writer.WriteLine($"{part.Name} ["); //Label
+
+                            foreach (var obj in part.Table)
+                                writer.WriteLine($"  {obj}"); //Location names
+
+                            writer.WriteLine(']'); //End
+                            break;
+
+                        case PartType.Struct:
+
+                            if (inBlock) writer.WriteLine("--------------------"); //Serparator
+                            else inBlock = true;
+
+                            writer.WriteLine($"{part.Name} ["); //Label
+
+                            foreach (var obj in part.Structs)
+                            {
+                                writer.Write($"  {part.Struct} < ");
+                                bool begin = true;
+                                foreach(var mem in obj)
+                                {
+                                    if (begin) begin = false;
+                                    else writer.Write(", ");
+
+                                    if (mem is byte b) writer.Write("#{0:X2}", b);
+                                    else if (mem is ushort s) writer.Write("#{0:X4}", s);
+                                    else writer.Write(mem);
+                                }
+                                writer.WriteLine(" >");
+                            }
+
+                            writer.WriteLine(']'); //End
+                            break;
+
+                        default:
+                            bool first = true;
+                            for (var op = part.Head; op != null; op = op.Next) //Process each instruction in sequence
+                            {
+                                if (RefList.TryGetValue(op.Location, out var label)) //Check for code label
+                                {
+                                    if (first)
+                                    {
+                                        if (inBlock)
+                                            writer.WriteLine("--------------------");
+                                        writer.WriteLine("{0} {{", label); //Write label
+                                        first = false;
+                                    }
+                                    else
+                                    {
+                                        writer.WriteLine();
+                                        writer.WriteLine("  {0}:", label); //Write label
+                                    }
+                                    inBlock = true;
+                                }
+                                writer.WriteLine("    {0}", op); //Write instruction
+                            }
+                            writer.WriteLine("}");
+                            break;
                     }
             }
         }
@@ -222,6 +418,7 @@ namespace GaiaLabs
                 _mappedFile.Dispose();
                 _mappedFile = null;
             }
+            GC.SuppressFinalize(this);
         }
 
 

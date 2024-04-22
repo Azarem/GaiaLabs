@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace GaiaLabs
 {
     public class DbRoot
     {
-        public IEnumerable<Dictionary<string, Dictionary<string, Type>>> Types { get; set; }
+        //public Dictionary<string, Dictionary<string, Type>> Types { get; set; }
         public CopLib CopLib { get; set; }
         private IEnumerable<DbBlock> _blocks;
         public IEnumerable<DbBlock> Blocks
@@ -16,6 +18,7 @@ namespace GaiaLabs
             set { _blocks = value; foreach (var p in _blocks) p.Root = this; }
         }
 
+        public IDictionary<string, DbStruct> Structs { get; set; }
 
     }
 
@@ -64,11 +67,14 @@ namespace GaiaLabs
         internal DbBlock Block;
         internal Op Head;
         internal ICollection<DbPart> Includes;
+        internal object[] Table;
+        internal object[][] Structs;
 
         public string Name { get; set; }
         public PartType Type { get; set; }
         public Location Start { get; set; }
         public Location End { get; set; }
+        public string Struct { get; set; }
 
         public bool IsOutside(Location loc) => loc < Start || loc >= End;
     }
@@ -91,20 +97,64 @@ namespace GaiaLabs
         {
             var len = Parts.Length;
             var builder = new StringBuilder();
-            builder.Append("{0} {1}");
-            for (int i = 0; i < len; i++)
+
+            builder.Append("{0} [{1:X2}]"); //Append instruction
+            if (len > 0)
             {
-                builder.Append(i == 0 ? "{{ " : ", ");
-                builder.AppendFormat("{{{0}}}", i + 2);
+                for (int i = 0; i < len; i++)
+                {
+                    var p = Parts[i];
+                    builder.Append(i == 0 ? " ( " : ", "); //Separator
+                    if (p == 'b' || p == 'w') builder.Append('#'); //Imm symbol
+                    builder.Append($"{{{i + 2}"); //Operand
+
+                    if (p == 'b') builder.Append(":X2"); //Hex byte
+                    else if (p == 'w') builder.Append(":X4"); //Hex word
+
+                    builder.Append('}'); //End operand
+                }
+                builder.Append(" )"); //End
             }
-            builder.Append(" }}");
+
             return builder.ToString();
         }
     }
 
+    public class DbStruct
+    {
+        public string Name { get; set; }
+        public string[] Parts { get; set; }
+        public MemberType[] Types { get; set; }
+
+        //private int? _size;
+        //internal int Size
+        //{
+        //    get => _size ??= Types.Sum(x => x switch
+        //        {
+        //            MemberType.Byte => 1,
+        //            MemberType.Word or
+        //            MemberType.Offset => 2,
+        //            MemberType.Address => 3,
+        //            _ => 1
+        //        });
+        //}
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum PartType
     {
         Code,
-        Subroutine
+        Subroutine,
+        Table,
+        Struct
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum MemberType
+    {
+        Byte,
+        Word,
+        Offset,
+        Address
     }
 }
