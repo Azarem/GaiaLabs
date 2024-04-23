@@ -245,8 +245,8 @@
     { "start": "004A33", "end": "006521", "name": "bmp_004A33", "type": "Bitmap", "compressed": true },
     { "start": "006521", "end": "007FFC", "name": "bmp_006521", "type": "Bitmap", "compressed": true },
 
-    { "start": "010000", "end": "01AEA0", "name": "bmp_010000", "type": "Bitmap", "compressed": true },
-    { "start": "01AEA0", "end": "01359A", "name": "bmp_01AEA0", "type": "Bitmap", "compressed": true },
+    { "start": "010000", "end": "011AEA", "name": "bmp_010000", "type": "Bitmap", "compressed": true },
+    { "start": "011AEA", "end": "01359A", "name": "bmp_011AEA", "type": "Bitmap", "compressed": true },
     { "start": "01359A", "end": "01500E", "name": "bmp_01359A", "type": "Bitmap", "compressed": true },
     { "start": "01500E", "end": "016A81", "name": "bmp_01500E", "type": "Bitmap", "compressed": true },
     { "start": "016A81", "end": "017FBE", "name": "bmp_016A81", "type": "Bitmap", "compressed": true },
@@ -304,7 +304,7 @@
     { "start": "0D7007", "end": "0D7D6B", "name": "bgm_0D7007", "type": "Music", "compressed": false },
     { "start": "0D7D6B", "end": "0D7FED", "name": "map_0D7D6B", "type": "Tilemap", "compressed": true },
 
-    { "start": "0DAFFF", "end": "0DF001", "name": "bmp_0DAFFF", "type": "Bitmap", "compressed": false },
+    { "start": "0DB001", "end": "0DF001", "name": "bmp_0DB001", "type": "Bitmap", "compressed": false },
     { "start": "0DF001", "end": "0DFF8B", "name": "bmp_0DF001", "type": "Bitmap", "compressed": true },
     { "start": "0DFF8B", "end": "0E0000", "name": "map_0DFF8B", "type": "Tilemap", "compressed": true },
     
@@ -333,8 +333,8 @@
     { "start": "0FED85", "end": "0FFFBD", "name": "bmp_0FED85", "type": "Bitmap", "compressed": true },
     { "start": "0FFFBD", "end": "100000", "name": "map_0FFFBD", "type": "Tilemap", "compressed": true },
     
-    { "start": "100000", "end": "1013D6", "name": "bmp_100000", "type": "Bitmap", "compressed": true },
-    { "start": "1013D6", "end": "1026CE", "name": "bmp_1013D6", "type": "Bitmap", "compressed": true },
+    { "start": "100000", "end": "10136D", "name": "bmp_100000", "type": "Bitmap", "compressed": true },
+    { "start": "10136D", "end": "1026CE", "name": "bmp_10136D", "type": "Bitmap", "compressed": true },
     { "start": "1026CE", "end": "1039F8", "name": "bmp_1026CE", "type": "Bitmap", "compressed": true },
     { "start": "1039F8", "end": "104C8F", "name": "bmp_1039F8", "type": "Bitmap", "compressed": true },
     { "start": "104C8F", "end": "105F24", "name": "bmp_104C8F", "type": "Bitmap", "compressed": true },
