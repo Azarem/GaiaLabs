@@ -4,13 +4,13 @@ The goal is to re-assemble all the pieces and create new rom files. This will al
 
 ## Potential Uses
 - Expand rom to 4mb and remove file compression (improves load times)
-- Revamp overworld map into something more robust
-- Rework experience / powerup system to use dropped orbs as currency (becomes souls-like)
+- Write new code modules and apply them to the rom
 - Add completely new areas to the game
-- Open-world exploration??  >_<
 
 ## Sample
-![Screenshot 2024-04-22 112403](https://github.com/Azarem/GaiaLabs/assets/7395229/34fa7b2b-6b02-4c93-a79c-9569ae44e4ae)
+![Screenshot 2024-04-25 210500](https://github.com/Azarem/GaiaLabs/assets/7395229/acb007df-34eb-4384-a8ea-628eccea861b)
+![Screenshot 2024-04-25 205955](https://github.com/Azarem/GaiaLabs/assets/7395229/acb1481b-f38c-4a73-91ae-763dc15c5b0d)
+
 
 ## File Dump
 ![Screenshot 2024-04-22 170128](https://github.com/Azarem/GaiaLabs/assets/7395229/4c5f8510-d73b-4fb2-87db-d99c66d263c1)
