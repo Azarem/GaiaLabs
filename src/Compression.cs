@@ -3,7 +3,7 @@ using System;
 
 namespace GaiaLabs
 {
-    public static unsafe class LZ77
+    public static unsafe class Compression
     {
         public static unsafe byte[] Expand(nint srcData, int srcLen = 0x8000)
         {
@@ -103,7 +103,7 @@ namespace GaiaLabs
             return outBuffer;
         }
 
-        public static unsafe byte[] Compress(byte[] srcData)
+        public static unsafe byte[] Compact(byte[] srcData)
         {
             byte[] dictionary = new byte[0x100];
 

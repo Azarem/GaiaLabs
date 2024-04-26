@@ -4,29 +4,74 @@ using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 namespace GaiaLabs
 {
     [JsonConverter(typeof(HexStringConverter))]
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct HexString //:
-        //IComparable,
-        //IComparable<Location>,
-        //IComparable<uint>,
-        //IConvertible,
-        //IEquatable<Location>,
-        //IEquatable<uint>,
-        //IParsable<HexString>
+                            //IComparable,
+                            //IComparable<Location>,
+                            //IComparable<uint>,
+                            //IConvertible,
+                            //IEquatable<Location>,
+                            //IEquatable<uint>,
+                            //IParsable<HexString>
     {
         public uint Value;
+        public TypeCode TypeCode;
+
+        //private string _str;
+        //public string String { get => _str ??= string.Format(GetTypeFormat(), Value); }
+
+        public HexString() { }
+        public HexString(object value)
+        {
+            TypeCode = Type.GetTypeCode(value.GetType());
+            Value = Convert.ToUInt32(value);
+        }
+
+        public HexString(string str)
+        {
+            Value = uint.Parse(str, NumberStyles.HexNumber);
+            TypeCode = str.Length switch
+            {
+                1 or 2 => TypeCode.Byte,
+                3 or 4 => TypeCode.UInt16,
+                5 or 6 => TypeCode.UInt32,
+                _ => throw new($"Unsupported hex {str}")
+            };
+        }
 
         public static implicit operator uint(HexString hex) => hex.Value;
-        public static implicit operator HexString(uint hex) => new() { Value = hex };
+        public static implicit operator HexString(uint hex) => new(hex);
 
         public static implicit operator string(HexString hex) => hex.ToString();
-        public static implicit operator HexString(string hex) => Parse(hex);
+        public static implicit operator HexString(string hex) => new(hex);
+        public static bool operator ==(HexString left, HexString right) => left.Value == right.Value;
+        public static bool operator !=(HexString left, HexString right) => left.Value != right.Value;
 
-        public static HexString Parse(string str) => uint.Parse(str, NumberStyles.HexNumber, null);
+        public static bool operator ==(HexString left, uint right) => left.Value == right;
+        public static bool operator !=(HexString left, uint right) => left.Value != right;
+        public static bool operator ==(uint left, HexString right) => left == right.Value;
+        public static bool operator !=(uint left, HexString right) => left != right.Value;
+
+        public readonly string GetTypeFormat() => TypeCode switch
+        {
+            TypeCode.Byte or TypeCode.SByte => "{0:X2}",
+            TypeCode.UInt16 or TypeCode.Int16 => "{0:X4}",
+            TypeCode.UInt32 or TypeCode.Int32 => "{0:X6}",
+            _ => throw new($"Unsupported type {TypeCode}")
+        };
+
+        //public static HexString Parse(string str) => str.Length switch
+        //{
+        //    1 or 2 => new(byte.Parse(str, NumberStyles.HexNumber)),
+        //    3 or 4 => new(ushort.Parse(str, NumberStyles.HexNumber)),
+        //    5 or 6 => new(uint.Parse(str, NumberStyles.HexNumber))
+        //};
+        //uint.Parse(str, NumberStyles.HexNumber, null);
         //public static bool TryParse(string str, out HexString result)
         //{
         //    if (uint.TryParse(str, NumberStyles.HexNumber, null, out uint res))
@@ -36,7 +81,7 @@ namespace GaiaLabs
         //    return false;
         //}
 
-        public override readonly string ToString() => Value.ToString("x");
+        public override readonly string ToString() => string.Format(GetTypeFormat(), Value);
         public override readonly int GetHashCode() => Value.GetHashCode();
         public override readonly bool Equals([NotNullWhen(true)] object obj)
         {

@@ -3,6 +3,8 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace GaiaLabs
 {
@@ -188,18 +190,18 @@ namespace GaiaLabs
 
         public void DumpDatabase(string outPath, string dbFile = "database.json")
         {
-            using (var file = File.OpenRead(dbFile))
-            {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    ReadCommentHandling = JsonCommentHandling.Skip
-                };
-                DbRoot = JsonSerializer.Deserialize<DbRoot>(file, options);
-            }
-
+            DbRoot = DbRoot.FromFile(dbFile);
             RefList = new();
 
+            ExtractFiles(outPath);
+            ExtractObjects(outPath);
+            AnalyzeBlocks();
+            ResolveReferences();
+            WriteBlocks(outPath);
+        }
+
+        public void ExtractFiles(string outPath)
+        {
             foreach (var file in DbRoot.Files)
             {
                 RefList[file.Start] = file.Name;
@@ -208,18 +210,31 @@ namespace GaiaLabs
 
                 if (file.Compressed)
                 {
-                    var data = LZ77.Expand(_basePtr + (nint)file.Start.Offset);
-                    fixed(byte* dPtr = data)
-                        for(byte* ptr = dPtr, end = ptr + data.Length; ptr < end; ptr++)
+                    var data = Compression.Expand(_basePtr + (nint)file.Start.Offset);
+                    fixed (byte* dPtr = data)
+                        for (byte* ptr = dPtr, end = ptr + data.Length; ptr < end; ptr++)
                             fileStream.WriteByte(*ptr);
                 }
                 else
                     for (byte* ptr = _baseAddress + file.Start, end = _baseAddress + file.End; ptr < end; ptr++)
                         fileStream.WriteByte(*ptr);
             }
+        }
 
+        public void ExtractObjects(string outPath)
+        {
+            foreach (var block in DbRoot.Objects)
+            {
+                RefList[block.Start] = block.Name;
+
+            }
+        }
+
+        public void AnalyzeBlocks()
+        {
+            //Read and analyze data/code and place markers
             foreach (var block in DbRoot.Blocks)
-                foreach (var part in block.Parts) //Analyze code and place markers
+                foreach (var part in block.Parts)
                 {
                     part.Includes = new List<DbPart>(); //Initialize part
                     RefList[part.Start] = part.Name; //Add reference name
@@ -235,32 +250,119 @@ namespace GaiaLabs
                             part.Table = [.. table];
                             break;
 
-                        case PartType.Struct:
-                            var struc = DbRoot.Structs[part.Struct];
-                            var strList = new List<object[]>();
-                            var types = struc.Types;
-                            var members = types.Length;
+                        case PartType.Array:
+                            var strList = new List<object>();
                             var baseLoc = part.Start & 0x3F0000u;
 
                             for (byte* ptr = _baseAddress + part.Start, end = _baseAddress + part.End; ptr < end;)
                             {
-                                var parts = new object[members];
-                                for (int i = 0; i < members; i++)
-                                    switch (types[i])
+                                object parseType(string str)
+                                {
+                                    object value;
+                                    if (Enum.TryParse<MemberType>(str, true, out var mType))
                                     {
-                                        case MemberType.Byte: parts[i] = *ptr++; break;
-                                        case MemberType.Word: parts[i] = *(ushort*)ptr; ptr += 2; break;
-                                        case MemberType.Offset: parts[i] = *(ushort*)ptr | baseLoc; ptr += 2; break;
-                                        case MemberType.Address:
-                                            parts[i] = (Location)(*(ushort*)ptr | ((uint)ptr[2] << 16));
-                                            ptr += 3;
-                                            break;
-                                        default: throw new("Invalid struct type");
+                                        switch (mType)
+                                        {
+                                            case MemberType.Byte: value = *ptr++; break;
+                                            case MemberType.Word: value = *(ushort*)ptr; ptr += 2; break;
+                                            case MemberType.Offset: value = *(ushort*)ptr | baseLoc; ptr += 2; break;
+                                            case MemberType.Address:
+                                                value = (Location)(*(ushort*)ptr | ((uint)ptr[2] << 16));
+                                                ptr += 3;
+                                                break;
+                                            default: throw new("Invalid struct type");
+                                        }
+                                        return value;
                                     }
-                                strList.Add(parts);
+
+                                    var parent = DbRoot.Structs[str];
+                                    var delimiter = parent.Delimiter;
+                                    var descriminator = parent.Descriminator;
+                                    var objects = new List<object>();
+
+                                    bool ShouldContinue()
+                                    {
+                                        if (ptr >= end) return false;
+
+                                        if (delimiter != null)
+                                            switch (delimiter.Value.TypeCode)
+                                            {
+                                                case TypeCode.Byte:
+                                                    if (*ptr == delimiter.Value.Value)
+                                                    { ptr++; return false; }
+                                                    break;
+                                                case TypeCode.UInt16:
+                                                    if (*(ushort*)ptr == delimiter.Value.Value)
+                                                    { ptr += 2; return false; }
+                                                    break;
+                                                case TypeCode.UInt32:
+                                                    if ((*(ushort*)ptr | ((uint)ptr[2] << 16)) == delimiter.Value.Value)
+                                                    { ptr += 3; return false; }
+                                                    break;
+                                                default: throw new("Type code not supported");
+                                            }
+
+                                        return true;
+                                    }
+
+
+                                    do
+                                    {
+                                        var target = parent;
+                                        if (descriminator != null) //Is composite?
+                                        {
+                                            //Get descriminator value
+                                            var offset = descriminator.Value;
+                                            var isFirst = offset == 0u;
+                                            uint desc;
+                                            switch (offset.TypeCode)
+                                            {
+                                                case TypeCode.Byte:
+                                                    desc = ptr[offset];
+                                                    if (isFirst) ptr++;
+                                                    break;
+                                                case TypeCode.UInt16:
+                                                    desc = *(ushort*)(ptr + offset);
+                                                    if (isFirst) ptr += 2;
+                                                    break;
+                                                case TypeCode.UInt32:
+                                                    desc = *(ushort*)(ptr + offset) | ((uint)ptr[offset + 2] << 16);
+                                                    if (isFirst) ptr += 3;
+                                                    break;
+                                                default: throw new("Type code not supported");
+                                            }
+
+                                            //Match descriminator to type
+                                            target = DbRoot.Structs.FirstOrDefault(x => x.Value.Parent == str && x.Value.Descriminator == desc).Value
+                                                ?? throw new($"Could not find type for descriminator {desc}");
+                                        }
+
+                                        var types = target.Types;
+                                        var members = types.Length;
+                                        var parts = new object[members + 1]; //Create new member collection
+                                        parts[0] = target.Name; //First object is type name
+
+                                        //Parse each member of the struct
+                                        for (int i = 0; i < members; i++)
+                                        {
+                                            parts[i + 1] = parseType(types[i]);
+                                        }
+
+                                        objects.Add(parts);
+
+                                    } while (ShouldContinue()); //Continue to iterate until end or delimiter is reached
+
+                                    return objects.ToArray();
+                                }
+
+                                var res = parseType(part.Struct);
+                                if (res is object[] arr && arr[0] is not string)
+                                    strList.AddRange(arr);
+                                else
+                                    strList.Add(res);
                             }
 
-                            part.Structs = [.. strList];
+                            part.Objects = [.. strList];
 
                             break;
 
@@ -318,7 +420,10 @@ namespace GaiaLabs
                     }
                 }
 
-            //Add code references
+        }
+
+        public void ResolveReferences()
+        {
             foreach (var block in DbRoot.Blocks)
                 foreach (var part in block.Parts)
                     switch (part.Type)
@@ -330,11 +435,25 @@ namespace GaiaLabs
                                     tab[i] = ResolveName(part, loc); //Replace location with name
                             break;
 
-                        case PartType.Struct:
-                            foreach (var obj in part.Structs)
-                                for (int i = 0; i < obj.Length; i++)
-                                    if (obj[i] is Location loc)
-                                        obj[i] = ResolveName(part, loc);
+
+                        case PartType.Array:
+
+                            object ResolveObject(object obj)
+                            {
+                                if (obj is object[] arr)
+                                    for (int i = 0; i < arr.Length; i++)
+                                        arr[i] = ResolveObject(arr[i]);
+                                else if (obj is Location loc)
+                                    return ResolveName(part, loc);
+
+                                return obj;
+                            };
+
+                            //Process each member to resolve location names
+                            var arr = part.Objects;
+                            for (int i = 0; i < arr.Length; i++)
+                                arr[i] = ResolveObject(arr[i]);
+
                             break;
 
                         default:
@@ -345,8 +464,10 @@ namespace GaiaLabs
                                             op.Operands[i] = ResolveName(part, loc);
                             break;
                     }
+        }
 
-            //Write files
+        public void WriteBlocks(string outPath)
+        {
             foreach (var block in DbRoot.Blocks)
             {
                 var outFile = Path.Combine(outPath, block.Name + ".asm");
@@ -375,28 +496,58 @@ namespace GaiaLabs
                             writer.WriteLine(']'); //End
                             break;
 
-                        case PartType.Struct:
+                        case PartType.Array:
 
                             if (inBlock) writer.WriteLine("--------------------"); //Serparator
                             else inBlock = true;
 
                             writer.WriteLine($"{part.Name} ["); //Label
 
-                            foreach (var obj in part.Structs)
-                            {
-                                writer.Write($"  {part.Struct} < ");
-                                bool begin = true;
-                                foreach (var mem in obj)
-                                {
-                                    if (begin) begin = false;
-                                    else writer.Write(", ");
 
-                                    if (mem is byte b) writer.Write("#{0:X2}", b);
-                                    else if (mem is ushort s) writer.Write("#{0:X4}", s);
-                                    else writer.Write(mem);
+                            void WriteObject(object obj, int depth)
+                            {
+                                void Indent()
+                                { for (int i = 0; i < depth; i++) writer.Write("  "); }
+
+                                if (obj is object[] arr)
+                                {
+                                    if (arr[0] is not string) //Check for flat object list TODO: Better way?
+                                    {
+                                        if(depth > 0) writer.WriteLine('[');
+                                        foreach (var o in arr)
+                                            WriteObject(o, depth + 1);
+
+                                        Indent();
+                                        writer.Write(']');
+                                    }
+                                    else
+                                    {
+                                        Indent();
+                                        writer.Write($"{arr[0]} < ");
+
+                                        //writer.Write("< ");
+                                        for (int i = 1; i < arr.Length; i++)
+                                        {
+                                            if (i > 1) writer.Write(", ");
+                                            WriteObject(arr[i], depth + 1);
+                                        }
+                                        writer.WriteLine(" >");
+                                    }
                                 }
-                                writer.WriteLine(" >");
+                                else if (obj is byte b) writer.Write("#{0:X2}", b);
+                                else if (obj is ushort s) writer.Write("#{0:X4}", s);
+                                else if (obj is byte[] a)
+                                {
+                                    writer.Write("#");
+                                    writer.Write(Convert.ToHexString(a));
+                                }
+                                else writer.Write(obj);
+
+                                if (depth == 0) writer.WriteLine();
                             }
+
+                            foreach (var obj in part.Objects)
+                                WriteObject(obj, 1);
 
                             writer.WriteLine(']'); //End
                             break;
@@ -409,8 +560,7 @@ namespace GaiaLabs
                                 {
                                     if (first)
                                     {
-                                        if (inBlock)
-                                            writer.WriteLine("--------------------");
+                                        if (inBlock) writer.WriteLine("--------------------");
                                         writer.WriteLine("{0} {{", label); //Write label
                                         first = false;
                                     }

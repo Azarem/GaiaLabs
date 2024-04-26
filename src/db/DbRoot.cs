@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace GaiaLabs
@@ -19,9 +21,21 @@ namespace GaiaLabs
         }
 
         public IEnumerable<DbFile> Files { get; set; }
+        public IEnumerable<DbObject> Objects { get; set; }
 
         public IDictionary<string, DbStruct> Structs { get; set; }
 
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            ReadCommentHandling = JsonCommentHandling.Skip
+        };
+
+        public static DbRoot FromFile(string dbFile)
+        {
+            using var file = File.OpenRead(dbFile);
+            return JsonSerializer.Deserialize<DbRoot>(file, _jsonOptions);
+        }
     }
 
     public class DbBlock
@@ -70,7 +84,7 @@ namespace GaiaLabs
         internal Op Head;
         internal ICollection<DbPart> Includes;
         internal object[] Table;
-        internal object[][] Structs;
+        internal object[] Objects;
 
         public string Name { get; set; }
         public PartType Type { get; set; }
@@ -88,6 +102,15 @@ namespace GaiaLabs
         public Location Start { get; set; }
         public Location End { get; set; }
         public bool Compressed { get; set; }
+    }
+
+    public class DbObject
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string Struct { get; set; }
+        public Location Start { get; set; }
+        public Location End { get; set; }
     }
 
     public class CopLib
@@ -135,7 +158,11 @@ namespace GaiaLabs
     {
         public string Name { get; set; }
         public string[] Parts { get; set; }
-        public MemberType[] Types { get; set; }
+        public string[] Types { get; set; }
+        public string Parent { get; set; }
+        public HexString? Delimiter { get; set; }
+
+        public HexString? Descriminator { get; set; }
 
         //private int? _size;
         //internal int Size
@@ -157,7 +184,7 @@ namespace GaiaLabs
         Code,
         Subroutine,
         Table,
-        Struct
+        Array
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -179,5 +206,11 @@ namespace GaiaLabs
         Sound,
         Music,
         Unknown
+    }
+
+    public enum ObjectType
+    {
+        Lookup,
+        Array
     }
 }

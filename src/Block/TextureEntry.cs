@@ -15,7 +15,7 @@ namespace GaiaLabs
                 return false;
 
             //TODO: Save data to file instead?
-            Data = LZ77.Expand(loader._basePtr + (int)Location.Offset);
+            Data = Compression.Expand(loader._basePtr + (int)Location.Offset);
 
             if (Data.Length == 0x4000)
             {
