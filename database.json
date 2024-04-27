@@ -235,7 +235,11 @@
   },
   "structs": {
     "d_gap": { "name": "d_gap", "parts": [ "unk1", "unk2", "unk3" ], "types": [ "Byte", "Byte", "Byte" ] },
-    "unk12": { "name": "unk12", "parts": [ "value", "data" ], "types": [ "Word", "Offset" ], "delimiter": "FFFF" },
+    "unk8": { "name": "unk8", "parts": [ "value", "next" ], "types": [ "Word", "Offset" ] },
+    "unk12": { "name": "unk12", "delimiter": "FFFF", "parts": [ "value", "data" ], "types": [ "Word", "Offset" ] },
+    "unk13": { "name": "unk13", "delimiter": "00", "parts": [ "unk1", "addr", "unk2", "unk3", "unk4" ], "types": [ "Byte", "Offset", "Byte", "Byte", "Byte" ] },
+    "unk14": { "name": "unk14", "parts": [ "addr", "u1", "u2" ], "types": [ "Address", "Byte", "Word" ] },
+    "unk15": { "name": "unk15", "parts": [ "u1", "u2", "u3", "u4", "u5", "u6", "u7", "u8" ], "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] },
     "meta<>": { "name": "meta<>", "descriminator": "00", "delimiter": "00" },
     "meta2":  { "name": "meta2", "parent": "meta<>", "descriminator": "02", "parts": [ "unk1" ], "types": [ "Byte" ] },
     "meta3":  { "name": "meta3", "parent": "meta<>", "descriminator": "03", "parts": [ "unk1", "unk2", "unk3", "addr", "unk4" ], "types": [ "Byte", "Byte", "Byte", "Address", "Byte" ] },
@@ -248,7 +252,11 @@
     "meta14":  { "name": "meta14", "parent": "meta<>", "descriminator": "14", "parts": [ "unk1" ], "types": [ "Byte" ] },
     "meta15":  { "name": "meta15", "parent": "meta<>", "descriminator": "15", "parts": [ "unk1" ], "types": [ "Byte" ] },
     "meta17":  { "name": "meta17", "parent": "meta<>", "descriminator": "17", "parts": [ "unk1", "addr", "unk2" ], "types": [ "Byte", "Address", "Byte" ] },
-    "mapdef": { "name":  "mapdef", "parts": [ "id", "meta" ], "types": [ "Word", "meta<>" ] }
+    "mapdef": { "name":  "mapdef", "parts": [ "id", "meta" ], "types": [ "Word", "meta<>" ] },
+    "deleg<>": { "name": "deleg<>", "descriminator": "06", "delimiter": "FF", "parts": [ "unk1", "unk2", "unk3", "addr", "unk4", "unk5", "unk6" ], "types": [ "Byte", "Byte", "Byte", "Address", "Byte", "Byte", "Byte" ] },
+    "deleg1": { "name": "deleg1", "parent": "deleg<>", "descriminator": "00", "parts": [ "unk1", "unk2", "unk3", "addr", "unk4" ], "types": [ "Byte", "Byte", "Byte", "Address", "Byte" ] },
+    "deleg3": { "name": "deleg3", "delimiter": "FF", "parts": [ "unk1", "addr" ], "types": [ "Byte", "Address" ] },
+    "deleg_def": { "name": "deleg_def", "parts": [ "delegs", "str" ], "types": [ "deleg<>", "Binary" ]}
   },
   "files":  [
     { "start": "000000", "end": "001C00", "name": "bmp_000000", "type": "Bitmap", "compressed": false },
@@ -435,11 +443,97 @@
     { "start": "1F2376", "end": "1F2416", "name": "palette_1F2376", "type": "Palette", "compressed": false },
     { "start": "1F3333", "end": "1F33B3", "name": "palette_1F3333", "type": "Palette", "compressed": false }
   ],
-  "objects": [
-    { "start": "0D8000", "end": "0DAFFF", "name": "lookup_0D8000", "type": "Array", "struct": "mapdef" },
-    { "start": "0E8000", "end": "0ECADB", "name": "lookup_0E8000", "type": "Table", "struct": "unk12" }
-  ],
   "blocks": [
+    {
+      "name": "table_01B086",
+      "parts": [
+        { "start": "01B086", "end": "01C384", "name": "table_01B086", "type": "Table", "struct": "unk8" }
+      ]
+    },
+    {
+      "name": "table_01CA95",
+      "parts": [
+        { "start": "01CA95", "end": "01CBA6", "name": "table_01CA95", "type": "Table", "struct": "Binary" }
+      ]
+    },
+    {
+      "name": "music_array_01CBA6",
+      "parts": [
+        { "start": "01CBA6", "end": "01CC00", "name": "music_array_01CBA6", "type": "Array", "struct": "Address" }
+      ]
+    },
+    {
+      "name": "table_01CC00",
+      "parts": [
+        { "start": "01CC00", "end": "01D3CE", "name": "table_01CC00", "type": "Table", "struct": "Binary" }
+      ]
+    },
+    {
+      "name": "array_01D3CE",
+      "parts": [
+        { "start": "01D3CE", "end": "01D8BE", "name": "array_01D3CE", "type": "Array", "struct": "unk15" }
+      ]
+    },
+    {
+      "name": "array_01D971",
+      "parts": [
+        { "start": "01D971", "end": "01D9A7", "name": "array_01D971", "type": "Array", "struct": "unk14" }
+      ]
+    },
+    {
+      "name": "table_01D9A7",
+      "parts": [
+        { "start": "01D9A7", "end": "01D9BF", "name": "table_01D9A7", "type": "Table", "struct": "Binary" }
+      ]
+    },
+    {
+      "name": "table_01D9BF",
+      "parts": [
+        { "start": "01D9BF", "end": "01D9D8", "name": "table_01D9BF", "type": "Table", "struct": "Binary" }
+      ]
+    },
+    {
+      "name": "itemname_table_01DABF",
+      "parts": [
+        { "start": "01DABF", "end": "01DE1E", "name": "itemname_table_01DABF", "type": "Table", "struct": "Binary" }
+      ]
+    },
+    {
+      "name": "itemmenu_table_01DE1E",
+      "parts": [
+        { "start": "01DE1E", "end": "01E12A", "name": "itemmenu_table_01DE1E", "type": "Table", "struct": "Binary" }
+      ]
+    },
+    {
+      "name": "itemdesc_table_01E132",
+      "parts": [
+        { "start": "01E132", "end": "01E5EC", "name": "itemdesc_table_01E132", "type": "Table", "struct": "Binary" }
+      ]
+    },
+    {
+      "name": "abilmenu_table_01E5EC",
+      "parts": [
+        { "start": "01E5EC", "end": "01E65D", "name": "abilmenu_table_01E5EC", "type": "Table", "struct": "Binary" }
+      ]
+    },
+    {
+      "name": "abilname_table_01E65D",
+      "parts": [
+        { "start": "01E65D", "end": "01E6DC", "name": "abilname_table_01E65D", "type": "Table", "struct": "Binary" }
+      ]
+    },
+    {
+      "name": "abildesc_table_01E6DC",
+      "parts": [
+        { "start": "01E6DC", "end": "01E7CE", "name": "abildesc_table_01E6DC", "type": "Table", "struct": "Binary" }
+      ]
+    },
+    {
+      "name": "charname_table_01E7CE",
+      "parts": [
+        { "start": "01E7CE", "end": "01E7F6", "name": "charname_table_01E7CE", "type": "Table", "struct": "Binary" }
+      ]
+    },
     {
       "name":  "chunk02C38F",
       "parts": [
@@ -618,9 +712,129 @@
       ]
     },
     {
+      "name": "chunk_0C8000",
+      "parts": [
+        { "start": "0C8000", "end": "0CE5E5", "name": "lookup_0C8000", "type": "Table", "struct": "deleg_def" }
+      ]
+    },
+    {
+      "name": "chunk_0CE5E5",
+      "parts": [
+        { "start": "0CE5E5", "end": "0CEB5B", "name": "lookup_0CE5E5", "type": "Table", "struct": "deleg3" }
+      ]
+    },
+    {
       "name": "mapmeta",
       "parts": [
         { "start": "0D8000", "end": "0DAFFF", "name": "mapmeta", "type": "Array", "struct": "mapdef" }
+      ]
+    },
+    {
+      "name": "table_0E8000",
+      "parts": [
+        { "start": "0E8000", "end": "0ECADB", "name": "table_0E8000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_0EDA00",
+      "parts": [
+        { "start": "0EDA00", "end": "0EDD40", "name": "table_0EDA00", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_0EE000",
+      "parts": [
+        { "start": "0EE000", "end": "0EFDCF", "name": "table_0EE000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_0F8000",
+      "parts": [
+        { "start": "0F8000", "end": "0F90E5", "name": "table_0F8000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_0FC000",
+      "parts": [
+        { "start": "0FC000", "end": "0FED85", "name": "table_0FC000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_108000",
+      "parts": [
+        { "start": "108000", "end": "108F07", "name": "table_108000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_148000",
+      "parts": [
+        { "start": "148000", "end": "14B09B", "name": "table_148000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_14C000",
+      "parts": [
+        { "start": "14C000", "end": "14C0C8", "name": "table_14C000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_14C0C8",
+      "parts": [
+        { "start": "14C0C8", "end": "14C12C", "name": "table_14C0C8", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_14C12C",
+      "parts": [
+        { "start": "14C12C", "end": "14C198", "name": "table_14C12C", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_158000",
+      "parts": [
+        { "start": "158000", "end": "15C421", "name": "table_158000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_168000",
+      "parts": [
+        { "start": "168000", "end": "16D82C", "name": "table_168000", "type": "Table", "struct": "unk13" }
+      ]
+    },
+    {
+      "name": "table_178000",
+      "parts": [
+        { "start": "178000", "end": "17841D", "name": "table_178000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_179000",
+      "parts": [
+        { "start": "179000", "end": "1791AA", "name": "table_179000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_17A000",
+      "parts": [
+        { "start": "17A000", "end": "17A4F2", "name": "table_17A000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_17B000",
+      "parts": [
+        { "start": "17B000", "end": "17B3A6", "name": "table_17B000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_17C000",
+      "parts": [
+        { "start": "17C000", "end": "17C443", "name": "table_17C000", "type": "Table", "struct": "unk12" }
+      ]
+    },
+    {
+      "name": "table_17D000",
+      "parts": [
+        { "start": "17D000", "end": "17D3F0", "name": "table_17D000", "type": "Table", "struct": "unk12" }
       ]
     }
   ]

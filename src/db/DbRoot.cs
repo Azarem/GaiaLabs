@@ -83,8 +83,8 @@ namespace GaiaLabs
         internal DbBlock Block;
         internal Op Head;
         internal ICollection<DbPart> Includes;
-        internal object[] Table;
-        internal object[] Objects;
+        //internal object[] Table;
+        internal object ObjectRoot;
 
         public string Name { get; set; }
         public PartType Type { get; set; }
@@ -92,6 +92,7 @@ namespace GaiaLabs
         public Location End { get; set; }
         public string Struct { get; set; }
 
+        public bool IsInside(Location loc) => loc >= Start && loc < End;
         public bool IsOutside(Location loc) => loc < Start || loc >= End;
     }
 
@@ -193,7 +194,8 @@ namespace GaiaLabs
         Byte,
         Word,
         Offset,
-        Address
+        Address,
+        Binary
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

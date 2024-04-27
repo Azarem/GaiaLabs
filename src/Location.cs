@@ -66,7 +66,7 @@ namespace GaiaLabs
         public static Location operator &(Location near, Location far) => new(near.Offset & far.Offset);
         public static Location operator |(Location near, Location far) => new(near.Offset | far.Offset);
 
-        public override string ToString() => Offset.ToString("X");
+        public override string ToString() => Offset.ToString("X6");
 
         public override bool Equals([NotNullWhen(true)] object obj)
             => (obj is Location loc) ? (Offset == loc.Offset) : (obj is uint ui) && (Offset == ui);
