@@ -361,7 +361,11 @@ namespace GaiaLabs
                                 //    objects.AddRange(arr);
                                 //else
                                 //    objects.a
-                                parts[i + 1] = parseType(types[i]);
+                                var obj = parseType(types[i]);
+                                if (obj is Location loc)
+                                    chunkTable.TryAdd(loc, "Binary");
+
+                                parts[i + 1] = obj;
                             }
 
                             objects.Add(parts);
@@ -613,9 +617,8 @@ namespace GaiaLabs
                             if (inBlock) writer.WriteLine("--------------------"); //Serparator
                             else inBlock = true;
 
-                            writer.WriteLine($"{part.Name} ["); //Label
 
-                            int inlineDepth = 0;
+                            bool isInline = true;
                             void WriteObject(object obj, int depth)
                             {
                                 void Indent()
@@ -633,18 +636,18 @@ namespace GaiaLabs
                                     WriteObject(
                                         tArr.Where(x => x.Item2 is not Wrapper)
                                             .Select(x => x.Item1).ToArray(),
-                                        depth + 1);
+                                        depth);
                                     //foreach (var t in tArr)
                                     //{ Indent(); WriteObject(t.Item1, depth + 1); }
-                                    Indent();
-                                    writer.WriteLine(']');
+                                    //Indent();
+                                    //writer.WriteLine(']');
                                     writer.WriteLine();
 
                                     foreach (var t in tArr.Where(x => x.Item2 != null).OrderBy(x => x.Item1.Offset))
                                     {
                                         //writer.WriteLine($"{ResolveName(part, t.Item1)} [");
                                         writer.Write($"{ResolveName(part, t.Item1)} ");
-                                        WriteObject(t.Item2, depth + 1);
+                                        WriteObject(t.Item2, depth);
                                         //Indent();
                                         //writer.WriteLine(']');
                                         writer.WriteLine();
@@ -660,53 +663,55 @@ namespace GaiaLabs
 
 
                                 if (obj is Location[] lArr)
-                                    foreach (var l in lArr)
-                                    { WriteObject(l, depth + 1); writer.WriteLine(); }
-                                else
+                                    obj = lArr.Select(x => (object)x).ToArray();
+
+                                //foreach (var l in lArr)
+                                //{ WriteObject(l, depth + 1); writer.WriteLine(); }
+
+                                if (!isInline)
                                 {
-                                    if (inlineDepth == 0)
-                                        Indent();
-
-                                    if (obj is object[] arr)
-                                    {
-                                        if (arr.Length == 0 || arr[0] is not string) //Check for flat object list TODO: Better way?
-                                        {
-                                            if (depth > 0) writer.WriteLine('[');
-                                            foreach (var o in arr)
-                                                WriteObject(o, depth + 1);
-
-                                            if (depth > 0)
-                                            {
-                                                Indent();
-                                                writer.Write(']');
-                                            }
-                                        }
-                                        else
-                                        {
-                                            //Indent();
-                                            writer.Write($"{arr[0]} < ");
-                                            inlineDepth++;
-                                            //writer.Write("< ");
-                                            for (int i = 1; i < arr.Length; i++)
-                                            {
-                                                if (i > 1) writer.Write(", ");
-                                                WriteObject(arr[i], depth + 1);
-                                            }
-                                            inlineDepth--;
-                                            writer.WriteLine(" >");
-                                        }
-                                    }
-                                    else if (obj is byte b) writer.Write("#{0:X2}", b);
-                                    else if (obj is ushort s) writer.Write("#{0:X4}", s);
-                                    else if (obj is byte[] a)
-                                    {
-                                        writer.Write("#");
-                                        writer.Write(Convert.ToHexString(a));
-                                    }
-                                    else writer.Write(obj);
-
-                                    if (depth == 0) writer.WriteLine();
+                                    writer.WriteLine();
+                                    Indent();
                                 }
+
+                                if (obj is object[] arr)
+                                {
+                                    if (arr.Length == 0 || arr[0] is not string) //Check for flat object list TODO: Better way?
+                                    {
+                                        writer.Write('[');
+                                        isInline = false;
+                                        foreach (var o in arr)
+                                            WriteObject(o, depth + 1);
+
+                                        writer.WriteLine();
+                                        Indent();
+                                        writer.Write(']');
+                                        isInline = true;
+                                    }
+                                    else
+                                    {
+                                        writer.Write($"{arr[0]} < ");
+                                        isInline = true;
+                                        for (int i = 1; i < arr.Length; i++)
+                                        {
+                                            if (i > 1) writer.Write(", ");
+                                            WriteObject(arr[i], depth);
+                                        }
+                                        writer.Write(" >");
+                                        isInline = false;
+                                    }
+                                }
+                                else if (obj is byte b) writer.Write("#{0:X2}", b);
+                                else if (obj is ushort s) writer.Write("#{0:X4}", s);
+                                else if (obj is byte[] a)
+                                {
+                                    writer.Write("#");
+                                    writer.Write(Convert.ToHexString(a));
+                                }
+                                else writer.Write(obj);
+
+                                if (depth == 0) writer.WriteLine();
+
 
                                 //if (inChunk)
                                 //{
@@ -719,10 +724,10 @@ namespace GaiaLabs
 
                             }
 
-                            //foreach (var obj in part.Objects)
+                            writer.Write($"{part.Name} "); //Label
                             WriteObject(part.ObjectRoot, 0);
 
-                            writer.WriteLine(']'); //End
+                            //writer.WriteLine(']'); //End
                             break;
 
                         default:
