@@ -233,12 +233,67 @@
       "PCRelativeLong": "{0} {1}"
     }
   },
+  "commandstrings": {
+    "01": { "code": "01", "value": "1", "types": [ "Byte" ] },
+    "02": { "code": "02", "value": "2", "types": [ "Byte", "Byte", "Byte" ] },
+    "03": { "code": "03", "value": "3", "types": [ "Byte" ] },
+    "04": { "code": "04", "value": "R", "types": [ "Address", "Byte", "Byte" ] },
+    "05": { "code": "05", "value": "5", "types": [ "Byte", "Byte", "Byte" ] },
+    "06": { "code": "06", "value": "6", "types": [ "Byte", "Byte", "Byte", "Byte" ] },
+    "07": { "code": "07", "value": "7", "types": [ "Byte", "Byte" ] },
+    "08": { "code": "08", "value": "8", "types": [ "Byte", "Byte", "Byte" ] },
+    "09": { "code": "09", "value": "9", "types": [] },
+    "0A": { "code": "0A", "value": "A", "types": [] },
+    "0B": { "code": "0B", "value": "B", "types": [] },
+    "0C": { "code": "0C", "value": "C", "types": [ "Binary" ] },
+    "0D": { "code": "0D", "value": "D", "types": [] },
+    "0E": { "code": "0E", "value": "E", "types": [ "Byte", "Byte" ] },
+    "0F": { "code": "0F", "value": "F", "types": [ "Byte", "Byte" ] },
+    "10": { "code": "10", "value": "W", "types": [ "Byte" ] },
+    "11": { "code": "11", "value": "N", "types": [] },
+    "20": { "code": "20", "value": "." },
+    "21": { "code": "21", "value": "!" },
+    "22": { "code": "22", "value": "¸" },
+    "23": { "code": "23", "value": "ED" },
+    "24": { "code": "24", "value": "←" },
+    "25": { "code": "25", "value": "˳" },
+    "26": { "code": "26", "value": "‥" },
+    "27": { "code": "27", "value": "˳" },
+    "28": { "code": "28", "value": "[" },
+    "29": { "code": "29", "value": "]" },
+    "2A": { "code": "2A", "value": "*" },
+    "2B": { "code": "2B", "value": "►" },
+    "2C": { "code": "2C", "value": "," },
+    "2D": { "code": "2D", "value": "+" },
+    "2E": { "code": "2E", "value": "-" },
+    "2F": { "code": "2F", "value": "/" },
+    "3A": { "code": "3A", "value": ":" },
+    "3B": { "code": "3B", "value": "·" },
+    "3C": { "code": "3C", "value": "(" },
+    "3D": { "code": "3D", "value": "▼" },
+    "3E": { "code": "3E", "value": ")" },
+    "3F": { "code": "3F", "value": "?" },
+    "40": { "code": "40", "value": " " },
+    "5B": { "code": "5B", "value": "-" },
+    "5C": { "code": "5C", "value": "'" },
+    "5D": { "code": "5D", "value": "<" },
+    "5E": { "code": "5E", "value": ">" },
+    "5F": { "code": "5F", "value": "#" },
+    "7B": { "code": "7B", "value": "¥" },
+    "7C": { "code": "7C", "value": "_" },
+    "7D": { "code": "7D", "value": "{" },
+    "7E": { "code": "7E", "value": "}" },
+    "7F": { "code": "7F", "value": "¦" },
+    "80": { "code": "80", "value": "=" },
+    "81": { "code": "81", "value": ";" },
+    "82": { "code": "82", "value": "\"" }
+  },
   "structs": {
     "d_gap": { "name": "d_gap", "parts": [ "unk1", "unk2", "unk3" ], "types": [ "Byte", "Byte", "Byte" ] },
     "unk2": { "name": "unk2", "parts": [ "u1", "u2", "u3", "u4" ], "types": [ "Byte", "Byte", "Byte", "Byte" ] },
     "unk3": { "name": "unk3", "parts": [ "u1", "data" ], "types": [ "Byte", "Offset" ] },
-    "unk8": { "name": "unk8", "parts": [ "value", "next" ], "types": [ "Word", "Offset" ] },
-    "unk12": { "name": "unk12", "delimiter": "FFFF", "parts": [ "value", "data" ], "types": [ "Word", "Offset" ] },
+    "unk8": { "name": "unk8", "parts": [ "value", "next" ], "types": [ "Word", "*unk8" ] },
+    "unk12": { "name": "unk12", "delimiter": "FFFF", "parts": [ "value", "data" ], "types": [ "Word", "*Binary" ] },
     "unk13": { "name": "unk13", "delimiter": "00", "parts": [ "unk1", "addr", "unk2", "unk3", "unk4" ], "types": [ "Byte", "Offset", "Byte", "Byte", "Byte" ] },
     "unk14": { "name": "unk14", "parts": [ "addr", "u1", "u2" ], "types": [ "Address", "Byte", "Word" ] },
     "unk15": { "name": "unk15", "parts": [ "u1", "u2", "u3", "u4", "u5", "u6", "u7", "u8" ], "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] },
@@ -640,43 +695,43 @@
     {
       "name": "itemname_table_01DABF",
       "parts": [
-        { "start": "01DABF", "end": "01DE1E", "name": "itemname_table_01DABF", "type": "Table", "struct": "Binary" }
+        { "start": "01DABF", "end": "01DE1E", "name": "itemname_table_01DABF", "type": "Table", "struct": "String" }
       ]
     },
     {
       "name": "itemmenu_table_01DE1E",
       "parts": [
-        { "start": "01DE1E", "end": "01E12A", "name": "itemmenu_table_01DE1E", "type": "Table", "struct": "Binary" }
+        { "start": "01DE1E", "end": "01E12A", "name": "itemmenu_table_01DE1E", "type": "Table", "struct": "String" }
       ]
     },
     {
       "name": "itemdesc_table_01E132",
       "parts": [
-        { "start": "01E132", "end": "01E5EC", "name": "itemdesc_table_01E132", "type": "Table", "struct": "Binary" }
+        { "start": "01E132", "end": "01E5EC", "name": "itemdesc_table_01E132", "type": "Table", "struct": "String" }
       ]
     },
     {
       "name": "abilmenu_table_01E5EC",
       "parts": [
-        { "start": "01E5EC", "end": "01E65D", "name": "abilmenu_table_01E5EC", "type": "Table", "struct": "Binary" }
+        { "start": "01E5EC", "end": "01E65D", "name": "abilmenu_table_01E5EC", "type": "Table", "struct": "String" }
       ]
     },
     {
       "name": "abilname_table_01E65D",
       "parts": [
-        { "start": "01E65D", "end": "01E6DC", "name": "abilname_table_01E65D", "type": "Table", "struct": "Binary" }
+        { "start": "01E65D", "end": "01E6DC", "name": "abilname_table_01E65D", "type": "Table", "struct": "String" }
       ]
     },
     {
       "name": "abildesc_table_01E6DC",
       "parts": [
-        { "start": "01E6DC", "end": "01E7CE", "name": "abildesc_table_01E6DC", "type": "Table", "struct": "Binary" }
+        { "start": "01E6DC", "end": "01E7CE", "name": "abildesc_table_01E6DC", "type": "Table", "struct": "String" }
       ]
     },
     {
       "name": "charname_table_01E7CE",
       "parts": [
-        { "start": "01E7CE", "end": "01E7F6", "name": "charname_table_01E7CE", "type": "Table", "struct": "Binary" }
+        { "start": "01E7CE", "end": "01E7F6", "name": "charname_table_01E7CE", "type": "Table", "struct": "String" }
       ]
     },
     {
@@ -688,13 +743,13 @@
     {
       "name": "dilgcomp_table_01EBA8",
       "parts": [
-        { "start": "01EBA8", "end": "01F54D", "name": "dilgcomp_table_01EBA8", "type": "Table", "struct": "Binary" }
+        { "start": "01EBA8", "end": "01F54D", "name": "dlogcomp_table_01EBA8", "type": "Table", "struct": "Binary" }
       ]
     },
     {
       "name": "dilgcomp_table_01F54D",
       "parts": [
-        { "start": "01F54D", "end": "01FD24", "name": "dilgcomp_table_01F54D", "type": "Table", "struct": "Binary" }
+        { "start": "01F54D", "end": "01FD24", "name": "dlogcomp_table_01F54D", "type": "Table", "struct": "Binary" }
       ]
     },
     {

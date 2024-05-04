@@ -11,6 +11,8 @@ using Godot;
 using System.CodeDom.Compiler;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Xml.Linq;
 
 namespace GaiaLabs
 {
@@ -202,6 +204,12 @@ namespace GaiaLabs
             return name;
         }
 
+        public void AddInclude(DbPart part, Location loc)
+        {
+            if (part.Block.IsOutside(loc, out var p))
+                part.Includes.Add(p);
+        }
+
         public void DumpDatabase(string outPath, string dbFile = "database.json")
         {
             DbRoot = DbRoot.FromFile(dbFile);
@@ -240,7 +248,7 @@ namespace GaiaLabs
             foreach (var block in DbRoot.Blocks)
                 foreach (var part in block.Parts)
                 {
-                    part.Includes = new List<DbPart>(); //Initialize part
+                    part.Includes = new HashSet<DbPart>(); //Initialize part
                     RefList[part.Start] = part.Name; //Add reference name
 
                     Location lCur = part.Start, lEnd = part.End;
@@ -257,6 +265,12 @@ namespace GaiaLabs
 
                     object parseType(string str)
                     {
+                        bool isPtr = str[0] == '*', isAddr = str[0] == '&';
+                        var otherStr = (isPtr || isAddr) ? str[1..] : (part.Struct ?? "Binary");
+
+                        if (isPtr) str = "Offset";
+                        else if (isAddr) str = "Address";
+
                         HexString? delimiter = null;
 
                         byte[] parseBinary()
@@ -269,16 +283,94 @@ namespace GaiaLabs
                             return ReadBytes(cur.Offset, lCur.Offset - cur.Offset);
                         };
 
+                        char[] parseString()
+                        {
+                            var dict = DbRoot.CommandStrings;
+                            var builder = new StringBuilder();
+
+                            do
+                            {
+                                var c = *Advance();
+                                if (c == 0) break;
+
+                                if (dict.TryGetValue(new(c), out var cmd))
+                                {
+                                    if (cmd.Types != null)
+                                    {
+                                        builder.Append($"[{cmd.Value}");
+
+                                        bool first = true;
+                                        foreach (var t in cmd.Types)
+                                        {
+                                            if (first) { builder.Append(':'); first = false; }
+                                            else builder.Append(',');
+
+                                            switch (t)
+                                            {
+                                                case MemberType.Byte: builder.Append($"{*Advance():X}"); break;
+                                                case MemberType.Word: builder.Append($"{*(ushort*)Advance(2):X}"); break;
+
+                                                case MemberType.Offset:
+                                                    var loc = *(ushort*)Advance(2) | (lCur.Offset & 0x3F0000u);
+                                                    goto writeloc;
+
+                                                case MemberType.Address:
+                                                    loc = *(ushort*)Advance(2) | ((uint)*Advance() << 16);
+                                                writeloc:
+                                                    builder.Append($"%{loc:X6}}}");
+                                                    break;
+
+                                                case MemberType.Binary:
+                                                    bool sfirst = true;
+                                                    do
+                                                    {
+                                                        var r = *Advance();
+                                                        if (r == 0xFF) break;
+                                                        if (sfirst) sfirst = false;
+                                                        else builder.Append(',');
+                                                        builder.Append($"{r:X}");
+                                                    } while (CanContinue());
+                                                    break;
+
+                                                default: throw new("Unsupported member type");
+                                            }
+                                        }
+
+                                        builder.Append(']');
+                                    }
+                                    else
+                                        builder.Append(cmd.Value);
+                                }
+                                else
+                                    builder.Append((char)c);
+                            } while (CanContinue());
+
+                            var chars = new char[builder.Length];
+                            builder.CopyTo(0, chars, 0, builder.Length);
+                            return chars;
+                        };
+
+                        Location parseLocation(Location loc)
+                        {
+                            if (part.IsInside(loc))
+                            {
+                                chunkTable.TryAdd(loc, otherStr);
+                                RefList.TryAdd(loc, $"{otherStr.ToLower()}_{loc}");
+                            }
+                            return loc;
+                        }
+
                         //Parse raw values
                         if (Enum.TryParse<MemberType>(str, true, out var mType))
                             return mType switch
                             {
-                                MemberType.Byte => (object)*Advance(1),
+                                MemberType.Byte => *Advance(1),
                                 MemberType.Word => *(ushort*)Advance(2),
-                                MemberType.Offset => *(ushort*)Advance(2) | baseLoc,
-                                MemberType.Address => (Location)(*(ushort*)Advance(2) | ((uint)*Advance(1) << 16)),
+                                MemberType.Offset => parseLocation(*(ushort*)Advance(2) | baseLoc),
+                                MemberType.Address => parseLocation(*(ushort*)Advance(2) | ((uint)*Advance(1) << 16)),
                                 MemberType.Binary => parseBinary(),
-                                _ => throw new("Invalid struct type"),
+                                MemberType.String => parseString(),
+                                _ => throw new("Invalid member type"),
                             };
 
                         var parent = DbRoot.Structs[str];
@@ -350,25 +442,14 @@ namespace GaiaLabs
 
                             var types = target.Types;
                             var members = types.Length;
-                            var parts = new object[members + 1]; //Create new member collection
-                            parts[0] = target.Name; //First object is type name
+                            var parts = new object[members]; //Create new member collection
+                            var def = new StructDef { Name = target.Name, Parts = parts };
 
                             //Parse each member of the struct
                             for (int i = 0; i < members; i++)
-                            {
-                                //var res = parseType(types[i]);
-                                //if (res is object[] arr && arr[0] is not string)
-                                //    objects.AddRange(arr);
-                                //else
-                                //    objects.a
-                                var obj = parseType(types[i]);
-                                if (obj is Location loc)
-                                    chunkTable.TryAdd(loc, "Binary");
+                                parts[i] = parseType(types[i]);
 
-                                parts[i + 1] = obj;
-                            }
-
-                            objects.Add(parts);
+                            objects.Add(new StructDef { Name = target.Name, Parts = parts });
 
                             if (!CanContinue()) break;
                         }
@@ -380,12 +461,10 @@ namespace GaiaLabs
                     {
                         case PartType.Table:
 
-                            //var table = new Dictionary<Location, object>();
-                            //var stru = part.Struct != null ? DbRoot.Structs[part.Struct] : null;
                             bool isInit = true;
                             object current = null;
-                            //var result = new List<object>();
-                            var locations = new List<Tuple<Location, object>>();
+                            var locations = new List<Location>();
+                            var chunks = new List<TableEntry>();
                             int initCount = 0;
                             while (pCur < pEnd)
                             {
@@ -401,46 +480,25 @@ namespace GaiaLabs
                                 }
                                 else if (isInit)
                                 {
-                                    var offset = *(ushort*)Advance(2) | baseLoc;
-                                    chunkTable[offset] = part.Struct ?? "Binary";
-                                    locations.Add(new(offset, null));
+                                    locations.Add((Location)parseType("Offset"));
                                     continue;
                                 }
 
-                                var ix = locations.IndexOf(new(lCur, null));
-                                var lOld = lCur;
+                                var entry = new TableEntry(lCur);
 
                                 if (current is string str)
                                     value = parseType(str);
 
-                                if (ix < 0)
-                                    locations.Add(new(lOld, new Wrapper(value)));
-                                else if (value != null)
-                                {
-                                    var l = locations[ix].Item1;
-                                    locations[ix] = new(l, value);
-                                    RefList.TryAdd(l, $"chunk_{l}");
-                                }
-
-                                void FindData(object o)
-                                {
-                                    if (o is not string && o is IEnumerable e)
-                                        foreach (var x in e)
-                                            FindData(x);
-                                    else if (o is Location loc && part.IsInside(loc))
-                                    {
-                                        chunkTable.TryAdd(loc, "Binary");
-                                        RefList.TryAdd(loc, $"binary_{loc}");
-                                    }
-                                }
-
-                                FindData(value);
-
+                                entry.Object = value;
+                                chunks.Add(entry);
                             }
 
-                            part.ObjectRoot = part.Struct == null
-                                ? locations.Select(x => x.Item1).ToArray()
-                                : locations.ToArray();
+                            part.ObjectRoot = new TableGroup()
+                            {
+                                Locations = locations.ToArray(),
+                                Blocks = chunks.ToArray()
+                            };
+
 
                             break;
 
@@ -524,51 +582,40 @@ namespace GaiaLabs
                     switch (part.Type)
                     {
                         case PartType.Table:
-                        //var tab = part.Table;
-                        //for (int i = 0; i < tab.Length; i++)
-                        //    if (tab[i] is Location loc)
-                        //        tab[i] = ResolveName(part, loc); //Replace location with name
-                        //break;
-
-
                         case PartType.Array:
 
-                            //if(part.ObjectRoot is Location[] lArr)
-                            //{
-                            //    foreach (var l in lArr)
-                            //        RefList.TryAdd(l, $"chunk_{l}");
-                            //}
+                            void ResolveObject(object obj)
+                            {
+                                if (obj is string str) { }
+                                else if (obj is IEnumerable arr)
+                                    foreach (var o in arr)
+                                        ResolveObject(o);
+                                else if (obj is Location loc)
+                                    AddInclude(part, loc);
+                                else if (obj is StructDef sdef)
+                                    ResolveObject(sdef.Parts);
+                                else if (obj is TableEntry tab)
+                                    ResolveObject(tab.Object);
+                                else if (obj is TableGroup tgrp)
+                                {
+                                    ResolveObject(tgrp.Locations);
+                                    ResolveObject(tgrp.Blocks);
+                                }
+                                //else if (obj is Tuple<Location, object> tup)
+                                //    return new Tuple<string, object>(ResolveName(part, tup.Item1), tup.Item2);
+                                //else if(obj is string str)
+                                //{
+                                //    for(var ix = str.IndexOf("%"); ix >= 0; ix = str.IndexOf("%"))
+                                //    {
+                                //        var sLoc = Location.Parse(str.Substring(ix + 1, 6));
+                                //        str = str.Replace(str.Substring(ix, 7), ResolveName(part, sLoc));
+                                //    }
+                                //}
 
-                            //object ResolveObject(object obj)
-                            //{
-                            //    if (obj is Location[] lArr)
-                            //    {
-                            //        var oArr = new object[lArr.Length];
-                            //        for (int i = 0; i < lArr.Length; i++)
-                            //        {
-                            //            var l = lArr[i];
-                            //            oArr[i] = l;
-                            //            RefList.TryAdd(l, $"chunk_{l}");
-                            //        }
-                            //        return oArr;
-                            //    }
-                            //    else if (obj is object[] arr)
-                            //        for (int i = 0; i < arr.Length; i++)
-                            //            arr[i] = ResolveObject(arr[i]);
-                            //    else if (obj is Location loc)
-                            //        return ResolveName(part, loc);
-                            //    else if (obj is Tuple<Location, object> tup)
-                            //        return new Tuple<string, object>(ResolveName(part, tup.Item1), tup.Item2);
+                                //return obj;
+                            };
 
-                            //    return obj;
-                            //};
-
-                            //Process each member to resolve location names
-                            //var arr = part.ObjectRoot;
-                            //for (int i = 0; i < arr.Length; i++)
-                            //    arr[i] = ResolveObject(arr[i]);
-
-                            //part.ObjectRoot = ResolveObject(part.ObjectRoot);
+                            ResolveObject(part.ObjectRoot);
 
                             break;
 
@@ -578,6 +625,7 @@ namespace GaiaLabs
                                     for (int i = 0; i < op.Operands.Length; i++)
                                         if (op.Operands[i] is Location loc)
                                             op.Operands[i] = ResolveName(part, loc);
+                            //AddInclude(part, loc);
                             break;
                     }
         }
@@ -591,7 +639,7 @@ namespace GaiaLabs
                 using var writer = new StreamWriter(outStream);
 
                 foreach (var inc in block.GetIncludes())
-                    writer.WriteLine("#include '{0}'", inc.Name); //Write includes
+                    writer.WriteLine("include '{0}'", inc.Name); //Write includes
 
                 writer.WriteLine(); //Empty line
                 bool inBlock = false;
@@ -600,18 +648,6 @@ namespace GaiaLabs
                     switch (part.Type)
                     {
                         case PartType.Table:
-
-                        //if (inBlock) writer.WriteLine("--------------------"); //Serparator
-                        //else inBlock = true;
-
-                        //writer.WriteLine($"{part.Name} ["); //Label
-
-                        //foreach (var obj in part.Table)
-                        //    writer.WriteLine($"  {obj}"); //Location names
-
-                        //writer.WriteLine(']'); //End
-                        //break;
-
                         case PartType.Array:
 
                             if (inBlock) writer.WriteLine("--------------------"); //Serparator
@@ -624,49 +660,19 @@ namespace GaiaLabs
                                 void Indent()
                                 { for (int i = 0; i < depth; i++) writer.Write("  "); }
 
-                                if (obj is Wrapper w)
-                                    obj = w.Obj;
-
-                                //bool inChunk = false;
-                                if (obj is Tuple<Location, object>[] tArr)
+                                if (obj is TableGroup tGroup)
                                 {
-                                    //inChunk = true;
-                                    //depth++;
-                                    //Write table
-                                    WriteObject(
-                                        tArr.Where(x => x.Item2 is not Wrapper)
-                                            .Select(x => x.Item1).ToArray(),
-                                        depth);
-                                    //foreach (var t in tArr)
-                                    //{ Indent(); WriteObject(t.Item1, depth + 1); }
-                                    //Indent();
-                                    //writer.WriteLine(']');
+                                    WriteObject(tGroup.Locations, depth);
                                     writer.WriteLine();
 
-                                    foreach (var t in tArr.Where(x => x.Item2 != null).OrderBy(x => x.Item1.Offset))
+                                    foreach (var t in tGroup.Blocks)
                                     {
-                                        //writer.WriteLine($"{ResolveName(part, t.Item1)} [");
-                                        writer.Write($"{ResolveName(part, t.Item1)} ");
-                                        WriteObject(t.Item2, depth);
-                                        //Indent();
-                                        //writer.WriteLine(']');
+                                        writer.Write($"{(RefList.TryGetValue(t.Location, out var s) ? s : $"loc_{t.Location}")} ");
+                                        WriteObject(t.Object, depth);
                                         writer.WriteLine();
                                     }
                                     return;
                                 }
-                                //if (obj is Tuple<Location, object> tup)
-                                //{
-                                //}
-
-                                if (obj is Location loc)
-                                    obj = ResolveName(part, loc);
-
-
-                                if (obj is Location[] lArr)
-                                    obj = lArr.Select(x => (object)x).ToArray();
-
-                                //foreach (var l in lArr)
-                                //{ WriteObject(l, depth + 1); writer.WriteLine(); }
 
                                 if (!isInline)
                                 {
@@ -674,33 +680,22 @@ namespace GaiaLabs
                                     Indent();
                                 }
 
-                                if (obj is object[] arr)
+                                if (obj is StructDef sDef)
                                 {
-                                    if (arr.Length == 0 || arr[0] is not string) //Check for flat object list TODO: Better way?
+                                    writer.Write($"{sDef.Name} < ");
+                                    isInline = true;
+                                    bool first = true;
+                                    foreach (var o in sDef.Parts)
                                     {
-                                        writer.Write('[');
-                                        isInline = false;
-                                        foreach (var o in arr)
-                                            WriteObject(o, depth + 1);
+                                        if (first) first = false;
+                                        else writer.Write(", ");
+                                        WriteObject(o, depth);
+                                    }
+                                    writer.Write(" >");
+                                    isInline = false;
 
-                                        writer.WriteLine();
-                                        Indent();
-                                        writer.Write(']');
-                                        isInline = true;
-                                    }
-                                    else
-                                    {
-                                        writer.Write($"{arr[0]} < ");
-                                        isInline = true;
-                                        for (int i = 1; i < arr.Length; i++)
-                                        {
-                                            if (i > 1) writer.Write(", ");
-                                            WriteObject(arr[i], depth);
-                                        }
-                                        writer.Write(" >");
-                                        isInline = false;
-                                    }
                                 }
+                                else if (obj is Location l) writer.Write(ResolveName(part, l));
                                 else if (obj is byte b) writer.Write("#{0:X2}", b);
                                 else if (obj is ushort s) writer.Write("#{0:X4}", s);
                                 else if (obj is byte[] a)
@@ -708,26 +703,38 @@ namespace GaiaLabs
                                     writer.Write("#");
                                     writer.Write(Convert.ToHexString(a));
                                 }
+                                else if (obj is string[] sArr)
+                                    foreach (var sa in sArr)
+                                        WriteObject(sa, depth);
+                                else if (obj is char[] c)
+                                {
+                                    writer.Write('`');
+                                    writer.Write(c);
+                                    writer.Write('`');
+                                }
+                                else if (obj is string str)
+                                    writer.Write(str);
+                                else if (obj is IEnumerable arr)
+                                {
+                                    writer.Write('[');
+                                    isInline = false;
+                                    foreach (var o in arr)
+                                        WriteObject(o, depth + 1);
+
+                                    writer.WriteLine();
+                                    Indent();
+                                    writer.Write(']');
+                                    isInline = true;
+                                }
                                 else writer.Write(obj);
 
                                 if (depth == 0) writer.WriteLine();
-
-
-                                //if (inChunk)
-                                //{
-                                //    inChunk = false;
-                                //    writer.WriteLine();
-                                //    depth--;
-                                //}
-
-
 
                             }
 
                             writer.Write($"{part.Name} "); //Label
                             WriteObject(part.ObjectRoot, 0);
 
-                            //writer.WriteLine(']'); //End
                             break;
 
                         default:
@@ -767,12 +774,28 @@ namespace GaiaLabs
             GC.SuppressFinalize(this);
         }
 
-        public readonly struct Wrapper
+        public class TableGroup
         {
-            public readonly object Obj;
-
-            public Wrapper(object o) { Obj = o; }
+            public IEnumerable<Location> Locations { get; set; }
+            public IEnumerable<TableEntry> Blocks { get; set; }
         }
+
+        public class TableEntry
+        {
+            public Location Location { get; set; }
+            //public string Name { get; set; }
+            public object Object { get; set; }
+
+            public TableEntry() { }
+            public TableEntry(Location loc) { Location = loc; }
+        }
+
+        public class StructDef
+        {
+            public string Name { get; set; }
+            public object[] Parts { get; set; }
+        }
+
 
         public enum SeekSet
         {

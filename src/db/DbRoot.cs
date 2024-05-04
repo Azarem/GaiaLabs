@@ -24,6 +24,7 @@ namespace GaiaLabs
         public IEnumerable<DbObject> Objects { get; set; }
 
         public IDictionary<string, DbStruct> Structs { get; set; }
+        public IDictionary<HexString, DbStringCommand> CommandStrings { get; set; }
 
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {
@@ -82,7 +83,7 @@ namespace GaiaLabs
     {
         internal DbBlock Block;
         internal Op Head;
-        internal ICollection<DbPart> Includes;
+        internal HashSet<DbPart> Includes;
         //internal object[] Table;
         internal object ObjectRoot;
 
@@ -179,6 +180,13 @@ namespace GaiaLabs
         //}
     }
 
+    public class DbStringCommand
+    {
+        public HexString Code { get; set; }
+        public string Value { get; set; }
+        public MemberType[] Types { get; set; }
+    }
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum PartType
     {
@@ -195,7 +203,8 @@ namespace GaiaLabs
         Word,
         Offset,
         Address,
-        Binary
+        Binary,
+        String
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
