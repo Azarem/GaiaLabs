@@ -242,18 +242,19 @@ namespace GaiaLabs
             }
         }
 
+        const char RefChar = '~';
+
         public void AnalyzeBlocks()
         {
             //Read and analyze data/code and place markers
             foreach (var block in DbRoot.Blocks)
                 foreach (var part in block.Parts)
                 {
-                    part.Includes = new HashSet<DbPart>(); //Initialize part
+                    part.Includes = new(); //Initialize part
                     RefList[part.Start] = part.Name; //Add reference name
 
                     Location lCur = part.Start, lEnd = part.End;
                     byte* pCur = _baseAddress + lCur, pEnd = _baseAddress + lEnd;
-                    var baseLoc = lCur & 0x3F0000u;
                     var chunkTable = new Dictionary<Location, object>();
 
                     byte* Advance(uint count = 1, bool flag = true)
@@ -283,7 +284,7 @@ namespace GaiaLabs
                             return ReadBytes(cur.Offset, lCur.Offset - cur.Offset);
                         };
 
-                        char[] parseString()
+                        string parseString()
                         {
                             var dict = DbRoot.CommandStrings;
                             var builder = new StringBuilder();
@@ -317,7 +318,7 @@ namespace GaiaLabs
                                                 case MemberType.Address:
                                                     loc = *(ushort*)Advance(2) | ((uint)*Advance() << 16);
                                                 writeloc:
-                                                    builder.Append($"%{loc:X6}}}");
+                                                    builder.Append($"{RefChar}{loc:X6}");
                                                     break;
 
                                                 case MemberType.Binary:
@@ -345,9 +346,9 @@ namespace GaiaLabs
                                     builder.Append((char)c);
                             } while (CanContinue());
 
-                            var chars = new char[builder.Length];
-                            builder.CopyTo(0, chars, 0, builder.Length);
-                            return chars;
+                            //var chars = new char[builder.Length];
+                            //builder.CopyTo(0, chars, 0, builder.Length);
+                            return builder.ToString();
                         };
 
                         Location parseLocation(Location loc)
@@ -366,7 +367,7 @@ namespace GaiaLabs
                             {
                                 MemberType.Byte => *Advance(1),
                                 MemberType.Word => *(ushort*)Advance(2),
-                                MemberType.Offset => parseLocation(*(ushort*)Advance(2) | baseLoc),
+                                MemberType.Offset => parseLocation(*(ushort*)Advance(2) | (lCur.Offset & 0x3F0000u)),
                                 MemberType.Address => parseLocation(*(ushort*)Advance(2) | ((uint)*Advance(1) << 16)),
                                 MemberType.Binary => parseBinary(),
                                 MemberType.String => parseString(),
@@ -495,26 +496,27 @@ namespace GaiaLabs
 
                             part.ObjectRoot = new TableGroup()
                             {
-                                Locations = locations.ToArray(),
-                                Blocks = chunks.ToArray()
+                                Locations = locations,
+                                Blocks = chunks
                             };
 
 
                             break;
 
                         case PartType.Array:
-                            var strList = new List<object>();
+                            //var strList = new List<object>();
 
-                            while (pCur < pEnd)
-                            {
-                                var res = parseType(part.Struct);
-                                if (res is object[] arr && arr[0] is not string)
-                                    strList.AddRange(arr);
-                                else
-                                    strList.Add(res);
-                            }
+                            //while (pCur < pEnd)
+                            //{
+                            //    var res = parseType(part.Struct);
+                            //    //if (res is not string && res is IEnumerable en)
+                            //    //    foreach (var e in en)
+                            //    //        strList.Add(e);
+                            //    //else
+                            //        strList.Add(res);
+                            //}
 
-                            part.ObjectRoot = strList.ToArray();
+                            part.ObjectRoot = parseType(part.Struct);
 
                             break;
 
@@ -586,7 +588,15 @@ namespace GaiaLabs
 
                             void ResolveObject(object obj)
                             {
-                                if (obj is string str) { }
+                                if (obj is string str)
+                                {
+                                    for (var ix = str.IndexOf(RefChar); ix >= 0; ix = str.IndexOf(RefChar, ix + 7))
+                                    {
+                                        var sLoc = Location.Parse(str.Substring(ix + 1, 6));
+                                        AddInclude(part, sLoc);
+                                        //str = str.Replace(str.Substring(ix, 7), ResolveName(part, sLoc));
+                                    }
+                                }
                                 else if (obj is IEnumerable arr)
                                     foreach (var o in arr)
                                         ResolveObject(o);
@@ -706,14 +716,17 @@ namespace GaiaLabs
                                 else if (obj is string[] sArr)
                                     foreach (var sa in sArr)
                                         WriteObject(sa, depth);
-                                else if (obj is char[] c)
+                                else if (obj is string str)
                                 {
+                                    for (var ix = str.IndexOf(RefChar); ix >= 0; ix = str.IndexOf(RefChar))
+                                    {
+                                        var sLoc = Location.Parse(str.Substring(ix + 1, 6));
+                                        str = str.Replace(str.Substring(ix, 7), ResolveName(part, sLoc));
+                                    }
                                     writer.Write('`');
-                                    writer.Write(c);
+                                    writer.Write(str);
                                     writer.Write('`');
                                 }
-                                else if (obj is string str)
-                                    writer.Write(str);
                                 else if (obj is IEnumerable arr)
                                 {
                                     writer.Write('[');

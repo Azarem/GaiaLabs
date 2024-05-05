@@ -234,7 +234,7 @@
     }
   },
   "commandstrings": {
-    "01": { "code": "01", "value": "1", "types": [ "Byte" ] },
+    "01": { "code": "01", "value": "1", "types": [ "Byte", "Byte" ] },
     "02": { "code": "02", "value": "2", "types": [ "Byte", "Byte", "Byte" ] },
     "03": { "code": "03", "value": "3", "types": [ "Byte" ] },
     "04": { "code": "04", "value": "R", "types": [ "Address", "Byte", "Byte" ] },
@@ -251,6 +251,7 @@
     "0F": { "code": "0F", "value": "F", "types": [ "Byte", "Byte" ] },
     "10": { "code": "10", "value": "W", "types": [ "Byte" ] },
     "11": { "code": "11", "value": "N", "types": [] },
+    "1D": { "code": "1D", "value": "/" },
     "20": { "code": "20", "value": "." },
     "21": { "code": "21", "value": "!" },
     "22": { "code": "22", "value": "¸" },
@@ -693,53 +694,99 @@
       ]
     },
     {
-      "name": "itemname_table_01DABF",
+      "name": "system_strings",
       "parts": [
-        { "start": "01DABF", "end": "01DE1E", "name": "itemname_table_01DABF", "type": "Table", "struct": "String" }
+        { "start": "01D9D8", "end": "01DA47", "name": "string_01D9D8", "type": "Array", "struct": "String" },
+        { "start": "01DA47", "end": "01DA5E", "name": "string_01DA47", "type": "Array", "struct": "String" },
+        { "start": "01DA5E", "end": "01DABF", "name": "string_01DA5E", "type": "Array", "struct": "String" },
+        { "start": "01DABF", "end": "01DE1E", "name": "itemname_table_01DABF", "type": "Table", "struct": "String" },
+        { "start": "01DE1E", "end": "01E12A", "name": "itemmenu_table_01DE1E", "type": "Table", "struct": "String" },
+        { "start": "01E12A", "end": "01E132", "name": "binary_01E12A", "type": "Array", "struct": "Binary" },
+        { "start": "01E132", "end": "01E5EC", "name": "itemdesc_table_01E132", "type": "Table", "struct": "String" },
+        { "start": "01E5EC", "end": "01E65D", "name": "abilmenu_table_01E5EC", "type": "Table", "struct": "String" },
+        { "start": "01E65D", "end": "01E6DC", "name": "abilname_table_01E65D", "type": "Table", "struct": "String" },
+        { "start": "01E6DC", "end": "01E7CE", "name": "abildesc_table_01E6DC", "type": "Table", "struct": "String" },
+        { "start": "01E7CE", "end": "01E7F6", "name": "charname_table_01E7CE", "type": "Table", "struct": "String" },
+        { "start": "01E7F6", "end": "01E818", "name": "string_01E7F6", "type": "Array", "struct": "String" },
+        { "start": "01E818", "end": "01E869", "name": "string_01E818", "type": "Array", "struct": "String" },
+        { "start": "01E869", "end": "01E8E2", "name": "string_01E869", "type": "Array", "struct": "String" },
+        { "start": "01E8E2", "end": "01E8E9", "name": "string_01E8E2", "type": "Array", "struct": "String" },
+        { "start": "01E8E9", "end": "01E90B", "name": "string_01E8E9", "type": "Array", "struct": "String" },
+        { "start": "01E90B", "end": "01E912", "name": "string_01E90B", "type": "Array", "struct": "String" },
+        { "start": "01E912", "end": "01E919", "name": "string_01E912", "type": "Array", "struct": "String" },
+        { "start": "01E919", "end": "01E94C", "name": "string_01E919", "type": "Array", "struct": "String" },
+        { "start": "01E94C", "end": "01E954", "name": "table_01E94C", "type": "Table", "struct": "String" },
+        { "start": "01E954", "end": "01E962", "name": "string_01E954", "type": "Array", "struct": "String" },
+        { "start": "01E962", "end": "01E975", "name": "string_01E962", "type": "Array", "struct": "String" },
+        { "start": "01E975", "end": "01E98C", "name": "string_01E975", "type": "Array", "struct": "String" },
+        { "start": "01E98C", "end": "01E9A6", "name": "string_01E98C", "type": "Array", "struct": "String" },
+        { "start": "01E9A6", "end": "01E9B7", "name": "string_01E9A6", "type": "Array", "struct": "String" },
+        { "start": "01E9B7", "end": "01E9D0", "name": "string_01E9B7", "type": "Array", "struct": "String" },
+        { "start": "01E9D0", "end": "01E9E2", "name": "string_01E9D0", "type": "Array", "struct": "String" },
+        { "start": "01E9E2", "end": "01EA02", "name": "string_01E9E2", "type": "Array", "struct": "String" },
+        { "start": "01EA02", "end": "01EA14", "name": "string_01EA02", "type": "Array", "struct": "String" },
+        { "start": "01EA14", "end": "01EA27", "name": "string_01EA14", "type": "Array", "struct": "String" },
+        { "start": "01EA27", "end": "01EA39", "name": "string_01EA27", "type": "Array", "struct": "String" },
+        { "start": "01EA39", "end": "01EA49", "name": "string_01EA39", "type": "Array", "struct": "String" },
+        { "start": "01EA49", "end": "01EA56", "name": "string_01EA49", "type": "Array", "struct": "String" },
+        { "start": "01EA56", "end": "01EA63", "name": "string_01EA56", "type": "Array", "struct": "String" },
+        { "start": "01EA63", "end": "01EA70", "name": "string_01EA63", "type": "Array", "struct": "String" },
+        { "start": "01EA70", "end": "01EAB4", "name": "string_01EA70", "type": "Array", "struct": "String" },
+        { "start": "01EAB4", "end": "01EAC6", "name": "string_01EAB4", "type": "Array", "struct": "String" },
+        { "start": "01EAC6", "end": "01EAD1", "name": "string_01EAC6", "type": "Array", "struct": "String" },
+        { "start": "01EAD1", "end": "01EADC", "name": "string_01EAD1", "type": "Array", "struct": "String" },
+        { "start": "01EADC", "end": "01EB0F", "name": "string_01EADC", "type": "Array", "struct": "String" },
+        { "start": "01EB0F", "end": "01EBA8", "name": "itemcomp_table_01EB0F", "type": "Table", "struct": "String" }
       ]
     },
-    {
-      "name": "itemmenu_table_01DE1E",
-      "parts": [
-        { "start": "01DE1E", "end": "01E12A", "name": "itemmenu_table_01DE1E", "type": "Table", "struct": "String" }
-      ]
-    },
-    {
-      "name": "itemdesc_table_01E132",
-      "parts": [
-        { "start": "01E132", "end": "01E5EC", "name": "itemdesc_table_01E132", "type": "Table", "struct": "String" }
-      ]
-    },
-    {
-      "name": "abilmenu_table_01E5EC",
-      "parts": [
-        { "start": "01E5EC", "end": "01E65D", "name": "abilmenu_table_01E5EC", "type": "Table", "struct": "String" }
-      ]
-    },
-    {
-      "name": "abilname_table_01E65D",
-      "parts": [
-        { "start": "01E65D", "end": "01E6DC", "name": "abilname_table_01E65D", "type": "Table", "struct": "String" }
-      ]
-    },
-    {
-      "name": "abildesc_table_01E6DC",
-      "parts": [
-        { "start": "01E6DC", "end": "01E7CE", "name": "abildesc_table_01E6DC", "type": "Table", "struct": "String" }
-      ]
-    },
-    {
-      "name": "charname_table_01E7CE",
-      "parts": [
-        { "start": "01E7CE", "end": "01E7F6", "name": "charname_table_01E7CE", "type": "Table", "struct": "String" }
-      ]
-    },
-    {
-      "name": "itemcomp_table_01EB0F",
-      "parts": [
-        { "start": "01EB0F", "end": "01EBA8", "name": "itemcomp_table_01EB0F", "type": "Table", "struct": "Binary" }
-      ]
-    },
+    //{
+    //  "name": "itemname_table_01DABF",
+    //  "parts": [
+    //    { "start": "01DABF", "end": "01DE1E", "name": "itemname_table_01DABF", "type": "Table", "struct": "String" }
+    //  ]
+    //},
+    //{
+    //  "name": "itemmenu_table_01DE1E",
+    //  "parts": [
+    //    { "start": "01DE1E", "end": "01E12A", "name": "itemmenu_table_01DE1E", "type": "Table", "struct": "String" }
+    //  ]
+    //},
+    //{
+    //  "name": "itemdesc_table_01E132",
+    //  "parts": [
+    //    { "start": "01E132", "end": "01E5EC", "name": "itemdesc_table_01E132", "type": "Table", "struct": "String" }
+    //  ]
+    //},
+    //{
+    //  "name": "abilmenu_table_01E5EC",
+    //  "parts": [
+    //    { "start": "01E5EC", "end": "01E65D", "name": "abilmenu_table_01E5EC", "type": "Table", "struct": "String" }
+    //  ]
+    //},
+    //{
+    //  "name": "abilname_table_01E65D",
+    //  "parts": [
+    //    { "start": "01E65D", "end": "01E6DC", "name": "abilname_table_01E65D", "type": "Table", "struct": "String" }
+    //  ]
+    //},
+    //{
+    //  "name": "abildesc_table_01E6DC",
+    //  "parts": [
+    //    { "start": "01E6DC", "end": "01E7CE", "name": "abildesc_table_01E6DC", "type": "Table", "struct": "String" }
+    //  ]
+    //},
+    //{
+    //  "name": "charname_table_01E7CE",
+    //  "parts": [
+    //    { "start": "01E7CE", "end": "01E7F6", "name": "charname_table_01E7CE", "type": "Table", "struct": "String" }
+    //  ]
+    //},
+    //{
+    //  "name": "itemcomp_table_01EB0F",
+    //  "parts": [
+    //    { "start": "01EB0F", "end": "01EBA8", "name": "itemcomp_table_01EB0F", "type": "Table", "struct": "Binary" }
+    //  ]
+    //},
     {
       "name": "dilgcomp_table_01EBA8",
       "parts": [
