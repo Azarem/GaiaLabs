@@ -253,7 +253,12 @@
     "Ā", "ā", "Ē", "ē", "Ī", "ī", "Ō", "ō", "Ū", "ū", "Ŷ", "ŷ", " ", " ", " ", " "
   ],
   "widecommands": {
+    "C5": { "code": "C5", "value": "C5", "types": [ "Byte", "Byte" ] },
+    "C8": { "code": "C8", "value": "C8", "types": [ ] },
+    "C9": { "code": "C9", "value": "C9", "types": [ "Byte" ] },
+    "D3": { "code": "D3", "value": "D3", "types": [ ] },
     "D4": { "code": "D4", "value": "D4", "types": [ "Byte", "Byte" ] },
+    "D5": { "code": "D5", "value": "D5", "types": [ "Byte" ] },
     "D6": { "code": "D6", "value": "DIC", "types": [ "Byte" ] }
   },
   "stringcommands": {
@@ -825,7 +830,7 @@
     {
       "name": "itemget_table_01FD24",
       "parts": [
-        { "start": "01FD24", "end": "01FF6C", "name": "itemget_table_01FD24", "type": "Table", "struct": "Binary" }
+        { "start": "01FD24", "end": "01FF6C", "name": "itemget_table_01FD24", "type": "Table", "struct": "WideString" }
       ]
     },
     {
