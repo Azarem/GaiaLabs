@@ -326,11 +326,10 @@ namespace GaiaLabs
                                         default: throw new("Unsupported member type");
                                     }
                                 }
+                                builder.Append(']');
                             }
                             else
                                 builder.Append(cmd.Value);
-
-                            builder.Append(']');
                         }
 
                         string parseString()
