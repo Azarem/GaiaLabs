@@ -255,7 +255,7 @@ namespace GaiaLabs
 
                     Location lCur = part.Start, lEnd = part.End;
                     byte* pCur = _baseAddress + lCur, pEnd = _baseAddress + lEnd;
-                    var chunkTable = new Dictionary<Location, object>();
+                    var chunkTable = new Dictionary<Location, string>();
 
                     byte* Advance(uint count = 1, bool flag = true)
                     {
@@ -282,11 +282,60 @@ namespace GaiaLabs
                             while (CanContinue());
 
                             return ReadBytes(cur.Offset, lCur.Offset - cur.Offset);
-                        };
+                        }
+
+                        void resolveCommand(DbStringCommand cmd, StringBuilder builder)
+                        {
+                            if (cmd.Types != null)
+                            {
+                                builder.Append($"[{cmd.Value}");
+
+                                bool first = true;
+                                foreach (var t in cmd.Types)
+                                {
+                                    if (first) { builder.Append(':'); first = false; }
+                                    else builder.Append(',');
+
+                                    switch (t)
+                                    {
+                                        case MemberType.Byte: builder.Append($"{*Advance():X}"); break;
+                                        case MemberType.Word: builder.Append($"{*(ushort*)Advance(2):X}"); break;
+
+                                        case MemberType.Offset:
+                                            var loc = *(ushort*)Advance(2) | (lCur.Offset & 0x3F0000u);
+                                            goto writeloc;
+
+                                        case MemberType.Address:
+                                            loc = *(ushort*)Advance(2) | ((uint)*Advance() << 16);
+                                        writeloc:
+                                            builder.Append($"{RefChar}{loc:X6}");
+                                            break;
+
+                                        case MemberType.Binary:
+                                            bool sfirst = true;
+                                            do
+                                            {
+                                                var r = *Advance();
+                                                if (r == 0xFF) break;
+                                                if (sfirst) sfirst = false;
+                                                else builder.Append(',');
+                                                builder.Append($"{r:X}");
+                                            } while (CanContinue());
+                                            break;
+
+                                        default: throw new("Unsupported member type");
+                                    }
+                                }
+                            }
+                            else
+                                builder.Append(cmd.Value);
+
+                            builder.Append(']');
+                        }
 
                         string parseString()
                         {
-                            var dict = DbRoot.CommandStrings;
+                            var dict = DbRoot.StringCommands;
                             var builder = new StringBuilder();
 
                             do
@@ -295,53 +344,7 @@ namespace GaiaLabs
                                 if (c == 0) break;
 
                                 if (dict.TryGetValue(new(c), out var cmd))
-                                {
-                                    if (cmd.Types != null)
-                                    {
-                                        builder.Append($"[{cmd.Value}");
-
-                                        bool first = true;
-                                        foreach (var t in cmd.Types)
-                                        {
-                                            if (first) { builder.Append(':'); first = false; }
-                                            else builder.Append(',');
-
-                                            switch (t)
-                                            {
-                                                case MemberType.Byte: builder.Append($"{*Advance():X}"); break;
-                                                case MemberType.Word: builder.Append($"{*(ushort*)Advance(2):X}"); break;
-
-                                                case MemberType.Offset:
-                                                    var loc = *(ushort*)Advance(2) | (lCur.Offset & 0x3F0000u);
-                                                    goto writeloc;
-
-                                                case MemberType.Address:
-                                                    loc = *(ushort*)Advance(2) | ((uint)*Advance() << 16);
-                                                writeloc:
-                                                    builder.Append($"{RefChar}{loc:X6}");
-                                                    break;
-
-                                                case MemberType.Binary:
-                                                    bool sfirst = true;
-                                                    do
-                                                    {
-                                                        var r = *Advance();
-                                                        if (r == 0xFF) break;
-                                                        if (sfirst) sfirst = false;
-                                                        else builder.Append(',');
-                                                        builder.Append($"{r:X}");
-                                                    } while (CanContinue());
-                                                    break;
-
-                                                default: throw new("Unsupported member type");
-                                            }
-                                        }
-
-                                        builder.Append(']');
-                                    }
-                                    else
-                                        builder.Append(cmd.Value);
-                                }
+                                    resolveCommand(cmd, builder);
                                 else
                                     builder.Append((char)c);
                             } while (CanContinue());
@@ -349,7 +352,48 @@ namespace GaiaLabs
                             //var chars = new char[builder.Length];
                             //builder.CopyTo(0, chars, 0, builder.Length);
                             return builder.ToString();
-                        };
+                        }
+
+                        string parseCompString()
+                        {
+                            var builder = new StringBuilder();
+
+                            do
+                            {
+                                var c = *Advance();
+                                if (c == 0xCA)
+                                    break;
+
+                                //var flag = c & 0x08;
+                                var index = (c & 0x70) >> 1 | (c & 0x07);
+                                builder.Append(DbRoot.CharMap[index]);
+                            } while (CanContinue());
+
+                            return builder.ToString();
+                        }
+
+                        string parseWideString()
+                        {
+                            var builder = new StringBuilder();
+                            var dict = DbRoot.WideCommands;
+
+                            do
+                            {
+                                var c = *Advance();
+                                if (c == 0xCA)
+                                    break;
+
+                                if (dict.TryGetValue(c, out var cmd))
+                                    resolveCommand(cmd, builder);
+                                else
+                                {
+                                    var index = (c & 0xE0) >> 1 | (c & 0x0F);
+                                    builder.Append(DbRoot.WideMap[index]);
+                                }
+                            } while (CanContinue());
+
+                            return builder.ToString();
+                        }
 
                         Location parseLocation(Location loc)
                         {
@@ -371,6 +415,8 @@ namespace GaiaLabs
                                 MemberType.Address => parseLocation(*(ushort*)Advance(2) | ((uint)*Advance(1) << 16)),
                                 MemberType.Binary => parseBinary(),
                                 MemberType.String => parseString(),
+                                MemberType.CompString => parseCompString(),
+                                MemberType.WideString => parseWideString(),
                                 _ => throw new("Invalid member type"),
                             };
 
@@ -450,7 +496,7 @@ namespace GaiaLabs
                             for (int i = 0; i < members; i++)
                                 parts[i] = parseType(types[i]);
 
-                            objects.Add(new StructDef { Name = target.Name, Parts = parts });
+                            objects.Add(def);
 
                             if (!CanContinue()) break;
                         }
@@ -460,63 +506,44 @@ namespace GaiaLabs
 
                     switch (part.Type)
                     {
-                        case PartType.Table:
+                        case PartType.Array:
+                        //string current = part.Struct ?? "Binary";
+                        //var blocks = new List<object>();
+                        //while (pCur < pEnd)
+                        //{
+                        //    if (chunkTable.TryGetValue(lCur, out var value))
+                        //        current = value;
 
-                            bool isInit = true;
-                            object current = null;
+                        //    var data = parseType(current);
+                        //    //if (data is not string && data is IEnumerable<object> arr)
+                        //    //    foreach (var item in arr)
+                        //    //        blocks.Add(item);
+                        //    //else
+                        //        blocks.Add(data);
+                        //}
+
+                        //part.ObjectRoot = blocks;
+                        //break;
+
+                        case PartType.Table:
+                            var isInit = part.Type == PartType.Table;
+                            var current = part.Struct ?? "Binary";
                             var locations = new List<Location>();
                             var chunks = new List<TableEntry>();
-                            int initCount = 0;
                             while (pCur < pEnd)
                             {
-                                //Look for chunk at current location
                                 if (chunkTable.TryGetValue(lCur, out var value))
                                 {
-                                    if (isInit)
-                                    {
-                                        initCount = locations.Count;
-                                        isInit = false;
-                                    }
+                                    if (isInit) isInit = false;
                                     current = value;
                                 }
                                 else if (isInit)
-                                {
-                                    locations.Add((Location)parseType("Offset"));
-                                    continue;
-                                }
+                                { locations.Add((Location)parseType("Offset")); continue; }
 
-                                var entry = new TableEntry(lCur);
-
-                                if (current is string str)
-                                    value = parseType(str);
-
-                                entry.Object = value;
-                                chunks.Add(entry);
+                                chunks.Add(new(lCur) { Object = parseType(current) });
                             }
 
-                            part.ObjectRoot = new TableGroup()
-                            {
-                                Locations = locations,
-                                Blocks = chunks
-                            };
-
-
-                            break;
-
-                        case PartType.Array:
-                            //var strList = new List<object>();
-
-                            //while (pCur < pEnd)
-                            //{
-                            //    var res = parseType(part.Struct);
-                            //    //if (res is not string && res is IEnumerable en)
-                            //    //    foreach (var e in en)
-                            //    //        strList.Add(e);
-                            //    //else
-                            //        strList.Add(res);
-                            //}
-
-                            part.ObjectRoot = parseType(part.Struct);
+                            part.ObjectRoot = new TableGroup() { Locations = locations, Blocks = chunks };
 
                             break;
 
@@ -670,10 +697,20 @@ namespace GaiaLabs
                                 void Indent()
                                 { for (int i = 0; i < depth; i++) writer.Write("  "); }
 
+                                if (!isInline)
+                                {
+                                    writer.WriteLine();
+                                    Indent();
+                                }
+
                                 if (obj is TableGroup tGroup)
                                 {
-                                    WriteObject(tGroup.Locations, depth);
-                                    writer.WriteLine();
+                                    if (tGroup.Locations.Any())
+                                    {
+                                        writer.Write($"{part.Name} "); //Label
+                                        WriteObject(tGroup.Locations, depth);
+                                        writer.WriteLine();
+                                    }
 
                                     foreach (var t in tGroup.Blocks)
                                     {
@@ -684,11 +721,6 @@ namespace GaiaLabs
                                     return;
                                 }
 
-                                if (!isInline)
-                                {
-                                    writer.WriteLine();
-                                    Indent();
-                                }
 
                                 if (obj is StructDef sDef)
                                 {
@@ -745,7 +777,10 @@ namespace GaiaLabs
 
                             }
 
-                            writer.Write($"{part.Name} "); //Label
+                            //if (part.ObjectRoot is IEnumerable<object> arr)
+                            //    foreach (var o in)
+
+                            //writer.Write($"{part.Name} "); //Label
                             WriteObject(part.ObjectRoot, 0);
 
                             break;

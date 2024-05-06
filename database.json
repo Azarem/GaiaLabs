@@ -233,7 +233,30 @@
       "PCRelativeLong": "{0} {1}"
     }
   },
-  "commandstrings": {
+  "charmap": [
+    "A", "B", "C", "D", "E", "F", "G", "H", 
+    "I", "J", "K", "L", "M", "N", "O", "!",
+    "P", "Q", "R", "S", "T", "U", "V", "W",
+    "X", "Y", "Z", "/", "?", "-", "(", ")",
+    "a", "b", "c", "d", "e", "f", "g", "h",
+    "i", "j", "k", "l", "m", "n", "o", " ",
+    "p", "q", "r", "s", "t", "u", "v", "w",
+    "x", "y", "z", ",", ".", "'", "\"", "̏ˮ"
+  ],
+  "widemap": [
+    "Ǫ", "į", "ņ", "ţ", "ę", "ţ", "Ĕ", "Ň", "Ĭ", "Ẋ", "Ẍ", "Ĉ", "Č", "?", "'", "▼",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", ",", "►", "\"", "ˮ", ":",
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "!",
+    "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "/", "*", "-", "(", ")",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", " ",
+    "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", ",", " ", " ", " ", " ",
+    "Ā", "ā", "Ē", "ē", "Ī", "ī", "Ō", "ō", "Ū", "ū", "Ŷ", "ŷ", " ", " ", " ", " "
+  ],
+  "widecommands": {
+    "D4": { "code": "D4", "value": "D4", "types": [ "Byte", "Byte" ] },
+    "D6": { "code": "D6", "value": "DIC", "types": [ "Byte" ] }
+  },
+  "stringcommands": {
     "01": { "code": "01", "value": "1", "types": [ "Byte", "Byte" ] },
     "02": { "code": "02", "value": "2", "types": [ "Byte", "Byte", "Byte" ] },
     "03": { "code": "03", "value": "3", "types": [ "Byte" ] },
@@ -255,7 +278,7 @@
     "20": { "code": "20", "value": "." },
     "21": { "code": "21", "value": "!" },
     "22": { "code": "22", "value": "¸" },
-    "23": { "code": "23", "value": "ED" },
+    "23": { "code": "23", "value": "Æ" },
     "24": { "code": "24", "value": "←" },
     "25": { "code": "25", "value": "˳" },
     "26": { "code": "26", "value": "‥" },
@@ -292,7 +315,7 @@
   "structs": {
     "d_gap": { "name": "d_gap", "parts": [ "unk1", "unk2", "unk3" ], "types": [ "Byte", "Byte", "Byte" ] },
     "unk2": { "name": "unk2", "parts": [ "u1", "u2", "u3", "u4" ], "types": [ "Byte", "Byte", "Byte", "Byte" ] },
-    "unk3": { "name": "unk3", "parts": [ "u1", "data" ], "types": [ "Byte", "Offset" ] },
+    "unk3": { "name": "unk3", "delimiter": "00", "parts": [ "u1", "data" ], "types": [ "Byte", "*CompString" ] },
     "unk8": { "name": "unk8", "parts": [ "value", "next" ], "types": [ "Word", "*unk8" ] },
     "unk12": { "name": "unk12", "delimiter": "FFFF", "parts": [ "value", "data" ], "types": [ "Word", "*Binary" ] },
     "unk13": { "name": "unk13", "delimiter": "00", "parts": [ "unk1", "addr", "unk2", "unk3", "unk4" ], "types": [ "Byte", "Offset", "Byte", "Byte", "Byte" ] },
@@ -314,7 +337,7 @@
     "deleg2": { "name": "deleg2", "descriminator": "06", "delimiter": "FF", "parts": [ "unk1", "unk2", "unk3", "addr", "unk4", "unk5", "unk6" ], "types": [ "Byte", "Byte", "Byte", "Address", "Byte", "Byte", "Byte" ] },
     "deleg1": { "name": "deleg1", "parent": "deleg2", "descriminator": "00", "parts": [ "unk1", "unk2", "unk3", "addr", "unk4" ], "types": [ "Byte", "Byte", "Byte", "Address", "Byte" ] },
     "deleg3": { "name": "deleg3", "delimiter": "FF", "parts": [ "unk1", "addr" ], "types": [ "Byte", "Address" ] },
-    "deleg_def": { "name": "deleg_def", "parts": [ "delegs", "str" ], "types": [ "deleg2", "Binary" ]}
+    "deleg_def": { "name": "deleg_def", "parts": [ "delegs", "str" ], "types": [ "deleg2", "WideString" ]}
   },
   "files":  [
     { "start": "000000", "end": "001C00", "name": "bmp_000000", "type": "Bitmap", "compressed": false },
@@ -654,7 +677,7 @@
     {
       "name": "table_01CA95",
       "parts": [
-        { "start": "01CA95", "end": "01CBA6", "name": "table_01CA95", "type": "Table", "struct": "Binary" }
+        { "start": "01CA95", "end": "01CBA6", "name": "table_01CA95", "type": "Table", "struct": "WideString" }
       ]
     },
     {
@@ -790,13 +813,13 @@
     {
       "name": "dilgcomp_table_01EBA8",
       "parts": [
-        { "start": "01EBA8", "end": "01F54D", "name": "dlogcomp_table_01EBA8", "type": "Table", "struct": "Binary" }
+        { "start": "01EBA8", "end": "01F54D", "name": "dlogcomp_table_01EBA8", "type": "Table", "struct": "WideString" }
       ]
     },
     {
       "name": "dilgcomp_table_01F54D",
       "parts": [
-        { "start": "01F54D", "end": "01FD24", "name": "dlogcomp_table_01F54D", "type": "Table", "struct": "Binary" }
+        { "start": "01F54D", "end": "01FD24", "name": "dlogcomp_table_01F54D", "type": "Table", "struct": "WideString" }
       ]
     },
     {
@@ -806,19 +829,7 @@
       ]
     },
     {
-      "name": "table_03AD77",
-      "parts": [
-        { "start": "03AD77", "end": "03B1D4", "name": "table_03AD77", "type": "Table", "struct": "unk2" }
-      ]
-    },
-    {
-      "name": "array_03B1D4",
-      "parts": [
-        { "start": "03B1D4", "end": "03B401", "name": "array_03B1D4", "type": "Array", "struct": "unk3" }
-      ]
-    },
-    {
-      "name":  "chunk02C38F",
+      "name":  "chunk_02C38F",
       "parts": [
         { "start": "02C38C", "end": "02C38F", "name": "head_02C38C", "type": "Array", "struct": "d_gap" },
         { "start": "02C38F", "end": "02C447", "name": "func02C38F", "type": "Code" },
@@ -897,7 +908,7 @@
       ]
     },
     {
-      "name": "chunk02D038",
+      "name": "chunk_02D038",
       "parts": [
         { "start": "02CFD0", "end": "02D038", "name": "sub02CFD0_badend", "type": "Subroutine" },
         { "start": "02D038", "end": "02D0BC", "name": "sub02D038", "type": "Subroutine" },
@@ -989,21 +1000,33 @@
       ]
     },
     {
-      "name": "chunk02E1A9",
+      "name": "chunk_02E1A9",
       "parts": [
         { "start": "02E396", "end": "02E399", "name": "head_02E396", "type": "Array", "struct": "d_gap" }
       ]
     },
     {
-      "name": "chunk_0C8000",
+      "name": "table_03AD77",
       "parts": [
-        { "start": "0C8000", "end": "0CE5E5", "name": "lookup_0C8000", "type": "Table", "struct": "deleg_def" }
+        { "start": "03AD77", "end": "03B1D4", "name": "table_03AD77", "type": "Table", "struct": "unk2" }
       ]
     },
     {
-      "name": "chunk_0CE5E5",
+      "name": "map_names_03B1D4",
       "parts": [
-        { "start": "0CE5E5", "end": "0CEB5B", "name": "lookup_0CE5E5", "type": "Table", "struct": "deleg3" }
+        { "start": "03B1D4", "end": "03B401", "name": "map_names_03B1D4", "type": "Array", "struct": "unk3" }
+      ]
+    },
+    {
+      "name": "table_0C8000",
+      "parts": [
+        { "start": "0C8000", "end": "0CE5E5", "name": "table_0C8000", "type": "Table", "struct": "deleg_def" }
+      ]
+    },
+    {
+      "name": "table_0CE5E5",
+      "parts": [
+        { "start": "0CE5E5", "end": "0CEB5B", "name": "table_0CE5E5", "type": "Table", "struct": "deleg3" }
       ]
     },
     {

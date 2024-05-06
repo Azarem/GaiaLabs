@@ -22,9 +22,12 @@ namespace GaiaLabs
 
         public IEnumerable<DbFile> Files { get; set; }
         public IEnumerable<DbObject> Objects { get; set; }
+        public string[] CharMap { get; set; }
+        public string[] WideMap { get; set; }
 
         public IDictionary<string, DbStruct> Structs { get; set; }
-        public IDictionary<HexString, DbStringCommand> CommandStrings { get; set; }
+        public IDictionary<HexString, DbStringCommand> StringCommands { get; set; }
+        public IDictionary<HexString, DbStringCommand> WideCommands { get; set; }
 
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {
@@ -204,7 +207,9 @@ namespace GaiaLabs
         Offset,
         Address,
         Binary,
-        String
+        String,
+        CompString,
+        WideString
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
