@@ -331,6 +331,7 @@ namespace GaiaLabs
             int size = code.Size;
             //ushort value;
             Location refLoc;
+            CopDef copDef = null;
 
 
             if (size == -2) //Handle variable-size operand
@@ -409,42 +410,86 @@ namespace GaiaLabs
                     operands.Add(cmd);
                     if (code.Mnem == "COP")
                     {
-                        if (!db.CopLib.Codes.TryGetValue(cmd, out var cop))
+                        size = 2;
+
+                        if (!db.CopLib.Codes.TryGetValue(cmd, out copDef))
                         {
                             size = 2;
                             break;
                         }
                         //var cop = db.CopLib.Codes[cmd];
-                        var parts = cop.Parts;
-                        size = cop.Size + 2;
-                        for (int i = 0; i < parts.Length; i++)
-                            switch (parts[i])
+                        //var parts = cop.Parts;
+                        //size = cop.Size + 2;
+                        foreach (var p in copDef.Parts)
+                        {
+                            var str = p;
+                            bool isPtr = str[0] == '*', isAddr = str[0] == '&';
+                            var otherStr = (isPtr || isAddr) ? str[1..] : "Binary";
+
+                            if (isPtr) str = "Offset";
+                            else if (isAddr) str = "Address";
+
+                            if (!Enum.TryParse<MemberType>(str, true, out var mtype))
+                                throw new("Cannot use structs in cop def");
+
+                            switch (mtype)
                             {
-                                case 'b':
+                                case MemberType.Byte:
                                     operands.Add(*ptr++);
+                                    size++;
                                     break;
-                                case 'c':
-                                case 'o':
+
+                                case MemberType.Word:
+                                    operands.Add(*(ushort*)ptr);
+                                    goto advance2;
+
+                                case MemberType.Offset:
                                     refLoc = *(ushort*)ptr | (next.Offset & 0x3F0000u);
                                     operands.Add(refLoc);
+                                advance2:
                                     ptr += 2;
+                                    size += 2;
                                     break;
-                                case 'w':
-                                    operands.Add(*(ushort*)ptr);
-                                    ptr += 2;
-                                    break;
-                                case 'C':
-                                case 'O':
+
+                                case MemberType.Address:
                                     refLoc = *(ushort*)ptr | ((uint)ptr[2] << 16);
                                     operands.Add(refLoc);
                                     ptr += 3;
+                                    size += 3;
                                     break;
+
+                                default: throw new("Unsuported COP member type");
                             }
+                        }
+
+                        //for (int i = 0; i < parts.Length; i++)
+                        //    switch (parts[i])
+                        //    {
+                        //        case 'b':
+                        //            operands.Add(*ptr++);
+                        //            break;
+                        //        case 'c':
+                        //        case 'o':
+                        //            refLoc = *(ushort*)ptr | (next.Offset & 0x3F0000u);
+                        //            operands.Add(refLoc);
+                        //            ptr += 2;
+                        //            break;
+                        //        case 'w':
+                        //            operands.Add(*(ushort*)ptr);
+                        //            ptr += 2;
+                        //            break;
+                        //        case 'C':
+                        //        case 'O':
+                        //            refLoc = *(ushort*)ptr | ((uint)ptr[2] << 16);
+                        //            operands.Add(refLoc);
+                        //            ptr += 3;
+                        //            break;
+                        //    }
                     }
                     break;
             }
 
-            return new Op { Location = loc, Code = code, Size = (byte)size, Operands = [.. operands] };
+            return new Op { Location = loc, Code = code, Size = (byte)size, Operands = [.. operands], CopDef = copDef };
         }
 
     }
@@ -527,6 +572,7 @@ namespace GaiaLabs
         //public int Operand { get; set; }
         public object[] Operands { get; set; }
         public byte Size { get; set; }
+        public CopDef CopDef { get; set; }
 
         private Op _prev;
         public Op Prev { get => _prev; set { if (_prev != value && (_prev = value) != null) value._next = this; } }
@@ -537,44 +583,44 @@ namespace GaiaLabs
 
         //internal IEnumerable<Location> References { get; set; }
 
-        public override string ToString()
-        {
-            var fmt = GetFormat();
-            var mnem = Code.Mnem;
-            var op = Operands;
-            return (op?.Length ?? 0) switch
-            {
-                1 => string.Format(fmt, mnem, op[0]),
-                2 => string.Format(fmt, mnem, op[0], op[1]),
-                3 => string.Format(fmt, mnem, op[0], op[1], op[2]),
-                4 => string.Format(fmt, mnem, op[0], op[1], op[2], op[3]),
-                5 => string.Format(fmt, mnem, op[0], op[1], op[2], op[3], op[4]),
-                6 => string.Format(fmt, mnem, op[0], op[1], op[2], op[3], op[4], op[5]),
-                7 => string.Format(fmt, mnem, op[0], op[1], op[2], op[3], op[4], op[5], op[6]),
-                8 => string.Format(fmt, mnem, op[0], op[1], op[2], op[3], op[4], op[5], op[6], op[7]),
-                _ => string.Format(fmt, mnem)
-            };
-        }
+        //public override string ToString()
+        //{
+        //    var fmt = GetFormat();
+        //    var mnem = Code.Mnem;
+        //    var op = Operands;
+        //    return (op?.Length ?? 0) switch
+        //    {
+        //        1 => string.Format(fmt, mnem, op[0]),
+        //        2 => string.Format(fmt, mnem, op[0], op[1]),
+        //        3 => string.Format(fmt, mnem, op[0], op[1], op[2]),
+        //        4 => string.Format(fmt, mnem, op[0], op[1], op[2], op[3]),
+        //        5 => string.Format(fmt, mnem, op[0], op[1], op[2], op[3], op[4]),
+        //        6 => string.Format(fmt, mnem, op[0], op[1], op[2], op[3], op[4], op[5]),
+        //        7 => string.Format(fmt, mnem, op[0], op[1], op[2], op[3], op[4], op[5], op[6]),
+        //        8 => string.Format(fmt, mnem, op[0], op[1], op[2], op[3], op[4], op[5], op[6], op[7]),
+        //        _ => string.Format(fmt, mnem)
+        //    };
+        //}
 
-        public string GetFormat(DbRoot db = null)
-        {
-            db ??= RomLoader.Current.DbRoot;
-            if (!db.CopLib.Formats.TryGetValue(Code.Mode, out var str))
-            {
-                if (Code.Mnem == "COP")
-                {
-                    if (!db.CopLib.Codes.TryGetValue((byte)Operands[0], out var cop))
-                        str = db.CopLib.Formats[AddressingMode.Immediate];
-                    //var cop = db.CopLib.Codes[(byte)Operands[0]];
-                    else
-                        str = cop.GetFormat();
-                }
-                else
-                    str = "{0}";
-            }
+        //public string GetFormat(DbRoot db = null)
+        //{
+        //    db ??= RomLoader.Current.DbRoot;
+        //    if (!db.CopLib.Formats.TryGetValue(Code.Mode, out var str))
+        //    {
+        //        if (Code.Mnem == "COP")
+        //        {
+        //            if (!db.CopLib.Codes.TryGetValue((byte)Operands[0], out var cop))
+        //                str = db.CopLib.Formats[AddressingMode.Immediate];
+        //            //var cop = db.CopLib.Codes[(byte)Operands[0]];
+        //            else
+        //                str = cop.GetFormat();
+        //        }
+        //        else
+        //            str = "{0}";
+        //    }
 
-            return str;
-        }
+        //    return str;
+        //}
     }
 
     //public class Ref

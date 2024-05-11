@@ -5,7 +5,7 @@ namespace GaiaLabs
 {
     public static unsafe class Compression
     {
-        public static unsafe byte[] Expand(nint srcData, int srcLen = 0x8000)
+        public static unsafe byte[] Expand(byte* srcData, int srcLen = 0x8000)
         {
             byte* ptr = (byte*)srcData, stop = ptr + srcLen;
             byte[] buffer = new byte[0x100];

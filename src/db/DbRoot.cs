@@ -85,13 +85,13 @@ namespace GaiaLabs
     public class DbPart
     {
         internal DbBlock Block;
-        internal Op Head;
+        //internal Op Head;
         internal HashSet<DbPart> Includes;
         //internal object[] Table;
         internal object ObjectRoot;
 
         public string Name { get; set; }
-        public PartType Type { get; set; }
+        //public PartType Type { get; set; }
         public Location Start { get; set; }
         public Location End { get; set; }
         public string Struct { get; set; }
@@ -128,35 +128,35 @@ namespace GaiaLabs
     {
         public string Mnem { get; set; }
         public HexString Code { get; set; }
-        public byte Size { get; set; }
-        public string Parts { get; set; }
+        //public byte Size { get; set; }
+        public string[] Parts { get; set; }
         public bool Halt { get; set; }
 
-        public string GetFormat()
-        {
-            var len = Parts.Length;
-            var builder = new StringBuilder();
+        //public string GetFormat()
+        //{
+        //    var len = Parts.Length;
+        //    var builder = new StringBuilder();
 
-            builder.Append("{0} [{1:X2}]"); //Append instruction
-            if (len > 0)
-            {
-                for (int i = 0; i < len; i++)
-                {
-                    var p = Parts[i];
-                    builder.Append(i == 0 ? " ( " : ", "); //Separator
-                    if (p == 'b' || p == 'w') builder.Append('#'); //Imm symbol
-                    builder.Append($"{{{i + 2}"); //Operand
+        //    builder.Append("{0} [{1:X2}]"); //Append instruction
+        //    if (len > 0)
+        //    {
+        //        for (int i = 0; i < len; i++)
+        //        {
+        //            var p = Parts[i];
+        //            builder.Append(i == 0 ? " ( " : ", "); //Separator
+        //            if (p == 'b' || p == 'w') builder.Append('#'); //Imm symbol
+        //            builder.Append($"{{{i + 2}"); //Operand
 
-                    if (p == 'b') builder.Append(":X2"); //Hex byte
-                    else if (p == 'w') builder.Append(":X4"); //Hex word
+        //            if (p == 'b') builder.Append(":X2"); //Hex byte
+        //            else if (p == 'w') builder.Append(":X4"); //Hex word
 
-                    builder.Append('}'); //End operand
-                }
-                builder.Append(" )"); //End
-            }
+        //            builder.Append('}'); //End operand
+        //        }
+        //        builder.Append(" )"); //End
+        //    }
 
-            return builder.ToString();
-        }
+        //    return builder.ToString();
+        //}
     }
 
     public class DbStruct
@@ -209,7 +209,8 @@ namespace GaiaLabs
         Binary,
         String,
         CompString,
-        WideString
+        WideString,
+        Code
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

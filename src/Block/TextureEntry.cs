@@ -9,13 +9,13 @@ namespace GaiaLabs
         public ushort Height { get; set; } = 16 * 8;
         public byte Bpp { get; set; } = 4;
         public byte[] Data { get; set; }
-        public override bool Unpack(RomLoader loader)
+        public unsafe override bool Unpack(RomLoader loader)
         {
             if (!base.Unpack(loader))
                 return false;
 
             //TODO: Save data to file instead?
-            Data = Compression.Expand(loader._basePtr + (int)Location.Offset);
+            Data = Compression.Expand(loader._baseAddress + Location.Offset);
 
             if (Data.Length == 0x4000)
             {
