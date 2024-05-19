@@ -139,12 +139,12 @@ namespace GaiaLabs
             {0x4C, new OpCode{ Mnem = "JMP", Code = 0x4C, Mode = AddressingMode.Absolute, Size = 3 } },
             {0x6C, new OpCode{ Mnem = "JMP", Code = 0x6C, Mode = AddressingMode.AbsoluteIndirect, Size = 3 } },
             {0x7C, new OpCode{ Mnem = "JMP", Code = 0x7C, Mode = AddressingMode.AbsoluteIndexedIndirect, Size = 3 } },
-            {0x5C, new OpCode{ Mnem = "JMP", Code = 0x5C, Mode = AddressingMode.AbsoluteLong, Size = 4 } },
-            {0xDC, new OpCode{ Mnem = "JMP", Code = 0xDC, Mode = AddressingMode.AbsoluteIndirectLong, Size = 3 } },
+            {0x5C, new OpCode{ Mnem = "JML", Code = 0x5C, Mode = AddressingMode.AbsoluteLong, Size = 4 } },
+            {0xDC, new OpCode{ Mnem = "JML", Code = 0xDC, Mode = AddressingMode.AbsoluteIndirectLong, Size = 3 } },
 
             {0x20, new OpCode{ Mnem = "JSR", Code = 0x20, Mode = AddressingMode.Absolute, Size = 3 } },
             {0xFC, new OpCode{ Mnem = "JSR", Code = 0xFC, Mode = AddressingMode.AbsoluteIndexedIndirect, Size = 3 } },
-            {0x22, new OpCode{ Mnem = "JSR", Code = 0x22, Mode = AddressingMode.AbsoluteLong, Size = 4 } },
+            {0x22, new OpCode{ Mnem = "JSL", Code = 0x22, Mode = AddressingMode.AbsoluteLong, Size = 4 } },
 
             {0xA9, new OpCode{ Mnem = "LDA", Code = 0xA9, Mode = AddressingMode.Immediate, Size = -2 } },
             {0xAD, new OpCode{ Mnem = "LDA", Code = 0xAD, Mode = AddressingMode.Absolute, Size = 3 } },
