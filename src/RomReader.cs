@@ -109,8 +109,27 @@ namespace GaiaLabs
             foreach (var file in DbRoot.Files)
             {
                 RefList[file.Start] = file.Name;
+                string folder = null, extension = "bin";
 
-                using var fileStream = File.Create(Path.Combine(outPath, file.Name + ".bin"));
+                switch (file.Type)
+                {
+                    case BinType.Bitmap: folder = "graphics"; break;
+                    case BinType.Palette: folder = "palettes"; extension = "pal"; break;
+                    case BinType.Music: folder = "music"; extension = "bgm"; break;
+                    case BinType.Tileset: folder = "tilesets"; extension = "set"; break;
+                    case BinType.Tilemap: folder = "tilemaps"; extension = "map"; break;
+                    case BinType.Unknown: folder = "meta10"; break;
+                    case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
+                };
+
+                var filePath = outPath;
+                if (folder != null)
+                {
+                    filePath = Path.Combine(outPath, folder);
+                    Directory.CreateDirectory(filePath);
+                }
+
+                using var fileStream = File.Create(Path.Combine(filePath, $"{file.Name}.{extension}"));
 
                 var pStart = _basePtr + file.Start;
                 var len = (int)(file.End - file.Start);
