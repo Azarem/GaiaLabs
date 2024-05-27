@@ -6,9 +6,10 @@ namespace GaiaLabs
 {
     public class ImageConverter
     {
-        private const float _sample4to5 = 31.3f / 15f;
-        private const float _sample4to6 = 63.3f / 15f;
-        private const float _sample4to8 = 255.3f / 15f;
+        public const float _sample4to5 = 31.3f / 15f;
+        public const float _sample4to6 = 63.3f / 15f;
+        public const float _sample4to8 = 255.3f / 15f;
+        public const float _sample5to8 = 255.3f / 31f;
 
 
         public static unsafe Image ReadImage(nint data, int width, int height, byte bpp, nint palette, bool compressed = false)

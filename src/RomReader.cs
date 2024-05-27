@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 
 namespace GaiaLabs
 {
@@ -17,6 +15,7 @@ namespace GaiaLabs
         public Dictionary<Location, string> RefList = new();
         public Dictionary<Location, bool?> AccumulatorFlags = new();
         public Dictionary<Location, bool?> IndexFlags = new();
+        public Dictionary<Location, byte> StackPosition = new();
 
         private byte* _basePtr;
         private byte* _pCur, _pEnd;
@@ -25,21 +24,21 @@ namespace GaiaLabs
         private bool _isInline;
         private Dictionary<Location, string> _chunkTable = new();
 
-        private static void UpdateFlags<T>(IDictionary<Location, T?> dictionary, Location loc, T? value) where T : struct
-        {
-            if (dictionary.TryGetValue(loc, out var entry)) //Look for existing value
-            {
-                if (entry == null)
-                    return; //Ignore entries with a hard unknown
+        //private static void UpdateFlags<T>(IDictionary<Location, T?> dictionary, Location loc, T? value) where T : struct
+        //{
+        //    if (dictionary.TryGetValue(loc, out var entry)) //Look for existing value
+        //    {
+        //        if (entry == null)
+        //            return; //Ignore entries with a hard unknown
 
-                if (value != null && !value.Equals(entry)) //Check for disagreements
-                    value = null; //Force hard unknown
-                else if (value.Equals(entry))
-                    return; //Ignore when value will not change
-            }
+        //        if (value != null && !value.Equals(entry)) //Check for disagreements
+        //            return; //value = null; //Force hard unknown
+        //        else if (value.Equals(entry))
+        //            return; //Ignore when value will not change
+        //    }
 
-            dictionary[loc] = value;
-        }
+        //    dictionary[loc] = value;
+        //}
 
         private byte* Advance(uint count = 1)
         {
@@ -62,25 +61,42 @@ namespace GaiaLabs
                 _part.Includes.Add(p);
                 name = $"!{p.Block.Name}.{name}";
             }
-            else if (!name.StartsWith("loc_"))
+            else //if (!name.StartsWith("loc_"))
                 name = $"@{name}";
 
             return name;
         }
 
-        public void AddInclude(DbPart part, Location loc)
-        {
-            if (part.Block.IsOutside(loc, out var p))
-                part.Includes.Add(p);
-        }
+        //public void AddInclude(DbPart part, Location loc)
+        //{
+        //    if (part.Block.IsOutside(loc, out var p))
+        //        part.Includes.Add(p);
+        //}
 
         public DbRoot DumpDatabase(byte* basePtr, string outPath, string dbFile)
         {
             _basePtr = basePtr;
             DbRoot = DbRoot.FromFile(dbFile);
 
+
             ExtractFiles(outPath);
+
+            //Process flag overrides
+            foreach (var over in DbRoot.Overrides)
+            {
+                switch (over.Register)
+                {
+                    case RegisterType.M:
+                        AccumulatorFlags[over.Location] = over.Value != 0u;
+                        break;
+                    case RegisterType.X:
+                        IndexFlags[over.Location] = over.Value != 0u;
+                        break;
+                }
+            }
+
             AnalyzeBlocks();
+
             ResolveReferences();
             WriteBlocks(outPath);
 
@@ -96,16 +112,32 @@ namespace GaiaLabs
 
                 using var fileStream = File.Create(Path.Combine(outPath, file.Name + ".bin"));
 
-                if (file.Compressed)
+                var pStart = _basePtr + file.Start;
+                var len = (int)(file.End - file.Start);
+
+                void copyBytes(byte* ptr, int len)
                 {
-                    var data = Compression.Expand(_basePtr + file.Start);
-                    fixed (byte* dPtr = data)
-                        for (byte* ptr = dPtr, end = ptr + data.Length; ptr < end; ptr++)
+                    if (file.Type == BinType.Palette)
+                        for (ushort* pal = (ushort*)ptr, end = pal + len; pal < end; pal++)
+                        {
+                            var sample = *pal;
+                            fileStream.WriteByte((byte)Math.Round((sample & 0x1F) * ImageConverter._sample5to8, 0));
+                            fileStream.WriteByte((byte)Math.Round(((sample >> 5) & 0x1F) * ImageConverter._sample5to8, 0));
+                            fileStream.WriteByte((byte)Math.Round(((sample >> 10) & 0x1F) * ImageConverter._sample5to8, 0));
+                        }
+                    else
+                        for (byte* end = ptr + len; ptr < end; ptr++)
                             fileStream.WriteByte(*ptr);
                 }
+
+                if (file.Compressed)
+                {
+                    var data = Compression.Expand(pStart);
+                    fixed (byte* dPtr = data)
+                        copyBytes(dPtr, data.Length);
+                }
                 else
-                    for (byte* ptr = _basePtr + file.Start, end = _basePtr + file.End; ptr < end; ptr++)
-                        fileStream.WriteByte(*ptr);
+                    copyBytes(pStart, len);
             }
         }
 
@@ -186,7 +218,7 @@ namespace GaiaLabs
                             do
                             {
                                 var r = *Advance();
-                                if (r == 0xFF) break;
+                                if (r == cmd.Delimiter.Value) break;
                                 if (sfirst) sfirst = false;
                                 else builder.Append(',');
                                 builder.Append($"{r:X}");
@@ -230,7 +262,7 @@ namespace GaiaLabs
             do
             {
                 var c = *Advance();
-                if (c == 0xCA)
+                if (c == 0xCA || c == 0xC0)
                     break;
 
                 //var flag = c & 0x08;
@@ -264,6 +296,257 @@ namespace GaiaLabs
             return builder.ToString();
         }
 
+        private Op ParseAsm(Registers reg)
+        {
+            //var ptr = rom + loc;
+            var loc = _lCur;
+            var opCode = *Advance();
+            if (!Asm.OpCodes.TryGetValue(opCode, out var code))
+                throw new("Unknown OpCode");
+
+            List<object> operands = new(8);
+            int size = code.Size;
+            CopDef copDef = null;
+
+
+            if (size == -2) //Handle variable-size operand
+                if ((code.Code & 0xF) == 0x9) //Accumulator operations?
+                    if (!(reg.AccumulatorFlag ?? false)) size = 3; //Check status of m flag
+                    else size = 2;
+                else if (!(reg.IndexFlag ?? false)) size = 3; //Check status of x flag
+                else size = 2;
+
+            var next = loc + (uint)size;
+
+            Location xferRegs(Location loc)
+            {
+                if (reg.AccumulatorFlag != null)
+                    AccumulatorFlags.TryAdd(loc, reg.AccumulatorFlag);
+                if (reg.IndexFlag != null)
+                    IndexFlags.TryAdd(loc, reg.IndexFlag);
+                if (reg.Stack.Location > 0)
+                    StackPosition.TryAdd(loc, (byte)reg.Stack.Location);
+
+                if ((code.Mnem == "JSR" || code.Mnem == "JSL")
+                    && DbRoot.Returns.TryGetValue(loc, out var over))
+                {
+                    switch (over.Register)
+                    {
+                        case RegisterType.M: reg.AccumulatorFlag = over.Value != 0u; break;
+                        case RegisterType.X: reg.IndexFlag = over.Value != 0u; break;
+                    }
+                }
+
+                return loc;
+            }
+
+            Location noteType(Location loc, string type, bool silent = false)
+            {
+                _chunkTable.TryAdd(loc, type);
+                if (!silent && type == "Code")
+                    return xferRegs(loc);
+                return loc;
+            }
+
+            switch (code.Mode)
+            {
+                case AddressingMode.Implied:
+                    switch (code.Mnem)
+                    {
+                        case "PHD": reg.Stack.Push(reg.Direct ?? 0); break;
+                        case "PLD": reg.Direct = reg.Stack.PopUInt16(); break;
+                        case "PHK": reg.Stack.Push(loc.Bank); break;
+                        case "PHB": reg.Stack.Push(reg.DataBank ?? 0); break;
+                        case "PLB": reg.DataBank = reg.Stack.PopByte(); break;
+                        case "PHP": reg.Stack.Push((byte)reg.StatusFlags); break;
+                        case "PLP": reg.StatusFlags = (StatusFlags)reg.Stack.PopByte(); break;
+
+                        case "PHA":
+                            if (reg.AccumulatorFlag == true)
+                                reg.Stack.Push((byte)(reg.Accumulator ?? 0));
+                            else
+                                reg.Stack.Push(reg.Accumulator ?? 0);
+                            break;
+
+                        case "PLA":
+                            if (reg.AccumulatorFlag == true)
+                                reg.Accumulator = (ushort)((reg.Accumulator ?? 0) & 0xFF00u | reg.Stack.PopByte());
+                            else
+                                reg.Accumulator = reg.Stack.PopUInt16();
+                            break;
+
+                        case "PHX":
+                            if (reg.IndexFlag == true)
+                                reg.Stack.Push((byte)(reg.XIndex ?? 0));
+                            else
+                                reg.Stack.Push(reg.XIndex ?? 0);
+                            break;
+
+                        case "PLX":
+                            if (reg.IndexFlag == true)
+                                reg.XIndex = (ushort)((reg.XIndex ?? 0) & 0xFF00u | reg.Stack.PopByte());
+                            else
+                                reg.XIndex = reg.Stack.PopUInt16();
+                            break;
+
+                        case "PHY":
+                            if (reg.IndexFlag == true)
+                                reg.Stack.Push((byte)(reg.YIndex ?? 0));
+                            else
+                                reg.Stack.Push(reg.YIndex ?? 0);
+                            break;
+
+                        case "PLY":
+                            if (reg.IndexFlag == true)
+                                reg.YIndex = (ushort)((reg.YIndex ?? 0) & 0xFF00u | reg.Stack.PopByte());
+                            else
+                                reg.YIndex = reg.Stack.PopUInt16();
+                            break;
+
+                        case "XBA":
+                            reg.Accumulator = (ushort)((reg.Accumulator ?? 0) >> 8 | (reg.Accumulator ?? 0) << 8);
+                            break;
+                    }
+                    break;
+
+                case AddressingMode.Immediate:
+                    if (size == 3)
+                        operands.Add(*(ushort*)Advance(2));
+                    else
+                        operands.Add(*Advance());
+
+                    switch (code.Mnem)
+                    {
+                        case "LDA":
+                            reg.Accumulator = size == 3 ? (ushort)operands[^1]
+                                : (ushort)((reg.Accumulator ?? 0) & 0xFF00u | (byte)operands[^1]);
+                            break;
+                        case "LDX":
+                            reg.XIndex = size == 3 ? (ushort)operands[^1]
+                                : (ushort)((reg.XIndex ?? 0) & 0xFF00u | (byte)operands[^1]);
+                            break;
+                        case "LDY":
+                            reg.YIndex = size == 3 ? (ushort)operands[^1]
+                                : (ushort)((reg.YIndex ?? 0) & 0xFF00u | (byte)operands[^1]);
+                            break;
+                        case "SEP":
+                        case "REP":
+                            var flag = (StatusFlags)(byte)operands[^1];
+                            if (flag.HasFlag(StatusFlags.AccumulatorMode))
+                                AccumulatorFlags.TryAdd(_lCur, code.Mnem == "SEP");
+                            if (flag.HasFlag(StatusFlags.IndexMode))
+                                IndexFlags.TryAdd(_lCur, code.Mnem == "SEP");
+                            break;
+                    }
+
+
+
+                    break;
+
+                case AddressingMode.AbsoluteIndirect:
+                case AddressingMode.AbsoluteIndirectLong:
+                case AddressingMode.AbsoluteIndexedIndirect:
+                    operands.Add(next & 0x3F0000u | (uint)*(ushort*)Advance(2));
+                    break;
+
+                case AddressingMode.Absolute:
+                case AddressingMode.AbsoluteIndexedX:
+                case AddressingMode.AbsoluteIndexedY:
+                    var refLoc = *(ushort*)Advance(2);
+                    if (code.Mnem[0] == 'J')
+                        operands.Add(noteType(next & 0x3F0000u | (uint)refLoc, "Code")); //Add PC bank
+                    else if (code.Mnem[0] == 'P')
+                        operands.Add(refLoc);
+                    else
+                        operands.Add(new Address(reg.DataBank ?? 0x81, refLoc)); //Add Data bank
+                    break;
+
+                case AddressingMode.AbsoluteLong:
+                case AddressingMode.AbsoluteLongIndexedX:
+                    operands.Add((Location)(*(ushort*)Advance(2) | ((uint)*Advance() << 16)));
+                    if (code.Mnem[0] == 'J')
+                        noteType((Location)operands[^1], "Code");
+                    break;
+
+                case AddressingMode.BlockMove:
+                    operands.Add(*Advance());
+                    operands.Add(*Advance());
+                    break;
+
+                case AddressingMode.DirectPage:
+                case AddressingMode.DirectPageIndexedIndirectX:
+                case AddressingMode.DirectPageIndexedX:
+                case AddressingMode.DirectPageIndexedY:
+                case AddressingMode.DirectPageIndirect:
+                case AddressingMode.DirectPageIndirectIndexedY:
+                case AddressingMode.DirectPageIndirectLong:
+                case AddressingMode.DirectPageIndirectLongIndexedY:
+                    operands.Add(new Address(0, (ushort)((reg.Direct ?? 0) + *Advance())));
+                    break;
+
+                case AddressingMode.PCRelative:
+                    operands.Add(xferRegs((uint)((int)next.Offset + *(sbyte*)Advance())));
+                    break;
+
+                case AddressingMode.PCRelativeLong:
+                    operands.Add(xferRegs((uint)((int)next.Offset + *(short*)Advance(2))));
+                    break;
+
+                case AddressingMode.StackRelative:
+                case AddressingMode.StackRelativeIndirectIndexedY:
+                    operands.Add(*Advance());
+                    break;
+
+                case AddressingMode.StackInterrupt:
+                    var cmd = *Advance();
+                    operands.Add(cmd);
+                    if (code.Mnem == "COP")
+                    {
+                        if (!DbRoot.CopLib.Codes.TryGetValue(cmd, out copDef))
+                            throw new("Unknown COP command");
+
+                        //var cop = db.CopLib.Codes[cmd];
+                        //var parts = cop.Parts;
+                        //size = cop.Size + 2;
+                        foreach (var p in copDef.Parts)
+                        {
+                            var str = p;
+                            bool isPtr = str[0] == '*', isAddr = str[0] == '&';
+                            var otherStr = (isPtr || isAddr) ? str[1..] : "Binary";
+
+                            if (isPtr) str = "Offset";
+                            else if (isAddr) str = "Address";
+
+                            if (!Enum.TryParse<MemberType>(str, true, out var mtype))
+                                throw new("Cannot use structs in cop def");
+
+                            Location copLoc(Location loc)
+                            {
+                                if (p != "Address")
+                                {
+                                    if (!isPtr && !isAddr)
+                                        throw new("Should not note non-pointer types");
+                                    return noteType(loc, otherStr, true);
+                                }
+                                return loc;
+                            }
+
+                            switch (mtype)
+                            {
+                                case MemberType.Byte: operands.Add(*Advance()); break;
+                                case MemberType.Word: operands.Add(*(ushort*)Advance(2)); break;
+                                case MemberType.Offset: operands.Add(copLoc(*(ushort*)Advance(2) | (next.Offset & 0x3F0000u))); break;
+                                case MemberType.Address: operands.Add(copLoc(*(ushort*)Advance(2) | ((uint)*Advance() << 16))); break;
+                                default: throw new("Unsuported COP member type");
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            return new Op { Location = loc, Code = code, Size = (byte)(_lCur - loc), Operands = [.. operands], CopDef = copDef };
+        }
+
         private Op ParseCode()
         {
             var reg = new Registers();
@@ -279,56 +562,67 @@ namespace GaiaLabs
                     reg.AccumulatorFlag = acc;
                 if (IndexFlags.TryGetValue(_lCur, out var ind))
                     reg.IndexFlag = ind;
+                if (StackPosition.TryGetValue(_lCur, out var stack))
+                    reg.Stack.Location = stack;
 
-                var op = Asm.Parse(_basePtr, _lCur, reg, DbRoot); //Parse instruction
+                var op = ParseAsm(reg); //Parse instruction
 
-                if (op.Code.Mnem == "SEP")
-                {
-                    var flag = (StatusFlags)op.Operands[0];
-                    if (flag.HasFlag(StatusFlags.AccumulatorMode))
-                        UpdateFlags(AccumulatorFlags, _lCur + op.Size, true);
-                    if (flag.HasFlag(StatusFlags.IndexMode))
-                        UpdateFlags(IndexFlags, _lCur + op.Size, true);
-                }
-                else if (op.Code.Mnem == "REP")
-                {
-                    var flag = (StatusFlags)op.Operands[0];
-                    if (flag.HasFlag(StatusFlags.AccumulatorMode))
-                        UpdateFlags(AccumulatorFlags, _lCur + op.Size, false);
-                    if (flag.HasFlag(StatusFlags.IndexMode))
-                        UpdateFlags(IndexFlags, _lCur + op.Size, false);
-                }
+                //if (op.Code.Mnem == "SEP")
+                //{
+                //    var flag = (StatusFlags)op.Operands[0];
+                //    if (flag.HasFlag(StatusFlags.AccumulatorMode))
+                //        UpdateFlags(AccumulatorFlags, _lCur, true);
+                //    if (flag.HasFlag(StatusFlags.IndexMode))
+                //        UpdateFlags(IndexFlags, _lCur, true);
+                //}
+                //else if (op.Code.Mnem == "REP")
+                //{
+                //    var flag = (StatusFlags)op.Operands[0];
+                //    if (flag.HasFlag(StatusFlags.AccumulatorMode))
+                //        UpdateFlags(AccumulatorFlags, _lCur, false);
+                //    if (flag.HasFlag(StatusFlags.IndexMode))
+                //        UpdateFlags(IndexFlags, _lCur, false);
+                //}
 
-                for (var i = 0; i < op.Operands.Length; i++)
-                {
-                    var obj = op.Operands[i];
-                    if (obj is Location r)
-                    {
-                        if (_part.IsInside(r))
-                        {
-                            if (op.CopDef != null)
-                            {
-                                var type = "Binary";
-                                type = op.CopDef.Parts[i - 1];
-                                if (type[0] == '*' || type[0] == '&')
-                                    type = type[1..];
-                                _chunkTable.TryAdd(r, type);
-                            }
-                        }
+                //for (var i = 0; i < op.Operands.Length; i++)
+                //{
+                //    var obj = op.Operands[i];
+                //    if (obj is Location r)
+                //    {
+                //        //if (_part.IsInside(r))
+                //        //{
+                //        if (op.CopDef != null)
+                //        {
+                //            var type = op.CopDef.Parts[i - 1];
+                //            if (type != "Address")
+                //            {
+                //                if (type[0] == '*' || type[0] == '&')
+                //                    type = type[1..];
+                //                else
+                //                    throw new("Should not attach non-pointer types");
+                //                _chunkTable.TryAdd(r, type);
+                //            }
+                //        }
+                //        else if (op.Code.Mnem[0] == 'J' &&
+                //            (op.Code.Mode == AddressingMode.Absolute || op.Code.Mode == AddressingMode.AbsoluteLong))
+                //        {
+                //            _chunkTable.TryAdd(r, "Code");
+                //        }
+                //        //}
 
-                        if (reg.AccumulatorFlag != null)
-                            UpdateFlags(AccumulatorFlags, r, reg.AccumulatorFlag);
-                        if (reg.IndexFlag != null)
-                            UpdateFlags(IndexFlags, r, reg.IndexFlag);
-                    }
-                }
+                //        if (reg.AccumulatorFlag != null)
+                //            UpdateFlags(AccumulatorFlags, r, reg.AccumulatorFlag);
+                //        if (reg.IndexFlag != null)
+                //            UpdateFlags(IndexFlags, r, reg.IndexFlag);
+                //    }
+                //}
 
                 if (prev == null)
                     head = op; //Set head
                 else
                     op.Prev = prev; //Set prev
 
-                Advance(op.Size); //Advance location
+                //Advance(op.Size); //Advance location
                 prev = op; //Advance prev
             }
 
@@ -434,7 +728,7 @@ namespace GaiaLabs
                     _lEnd = part.End;
                     _pCur = _basePtr + _lCur;
                     _pEnd = _basePtr + _lEnd;
-                    _chunkTable.Clear();
+                    //_chunkTable.Clear();
 
                     part.Includes = new(); //Initialize part
                     RefList[_lCur] = part.Name; //Add reference name
@@ -606,7 +900,7 @@ namespace GaiaLabs
 
                 while (op != null) //Process each instruction in sequence
                 {
-                    if(first)
+                    if (first)
                     {
                         first = false;
                     }
@@ -620,8 +914,8 @@ namespace GaiaLabs
                         //}
                         //else
                         //{
-                            writer.WriteLine();
-                            writer.WriteLine($"  {label}:"); //Write label
+                        writer.WriteLine();
+                        writer.WriteLine($"  {label}:"); //Write label
                         //}
                         //inBlock = true;
                     }
@@ -629,9 +923,10 @@ namespace GaiaLabs
                     writer.Write($"    {op.Code.Mnem} ");
                     if (DbRoot.CopLib.Formats.TryGetValue(op.Code.Mode, out var format))
                     {
-                        //We are relying on the fact that formats only have one operand
-                        var o = op.Operands[0];
-                        writer.Write(format, o is Location l ? ResolveName(l) : o);
+                        if (op.Operands[0] is Location l)
+                            writer.Write(format, ResolveName(l));
+                        else
+                            writer.Write(format, op.Operands);
                     }
                     else if (op.CopDef != null)
                     {

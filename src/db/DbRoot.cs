@@ -22,6 +22,8 @@ namespace GaiaLabs
 
         public IEnumerable<DbFile> Files { get; set; }
         public IEnumerable<DbObject> Objects { get; set; }
+        public IEnumerable<DbOverride> Overrides { get; set; }
+        public IDictionary<Location, DbOverride> Returns { get; set; }
         public string[] CharMap { get; set; }
         public string[] WideMap { get; set; }
 
@@ -118,6 +120,13 @@ namespace GaiaLabs
         public Location End { get; set; }
     }
 
+    public class DbOverride
+    {
+        public Location Location { get; set; }
+        public RegisterType Register { get; set; }
+        public HexString Value { get; set; }
+    }
+
     public class CopLib
     {
         public Dictionary<HexString, CopDef> Codes { get; set; }
@@ -188,6 +197,7 @@ namespace GaiaLabs
         public HexString Code { get; set; }
         public string Value { get; set; }
         public MemberType[] Types { get; set; }
+        public HexString Delimiter { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -223,6 +233,14 @@ namespace GaiaLabs
         Sound,
         Music,
         Unknown
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum RegisterType
+    {
+        M,
+        X,
+        B
     }
 
     public enum ObjectType

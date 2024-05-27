@@ -124,5 +124,11 @@ namespace GaiaLabs
 
         public override void Write(Utf8JsonWriter writer, Location value, JsonSerializerOptions options)
             => writer.WriteStringValue(value.ToString());
+
+        public override Location ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            => Read(ref reader, typeToConvert, options);
+
+        public override void WriteAsPropertyName(Utf8JsonWriter writer, [DisallowNull] Location value, JsonSerializerOptions options)
+            => Write(writer, value, options);
     }
 }

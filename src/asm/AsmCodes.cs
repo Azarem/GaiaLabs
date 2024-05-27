@@ -319,178 +319,154 @@ namespace GaiaLabs
         };
 
 
-        public static unsafe Op Parse(byte* rom, Location loc, Registers reg, DbRoot db)
-        {
-            var ptr = rom + loc;
-            var opCode = *ptr++;
-            if (!OpCodes.TryGetValue(opCode, out var code))
-                throw new("Unknown OpCode");
+        //public static unsafe Op Parse(byte* rom, Location loc, Registers reg, DbRoot db)
+        //{
+        //    var ptr = rom + loc;
+        //    var opCode = *ptr++;
+        //    if (!OpCodes.TryGetValue(opCode, out var code))
+        //        throw new("Unknown OpCode");
 
-            List<object> operands = new(8);
-            //List<Location> refs = [];
-            int size = code.Size;
-            //ushort value;
-            Location refLoc;
-            CopDef copDef = null;
+        //    List<object> operands = new(8);
+        //    //List<Location> refs = [];
+        //    int size = code.Size;
+        //    //ushort value;
+        //    Location refLoc;
+        //    CopDef copDef = null;
 
 
-            if (size == -2) //Handle variable-size operand
-                if ((code.Code & 0xF) == 0x9) //Accumulator operations?
-                    if (!(reg.AccumulatorFlag ?? false)) size = 3; //Check status of m flag
-                    else size = 2;
-                else if (!(reg.IndexFlag ?? false)) size = 3; //Check status of x flag
-                else size = 2;
+        //    if (size == -2) //Handle variable-size operand
+        //        if ((code.Code & 0xF) == 0x9) //Accumulator operations?
+        //            if (!(reg.AccumulatorFlag ?? false)) size = 3; //Check status of m flag
+        //            else size = 2;
+        //        else if (!(reg.IndexFlag ?? false)) size = 3; //Check status of x flag
+        //        else size = 2;
 
-            var next = loc + (uint)size;
+        //    var next = loc + (uint)size;
 
-            switch (code.Mode)
-            {
-                case AddressingMode.Immediate:
-                    if (size == 3)
-                        operands.Add(*(ushort*)ptr);
-                    else
-                        operands.Add(*ptr);
-                    break;
+        //    switch (code.Mode)
+        //    {
+        //        case AddressingMode.Immediate:
+        //            if (size == 3)
+        //                operands.Add(*(ushort*)ptr);
+        //            else
+        //                operands.Add(*ptr);
+        //            break;
 
-                case AddressingMode.Absolute:
-                case AddressingMode.AbsoluteIndexedIndirect:
-                case AddressingMode.AbsoluteIndexedX:
-                case AddressingMode.AbsoluteIndexedY:
-                case AddressingMode.AbsoluteIndirect:
-                case AddressingMode.AbsoluteIndirectLong:
-                    refLoc = *(ushort*)ptr;
-                    if (code.Mnem.StartsWith('J'))
-                    {
-                        refLoc |= next & 0x3F0000u; //Add PC bank
-                        operands.Add(refLoc);
-                    }
-                    else
-                    {
-                        var addr = new Address(reg.Bank ?? 0x7E, (ushort)refLoc.Offset); //Add Data bank
-                        operands.Add(addr);
-                    }
-                    //operands.Add(refLoc);
-                    //refs.Add(refLoc);
-                    break;
+        //        case AddressingMode.Absolute:
+        //        case AddressingMode.AbsoluteIndexedIndirect:
+        //        case AddressingMode.AbsoluteIndexedX:
+        //        case AddressingMode.AbsoluteIndexedY:
+        //        case AddressingMode.AbsoluteIndirect:
+        //        case AddressingMode.AbsoluteIndirectLong:
+        //            refLoc = *(ushort*)ptr;
+        //            if (code.Mnem.StartsWith('J'))
+        //            {
+        //                refLoc |= next & 0x3F0000u; //Add PC bank
+        //                operands.Add(refLoc);
+        //            }
+        //            else
+        //            {
+        //                var addr = new Address(reg.Bank ?? 0x7E, (ushort)refLoc.Offset); //Add Data bank
+        //                operands.Add(addr);
+        //            }
+        //            //operands.Add(refLoc);
+        //            //refs.Add(refLoc);
+        //            break;
 
-                case AddressingMode.AbsoluteLong:
-                case AddressingMode.AbsoluteLongIndexedX:
-                    refLoc = *(ushort*)ptr | ((uint)ptr[2] << 16);
-                    operands.Add(refLoc);
-                    break;
+        //        case AddressingMode.AbsoluteLong:
+        //        case AddressingMode.AbsoluteLongIndexedX:
+        //            refLoc = *(ushort*)ptr | ((uint)ptr[2] << 16);
+        //            operands.Add(refLoc);
+        //            break;
 
-                case AddressingMode.DirectPage:
-                case AddressingMode.DirectPageIndexedIndirectX:
-                case AddressingMode.DirectPageIndexedX:
-                case AddressingMode.DirectPageIndexedY:
-                case AddressingMode.DirectPageIndirect:
-                case AddressingMode.DirectPageIndirectIndexedY:
-                case AddressingMode.DirectPageIndirectLong:
-                case AddressingMode.DirectPageIndirectLongIndexedY:
-                    operands.Add(*ptr); //Add DP register
-                    break;
+        //        case AddressingMode.DirectPage:
+        //        case AddressingMode.DirectPageIndexedIndirectX:
+        //        case AddressingMode.DirectPageIndexedX:
+        //        case AddressingMode.DirectPageIndexedY:
+        //        case AddressingMode.DirectPageIndirect:
+        //        case AddressingMode.DirectPageIndirectIndexedY:
+        //        case AddressingMode.DirectPageIndirectLong:
+        //        case AddressingMode.DirectPageIndirectLongIndexedY:
+        //            operands.Add(*ptr); //Add DP register
+        //            break;
 
-                case AddressingMode.PCRelative:
-                    refLoc = (uint)((int)next.Offset + *(sbyte*)ptr);
-                    operands.Add(refLoc);
-                    break;
+        //        case AddressingMode.PCRelative:
+        //            refLoc = (uint)((int)next.Offset + *(sbyte*)ptr);
+        //            operands.Add(refLoc);
+        //            break;
 
-                case AddressingMode.PCRelativeLong:
-                    refLoc = (uint)((int)next.Offset + *(short*)ptr);
-                    operands.Add(refLoc);
-                    break;
+        //        case AddressingMode.PCRelativeLong:
+        //            refLoc = (uint)((int)next.Offset + *(short*)ptr);
+        //            operands.Add(refLoc);
+        //            break;
 
-                case AddressingMode.StackRelative:
-                case AddressingMode.StackRelativeIndirectIndexedY:
-                    operands.Add(*ptr);
-                    break;
+        //        case AddressingMode.StackRelative:
+        //        case AddressingMode.StackRelativeIndirectIndexedY:
+        //            operands.Add(*ptr);
+        //            break;
 
-                case AddressingMode.StackInterrupt:
-                    var cmd = *ptr++;
-                    operands.Add(cmd);
-                    if (code.Mnem == "COP")
-                    {
-                        size = 2;
+        //        case AddressingMode.StackInterrupt:
+        //            var cmd = *ptr++;
+        //            operands.Add(cmd);
+        //            if (code.Mnem == "COP")
+        //            {
+        //                size = 2;
 
-                        if (!db.CopLib.Codes.TryGetValue(cmd, out copDef))
-                        {
-                            size = 2;
-                            break;
-                        }
-                        //var cop = db.CopLib.Codes[cmd];
-                        //var parts = cop.Parts;
-                        //size = cop.Size + 2;
-                        foreach (var p in copDef.Parts)
-                        {
-                            var str = p;
-                            bool isPtr = str[0] == '*', isAddr = str[0] == '&';
-                            var otherStr = (isPtr || isAddr) ? str[1..] : "Binary";
+        //                if (!db.CopLib.Codes.TryGetValue(cmd, out copDef))
+        //                {
+        //                    size = 2;
+        //                    break;
+        //                }
+        //                //var cop = db.CopLib.Codes[cmd];
+        //                //var parts = cop.Parts;
+        //                //size = cop.Size + 2;
+        //                foreach (var p in copDef.Parts)
+        //                {
+        //                    var str = p;
+        //                    bool isPtr = str[0] == '*', isAddr = str[0] == '&';
+        //                    var otherStr = (isPtr || isAddr) ? str[1..] : "Binary";
 
-                            if (isPtr) str = "Offset";
-                            else if (isAddr) str = "Address";
+        //                    if (isPtr) str = "Offset";
+        //                    else if (isAddr) str = "Address";
 
-                            if (!Enum.TryParse<MemberType>(str, true, out var mtype))
-                                throw new("Cannot use structs in cop def");
+        //                    if (!Enum.TryParse<MemberType>(str, true, out var mtype))
+        //                        throw new("Cannot use structs in cop def");
 
-                            switch (mtype)
-                            {
-                                case MemberType.Byte:
-                                    operands.Add(*ptr++);
-                                    size++;
-                                    break;
+        //                    switch (mtype)
+        //                    {
+        //                        case MemberType.Byte:
+        //                            operands.Add(*ptr++);
+        //                            size++;
+        //                            break;
 
-                                case MemberType.Word:
-                                    operands.Add(*(ushort*)ptr);
-                                    goto advance2;
+        //                        case MemberType.Word:
+        //                            operands.Add(*(ushort*)ptr);
+        //                            goto advance2;
 
-                                case MemberType.Offset:
-                                    refLoc = *(ushort*)ptr | (next.Offset & 0x3F0000u);
-                                    operands.Add(refLoc);
-                                advance2:
-                                    ptr += 2;
-                                    size += 2;
-                                    break;
+        //                        case MemberType.Offset:
+        //                            refLoc = *(ushort*)ptr | (next.Offset & 0x3F0000u);
+        //                            operands.Add(refLoc);
+        //                        advance2:
+        //                            ptr += 2;
+        //                            size += 2;
+        //                            break;
 
-                                case MemberType.Address:
-                                    refLoc = *(ushort*)ptr | ((uint)ptr[2] << 16);
-                                    operands.Add(refLoc);
-                                    ptr += 3;
-                                    size += 3;
-                                    break;
+        //                        case MemberType.Address:
+        //                            refLoc = *(ushort*)ptr | ((uint)ptr[2] << 16);
+        //                            operands.Add(refLoc);
+        //                            ptr += 3;
+        //                            size += 3;
+        //                            break;
 
-                                default: throw new("Unsuported COP member type");
-                            }
-                        }
+        //                        default: throw new("Unsuported COP member type");
+        //                    }
+        //                }
+        //            }
+        //            break;
+        //    }
 
-                        //for (int i = 0; i < parts.Length; i++)
-                        //    switch (parts[i])
-                        //    {
-                        //        case 'b':
-                        //            operands.Add(*ptr++);
-                        //            break;
-                        //        case 'c':
-                        //        case 'o':
-                        //            refLoc = *(ushort*)ptr | (next.Offset & 0x3F0000u);
-                        //            operands.Add(refLoc);
-                        //            ptr += 2;
-                        //            break;
-                        //        case 'w':
-                        //            operands.Add(*(ushort*)ptr);
-                        //            ptr += 2;
-                        //            break;
-                        //        case 'C':
-                        //        case 'O':
-                        //            refLoc = *(ushort*)ptr | ((uint)ptr[2] << 16);
-                        //            operands.Add(refLoc);
-                        //            ptr += 3;
-                        //            break;
-                        //    }
-                    }
-                    break;
-            }
-
-            return new Op { Location = loc, Code = code, Size = (byte)size, Operands = [.. operands], CopDef = copDef };
-        }
+        //    return new Op { Location = loc, Code = code, Size = (byte)size, Operands = [.. operands], CopDef = copDef };
+        //}
 
     }
 
@@ -562,7 +538,51 @@ namespace GaiaLabs
     {
         public bool? AccumulatorFlag { get; set; }
         public bool? IndexFlag { get; set; }
-        public byte? Bank { get; set; }
+        //public byte? ProgramBanK { get; set; }
+        public ushort? Direct { get; set; }
+        public byte? DataBank { get; set; }
+        public ushort? Accumulator { get; set; }
+        public ushort? XIndex { get; set; }
+        public ushort? YIndex { get; set; }
+        public Stack Stack { get; set; } = new();
+
+        public StatusFlags StatusFlags
+        {
+            get
+            {
+                StatusFlags flags = 0;
+                if (AccumulatorFlag ?? false) flags |= StatusFlags.AccumulatorMode;
+                if (IndexFlag ?? false) flags |= StatusFlags.IndexMode;
+                return flags;
+            }
+            set
+            {
+                AccumulatorFlag = value.HasFlag(StatusFlags.AccumulatorMode);
+                IndexFlag = value.HasFlag(StatusFlags.IndexMode);
+            }
+        }
+    }
+
+    public class Stack
+    {
+        public byte[] Bytes = new byte[60];
+        public int Location = 0;
+
+        public void Push(byte b) 
+            => Bytes[Location++] = b;
+
+        public void Push(ushort b)
+        {
+            Bytes[Location++] = (byte)b;
+            Bytes[Location++] = (byte)(b >> 8);
+        }
+
+        public byte PopByte()
+            => Bytes[Location--];
+
+        public ushort PopUInt16()
+            => (ushort)(Bytes[Location--] << 8 | Bytes[Location--]);
+
     }
 
     public class Op

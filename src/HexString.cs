@@ -111,9 +111,9 @@ namespace GaiaLabs
             => writer.WriteStringValue(value);
 
         public override HexString ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            => reader.GetString();
+            => Read(ref reader, typeToConvert, options);
 
         public override void WriteAsPropertyName(Utf8JsonWriter writer, [DisallowNull] HexString value, JsonSerializerOptions options)
-            => writer.WritePropertyName(value);
+            => Write(writer, value, options);
     }
 }
