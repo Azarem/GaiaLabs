@@ -103,7 +103,7 @@ namespace GaiaLabs
             return outBuffer;
         }
 
-        public static unsafe byte[] Compact(byte[] srcData)
+        public static byte[] Compact(byte[] srcData)
         {
             byte[] dictionary = new byte[0x100];
 
@@ -113,8 +113,13 @@ namespace GaiaLabs
 
             byte sample = 0;
             byte bit = 0x80;
+            byte offset = 0xEF;
+            int srcIx = 0, dstIx = 0;
 
-            byte* ptr;
+            int srcLen = srcData.Length;
+            byte[] outputBuffer = new byte[srcLen];
+            byte[] final;
+
 
             void writeCmd(bool cmd)
             {
@@ -125,7 +130,7 @@ namespace GaiaLabs
                 if (bit == 0)
                 {
                     bit = 0x80;
-                    *ptr++ = sample;
+                    outputBuffer[dstIx++] = sample;
                     sample = 0;
                 }
             }
@@ -133,15 +138,16 @@ namespace GaiaLabs
             void writeByte(int cmd)
             {
                 if (bit == 0x80)
-                    *ptr++ = (byte)cmd;
+                    outputBuffer[dstIx++] = (byte)cmd;
                 else
                 {
                     for (int x = 1; x <= bit; x <<= 1)
                         cmd <<= 1;
 
-                    *ptr++ = (byte)(sample | (cmd >> 8));
+                    outputBuffer[dstIx++] = (byte)(sample | (cmd >> 8));
                     sample = (byte)cmd;
                 }
+
             }
 
             void writeNibble(byte cmd)
@@ -163,15 +169,78 @@ namespace GaiaLabs
                     case 0x4: shift = 1; goto case 0x2;
                     case 0x1: shift = 3; goto case 0x2;
                     case 0x2:
-                        *ptr++ = (byte)(sample | (cmd >> shift));
+                        outputBuffer[dstIx++] = (byte)(sample | (cmd >> shift));
                         sample = (byte)(cmd << (8 - shift));
                         bit <<= 4;
                         break;
                 }
-
             }
 
-            return null;
+            (byte, byte) getCommand()
+            {
+                var maxLen = Math.Min(srcLen - srcIx, 17);
+                if (maxLen < 2)
+                    return (0, 0);
+
+                int startByte = 0, bestLen = 0;
+                byte bx = offset;
+                for (int i = 0; i < 0x100; i++, bx++)
+                {
+                    int size = 0;
+                    byte bix = bx;
+                    while (size < maxLen && dictionary[bix] == srcData[srcIx + size])
+                    {
+                        bix++;
+                        if (bix == offset)
+                            bix = bx;
+                        size++;
+                    }
+
+                    if (size > bestLen)
+                    {
+                        startByte = bx;
+                        bestLen = size;
+
+                        if (bestLen >= maxLen)
+                            break;
+                    }
+                }
+
+                return ((byte)startByte, (byte)bestLen);
+            }
+
+
+            //Write header
+            outputBuffer[dstIx++] = (byte)srcLen;
+            outputBuffer[dstIx++] = (byte)(srcLen >> 8);
+
+            while (srcIx < srcLen)
+            {
+                var cmd = getCommand();
+                if (cmd.Item2 >= 2)
+                {
+                    writeCmd(false);
+                    writeByte(cmd.Item1);
+                    writeNibble((byte)(cmd.Item2 - 2));
+                    for (int i = 0; i < cmd.Item2; i++)
+                        dictionary[offset++] = srcData[srcIx++];
+                }
+                else
+                {
+                    writeCmd(true);
+                    var val = srcData[srcIx++];
+                    writeByte(val);
+                    dictionary[offset++] = val;
+                }
+            }
+
+            if (bit != 0x80)
+                outputBuffer[dstIx++] = sample;
+
+            final = new byte[dstIx];
+
+            Array.Copy(outputBuffer, final, final.Length);
+            return final;
         }
     }
 }

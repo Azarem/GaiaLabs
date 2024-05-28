@@ -2,3 +2,5 @@
 .godot/
 /.vs
 *.gitattributes
+/GaiaCompressor/bin
+/GaiaCompressor/obj

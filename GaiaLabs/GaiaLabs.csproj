@@ -8,5 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="database.json" />
+    <Content Include="Properties\launchSettings.json" />
   </ItemGroup>
 </Project>

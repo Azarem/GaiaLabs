@@ -2,15 +2,47 @@ using GaiaLabs;
 using Godot;
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 public partial class ControlTest : Control
 {
     //private ImageTexture _texture;
 
-    public override void _EnterTree()
+    public unsafe override void _EnterTree()
     {
         base._EnterTree();
 
+        byte[] compData;
+        using(var file = File.OpenRead("C:\\Games\\Dump\\graphics\\bmp_002F3A.bin"))
+        {
+            compData = new byte[file.Length];
+            file.Read(compData);
+        }
+
+        var compressed = Compression.Compact(compData);
+
+        //using (var file = File.Create("C:\\Games\\Dump\\compressed.bin"))
+
+        //using (var file = File.OpenWrite("C:\\Games\\Illusion of Gaia.smc"))
+        //{
+        //    file.Position = 0x0F90E5;
+        //    file.Write(compressed);
+        //}
+
+        fixed (byte* ptr = compressed)
+        {
+            var compare = Compression.Expand(ptr, compressed.Length);
+
+            for (int i = 0; i < compare.Length; i++)
+            {
+                if (compare[i] != compData[i])
+                {
+
+                }
+            }
+        }
+
+       // return;
         var ldr = RomLoader.Load("C:\\Games\\SNES\\Illusion Of Gaia.smc");
 
         try
