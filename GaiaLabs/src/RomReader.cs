@@ -504,11 +504,15 @@ namespace GaiaLabs
                     break;
 
                 case AddressingMode.PCRelative:
-                    operands.Add(xferRegs((uint)((int)next.Offset + *(sbyte*)Advance())));
-                    break;
+                    Location relative = (uint)((int)next.Offset + *(sbyte*)Advance());
+                    goto noteRelative;
 
                 case AddressingMode.PCRelativeLong:
-                    operands.Add(xferRegs((uint)((int)next.Offset + *(short*)Advance(2))));
+                    relative = (uint)((int)next.Offset + *(short*)Advance(2));
+                noteRelative:
+                    operands.Add(code.Mnem == "BRA" || code.Mnem == "BRL"
+                        ? noteType(relative, "Code")
+                        : xferRegs(relative));
                     break;
 
                 case AddressingMode.StackRelative:

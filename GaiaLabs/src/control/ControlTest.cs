@@ -12,38 +12,60 @@ public partial class ControlTest : Control
     {
         base._EnterTree();
 
-        byte[] compData;
-        using(var file = File.OpenRead("C:\\Games\\Dump\\graphics\\bmp_002F3A.bin"))
-        {
-            compData = new byte[file.Length];
-            file.Read(compData);
-        }
-
-        var compressed = Compression.Compact(compData);
-
-        //using (var file = File.Create("C:\\Games\\Dump\\compressed.bin"))
-
-        //using (var file = File.OpenWrite("C:\\Games\\Illusion of Gaia.smc"))
+        //byte[] compData;
+        //using(var file = File.OpenRead("C:\\Games\\Dump\\graphics\\bmp_002F3A.bin"))
         //{
-        //    file.Position = 0x0F90E5;
-        //    file.Write(compressed);
+        //    compData = new byte[file.Length];
+        //    file.Read(compData);
         //}
 
-        fixed (byte* ptr = compressed)
-        {
-            var compare = Compression.Expand(ptr, compressed.Length);
+        //var compressed = Compression.Compact(compData);
 
-            for (int i = 0; i < compare.Length; i++)
-            {
-                if (compare[i] != compData[i])
-                {
+        ////using (var file = File.Create("C:\\Games\\Dump\\compressed.bin"))
 
-                }
-            }
-        }
+        ////using (var file = File.OpenWrite("C:\\Games\\Illusion of Gaia.smc"))
+        ////{
+        ////    file.Position = 0x0F90E5;
+        ////    file.Write(compressed);
+        ////}
 
-       // return;
+        //fixed (byte* ptr = compressed)
+        //{
+        //    var compare = Compression.Expand(ptr, compressed.Length);
+
+        //    for (int i = 0; i < compare.Length; i++)
+        //    {
+        //        if (compare[i] != compData[i])
+        //        {
+
+        //        }
+        //    }
+        //}
+
+        //using (var rom = File.OpenRead("C:\\Games\\SNES\\Illusion Of Gaia.smc"))
+        //using (var outRom = File.Create("C:\\Games\\GaiaLabs.smc"))
+        //{
+        //    int sample;
+        //    while ((sample = rom.ReadByte()) >= 0)
+        //        outRom.WriteByte((byte)sample);
+
+        //    while (outRom.Position < 0x400000)
+        //        outRom.WriteByte(0);
+
+        //    outRom.Position = 0xFFD7;
+        //    outRom.WriteByte(0x0C);
+
+        //    outRom.Position = 0x200000;
+        //    using (var compressed = File.OpenRead("C:\\Games\\Dump\\compressed.bin"))
+        //    {
+        //        while ((sample = compressed.ReadByte()) >= 0)
+        //            outRom.WriteByte((byte)sample);
+        //    }
+        //}
+
+        //return;
         var ldr = RomLoader.Load("C:\\Games\\SNES\\Illusion Of Gaia.smc");
+
 
         try
         {
