@@ -108,8 +108,10 @@ namespace GaiaLabs
         {
             foreach (var file in DbRoot.Files)
             {
-                RefList[file.Start] = file.Name;
+                var start = file.Start;
+                RefList[start] = file.Name;
                 string folder = null, extension = "bin";
+                ushort mapSample = 0;
 
                 switch (file.Type)
                 {
@@ -117,7 +119,15 @@ namespace GaiaLabs
                     case BinType.Palette: folder = "palettes"; extension = "pal"; break;
                     case BinType.Music: folder = "music"; extension = "bgm"; break;
                     case BinType.Tileset: folder = "tilesets"; extension = "set"; break;
-                    case BinType.Tilemap: folder = "tilemaps"; extension = "map"; break;
+                    case BinType.Tilemap:
+                        folder = "tilemaps";
+                        extension = "map";
+                        mapSample = *(ushort*)(_basePtr + start);
+                        start += 2;
+                        break;
+                    case BinType.Meta17:
+                        start += 4;
+                        break;
                     case BinType.Unknown: folder = "meta10"; break;
                     case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
                 };
@@ -131,8 +141,8 @@ namespace GaiaLabs
 
                 using var fileStream = File.Create(Path.Combine(filePath, $"{file.Name}.{extension}"));
 
-                var pStart = _basePtr + file.Start;
-                var len = (int)(file.End - file.Start);
+                var pStart = _basePtr + start;
+                var len = (int)(file.End - start);
 
                 void copyBytes(byte* ptr, int len)
                 {
@@ -145,13 +155,20 @@ namespace GaiaLabs
                             fileStream.WriteByte((byte)Math.Round(((sample >> 10) & 0x1F) * ImageConverter._sample5to8, 0));
                         }
                     else
+                    {
+                        if (file.Type == BinType.Tilemap || file.Type == BinType.Meta17)
+                        {
+                            fileStream.WriteByte((byte)(mapSample >> 8));
+                            fileStream.WriteByte((byte)mapSample);
+                        }
                         for (byte* end = ptr + len; ptr < end; ptr++)
                             fileStream.WriteByte(*ptr);
+                    }
                 }
 
                 if (file.Compressed)
                 {
-                    var data = Compression.Expand(pStart);
+                    var data = Compression.Expand(pStart, len);
                     fixed (byte* dPtr = data)
                         copyBytes(dPtr, data.Length);
                 }

@@ -97,6 +97,11 @@ namespace GaiaLabs
                 }
             }
 
+            //if((stop - ptr) > 1 || outIx < dstLen)
+            //{
+
+            //}
+
             if (outIx < dstLen)
                 outBuffer = outBuffer[0..outIx];
 

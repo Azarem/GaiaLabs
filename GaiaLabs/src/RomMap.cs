@@ -8,32 +8,32 @@ namespace GaiaLabs
 {
     public class RomMap
     {
-        public ICollection<IData> Blocks { get; set; }
+        //public ICollection<IData> Blocks { get; set; }
 
-        public DataBlock<StageEntry> StageBlock => Blocks.Single(x => x.Label == "Stage Meta") as DataBlock<StageEntry>;
+        //public DataBlock<StageEntry> StageBlock => Blocks.Single(x => x.Label == "Stage Meta") as DataBlock<StageEntry>;
 
         public RomMap() { }
 
         public RomMap(RomLoader loader)
         {
             Initialize();
-            foreach (var b in Blocks)
-                b.Unpack(loader);
+            //foreach (var b in Blocks)
+            //    b.Unpack(loader);
 
-            foreach(var r in loader.Resources)
-            {
-                //var b = Activator.CreateInstance(typeof(DataBlock<>).MakeGenericType(r.GetType())) as DataBlock;
+            //foreach(var r in loader.Resources)
+            //{
+            //    //var b = Activator.CreateInstance(typeof(DataBlock<>).MakeGenericType(r.GetType())) as DataBlock;
 
-                Blocks.Add(r.Value);
-                r.Value.Unpack(loader);
-            }    
+            //    Blocks.Add(r.Value);
+            //    r.Value.Unpack(loader);
+            //}    
         }
 
         public void Initialize()
         {
-            Blocks = new List<IData>(new [] {
-                new DataBlock<StageEntry>(0xCD8000, "Stage Meta")
-            });
+            //Blocks = new List<IData>(new [] {
+            //    new DataBlock<StageEntry>(0xCD8000, "Stage Meta")
+            //});
         }
 
         public void Save(string file)

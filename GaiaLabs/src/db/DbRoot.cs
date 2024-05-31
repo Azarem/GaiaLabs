@@ -232,7 +232,8 @@ namespace GaiaLabs
         Palette,
         Sound,
         Music,
-        Unknown
+        Unknown,
+        Meta17
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
