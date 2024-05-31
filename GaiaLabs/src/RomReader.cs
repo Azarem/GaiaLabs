@@ -277,16 +277,21 @@ namespace GaiaLabs
         private string ParseCompString()
         {
             var builder = new StringBuilder();
+            var dict = DbRoot.WideCommands;
 
             do
             {
                 var c = *Advance();
-                if (c == 0xCA || c == 0xC0)
+                if (c == 0xCA)
                     break;
 
-                //var flag = c & 0x08;
-                var index = (c & 0x70) >> 1 | (c & 0x07);
-                builder.Append(DbRoot.CharMap[index]);
+                if (dict.TryGetValue(c, out var cmd))
+                    ResolveCommand(cmd, builder);
+                else
+                {
+                    var index = (c & 0x70) >> 1 | (c & 0x07);
+                    builder.Append(DbRoot.CharMap[index]);
+                }
             } while (CanContinue());
 
             return builder.ToString();
@@ -301,7 +306,14 @@ namespace GaiaLabs
             {
                 var c = *Advance();
                 if (c == 0xCA)
+                {
+                    if (*_pCur == 0xCA)
+                    {
+                        Advance();
+                        builder.Append("[CA]");
+                    }
                     break;
+                }
 
                 if (dict.TryGetValue(c, out var cmd))
                     ResolveCommand(cmd, builder);
