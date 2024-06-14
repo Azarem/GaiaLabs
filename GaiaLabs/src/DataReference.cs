@@ -1,4 +1,5 @@
-﻿
+﻿using GaiaLib;
+
 namespace GaiaLabs
 {
     public class DataReference

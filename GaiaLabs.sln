@@ -5,7 +5,11 @@ VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GaiaLabs", "GaiaLabs\GaiaLabs.csproj", "{48BEFDB0-9DFF-4683-8DA2-0349A5C26069}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GaiaCompressor", "GaiaCompressor\GaiaCompressor.csproj", "{3EDF4959-D6C2-40D1-8DFE-BDE3AE19C393}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GaiaCompressor", "GaiaCompressor\GaiaCompressor.csproj", "{3EDF4959-D6C2-40D1-8DFE-BDE3AE19C393}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GaiaPacker", "GaiaPacker\GaiaPacker.csproj", "{E0FD51A7-E8BC-44DD-A726-DA6B1D8FDB54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GaiaLib", "GaiaLib\GaiaLib.csproj", "{14F10820-9257-4315-B79F-99697F36B492}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +35,22 @@ Global
 		{3EDF4959-D6C2-40D1-8DFE-BDE3AE19C393}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
 		{3EDF4959-D6C2-40D1-8DFE-BDE3AE19C393}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EDF4959-D6C2-40D1-8DFE-BDE3AE19C393}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0FD51A7-E8BC-44DD-A726-DA6B1D8FDB54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0FD51A7-E8BC-44DD-A726-DA6B1D8FDB54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0FD51A7-E8BC-44DD-A726-DA6B1D8FDB54}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0FD51A7-E8BC-44DD-A726-DA6B1D8FDB54}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{E0FD51A7-E8BC-44DD-A726-DA6B1D8FDB54}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{E0FD51A7-E8BC-44DD-A726-DA6B1D8FDB54}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
+		{E0FD51A7-E8BC-44DD-A726-DA6B1D8FDB54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0FD51A7-E8BC-44DD-A726-DA6B1D8FDB54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14F10820-9257-4315-B79F-99697F36B492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14F10820-9257-4315-B79F-99697F36B492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14F10820-9257-4315-B79F-99697F36B492}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14F10820-9257-4315-B79F-99697F36B492}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{14F10820-9257-4315-B79F-99697F36B492}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{14F10820-9257-4315-B79F-99697F36B492}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
+		{14F10820-9257-4315-B79F-99697F36B492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14F10820-9257-4315-B79F-99697F36B492}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

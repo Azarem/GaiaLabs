@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using GaiaLabs.src;
+using GaiaLib;
+using GaiaLib.Rom;
+using System.Collections.Generic;
 
 namespace GaiaLabs
 {

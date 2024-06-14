@@ -10,4 +10,7 @@
     <Content Include="database.json" />
     <Content Include="Properties\launchSettings.json" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GaiaLib\GaiaLib.csproj" />
+  </ItemGroup>
 </Project>

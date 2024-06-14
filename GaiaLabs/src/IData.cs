@@ -1,4 +1,7 @@
-﻿
+﻿using GaiaLabs.src;
+using GaiaLib;
+using GaiaLib.Rom;
+
 namespace GaiaLabs
 {
     public interface IData

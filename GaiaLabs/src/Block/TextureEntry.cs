@@ -1,4 +1,6 @@
-﻿
+﻿using GaiaLabs.src;
+using GaiaLib;
+using GaiaLib.Rom;
 using Godot;
 
 namespace GaiaLabs

@@ -1,19 +1,11 @@
-﻿using System.IO.MemoryMappedFiles;
-using System.IO;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Security.Cryptography.X509Certificates;
-using System.Diagnostics;
-using Godot;
-using System.CodeDom.Compiler;
-using System.Collections;
+using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Xml.Linq;
-using System.Xml;
+using GaiaLib;
+using GaiaLib.Database;
+using GaiaLib.Rom;
 
 namespace GaiaLabs
 {
@@ -45,7 +37,8 @@ namespace GaiaLabs
         protected void LoadInternal(string file)
         {
             long fileSize = 0;
-            string extension = file.GetExtension();
+            var ix = file.LastIndexOf('.');
+            string extension = ix > 0 && ix < file.Length - 1 ? file[(ix + 1)..].ToLower() : null;
 
             //void processZip(Stream inStream)
             //{
@@ -108,7 +101,7 @@ namespace GaiaLabs
         {
             var loader = new RomLoader(file);
             loader.Map = new RomMap(loader);
-            Event.TriggerLoaded(loader.Map);
+            //Event.TriggerLoaded(loader.Map);
             return loader;
         }
 

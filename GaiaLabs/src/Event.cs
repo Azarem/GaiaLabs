@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GaiaLib.Rom;
+using System;
 
 namespace GaiaLabs
 {

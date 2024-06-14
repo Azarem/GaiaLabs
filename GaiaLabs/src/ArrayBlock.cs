@@ -1,4 +1,7 @@
-﻿using System;
+﻿using GaiaLabs.src;
+using GaiaLib;
+using GaiaLib.Rom;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
