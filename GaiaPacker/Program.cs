@@ -6,16 +6,123 @@ using System.Text.Json;
 uint TilesetLoadEntry = 0x02876Du;
 byte[] TilesetLoadPatch = [
     0xA7, 0x3E, 0x85, 0x78, 0xE6, 0x3E, 0xE6, 0x3E,
-    0xC9, 0x00, 0x00, 0xF0, 0x04, 0x5C, 0x77, 0x87,
-    0x82, 0x5C, 0x8A, 0x87, 0x82
+    0xC9, 0x00, 0x00, 0xF0, 0x03, 0x4C, 0x77, 0x87,
+    0x4C, 0x8A, 0x87
 ];
 
 uint TilemapLoadEntry = 0x028914u;
 byte[] TilemapLoadPatch = [
     0xA5, 0x01, 0x9D, 0x93, 0x06, 0xEB, 0xA5, 0x03,
     0x9D, 0x97, 0x06, 0xAD, 0x67, 0x06, 0x9D, 0x9B,
-    0x06, 0xC2, 0x20, 0x5C, 0x20, 0x89, 0x82
+    0x06, 0xC2, 0x20, 0x9C, 0x64, 0x06, 0x9C, 0x68, 
+    0x06, 0x4C, 0x20, 0x89
 ];
+
+uint BitmapLoadEntry = 0x028555u;
+byte[] BitmapLoadPatch = [
+    0xE0, 0x6C, 0x06,   //  CPX #$066C
+    0xD0, 0x0A,         //  BNE JumpDma
+    0xAD, 0xEE, 0x06,   //  LDA $06EE
+    0x89, 0x00, 0x08,   //  BIT #$0800
+    0xF0, 0x02,         //  BEQ JumpDma
+    0x80, 0x03,         //  BRA Mode7Process
+
+    //JumpDma:
+    0x4C, 0x60, 0x85,   //  JMP $8560
+
+    //Mode7Process:
+    0x5A,               //  PHY
+    0x8B,               //  PHB
+  
+    0xA5, 0x3E,         //  LDA $3E
+    0x85, 0x72,         //  STA $72
+    0x18,               //  CLC
+    0x69, 0x10, 0x00,   //  ADC #$0010
+    0x85, 0x75,         //  STA $75
+  
+    0xE2, 0x20,         //  SEP #$20
+    0xA5, 0x40,         //  LDA $40
+    0x85, 0x74,         //  STA $74
+    0x85, 0x77,         //  STA $77
+  
+    0xA9, 0x7E,         //  LDA #$7E
+    0x48,               //  PHA
+    0xAB,               //  PLB
+  
+    0x64, 0x0E,         //  STZ $0E
+    0xA2, 0x00, 0xA0,   //  LDX #$A000
+    0x86, 0x5E,         //  STX $5E
+    0x20, 0x8C, 0x86,   //  JSR $868C
+    0xA0, 0x00, 0x00,   //  LDY #$0000
+  
+    //  ReadLookup:
+    0xA9, 0x07,         //  LDA #$07
+    0x85, 0x12,         //  STA $12
+    0xB2, 0x3E,         //  LDA ($3E)
+    0x85, 0x10,         //  STA $10
+    0xE6, 0x3E,         //  INC $3E
+    0xD0, 0x02,         //  BNE #$02
+    0xE6, 0x3F,         //  INC $3F
+  
+    //  ReadSample:
+    0xB7, 0x72,         //  LDA [$72],Y
+    0x85, 0x00,         //  STA $00
+    0xB7, 0x75,         //  LDA [$75],Y
+    0x85, 0x04,         //  STA $04
+    0xC8,               //  INY
+    0xB7, 0x72,         //  LDA [$72],Y
+    0x85, 0x02,         //  STA $02
+    0xB7, 0x75,         //  LDA [$75],Y
+    0x85, 0x06,         //  STA $06
+    0xA2, 0x07, 0x00,   //  LDX #$0007
+  
+    //  RotateBits:
+    0xA9, 0x00,         //  LDA #$00
+    0x26, 0x06,         //  ROL $06
+    0x2A,               //  ROL
+    0x26, 0x04,         //  ROL $04
+    0x2A,               //  ROL
+    0x26, 0x02,         //  ROL $02
+    0x2A,               //  ROL
+    0x26, 0x00,         //  ROL $00
+    0x2A,               //  ROL
+    0x05, 0x10,         //  ORA $10
+    0x92, 0x5E,         //  STA ($5E)
+    0xE6, 0x5E,         //  INC $5E
+    0xD0, 0x02,         //  BNE #$02
+    0xE6, 0x5F,         //  INC $5F
+  
+    0xCA,               //  DEX
+    0x10, 0xE5,         //  BPL RotateBits
+    0xC8,               //  INY
+    0xC6, 0x12,         //  DEC $12
+    0x10, 0xCC,         //  BPL ReadSample
+    0xC2, 0x20,         //  REP #$20
+    0x98,               //  TYA
+    0x18,               //  CLC
+    0x69, 0x10, 0x00,   //  ADC #$0010
+    0xA8,               //  TAY
+    0xE2, 0x20,         //  SEP #$20
+    0xC0, 0x00, 0x20,   //  CPY #$2000
+    0x90, 0xAF,         //  BCC ReadLookup
+
+    0x9C, 0x70, 0x06,   //  STZ $670
+    //0x9C, 0x7F, 0x06,   //  STZ $67F
+    //0x9C, 0x82, 0x06,   //  STZ $682
+    //0x9C, 0x79, 0x06,   //  STZ $679
+    //0x9C, 0x7C, 0x06,   //  STZ $67C
+    0x9C, 0x7D, 0x06,   //  STZ $67D
+    0x9C, 0x80, 0x06,   //  STZ $680
+    0xA9, 0xB7,         //  LDA #$B7
+    0x8D, 0x81, 0x06,   //  STA $681
+    0x4C, 0x5D, 0x86,   //  JMP $865D
+
+
+
+];
+
+uint[] DebugmanEntries = [ 0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u ];
+byte[] DebugmanActor = [ 0x20, 0xEE, 0x8B ];
 
 ProjectRoot project;
 var options = new JsonSerializerOptions()
@@ -47,10 +154,17 @@ while (outRom.Position < 0x400000)
 outRom.Position = 0xFFD7;
 outRom.WriteByte(0x0C);
 
+//Sky Deliveryman!
+outRom.Position = 0x0CB49Fu;
+outRom.WriteByte(0x47);
+
 //Apply tileset loading patch
-outRom.Position = 0x00F48F;
+outRom.Position = 0x02F08C;
 ApplyPatch(TilesetLoadEntry, TilesetLoadPatch);
 ApplyPatch(TilemapLoadEntry, TilemapLoadPatch);
+ApplyPatch(BitmapLoadEntry, BitmapLoadPatch);
+foreach (var loc in DebugmanEntries)
+    ApplyData(loc, DebugmanActor);
 
 GaiaLib.Process.Repack("C:\\Games\\Dump", "C:\\Games\\GaiaLabs\\GaiaLabs\\database.json", file =>
 {
@@ -305,19 +419,37 @@ GaiaLib.Process.Repack("C:\\Games\\Dump", "C:\\Games\\GaiaLabs\\GaiaLabs\\databa
 //    outRom.Position = nextPos;
 //}
 
+void ApplyData(uint location, byte[] data)
+{
+    outRom.Position = location;
+    outRom.Write(data);
+}
+
 void ApplyPatch(uint entry, byte[] asm)
 {
     var pos = (uint)outRom.Position;
 
     outRom.Position = entry;
-    outRom.WriteByte(0x5C);
-    outRom.WriteByte((byte)pos);
-    outRom.WriteByte((byte)(pos >> 8));
-    outRom.WriteByte((byte)((pos >> 16) + 0xC0));
 
-    outRom.Position = pos;
-    outRom.Write(asm);
+    if (entry >> 16 == pos >> 16)
+    {
+        outRom.WriteByte(0x4C);
+        outRom.WriteByte((byte)pos);
+        outRom.WriteByte((byte)(pos >> 8));
+    }
+    else
+    {
+        outRom.WriteByte(0x5C);
+        outRom.WriteByte((byte)pos);
+        outRom.WriteByte((byte)(pos >> 8));
+        outRom.WriteByte((byte)((pos >> 16) + 0xC0));
+    }
+
+    //outRom.Position = pos;
+    //outRom.Write(asm);
+    ApplyData(pos, asm);
 }
+
 
 void ParseAssembly(Stream inStream)
 {
