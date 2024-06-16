@@ -18,6 +18,17 @@ byte[] TilemapLoadPatch = [
     0x06, 0x4C, 0x20, 0x89
 ];
 
+uint Meta17LoadEntry = 0x028C61u;
+byte[] Meta17LoadPatch = [
+    0xA7, 0x3E,         //LDA [$3E]
+    0xE6, 0x3E,         //INC $3E
+    0xE6, 0x3E,         //INC $3E
+    0xC9, 0x00, 0x00,   //CMP #$0000
+    0xF0, 0x03,         //BEQ #$03
+    0x4C, 0x69, 0x8C,   //JMP $8C69
+    0x4C, 0x85, 0x8C,   //JMP $8C85
+];
+
 uint BitmapLoadEntry = 0x028555u;
 byte[] BitmapLoadPatch = [
     0xE0, 0x6C, 0x06,   //  CPX #$066C
@@ -162,6 +173,7 @@ outRom.WriteByte(0x47);
 outRom.Position = 0x02F08C;
 ApplyPatch(TilesetLoadEntry, TilesetLoadPatch);
 ApplyPatch(TilemapLoadEntry, TilemapLoadPatch);
+ApplyPatch(Meta17LoadEntry, Meta17LoadPatch);
 ApplyPatch(BitmapLoadEntry, BitmapLoadPatch);
 foreach (var loc in DebugmanEntries)
     ApplyData(loc, DebugmanActor);
@@ -194,7 +206,7 @@ GaiaLib.Process.Repack("C:\\Games\\Dump", "C:\\Games\\GaiaLabs\\GaiaLabs\\databa
         }
 
         //Mark as not compressed
-        if (file.File.Compressed)
+        if (file.File.Compressed || file.File.Type == GaiaLib.Database.BinType.Bitmap)
         {
             outRom.WriteByte(0);
             outRom.WriteByte(0);
