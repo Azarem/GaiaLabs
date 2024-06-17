@@ -165,9 +165,9 @@ while (outRom.Position < 0x400000)
 outRom.Position = 0xFFD7;
 outRom.WriteByte(0x0C);
 
-//Sky Deliveryman!
-outRom.Position = 0x0CB49Fu;
-outRom.WriteByte(0x47);
+////Sky Deliveryman!
+//outRom.Position = 0x0CB49Fu;
+//outRom.WriteByte(0x47);
 
 //Fix for music load speed
 outRom.Position = 0x0281C9u;
@@ -179,8 +179,10 @@ ApplyPatch(TilesetLoadEntry, TilesetLoadPatch);
 ApplyPatch(TilemapLoadEntry, TilemapLoadPatch);
 ApplyPatch(Meta17LoadEntry, Meta17LoadPatch);
 ApplyPatch(BitmapLoadEntry, BitmapLoadPatch);
-foreach (var loc in DebugmanEntries)
-    ApplyData(loc, DebugmanActor);
+
+//Debugman
+//foreach (var loc in DebugmanEntries)
+//    ApplyData(loc, DebugmanActor);
 
 GaiaLib.Process.Repack("C:\\Games\\Dump", "C:\\Games\\GaiaLabs\\GaiaLabs\\database.json", file =>
 {
