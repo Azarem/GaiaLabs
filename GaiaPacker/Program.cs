@@ -169,6 +169,10 @@ outRom.WriteByte(0x0C);
 outRom.Position = 0x0CB49Fu;
 outRom.WriteByte(0x47);
 
+//Fix for music load speed
+outRom.Position = 0x0281C9u;
+outRom.WriteByte(0x6B);
+
 //Apply tileset loading patch
 outRom.Position = 0x02F08C;
 ApplyPatch(TilesetLoadEntry, TilesetLoadPatch);
