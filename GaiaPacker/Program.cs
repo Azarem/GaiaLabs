@@ -173,6 +173,10 @@ outRom.WriteByte(0x0C);
 outRom.Position = 0x0281C9u;
 outRom.WriteByte(0x6B);
 
+outRom.Position = 0x02944Cu;
+outRom.WriteByte(0x00);
+outRom.WriteByte(0x00);
+
 //Apply tileset loading patch
 outRom.Position = 0x02F08C;
 ApplyPatch(TilesetLoadEntry, TilesetLoadPatch);
