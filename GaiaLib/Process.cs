@@ -115,7 +115,7 @@ namespace GaiaLib
                 path = File.Exists(path) ? path : Path.Combine(baseDir, path);
                 var size = (int)(new FileInfo(path).Length);
 
-                if (file.Compressed)
+                if (file.Compressed || file.Type == BinType.Bitmap)
                     size += 2;
 
                 return new ChunkFile { File = file, Path = path, Size = size };
@@ -262,6 +262,7 @@ namespace GaiaLib
 
                         default: throw new Exception("Unknown meta type");
                     }
+
 
                     if (!fileMap.TryGetValue(loc, out FileDef def))
                         fileMap[loc] = def = new FileDef() { Loc = loc, Type = type };
