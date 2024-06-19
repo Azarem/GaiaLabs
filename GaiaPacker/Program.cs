@@ -3,41 +3,104 @@ using System.Globalization;
 using System.IO.Enumeration;
 using System.Text.Json;
 
-uint TilesetLoadEntry = 0x02876Du;
+uint TilesetLoadEntry = 0x02876D;
 byte[] TilesetLoadPatch = [
-    0xA7, 0x3E, 0x85, 0x78, 0xE6, 0x3E, 0xE6, 0x3E,
-    0xC9, 0x00, 0x00, 0xF0, 0x03, 0x4C, 0x77, 0x87,
-    0x4C, 0x8A, 0x87
+    0xA7, 0x3E,         //  LDA [$3E]
+    0xE6, 0x3E,         //  INC $3E
+    0xE6, 0x3E,         //  INC $3E
+    0xC9, 0x00, 0x00,   //  CMP #$0000
+    0xF0, 0x07,         //  BEQ #$07
+    0x30, 0x05,         //  BMI #$05
+    0x85, 0x78,         //  STA $78
+    0x4C, 0x77, 0x87,   //  JMP $8777
+    0x4C, 0x8A, 0x87,   //  JMP $878A
 ];
 
-uint TilemapLoadEntry = 0x028914u;
-byte[] TilemapLoadPatch = [
-    0xA5, 0x01, 0x9D, 0x93, 0x06, 0xEB, 0xA5, 0x03,
-    0x9D, 0x97, 0x06, 0xAD, 0x67, 0x06, 0x9D, 0x9B,
-    0x06, 0xC2, 0x20, 0x9C, 0x64, 0x06, 0x9C, 0x68, 
-    0x06, 0x4C, 0x20, 0x89
+uint TilemapLoadEntry1 = 0x02883F;
+byte[] TilemapLoadPatch1 = [
+    0xA7, 0x3E,         //  LDA [$3E]
+    0xE6, 0x3E,         //  INC $3E
+    0xE6, 0x3E,         //  INC $3E
+    0xC9, 0x00, 0x00,   //  CMP #$0000
+    0xF0, 0x0A,         //  BEQ #$0A
+    0x30, 0x08,         //  BMI #$08
+    0x85, 0x78,         //  STA $78
+    0x9D, 0x66, 0x06,   //  STA $0666
+    0x4C, 0x4F, 0x88,   //  JMP $884F
+    0x4C, 0xB5, 0x88,   //  JMP $88B5
 ];
 
-uint Meta17LoadEntry = 0x028C61u;
+uint TilemapLoadEntry2 = 0x028928F;
+byte[] TilemapLoadPatch2 = [
+    0xA7, 0x3E,         //  LDA [$3E]
+    0xE6, 0x3E,         //  INC $3E
+    0xE6, 0x3E,         //  INC $3E
+    0xC9, 0x00, 0x00,   //  CMP #$0000
+    0xF0, 0x07,         //  BEQ #$07
+    0x30, 0x05,         //  BMI #$05
+    0x85, 0x78,         //  STA $78
+    0x4C, 0x43, 0x89,   //  JMP $8943
+    0x4C, 0x35, 0x89,   //  JMP $8935
+];
+
+uint TilemapLoadEntry3 = 0x028914;
+byte[] TilemapLoadPatch3 = [
+    0xA5, 0x01,         //  LDA $01
+    0x9D, 0x93, 0x06,   //  STA $0693, X    Copy stored width
+    //0xEB,               //  XBA
+    0xA5, 0x03,         //  LDA $03
+    0x9D, 0x97, 0x06,   //  STA $0697, X    Copy stored height
+    0xAD, 0x67, 0x06,   //  LDA $0667
+    0x9D, 0x9B, 0x06,   //  STA $069B, X    Copy stored multiply result (used by 0 index)
+    0xC2, 0x20,         //  REP #$20
+    //0x9C, 0x64, 0x06,   //  STZ $0664       Zero src offset
+    0x9C, 0x68, 0x06,   //  STZ $0668       Zero dst offset
+    0x4C, 0x20, 0x89,   //  JMP $8920
+];
+
+uint Meta17LoadEntry = 0x028C61;
 byte[] Meta17LoadPatch = [
-    0xA7, 0x3E,         //LDA [$3E]
-    0xE6, 0x3E,         //INC $3E
-    0xE6, 0x3E,         //INC $3E
-    0xC9, 0x00, 0x00,   //CMP #$0000
-    0xF0, 0x03,         //BEQ #$03
-    0x4C, 0x69, 0x8C,   //JMP $8C69
-    0x4C, 0x85, 0x8C,   //JMP $8C85
+    0xA7, 0x3E,         //  LDA [$3E]
+    0xE6, 0x3E,         //  INC $3E
+    0xE6, 0x3E,         //  INC $3E
+    0xC9, 0x00, 0x00,   //  CMP #$0000
+    0xF0, 0x05,         //  BEQ #$05
+    0x30, 0x03,         //  BMI #$03
+    0x4C, 0x69, 0x8C,   //  JMP $8C69
+    0x4C, 0x85, 0x8C,   //  JMP $8C85
 ];
 
-uint BitmapLoadEntry = 0x028555u;
-byte[] BitmapLoadPatch = [
+uint SpritemapLoadEntry = 0x028C01;
+byte[] SpritemapLoadPatch = [
+    0xA7, 0x3E,         //  LDA [$3E]
+    0xE6, 0x3E,         //  INC $3E
+    0xE6, 0x3E,         //  INC $3E
+    0xC9, 0x00, 0x00,   //  CMP #$0000
+    0xF0, 0x05,         //  BEQ #$05
+    0x30, 0x03,         //  BMI #$03
+    0x4C, 0x0C, 0x8C,   //  JMP $8C0C
+    0x4C, 0x1B, 0x8C,   //  JMP $8C1B
+];
+
+uint BitmapLoadEntry1 = 0x028503;
+byte[] BitmapLoadPatch1 = [
+    0xA7, 0x3E,         //  LDA [$3E]
+    0xE6, 0x3E,         //  INC $3E
+    0xE6, 0x3E,         //  INC $3E
+    0xC9, 0x00, 0x00,   //  CMP #$0000
+    0xF0, 0x07,         //  BEQ Mode7Check
+    0x30, 0x05,         //  BMI Mode7Check
+    0x85, 0x78,         //  STA $78
+    0x4C, 0x43, 0x89,   //  JMP $8510
+
+    //Mode7Check:
     0xE0, 0x6C, 0x06,   //  CPX #$066C
     0xD0, 0x0A,         //  BNE JumpDma
     0xAD, 0xEE, 0x06,   //  LDA $06EE
     0x89, 0x00, 0x08,   //  BIT #$0800
     0xF0, 0x02,         //  BEQ JumpDma
     0x80, 0x03,         //  BRA Mode7Process
-
+    
     //JumpDma:
     0x4C, 0x60, 0x85,   //  JMP $8560
 
@@ -129,8 +192,77 @@ byte[] BitmapLoadPatch = [
     0x4C, 0x5D, 0x86,   //  JMP $865D
 
 
-
 ];
+
+uint BitmapLoadEntry2 = 0x028592;
+byte[] BitmapLoadPatch2 = [
+    0xA7, 0x3E,         //  LDA [$3E]
+    0xE6, 0x3E,         //  INC $3E
+    0xE6, 0x3E,         //  INC $3E
+    0xC9, 0x00, 0x00,   //  CMP #$0000
+    0xF0, 0x07,         //  BEQ #$07
+    0x30, 0x05,         //  BMI #$05
+    0x85, 0x78,         //  STA $78
+    0x4C, 0x9F, 0x85,   //  JMP $859F
+    0x4C, 0xB2, 0x85,   //  JMP $85B2
+];
+
+//Can't use DMA without screen blank, use MVN instead
+uint Cop51LoadEntry = 0x0099A8;
+byte[] Cop51LoadPatch = [
+    0xA7, 0x3E,         //  LDA [$3E]
+    0xC9, 0x00, 0x00,   //  CMP #$0000
+    0x30, 0x11,         //  BMI HandleMinus
+    0xF0, 0x0A,         //  BEQ HandleZero
+    0x85, 0x78,         //  STA $78
+    0xE6, 0x3E,         //  INC $3E
+    0xE6, 0x3E,         //  INC $3E
+    0x5C, 0xB0, 0x99, 0x80,  //  JML $8099B0
+
+    //HandleZero:
+    0xA9, 0x00, 0x20,   //  LDA  #$2000
+    0x80, 0x06,         //  BRA DoMVN
+
+    //HandleMinus:
+    0xA9, 0x00, 0x00,   //  LDA #$0000
+    0x38,               //  SEC
+    0xE7, 0x3E,         //  SBC [$3E]
+
+    //DoMVN:
+    0xE6, 0x3E,         //  INC $3E
+    0xE6, 0x3E,         //  INC $3E
+    0xDA,               //  PHX
+    0x5A,               //  PHY
+
+    0x38,               //  SEC
+    0xE9, 0x01, 0x00,   //  SBC #$0001
+    0x48,               //  PHA
+    
+    0xA9, 0x54, 0x7E,   //  LDA #$7E54
+    0x8D, 0x00, 0x02,   //  STA $0200
+    0xE2, 0x20,         //  SEP #$20
+    0xA5, 0x40,         //  LDA $40
+    0x8D, 0x02, 0x02,   //  STA $0202
+    0xA9, 0x6B,         //  LDA #$6B
+    0x8D, 0x03, 0x02,   //  STA $0203
+    0xC2, 0x20,         //  REP #$20
+    
+    0xA6, 0x3E,         //  LDX $3E
+    0xA4, 0x7A,         //  LDY $7A
+
+    0x68,               //  PLA
+    0x8B,               //  PHB
+    0x22, 0x00, 0x02, 0x7E, //  JSL $7E0200
+
+    0xAB,               //  PLB
+    0x7A,               //  PLY
+    0xFA,               //  PLX
+
+    //0xC2, 0x20,         //  REP #$20
+    0x5C, 0xB8, 0x99, 0x80, //  JML $8099B8
+    
+];
+
 
 uint[] DebugmanEntries = [ 0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u ];
 byte[] DebugmanActor = [ 0x20, 0xEE, 0x8B ];
@@ -169,20 +301,28 @@ outRom.WriteByte(0x0C);
 //outRom.Position = 0x0CB49Fu;
 //outRom.WriteByte(0x47);
 
-//Fix for music load speed
+//Fix for music load speed (bypass long code sequence)
 outRom.Position = 0x0281C9u;
 outRom.WriteByte(0x6B);
 
+//Modify SPC program (force command $F0 to always process regardless of data state)
 outRom.Position = 0x02944Cu;
 outRom.WriteByte(0x00);
 outRom.WriteByte(0x00);
 
-//Apply tileset loading patch
+//Apply meta patches
 outRom.Position = 0x02F08C;
 ApplyPatch(TilesetLoadEntry, TilesetLoadPatch);
-ApplyPatch(TilemapLoadEntry, TilemapLoadPatch);
+ApplyPatch(TilemapLoadEntry1, TilemapLoadPatch1);
+ApplyPatch(TilemapLoadEntry2, TilemapLoadPatch2);
+ApplyPatch(TilemapLoadEntry3, TilemapLoadPatch3);
+ApplyPatch(SpritemapLoadEntry, SpritemapLoadPatch);
 ApplyPatch(Meta17LoadEntry, Meta17LoadPatch);
-ApplyPatch(BitmapLoadEntry, BitmapLoadPatch);
+ApplyPatch(BitmapLoadEntry1, BitmapLoadPatch1);
+ApplyPatch(BitmapLoadEntry2, BitmapLoadPatch2);
+
+//Apply COP patches
+ApplyPatch(Cop51LoadEntry, Cop51LoadPatch);
 
 //Debugman
 //foreach (var loc in DebugmanEntries)
@@ -218,8 +358,11 @@ GaiaLib.Process.Repack("C:\\Games\\Dump", "C:\\Games\\GaiaLabs\\GaiaLabs\\databa
         //Mark as not compressed
         if (file.File.Compressed || file.File.Type == GaiaLib.Database.BinType.Bitmap)
         {
-            outRom.WriteByte(0);
-            outRom.WriteByte(0);
+            int inverse = 0 - (file.Size - 2);
+            //outRom.WriteByte(0);
+            //outRom.WriteByte(0);
+            outRom.WriteByte((byte)inverse);
+            outRom.WriteByte((byte)(inverse >> 8));
         }
 
         //Copy file to rom
