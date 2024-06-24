@@ -1,6 +1,6 @@
-﻿using GaiaPacker;
+﻿using GaiaLib;
+using GaiaPacker;
 using System.Globalization;
-using System.IO.Enumeration;
 using System.Text.Json;
 
 uint TilesetLoadEntry = 0x02876D;
@@ -91,7 +91,7 @@ byte[] BitmapLoadPatch1 = [
     0xF0, 0x07,         //  BEQ Mode7Check
     0x30, 0x05,         //  BMI Mode7Check
     0x85, 0x78,         //  STA $78
-    0x4C, 0x43, 0x89,   //  JMP $8510
+    0x4C, 0x10, 0x85,   //  JMP $8510
 
     //Mode7Check:
     0xE0, 0x6C, 0x06,   //  CPX #$066C
@@ -179,19 +179,13 @@ byte[] BitmapLoadPatch1 = [
     0xE2, 0x20,         //  SEP #$20
     0xC0, 0x00, 0x20,   //  CPY #$2000
     0x90, 0xAF,         //  BCC ReadLookup
-
-    0x9C, 0x70, 0x06,   //  STZ $670
-    //0x9C, 0x7F, 0x06,   //  STZ $67F
-    //0x9C, 0x82, 0x06,   //  STZ $682
-    //0x9C, 0x79, 0x06,   //  STZ $679
-    //0x9C, 0x7C, 0x06,   //  STZ $67C
+    
+    0x9C, 0x71, 0x06,   //  STZ $671   Clear "last bank" so next resource loads
     0x9C, 0x7D, 0x06,   //  STZ $67D
     0x9C, 0x80, 0x06,   //  STZ $680
-    0xA9, 0xB7,         //  LDA #$B7
-    0x8D, 0x81, 0x06,   //  STA $681
+    0x9C, 0x83, 0x06,   //  STZ $683
+
     0x4C, 0x5D, 0x86,   //  JMP $865D
-
-
 ];
 
 uint BitmapLoadEntry2 = 0x028592;
@@ -212,12 +206,12 @@ uint Cop51LoadEntry = 0x0099A8;
 byte[] Cop51LoadPatch = [
     0xA7, 0x3E,         //  LDA [$3E]
     0xC9, 0x00, 0x00,   //  CMP #$0000
-    0x30, 0x11,         //  BMI HandleMinus
-    0xF0, 0x0A,         //  BEQ HandleZero
+    0x30, 0x10,         //  BMI HandleMinus
+    0xF0, 0x09,         //  BEQ HandleZero
     0x85, 0x78,         //  STA $78
     0xE6, 0x3E,         //  INC $3E
     0xE6, 0x3E,         //  INC $3E
-    0x5C, 0xB0, 0x99, 0x80,  //  JML $8099B0
+    0x4C, 0xB0, 0x99,   //  JMP $99B0
 
     //HandleZero:
     0xA9, 0x00, 0x20,   //  LDA  #$2000
@@ -238,34 +232,27 @@ byte[] Cop51LoadPatch = [
     0xE9, 0x01, 0x00,   //  SBC #$0001
     0x48,               //  PHA
     
-    0xA9, 0x54, 0x7E,   //  LDA #$7E54
-    0x8D, 0x00, 0x02,   //  STA $0200
     0xE2, 0x20,         //  SEP #$20
+    0xA9, 0x7E,         //  LDA #$7E
+    0x8D, 0x04, 0x04,   //  STA $0404
     0xA5, 0x40,         //  LDA $40
-    0x8D, 0x02, 0x02,   //  STA $0202
-    0xA9, 0x6B,         //  LDA #$6B
-    0x8D, 0x03, 0x02,   //  STA $0203
+    0x8D, 0x05, 0x04,   //  STA $0405
     0xC2, 0x20,         //  REP #$20
     
     0xA6, 0x3E,         //  LDX $3E
     0xA4, 0x7A,         //  LDY $7A
 
     0x68,               //  PLA
-    0x8B,               //  PHB
-    0x22, 0x00, 0x02, 0x7E, //  JSL $7E0200
-
-    0xAB,               //  PLB
+    0x20, 0x02, 0x04,   //  JSR $0402
     0x7A,               //  PLY
     0xFA,               //  PLX
 
-    //0xC2, 0x20,         //  REP #$20
-    0x5C, 0xB8, 0x99, 0x80, //  JML $8099B8
-    
+    0x4C, 0xB8, 0x99,   //  JMP $99B8
 ];
 
 
-uint[] DebugmanEntries = [ 0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u ];
-byte[] DebugmanActor = [ 0x20, 0xEE, 0x8B ];
+uint[] DebugmanEntries = [0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u];
+byte[] DebugmanActor = [0x20, 0xEE, 0x8B];
 
 ProjectRoot project;
 var options = new JsonSerializerOptions()
@@ -301,6 +288,10 @@ outRom.WriteByte(0x0C);
 //outRom.Position = 0x0CB49Fu;
 //outRom.WriteByte(0x47);
 
+//Fix for Meta17 overflow (last byte is not used)
+outRom.Position = 0x0DAFFEu;
+outRom.WriteByte(0x00);
+
 //Fix for music load speed (bypass long code sequence)
 outRom.Position = 0x0281C9u;
 outRom.WriteByte(0x6B);
@@ -309,6 +300,10 @@ outRom.WriteByte(0x6B);
 outRom.Position = 0x02944Cu;
 outRom.WriteByte(0x00);
 outRom.WriteByte(0x00);
+
+//Apply COP patches
+outRom.Position = 0x00F48F;
+ApplyPatch(Cop51LoadEntry, Cop51LoadPatch);
 
 //Apply meta patches
 outRom.Position = 0x02F08C;
@@ -321,14 +316,44 @@ ApplyPatch(Meta17LoadEntry, Meta17LoadPatch);
 ApplyPatch(BitmapLoadEntry1, BitmapLoadPatch1);
 ApplyPatch(BitmapLoadEntry2, BitmapLoadPatch2);
 
-//Apply COP patches
-ApplyPatch(Cop51LoadEntry, Cop51LoadPatch);
 
 //Debugman
 //foreach (var loc in DebugmanEntries)
 //    ApplyData(loc, DebugmanActor);
 
-GaiaLib.Process.Repack("C:\\Games\\Dump", "C:\\Games\\GaiaLabs\\GaiaLabs\\database.json", file =>
+Process.Repack("C:\\Games\\Dump", "C:\\Games\\GaiaLabs\\GaiaLabs\\database.json", WriteFile, WriteSfx);
+
+uint WriteSfx(Location location, IEnumerable<string> paths)
+{
+    var offset = location.Offset;
+    outRom.Position = offset;
+
+    void writeByte(byte b)
+    {
+        outRom.WriteByte(b);
+        if ((++offset & 0x8000u) != 0)
+        {
+            offset = (offset & 0x3F0000) + 0x10000;// | (offset & 0x7FFFu);
+            outRom.Position = offset;
+        }
+    }
+
+    foreach (var path in paths)
+    {
+        using var inFile = File.OpenRead(path);
+
+        writeByte((byte)inFile.Length);
+        writeByte((byte)(inFile.Length >> 8));
+
+        int sample;
+        while ((sample = inFile.ReadByte()) >= 0)
+            writeByte((byte)sample);
+    }
+
+    return (uint)outRom.Position;
+}
+
+void WriteFile(Process.ChunkFile file)
 {
     uint filePos = file.Location;
     outRom.Position = filePos;
@@ -356,7 +381,7 @@ GaiaLib.Process.Repack("C:\\Games\\Dump", "C:\\Games\\GaiaLabs\\GaiaLabs\\databa
         }
 
         //Mark as not compressed
-        if (file.File.Compressed || file.File.Type == GaiaLib.Database.BinType.Bitmap)
+        if (file.File.Compressed != null)
         {
             int inverse = 0 - (file.Size - 2);
             //outRom.WriteByte(0);
@@ -384,7 +409,7 @@ GaiaLib.Process.Repack("C:\\Games\\Dump", "C:\\Games\\GaiaLabs\\GaiaLabs\\databa
 
     //Move to next file
     //outRom.Position = nextPos;
-});
+}
 
 //const int ChunkSize = 0x10000;
 
@@ -607,7 +632,7 @@ void ApplyPatch(uint entry, byte[] asm)
         outRom.WriteByte(0x5C);
         outRom.WriteByte((byte)pos);
         outRom.WriteByte((byte)(pos >> 8));
-        outRom.WriteByte((byte)((pos >> 16) + 0xC0));
+        outRom.WriteByte((byte)((pos >> 16) + 0x80));
     }
 
     //outRom.Position = pos;

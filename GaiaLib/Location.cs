@@ -30,11 +30,11 @@ namespace GaiaLib
 
         public byte Bank => (byte)(Offset >> 16);
 
-        public static Location MaxValue => 0x7FFFFFu;
+        public static Location MaxValue => 0x3FFFFFu;
 
         public static Location MinValue => 0;
 
-        public Location(uint offset) { Offset = offset & 0x7FFFFFu; }
+        public Location(uint offset) { Offset = offset & 0x3FFFFFu; }
 
         public static implicit operator Location(uint off) => new(off);
         public static implicit operator uint(Location loc) => loc.Offset;
@@ -43,7 +43,7 @@ namespace GaiaLib
             => new(loc.Bank, (ushort)loc.Offset);
 
         public static explicit operator Location(Address add)
-            => ((uint)add.Bank & 0x7F) << 16 | add.Offset;
+            => ((uint)add.Bank & 0x3F) << 16 | add.Offset;
 
         public static Location operator +(Location loc, uint offset) => new(loc.Offset + offset);
         public static Location operator -(Location loc, uint offset) => new(loc.Offset - offset);

@@ -1,6 +1,7 @@
 ﻿using GaiaLib.Database;
 using GaiaLib.Structs;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GaiaLib
 {
@@ -16,17 +17,20 @@ namespace GaiaLib
             public Location Location;
         }
 
-        public static void Repack(string baseDir, string dbFile = "database.json", Action<ChunkFile> onProcess = null)
+        public static void Repack(string baseDir, string dbFile,
+            Action<ChunkFile> onProcess,
+            Func<Location, IEnumerable<string>, uint> onSfx)
         {
             var root = DbRoot.FromFile(dbFile);
 
-            var gaps = DiscoverAvailableSpace(root, out var files);
+            var sfxEnd = ProcessSfx(baseDir, root.Sfx, onSfx);
+            var gaps = DiscoverAvailableSpace(root, sfxEnd, out var files);
             var chunkFiles = DiscoverFiles(baseDir, files);
 
             var bestBuffer = new int[0x100];
             var bestSample = new int[0x100];
 
-            foreach (var gap in gaps.OrderBy(x => x.Size))
+            foreach (var gap in gaps.OrderBy(x => x.Start))
             {
                 var remain = gap.Size;
                 var count = chunkFiles.Count;
@@ -92,6 +96,13 @@ namespace GaiaLib
             }
         }
 
+        private static uint ProcessSfx(string baseDir, DbSfx sfx, Func<Location, IEnumerable<string>, uint> func)
+        {
+            string folder = "sfx", extension = "bin";
+            baseDir = Path.Combine(baseDir, folder);
+            return func(sfx.Location, sfx.Names.Select(x => Path.Combine(baseDir, $"{x}.{extension}")));
+        }
+
         private static List<ChunkFile> DiscoverFiles(string baseDir, IEnumerable<DbFile> files)
             => files.Select(file =>
             {
@@ -105,31 +116,46 @@ namespace GaiaLib
                     case BinType.Tilemap: folder = "tilemaps"; extension = "map"; break;
                     case BinType.Meta17: break;
                     case BinType.Spritemap: folder = "spritemaps"; break;
-                    case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
+                        //case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
                 };
 
                 var path = $"{file.Name}.{extension}";
                 if (folder != null)
                     path = Path.Combine(folder, path);
 
-                path = File.Exists(path) ? path : Path.Combine(baseDir, path);
+                path = Path.Combine(baseDir, path);// File.Exists(path) ? path : Path.Combine(baseDir, path);
                 var size = (int)(new FileInfo(path).Length);
 
-                if (file.Compressed || file.Type == BinType.Bitmap)
+                if (file.Compressed != null)
                     size += 2;
 
                 return new ChunkFile { File = file, Path = path, Size = size };
             }).OrderByDescending(x => x.Size).ToList();
 
 
-        private static IEnumerable<DbGap> DiscoverAvailableSpace(DbRoot root, out IEnumerable<DbFile> files)
+        private static IEnumerable<DbGap> DiscoverAvailableSpace(DbRoot root, uint sfxEnd, out IEnumerable<DbFile> files)
         {
-
-            List<DbGap> gaps = new([new DbGap { Start = 0x200000u, End = 0x400000u }]);
+            var sfxStart = root.Sfx.Location.Offset;
+            List<DbGap> gaps = new([new DbGap { Start = 0x200000u, End = 0x3FFFFFu }]);
             files = root.Files.Where(x => x.XRef?.Any() == true).ToList();
+            var sfxNearest = Location.MaxValue;
 
             void mergeGap(Location start, Location end)
             {
+                if (sfxStart < end && sfxEnd > start)
+                {
+                    if (start >= sfxStart && (start.Offset & 0x8000u) == 0)
+                        start = sfxEnd;
+                    else if (((end.Offset - 1) & 0x8000u) == 0)
+                        end = sfxStart;
+                }
+
+                if (start >= sfxEnd && start < sfxNearest)
+                    sfxNearest = start;
+
+                if (end <= start)
+                    return;
+
                 for (int i = 0; i < gaps.Count; i++)
                 {
                     var g = gaps[i];
@@ -150,8 +176,24 @@ namespace GaiaLib
                 mergeGap(file.Start, file.End);
 
             //Gerge gap ranges
-            foreach (var gap in root.Gaps)
-                mergeGap(gap.Start, gap.End);
+            foreach (var space in root.FreeSpace)
+                mergeGap(space.Start, space.End);
+
+            while (sfxEnd < sfxNearest)
+            {
+                var gapStart = sfxNearest & 0x3F0000u;
+
+                if (gapStart <= sfxEnd)
+                {
+                    mergeGap(sfxEnd, sfxNearest);
+                    break;
+                }
+                else
+                {
+                    mergeGap(gapStart, sfxNearest);
+                    sfxNearest = gapStart - 0x8000u;
+                }
+            }
 
             //Split gaps across chunk boundaries
             for (int i = 0; i < gaps.Count; i++)
@@ -159,6 +201,7 @@ namespace GaiaLib
                 var g = gaps[i];
                 Location start = g.Start, end = g.End;
                 var next = start + (ChunkSize - (start.Offset % ChunkSize));
+                if (next == 0u) next--;
                 if (end > next)
                 {
                     g.End = next;

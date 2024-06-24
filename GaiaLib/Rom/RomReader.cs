@@ -83,6 +83,7 @@ namespace GaiaLib.Rom
 
 
             ExtractFiles(outPath);
+            ExtractSfx(outPath);
 
             //Process flag overrides
             foreach (var over in DbRoot.Overrides)
@@ -179,7 +180,7 @@ namespace GaiaLib.Rom
                     }
                 }
 
-                if (file.Compressed)
+                if (file.Compressed == true)
                 {
                     var data = Compression.Expand(pStart, len);
                     fixed (byte* dPtr = data)
@@ -187,13 +188,44 @@ namespace GaiaLib.Rom
                 }
                 else
                 {
-                    if(file.Type == BinType.Bitmap) //Skip header for uncompressed bitmaps
+                    if (file.Compressed == false) //Skip header for uncompressed bitmaps
                     {
                         pStart += 2;
                         len -= 2;
                     }
                     copyBytes(pStart, len);
                 }
+            }
+        }
+
+        private void ExtractSfx(string outPath)
+        {
+            string folder = "sfx", extension = "bin";
+            string folderPath = Path.Combine(outPath, folder);
+            Directory.CreateDirectory(folderPath);
+
+            var sfx = DbRoot.Sfx;
+            var ptr = _basePtr + (sfx.Location.Offset & 0x3F0000u);
+            var offset = sfx.Location.Offset % 0x8000u;
+
+            byte readByte()
+            {
+                if (offset == 0x8000u)
+                {
+                    ptr += 0x10000;
+                    offset = 0;
+                }
+                return ptr[offset++];
+            }
+
+            foreach(var sfxName in sfx.Names )
+            {
+                int size = readByte() | (readByte() << 8);
+
+                string filePath = Path.Combine(folderPath, $"{sfxName}.{extension}");
+                using (var file = File.Create(filePath))
+                    for (int x = 0; x < size; x++)
+                        file.WriteByte(readByte());
             }
         }
 
@@ -873,21 +905,14 @@ namespace GaiaLib.Rom
                 ResolveObject(tgrp.Blocks);
             }
             else if (obj is Op op)
-            {
-                for (var cur = op; op != null; op = op.Next)
+                while (op != null)
                 {
                     for (int i = 0; i < op.Operands.Length; i++)
-                    {
-                        var opnd = op.Operands[i];
-                        if (opnd is Location l)
-                        {
-                            //op.Operands[i] = ResolveName(l);
-                            //AddInclude(_part, l);
+                        if (op.Operands[i] is Location l)
                             ResolveName(l);
-                        }
-                    }
+
+                    op = op.Next;
                 }
-            }
         }
 
         public void WriteBlocks(string outPath)

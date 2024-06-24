@@ -1,4 +1,5 @@
 using GaiaLabs;
+using GaiaLib;
 using Godot;
 using System;
 
@@ -67,6 +68,7 @@ public partial class ControlTest : Control
         var ldr = RomLoader.Load("C:\\Games\\SNES\\Illusion Of Gaia.smc");
 
         //Process.Repack("C:\\Games\\Dump");
+        //Process.ReadMetaXrefs(ldr._baseAddress);
 
         try
         {
