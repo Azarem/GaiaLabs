@@ -3,6 +3,8 @@
 #BANK		$02
 #SPTR		$3E
 #DCMP_SIZE	$78
+#META_SIZE  $0666
+#DST_OFF    $0668
 
 ----------------------------------------
 
@@ -14,7 +16,7 @@ main1:
   BEQ  jmpno1
   BMI  jmpno1
   STA  DCMP_SIZE
-  STA  $0666
+  STA  META_SIZE
   JMP  $884F
 
 jmpno1:
@@ -51,7 +53,7 @@ main3:
   LDA  $0667
   STA  $069B, X		-- copy stored multiply result (used by 0 index)
   REP  #$20
-  STZ  $0668		-- zero dest offset
+  STZ  DST_OFF		-- zero dest offset
   JMP  $8920
 
 028914:
