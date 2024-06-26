@@ -1,7 +1,8 @@
-﻿
+﻿using System.Text.RegularExpressions;
+
 namespace GaiaLib.Asm
 {
-    public class OpCode
+    public partial class OpCode
     {
         public byte Code;
         public string Mnem;
@@ -313,5 +314,76 @@ namespace GaiaLib.Asm
             {0xEB, new OpCode{ Mnem = "XBA", Code = 0xEB, Size = 1, Mode = AddressingMode.Implied } },
             {0xFB, new OpCode{ Mnem = "XCE", Code = 0xFB, Size = 1, Mode = AddressingMode.Implied } },
         };
+
+        public static readonly Dictionary<string, IEnumerable<OpCode>> Grouped
+            = All.GroupBy(x => x.Value.Mnem).ToDictionary(x => x.Key, x => x.Select(y => y.Value));
+
+        public static readonly Dictionary<AddressingMode, Regex> AddressingRegex = new()
+        {
+            { AddressingMode.DirectPageIndexedIndirectX, DirectPageIndexedIndirectXRegex() },
+            { AddressingMode.StackRelative, StackRelativeRegex() },
+            { AddressingMode.DirectPage, DirectPageRegex() },
+            { AddressingMode.DirectPageIndirectLong, DirectPageIndirectLongRegex() },
+            { AddressingMode.Immediate, ImmediateRegex() },
+            { AddressingMode.Absolute, AbsoluteRegex() },
+            { AddressingMode.AbsoluteLong, AbsoluteLongRegex() },
+            { AddressingMode.DirectPageIndirectIndexedY, DirectPageIndirectIndexedYRegex() },
+            { AddressingMode.DirectPageIndirect, DirectPageIndirectRegex() },
+            { AddressingMode.StackRelativeIndirectIndexedY, StackRelativeIndirectIndexedYRegex() },
+            { AddressingMode.DirectPageIndexedX, DirectPageIndexedXRegex() },
+            { AddressingMode.DirectPageIndirectLongIndexedY, DirectPageIndirectLongIndexedYRegex() },
+            { AddressingMode.AbsoluteIndexedY, AbsoluteIndexedYRegex() },
+            { AddressingMode.AbsoluteIndexedX, AbsoluteIndexedXRegex() },
+            { AddressingMode.AbsoluteLongIndexedX, AbsoluteLongIndexedXRegex() },
+            { AddressingMode.BlockMove, BlockMoveRegex() },
+        };
+
+        [GeneratedRegex("^\\(\\$(\\S{2}),\\s?[Xx]\\)$", RegexOptions.Compiled)]
+        private static partial Regex DirectPageIndexedIndirectXRegex();
+
+        [GeneratedRegex("^\\$(\\S{2}),\\s?[Ss]$", RegexOptions.Compiled)]
+        private static partial Regex StackRelativeRegex();
+
+        [GeneratedRegex("^\\$(\\S{2})$", RegexOptions.Compiled)]
+        private static partial Regex DirectPageRegex();
+
+        [GeneratedRegex("^\\[\\$(\\S{2})\\]$", RegexOptions.Compiled)]
+        private static partial Regex DirectPageIndirectLongRegex();
+
+        [GeneratedRegex("^#\\$(\\S{2,4})$", RegexOptions.Compiled)]
+        private static partial Regex ImmediateRegex();
+
+        [GeneratedRegex("^\\$(\\S{4})$", RegexOptions.Compiled)]
+        private static partial Regex AbsoluteRegex();
+
+        [GeneratedRegex("^\\$(\\S{6})$", RegexOptions.Compiled)]
+        private static partial Regex AbsoluteLongRegex();
+
+        [GeneratedRegex("^\\(\\$(\\S{2})\\),\\s?[Yy]$", RegexOptions.Compiled)]
+        private static partial Regex DirectPageIndirectIndexedYRegex();
+
+        [GeneratedRegex("^\\(\\$(\\S{2})\\)$", RegexOptions.Compiled)]
+        private static partial Regex DirectPageIndirectRegex();
+
+        [GeneratedRegex("^\\(\\$(\\S{2}),\\s?[Ss]\\),\\s?[Yy]$", RegexOptions.Compiled)]
+        private static partial Regex StackRelativeIndirectIndexedYRegex();
+
+        [GeneratedRegex("^\\$(\\S{2}),\\s?[Xx]$", RegexOptions.Compiled)]
+        private static partial Regex DirectPageIndexedXRegex();
+
+        [GeneratedRegex("^\\[\\$(\\S{2})\\],\\s?[Yy]$", RegexOptions.Compiled)]
+        private static partial Regex DirectPageIndirectLongIndexedYRegex();
+
+        [GeneratedRegex("^\\$(\\S{4}),\\s?[Yy]$", RegexOptions.Compiled)]
+        private static partial Regex AbsoluteIndexedYRegex();
+
+        [GeneratedRegex("^\\$(\\S{4}),\\s?[Xx]$", RegexOptions.Compiled)]
+        private static partial Regex AbsoluteIndexedXRegex();
+
+        [GeneratedRegex("^\\$(\\S{6}),\\s?[Xx]$", RegexOptions.Compiled)]
+        private static partial Regex AbsoluteLongIndexedXRegex();
+
+        [GeneratedRegex("^#\\$(\\S{2}),\\s?#\\$(\\S{2})$", RegexOptions.Compiled)]
+        private static partial Regex BlockMoveRegex();
     }
 }

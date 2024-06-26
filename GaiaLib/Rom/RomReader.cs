@@ -218,7 +218,7 @@ namespace GaiaLib.Rom
                 return ptr[offset++];
             }
 
-            foreach(var sfxName in sfx.Names )
+            foreach (var sfxName in sfx.Names)
             {
                 int size = readByte() | (readByte() << 8);
 
@@ -651,10 +651,11 @@ namespace GaiaLib.Rom
             return new Op { Location = loc, Code = code, Size = (byte)(_lCur - loc), Operands = [.. operands], CopDef = copDef };
         }
 
-        private Op ParseCode()
+        private IEnumerable<Op> ParseCode()
         {
+            var opList = new List<Op>();
             var reg = new Registers();
-            Op prev = null, head = null;
+            //Op prev = null, head = null;
             bool first = true;
             while (_lCur < _lEnd)
             {
@@ -721,16 +722,19 @@ namespace GaiaLib.Rom
                 //    }
                 //}
 
-                if (prev == null)
-                    head = op; //Set head
-                else
-                    op.Prev = prev; //Set prev
 
-                //Advance(op.Size); //Advance location
-                prev = op; //Advance prev
+                //if (prev == null)
+                //    head = op; //Set head
+                //else
+                //    op.Prev = prev; //Set prev
+
+                ////Advance(op.Size); //Advance location
+                //prev = op; //Advance prev
+
+                opList.Add(op);
             }
 
-            return head;
+            return opList;
         }
 
         private Location ParseLocation(Location loc, string otherStr)
@@ -905,14 +909,11 @@ namespace GaiaLib.Rom
                 ResolveObject(tgrp.Blocks);
             }
             else if (obj is Op op)
-                while (op != null)
-                {
-                    for (int i = 0; i < op.Operands.Length; i++)
-                        if (op.Operands[i] is Location l)
-                            ResolveName(l);
-
-                    op = op.Next;
-                }
+            {
+                for (int i = 0; i < op.Operands.Length; i++)
+                    if (op.Operands[i] is Location l)
+                        ResolveName(l);
+            }
         }
 
         public void WriteBlocks(string outPath)
@@ -989,13 +990,13 @@ namespace GaiaLib.Rom
                 _isInline = false;
 
             }
-            else if (obj is Op op)
+            else if (obj is IEnumerable<Op> opList)
             {
                 bool first = true;
                 writer.WriteLine("{");
                 _isInline = true;
 
-                while (op != null) //Process each instruction in sequence
+                foreach (var op in opList) //Process each instruction in sequence
                 {
                     if (first)
                     {
@@ -1044,7 +1045,7 @@ namespace GaiaLib.Rom
 
                     }
                     writer.WriteLine();
-                    op = op.Next;
+                    //op = op.Next;
                 }
 
                 _isInline = false;

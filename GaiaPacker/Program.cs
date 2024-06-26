@@ -1,255 +1,12 @@
 ﻿using GaiaLib;
+using GaiaLib.Asm;
 using GaiaPacker;
 using System.Globalization;
 using System.Text.Json;
 
-uint TilesetLoadEntry = 0x02876D;
-byte[] TilesetLoadPatch = [
-    0xA7, 0x3E,         //  LDA [$3E]
-    0xE6, 0x3E,         //  INC $3E
-    0xE6, 0x3E,         //  INC $3E
-    0xC9, 0x00, 0x00,   //  CMP #$0000
-    0xF0, 0x07,         //  BEQ #$07
-    0x30, 0x05,         //  BMI #$05
-    0x85, 0x78,         //  STA $78
-    0x4C, 0x77, 0x87,   //  JMP $8777
-    0x4C, 0x8A, 0x87,   //  JMP $878A
-];
-
-uint TilemapLoadEntry1 = 0x02883F;
-byte[] TilemapLoadPatch1 = [
-    0xA7, 0x3E,         //  LDA [$3E]
-    0xE6, 0x3E,         //  INC $3E
-    0xE6, 0x3E,         //  INC $3E
-    0xC9, 0x00, 0x00,   //  CMP #$0000
-    0xF0, 0x0A,         //  BEQ #$0A
-    0x30, 0x08,         //  BMI #$08
-    0x85, 0x78,         //  STA $78
-    0x9D, 0x66, 0x06,   //  STA $0666
-    0x4C, 0x4F, 0x88,   //  JMP $884F
-    0x4C, 0xB5, 0x88,   //  JMP $88B5
-];
-
-uint TilemapLoadEntry2 = 0x028928F;
-byte[] TilemapLoadPatch2 = [
-    0xA7, 0x3E,         //  LDA [$3E]
-    0xE6, 0x3E,         //  INC $3E
-    0xE6, 0x3E,         //  INC $3E
-    0xC9, 0x00, 0x00,   //  CMP #$0000
-    0xF0, 0x07,         //  BEQ #$07
-    0x30, 0x05,         //  BMI #$05
-    0x85, 0x78,         //  STA $78
-    0x4C, 0x43, 0x89,   //  JMP $8943
-    0x4C, 0x35, 0x89,   //  JMP $8935
-];
-
-uint TilemapLoadEntry3 = 0x028914;
-byte[] TilemapLoadPatch3 = [
-    0xA5, 0x01,         //  LDA $01
-    0x9D, 0x93, 0x06,   //  STA $0693, X    Copy stored width
-    //0xEB,               //  XBA
-    0xA5, 0x03,         //  LDA $03
-    0x9D, 0x97, 0x06,   //  STA $0697, X    Copy stored height
-    0xAD, 0x67, 0x06,   //  LDA $0667
-    0x9D, 0x9B, 0x06,   //  STA $069B, X    Copy stored multiply result (used by 0 index)
-    0xC2, 0x20,         //  REP #$20
-    //0x9C, 0x64, 0x06,   //  STZ $0664       Zero src offset
-    0x9C, 0x68, 0x06,   //  STZ $0668       Zero dst offset
-    0x4C, 0x20, 0x89,   //  JMP $8920
-];
-
-uint Meta17LoadEntry = 0x028C61;
-byte[] Meta17LoadPatch = [
-    0xA7, 0x3E,         //  LDA [$3E]
-    0xE6, 0x3E,         //  INC $3E
-    0xE6, 0x3E,         //  INC $3E
-    0xC9, 0x00, 0x00,   //  CMP #$0000
-    0xF0, 0x05,         //  BEQ #$05
-    0x30, 0x03,         //  BMI #$03
-    0x4C, 0x69, 0x8C,   //  JMP $8C69
-    0x4C, 0x85, 0x8C,   //  JMP $8C85
-];
-
-uint SpritemapLoadEntry = 0x028C01;
-byte[] SpritemapLoadPatch = [
-    0xA7, 0x3E,         //  LDA [$3E]
-    0xE6, 0x3E,         //  INC $3E
-    0xE6, 0x3E,         //  INC $3E
-    0xC9, 0x00, 0x00,   //  CMP #$0000
-    0xF0, 0x05,         //  BEQ #$05
-    0x30, 0x03,         //  BMI #$03
-    0x4C, 0x0C, 0x8C,   //  JMP $8C0C
-    0x4C, 0x1B, 0x8C,   //  JMP $8C1B
-];
-
-uint BitmapLoadEntry1 = 0x028503;
-byte[] BitmapLoadPatch1 = [
-    0xA7, 0x3E,         //  LDA [$3E]
-    0xE6, 0x3E,         //  INC $3E
-    0xE6, 0x3E,         //  INC $3E
-    0xC9, 0x00, 0x00,   //  CMP #$0000
-    0xF0, 0x07,         //  BEQ Mode7Check
-    0x30, 0x05,         //  BMI Mode7Check
-    0x85, 0x78,         //  STA $78
-    0x4C, 0x10, 0x85,   //  JMP $8510
-
-    //Mode7Check:
-    0xE0, 0x6C, 0x06,   //  CPX #$066C
-    0xD0, 0x0A,         //  BNE JumpDma
-    0xAD, 0xEE, 0x06,   //  LDA $06EE
-    0x89, 0x00, 0x08,   //  BIT #$0800
-    0xF0, 0x02,         //  BEQ JumpDma
-    0x80, 0x03,         //  BRA Mode7Process
-    
-    //JumpDma:
-    0x4C, 0x60, 0x85,   //  JMP $8560
-
-    //Mode7Process:
-    0x5A,               //  PHY
-    0x8B,               //  PHB
-  
-    0xA5, 0x3E,         //  LDA $3E
-    0x85, 0x72,         //  STA $72
-    0x18,               //  CLC
-    0x69, 0x10, 0x00,   //  ADC #$0010
-    0x85, 0x75,         //  STA $75
-  
-    0xE2, 0x20,         //  SEP #$20
-    0xA5, 0x40,         //  LDA $40
-    0x85, 0x74,         //  STA $74
-    0x85, 0x77,         //  STA $77
-  
-    0xA9, 0x7E,         //  LDA #$7E
-    0x48,               //  PHA
-    0xAB,               //  PLB
-  
-    0x64, 0x0E,         //  STZ $0E
-    0xA2, 0x00, 0xA0,   //  LDX #$A000
-    0x86, 0x5E,         //  STX $5E
-    0x20, 0x8C, 0x86,   //  JSR $868C
-    0xA0, 0x00, 0x00,   //  LDY #$0000
-  
-    //  ReadLookup:
-    0xA9, 0x07,         //  LDA #$07
-    0x85, 0x12,         //  STA $12
-    0xB2, 0x3E,         //  LDA ($3E)
-    0x85, 0x10,         //  STA $10
-    0xE6, 0x3E,         //  INC $3E
-    0xD0, 0x02,         //  BNE #$02
-    0xE6, 0x3F,         //  INC $3F
-  
-    //  ReadSample:
-    0xB7, 0x72,         //  LDA [$72],Y
-    0x85, 0x00,         //  STA $00
-    0xB7, 0x75,         //  LDA [$75],Y
-    0x85, 0x04,         //  STA $04
-    0xC8,               //  INY
-    0xB7, 0x72,         //  LDA [$72],Y
-    0x85, 0x02,         //  STA $02
-    0xB7, 0x75,         //  LDA [$75],Y
-    0x85, 0x06,         //  STA $06
-    0xA2, 0x07, 0x00,   //  LDX #$0007
-  
-    //  RotateBits:
-    0xA9, 0x00,         //  LDA #$00
-    0x26, 0x06,         //  ROL $06
-    0x2A,               //  ROL
-    0x26, 0x04,         //  ROL $04
-    0x2A,               //  ROL
-    0x26, 0x02,         //  ROL $02
-    0x2A,               //  ROL
-    0x26, 0x00,         //  ROL $00
-    0x2A,               //  ROL
-    0x05, 0x10,         //  ORA $10
-    0x92, 0x5E,         //  STA ($5E)
-    0xE6, 0x5E,         //  INC $5E
-    0xD0, 0x02,         //  BNE #$02
-    0xE6, 0x5F,         //  INC $5F
-  
-    0xCA,               //  DEX
-    0x10, 0xE5,         //  BPL RotateBits
-    0xC8,               //  INY
-    0xC6, 0x12,         //  DEC $12
-    0x10, 0xCC,         //  BPL ReadSample
-    0xC2, 0x20,         //  REP #$20
-    0x98,               //  TYA
-    0x18,               //  CLC
-    0x69, 0x10, 0x00,   //  ADC #$0010
-    0xA8,               //  TAY
-    0xE2, 0x20,         //  SEP #$20
-    0xC0, 0x00, 0x20,   //  CPY #$2000
-    0x90, 0xAF,         //  BCC ReadLookup
-    
-    0x9C, 0x71, 0x06,   //  STZ $671   Clear "last bank" so next resource loads
-    0x9C, 0x7D, 0x06,   //  STZ $67D
-    0x9C, 0x80, 0x06,   //  STZ $680
-    0x9C, 0x83, 0x06,   //  STZ $683
-
-    0x4C, 0x5D, 0x86,   //  JMP $865D
-];
-
-uint BitmapLoadEntry2 = 0x028592;
-byte[] BitmapLoadPatch2 = [
-    0xA7, 0x3E,         //  LDA [$3E]
-    0xE6, 0x3E,         //  INC $3E
-    0xE6, 0x3E,         //  INC $3E
-    0xC9, 0x00, 0x00,   //  CMP #$0000
-    0xF0, 0x07,         //  BEQ #$07
-    0x30, 0x05,         //  BMI #$05
-    0x85, 0x78,         //  STA $78
-    0x4C, 0x9F, 0x85,   //  JMP $859F
-    0x4C, 0xB2, 0x85,   //  JMP $85B2
-];
-
-//Can't use DMA without screen blank, use MVN instead
-uint Cop51LoadEntry = 0x0099A8;
-byte[] Cop51LoadPatch = [
-    0xA7, 0x3E,         //  LDA [$3E]
-    0xC9, 0x00, 0x00,   //  CMP #$0000
-    0x30, 0x10,         //  BMI HandleMinus
-    0xF0, 0x09,         //  BEQ HandleZero
-    0x85, 0x78,         //  STA $78
-    0xE6, 0x3E,         //  INC $3E
-    0xE6, 0x3E,         //  INC $3E
-    0x4C, 0xB0, 0x99,   //  JMP $99B0
-
-    //HandleZero:
-    0xA9, 0x00, 0x20,   //  LDA  #$2000
-    0x80, 0x06,         //  BRA DoMVN
-
-    //HandleMinus:
-    0xA9, 0x00, 0x00,   //  LDA #$0000
-    0x38,               //  SEC
-    0xE7, 0x3E,         //  SBC [$3E]
-
-    //DoMVN:
-    0xE6, 0x3E,         //  INC $3E
-    0xE6, 0x3E,         //  INC $3E
-    0xDA,               //  PHX
-    0x5A,               //  PHY
-
-    0x38,               //  SEC
-    0xE9, 0x01, 0x00,   //  SBC #$0001
-    0x48,               //  PHA
-    
-    0xE2, 0x20,         //  SEP #$20
-    0xA9, 0x7E,         //  LDA #$7E
-    0x8D, 0x04, 0x04,   //  STA $0404
-    0xA5, 0x40,         //  LDA $40
-    0x8D, 0x05, 0x04,   //  STA $0405
-    0xC2, 0x20,         //  REP #$20
-    
-    0xA6, 0x3E,         //  LDX $3E
-    0xA4, 0x7A,         //  LDY $7A
-
-    0x68,               //  PLA
-    0x20, 0x02, 0x04,   //  JSR $0402
-    0x7A,               //  PLY
-    0xFA,               //  PLX
-
-    0x4C, 0xB8, 0x99,   //  JMP $99B8
-];
-
+char[] _whitespace = [' ', '\t'],
+    _operators = ['-', '+'],
+    _commaspace = [',', ' ', '\t'];
 
 uint[] DebugmanEntries = [0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u];
 byte[] DebugmanActor = [0x20, 0xEE, 0x8B];
@@ -301,21 +58,24 @@ outRom.Position = 0x02944Cu;
 outRom.WriteByte(0x00);
 outRom.WriteByte(0x00);
 
+
 //Apply COP patches
 outRom.Position = 0x00F48F;
-ApplyPatch(Cop51LoadEntry, Cop51LoadPatch);
+using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\Cop51Patch.asm"))
+    ParseAssembly(asmFile);
 
 //Apply meta patches
 outRom.Position = 0x02F08C;
-ApplyPatch(TilesetLoadEntry, TilesetLoadPatch);
-ApplyPatch(TilemapLoadEntry1, TilemapLoadPatch1);
-ApplyPatch(TilemapLoadEntry2, TilemapLoadPatch2);
-ApplyPatch(TilemapLoadEntry3, TilemapLoadPatch3);
-ApplyPatch(SpritemapLoadEntry, SpritemapLoadPatch);
-ApplyPatch(Meta17LoadEntry, Meta17LoadPatch);
-ApplyPatch(BitmapLoadEntry1, BitmapLoadPatch1);
-ApplyPatch(BitmapLoadEntry2, BitmapLoadPatch2);
-
+using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\TilesetPatch.asm"))
+    ParseAssembly(asmFile);
+using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\TilemapPatch.asm"))
+    ParseAssembly(asmFile);
+using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\MenuBGPatch.asm"))
+    ParseAssembly(asmFile);
+using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\SpritemapPatch.asm"))
+    ParseAssembly(asmFile);
+using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\BitmapPatch.asm"))
+    ParseAssembly(asmFile);
 
 //Debugman
 //foreach (var loc in DebugmanEntries)
@@ -646,15 +406,50 @@ void ParseAssembly(Stream inStream)
     using var reader = new StreamReader(inStream);
 
     var blocks = new List<AsmBlock>();
-    AsmBlock currentBlock = new AsmBlock();
+    var currentBlock = new AsmBlock();
+    var tags = new Dictionary<string, string>();
+    int ix, lineCount = 0;
 
     while (!reader.EndOfStream)
     {
         var line = reader.ReadLine() ?? "";
-        var labelIx = line.IndexOf(':');
-        if (labelIx >= 0)
+        lineCount++;
+
+        //Ignore comments
+        if ((ix = line.IndexOf("--")) >= 0)
+            line = line[..ix];
+
+        line = line.Trim();
+        if (line.Length == 0)
+            continue;
+
+        //Make everything case-sensitive
+        line = line.ToUpper();
+
+        //Process tags
+        if (line.StartsWith('#'))
         {
-            var label = line[..labelIx].Trim().ToUpper();
+            line = line[1..];
+            string name = line, value = null;
+            if ((ix = line.IndexOfAny(_whitespace)) >= 0)
+            {
+                name = line[..ix];
+                value = line[(ix + 1)..].Trim();
+            }
+
+            tags[name] = value;
+            continue;
+        }
+
+        //Resolve tags
+        foreach (var tag in tags)
+            while ((ix = line.IndexOf(tag.Key)) >= 0)
+                line = line[..ix] + tag.Value + line[(ix + tag.Key.Length)..];
+
+        //Process labels
+        if ((ix = line.IndexOf(':')) >= 0)
+        {
+            var label = line[..ix].Trim();
 
             blocks.Add(currentBlock = new AsmBlock { });
 
@@ -663,14 +458,12 @@ void ParseAssembly(Stream inStream)
             else
                 currentBlock.Label = label;
 
-            break;
+            continue;
         }
 
-        line = line.Trim().ToUpper();
         string? mnem, operand = null;
 
-        var ix = line.IndexOf(' ');
-        if (ix > 0)
+        if ((ix = line.IndexOfAny(_whitespace)) > 0)
         {
             mnem = line[..ix];
             operand = line[(ix + 1)..].Trim();
@@ -678,27 +471,194 @@ void ParseAssembly(Stream inStream)
         else
             mnem = line;
 
-        if (Asm.OpCodes.TryGetValue(mnem, out var codes))
-        {
-            var opCode = codes.First();
+        if (!OpCode.Grouped.TryGetValue(mnem, out var codes))
+            throw new($"Unknown instruction line {lineCount}: '{line}'");
 
-            if (operand != null)
-                foreach (var code in codes)
+        //No operand instructions
+        if (string.IsNullOrEmpty(operand))
+        {
+            currentBlock.OpList.Add(new Op { Code = codes.First(x => x.Size == 1), Operands = [], Size = 1 });
+            currentBlock.Size++;
+            continue;
+        }
+
+        //Do maths before regex processing
+        while ((ix = operand.IndexOfAny(_operators)) >= 0)
+        {
+            var op = operand[ix];
+
+            int vix = operand.LastIndexOf('$', ix) + 1;
+            //if (vix == 0)
+            //    throw new($"Unable to locate variable for operator line {lineCount}: '{op}'");
+
+            var value = uint.Parse(operand[vix..ix], NumberStyles.HexNumber);
+
+            var endIx = operand.IndexOfAny(_commaspace, ix + 1);
+            if (endIx < 0) endIx = operand.Length;
+            var number = uint.Parse(operand[(ix + 1)..endIx], NumberStyles.HexNumber);
+
+            if (op == '-') value -= number;
+            else value += number;
+
+            var len = (ix - vix) switch
+            {
+                1 or 2 => 2,
+                3 or 4 => 4,
+                5 or 6 => 6,
+                _ => throw new("Invalid size")
+            };
+
+            operand = operand[..vix] + value.ToString($"X{len}") + operand[endIx..];
+        }
+
+        OpCode opCode = null;
+        int size = 1;
+        foreach (var code in codes)
+        {
+            ///TODO: COP processing
+            //Keep branch operands until all blocks are processed (for labels)
+            if (code.Mode == AddressingMode.PCRelative || code.Mode == AddressingMode.PCRelativeLong)
+            {
+                opCode = code;
+                size = code.Size;
+                break;
+            }
+
+            if (OpCode.AddressingRegex.TryGetValue(code.Mode, out var regex))
+            {
+                var match = regex.Match(operand);
+                if (match.Success)
                 {
-                    if (Asm.AddressingRegex.TryGetValue(code.Mode, out var regex))
+                    operand = match.Groups[1].Value;
+                    opCode = code;
+                    size = opCode.Size == -2 ? (operand.Length > 2 ? 3 : 2) : opCode.Size;
+                    break;
+                }
+            }
+
+        }
+
+        object opnd = null;
+        if (opCode == null)
+        {
+            if (mnem.StartsWith('J'))
+            {
+                opCode = codes.First(x => x.Mode == AddressingMode.Absolute || x.Mode == AddressingMode.AbsoluteLong);
+                opnd = blocks.FirstOrDefault(x => x.Label?.Equals(operand) == true)
+                //if (!blocks.Any(x => x.Label?.Equals(operand) == true))
+                    ?? throw new($"Unable to locate target for label line {lineCount}: '{operand}'");
+            }
+            else
+                throw new($"Unable to determine mode/code line {lineCount}: '{line}'");
+        }
+
+        currentBlock.OpList.Add(new() { Code = opCode, Operands = [opnd ?? operand], Size = (byte)size });
+        currentBlock.Size += size;
+    }
+
+    foreach (var block in blocks)
+    {
+        uint? oldPos = null;
+        if (block.Location != null)
+        {
+            oldPos = (uint)outRom.Position;
+            outRom.Position = block.Location.Value;
+        }
+        else
+            block.Location = (uint)outRom.Position;
+
+        var opList = block.OpList;
+        int bix = blocks.IndexOf(block);
+        foreach (var op in opList)
+        {
+            outRom.WriteByte(op.Code.Code);
+            if (op.Code.Mode == AddressingMode.PCRelative || op.Code.Mode == AddressingMode.PCRelativeLong)
+            {
+                var label = (string)op.Operands[0];
+                if (label.StartsWith("#$"))
+                    op.Operands[0] = label[2..];
+                else
+                {
+                    var target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
+                        ?? throw new($"Unable to find label {label}");
+
+                    int offset = 0,
+                        tix = blocks.IndexOf(target),
+                        cic = opList.IndexOf(op) + 1;
+
+                    if (tix <= bix)
                     {
-                        var match = regex.Match(operand);
-                        if (match.Success)
-                        {
-                            operand = match.Captures[0].Value;
-                            opCode = code;
-                            break;
-                        }
+                        while (tix < bix)
+                            offset += blocks[tix++].Size;
+
+                        while (--cic >= 0)
+                            offset += opList[cic].Size;
+
+                        offset = -offset;
                     }
+                    else
+                    {
+                        while (--tix > bix)
+                            offset += blocks[tix].Size;
+
+                        while (cic < opList.Count)
+                            offset += opList[cic++].Size;
+                    }
+
+                    outRom.WriteByte((byte)offset);
+                    if (op.Size == 3)
+                        outRom.WriteByte((byte)(offset >> 8));
+
+                    continue;
+                }
+            }
+
+
+            foreach (var opnd in op.Operands)
+            {
+                if (opnd is AsmBlock target)
+                {
+                    uint loc = target.Location.Value;
+                    if (op.Code.Mode == AddressingMode.PCRelativeLong)
+                    {
+                        outRom.WriteByte((byte)loc);
+                        outRom.WriteByte((byte)(loc >> 8));
+                        outRom.WriteByte((byte)((loc >> 16) + 0x80));
+                    }
+                    else
+                    {
+                        outRom.WriteByte((byte)loc);
+                        outRom.WriteByte((byte)(loc >> 8));
+                    }
+                    continue;
                 }
 
-            currentBlock.OpList.Add(new() { Code = opCode, Operand = operand });
+                var str = (string)opnd;
+                switch (str.Length)
+                {
+                    case 2:
+                        byte b = byte.Parse(str, NumberStyles.HexNumber);
+                        outRom.WriteByte(b);
+                        break;
+                    case 4:
+                        ushort s = ushort.Parse(str, NumberStyles.HexNumber);
+                        outRom.WriteByte((byte)s);
+                        outRom.WriteByte((byte)(s >> 8));
+                        break;
+                    case 6:
+                        uint u = uint.Parse(str, NumberStyles.HexNumber);
+                        outRom.WriteByte((byte)u);
+                        outRom.WriteByte((byte)(u >> 8));
+                        outRom.WriteByte((byte)(u >> 16));
+                        break;
+                    default:
+                        throw new($"Incorrect operand length {str}");
+                }
+            }
         }
+
+        if (oldPos != null)
+            outRom.Position = oldPos.Value;
     }
 }
 

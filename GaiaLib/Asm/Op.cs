@@ -16,11 +16,11 @@ namespace GaiaLib.Asm
         public byte Size { get; set; }
         public CopDef CopDef { get; set; }
 
-        private Op _prev;
-        public Op Prev { get => _prev; set { if (_prev != value && (_prev = value) != null) value._next = this; } }
+        //private Op _prev;
+        //public Op Prev { get => _prev; set { if (_prev != value && (_prev = value) != null) value._next = this; } }
 
-        private Op _next;
-        public Op Next { get => _next; set { if (_next != value && (_next = value) != null) value._prev = this; } }
+        //private Op _next;
+        //public Op Next { get => _next; set { if (_next != value && (_next = value) != null) value._prev = this; } }
         //public Op Reference { get; set; }
 
         //internal IEnumerable<Location> References { get; set; }
