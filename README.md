@@ -1,4 +1,4 @@
-![kassiven_httpss mj runbYICt94DQf4_brand_identification_symbol_v_e494ae0e-d070-4f0d-8a50-73cf95143401](https://github.com/Azarem/GaiaLabs/assets/7395229/ff1f5cd9-d3d7-4567-b950-64d6d1191934)
+![logo_small](https://github.com/Azarem/GaiaLabs/assets/7395229/cbb7c720-ebec-4cf9-8110-edd6f2fbe057)
 
 # GaiaLabs
 Illusion of Gaia (dis)assembler with COProcessor call awareness and data struct support. Adding more features regularly.
