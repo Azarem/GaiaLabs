@@ -1,4 +1,4 @@
-﻿?BANK $02
+﻿?BANK 02
 
 -- Patch for bitmap loading which adds support for no compression
 

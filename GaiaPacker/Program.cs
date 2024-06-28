@@ -62,64 +62,64 @@ outRom.WriteByte(0x00);
 
 
 //Apply COP patches
-outRom.Position = 0x00F48F;
-using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\Cop51Patch.asm"))
-    ParseAssembly(asmFile);
+//outRom.Position = 0x00F48F;
+//using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\Cop51Patch.asm"))
+//    ParseAssembly(asmFile);
 
 //Apply meta patches
-outRom.Position = 0x02F08C;
-using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\TilesetPatch.asm"))
-    ParseAssembly(asmFile);
-using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\TilemapPatch.asm"))
-    ParseAssembly(asmFile);
-using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\MenuBGPatch.asm"))
-    ParseAssembly(asmFile);
-using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\SpritemapPatch.asm"))
-    ParseAssembly(asmFile);
-using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\BitmapPatch.asm"))
-    ParseAssembly(asmFile);
+//outRom.Position = 0x02F08C;
+//using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\TilesetPatch.asm"))
+//    ParseAssembly(asmFile);
+//using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\TilemapPatch.asm"))
+//    ParseAssembly(asmFile);
+//using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\MenuBGPatch.asm"))
+//    ParseAssembly(asmFile);
+//using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\SpritemapPatch.asm"))
+//    ParseAssembly(asmFile);
+//using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\BitmapPatch.asm"))
+//    ParseAssembly(asmFile);
 
 //Apply sfx load patch
-using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\SFXTable.asm"))
-    ParseAssembly(asmFile);
+//using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\SFXTable.asm"))
+//    ParseAssembly(asmFile);
 
 //Debugman
 //foreach (var loc in DebugmanEntries)
 //    ApplyData(loc, DebugmanActor);
 
-Process.Repack("C:\\Games\\Dump", "C:\\Games\\GaiaLabs\\GaiaLabs\\database.json", WriteFile, WriteSfx);
+Process.Repack(baseDir, "C:\\Games\\GaiaLabs\\GaiaLabs\\database.json", WriteFile);
 
-uint WriteSfx(Location location, IEnumerable<string> paths)
-{
-    var offset = location.Offset;
-    outRom.Position = offset;
+//uint WriteSfx(Location location, IEnumerable<string> paths)
+//{
+//    var offset = location.Offset;
+//    outRom.Position = offset;
 
-    void writeByte(byte b)
-    {
-        outRom.WriteByte(b);
-        if ((++offset & 0x8000u) != 0)
-        {
-            offset = (offset & 0x3F0000) + 0x10000;// | (offset & 0x7FFFu);
-            outRom.Position = offset;
-        }
-    }
+//    void writeByte(byte b)
+//    {
+//        outRom.WriteByte(b);
+//        if ((++offset & 0x8000u) != 0)
+//        {
+//            offset = (offset & 0x3F0000) + 0x10000;// | (offset & 0x7FFFu);
+//            outRom.Position = offset;
+//        }
+//    }
 
-    foreach (var path in paths)
-    {
-        using var inFile = File.OpenRead(path);
+//    foreach (var path in paths)
+//    {
+//        using var inFile = File.OpenRead(path);
 
-        writeByte((byte)inFile.Length);
-        writeByte((byte)(inFile.Length >> 8));
+//        writeByte((byte)inFile.Length);
+//        writeByte((byte)(inFile.Length >> 8));
 
-        int sample;
-        while ((sample = inFile.ReadByte()) >= 0)
-            writeByte((byte)sample);
-    }
+//        int sample;
+//        while ((sample = inFile.ReadByte()) >= 0)
+//            writeByte((byte)sample);
+//    }
 
-    return (uint)outRom.Position;
-}
+//    return (uint)outRom.Position;
+//}
 
-void WriteFile(Process.ChunkFile file)
+uint WriteFile(Process.ChunkFile file, IDictionary<string, Location> chunkLookup)
 {
     uint filePos = file.Location;
     outRom.Position = filePos;
@@ -140,6 +140,16 @@ void WriteFile(Process.ChunkFile file)
                 outRom.WriteByte((byte)inFile.ReadByte());
                 outRom.WriteByte((byte)inFile.ReadByte());
                 break;
+
+            case GaiaLib.Database.BinType.Sound:
+                var s = file.Size - 2;
+                outRom.WriteByte((byte)s);
+                outRom.WriteByte((byte)(s >> 8));
+                break;
+
+            case GaiaLib.Database.BinType.Assembly:
+                ParseAssembly(inFile, chunkLookup);
+                goto Next;
 
                 //case "Assembly":
                 //    ParseAssembly(inFile);
@@ -162,19 +172,24 @@ void WriteFile(Process.ChunkFile file)
             outRom.WriteByte((byte)sample);
     }
 
+Next:
+    uint size = (uint)outRom.Position - filePos;
+
     //Write reference fixups
     //var nextPos = outRom.Position;
-    foreach (var rf in file.File.XRef)
-    {
-        //var offset = uint.Parse(rf, NumberStyles.HexNumber);
-        outRom.Position = rf;
-        outRom.WriteByte((byte)filePos);
-        outRom.WriteByte((byte)(filePos >> 8));
-        outRom.WriteByte((byte)((filePos >> 16) + 0xC0));
-    }
+    if (file.File?.XRef?.Any() == true)
+        foreach (var rf in file.File.XRef)
+        {
+            //var offset = uint.Parse(rf, NumberStyles.HexNumber);
+            outRom.Position = rf;
+            outRom.WriteByte((byte)filePos);
+            outRom.WriteByte((byte)(filePos >> 8));
+            outRom.WriteByte((byte)((filePos >> 16) + 0xC0));
+        }
 
     //Move to next file
     //outRom.Position = nextPos;
+    return size;
 }
 
 //const int ChunkSize = 0x10000;
@@ -417,7 +432,7 @@ int getSize(object obj)
     throw new($"Unable to get size for operand '{obj}'");
 }
 
-void ParseAssembly(Stream inStream)
+void ParseAssembly(Stream inStream, IDictionary<string, Location> chunkLookup)
 {
     using var reader = new StreamReader(inStream);
 
@@ -476,14 +491,19 @@ void ParseAssembly(Stream inStream)
             var endIx = line.IndexOfAny(_commaspace, ix);
             if (endIx < 0) endIx = line.Length;
             var label = line[(ix + 1)..endIx];
-            target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
-                ?? throw new($"Unable to find label {label}");
+
+            if (!chunkLookup.TryGetValue(label, out var loc))
+            {
+                target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
+                    ?? throw new($"Unable to find label {label}");
+                loc = target.Location;
+            }
 
             var result = (line[ix]) switch
             {
-                '@' => (target.Location + 0xC00000u).ToString("X6"),
-                '&' => (target.Location & 0x00FFFFu).ToString("X4"),
-                '^' => ((target.Location >> 16) + 0xC0).ToString("X2"),
+                '@' => (loc.Offset + 0xC00000u).ToString("X6"),
+                '&' => (loc.Offset & 0x00FFFFu).ToString("X4"),
+                '^' => ((loc.Offset >> 16) + 0xC0).ToString("X2"),
                 _ => throw new("Invalid address operator")
             };
 

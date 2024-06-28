@@ -1228,11 +1228,11 @@
   ]},
   "freespace": [
     { "start": "007FFC", "end": "008000" },
-    //{ "start": "00F48F", "end": "00FFB0" },
+    { "start": "00F48F", "end": "00FFB0" },
     { "start": "017FFE", "end": "018000" },
     { "start": "01FF6C", "end": "020000" },
     { "start": "027FFA", "end": "028000" },
-    //{ "start": "02F08C", "end": "030000" },
+    { "start": "02F08C", "end": "030000" },
     { "start": "037FF1", "end": "038000" },
     { "start": "03F201", "end": "040000" },
     { "start": "047FF7", "end": "048000" },

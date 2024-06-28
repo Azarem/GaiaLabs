@@ -13,6 +13,7 @@ namespace GaiaLib.Database
         Music,
         Unknown,
         Meta17,
-        Spritemap
+        Spritemap,
+        Assembly
     }
 }

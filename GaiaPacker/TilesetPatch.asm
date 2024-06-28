@@ -1,4 +1,4 @@
-﻿?BANK $02
+﻿?BANK 02
 
 !SPTR		$3E
 !DCMP_SIZE	$78

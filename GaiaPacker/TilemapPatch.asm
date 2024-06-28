@@ -1,4 +1,4 @@
-﻿?BANK $02
+﻿?BANK 02
 
 -- Patch for tilemap loading which adds support for no compression
 
