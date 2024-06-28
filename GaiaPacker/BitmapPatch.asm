@@ -1,13 +1,14 @@
-﻿-- Patch for bitmap loading which adds support for no compression
+﻿?BANK $02
 
-#BANK		$02
-#LSAMPLE	$10
-#LOOPNUM	$12
-#SPTR		$3E
-#DPTR		$5E
-#TPTR1		$72
-#TPTR2		$75
-#DCMP_SIZE	$78
+-- Patch for bitmap loading which adds support for no compression
+
+!LSAMPLE	$10
+!LOOPNUM	$12
+!SPTR		$3E
+!DPTR		$5E
+!TPTR1		$72
+!TPTR2		$75
+!DCMP_SIZE	$78
 
 --------------------------------------------------
 

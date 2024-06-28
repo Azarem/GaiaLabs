@@ -1,10 +1,11 @@
-﻿-- Patch for tilemap loading which adds support for no compression
+﻿?BANK $02
 
-#BANK		$02
-#SPTR		$3E
-#DCMP_SIZE	$78
-#META_SIZE  $0666
-#DST_OFF    $0668
+-- Patch for tilemap loading which adds support for no compression
+
+!SPTR		$3E
+!DCMP_SIZE	$78
+!META_SIZE  $0666
+!DST_OFF    $0668
 
 ----------------------------------------
 

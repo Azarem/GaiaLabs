@@ -4,9 +4,11 @@ using GaiaPacker;
 using System.Globalization;
 using System.Text.Json;
 
-char[] _whitespace = [' ', '\t'],
+char[]
+    _whitespace = [' ', '\t'],
     _operators = ['-', '+'],
-    _commaspace = [',', ' ', '\t'];
+    _commaspace = [',', ' ', '\t'],
+    _addressspace = ['@', '&', '^'];
 
 uint[] DebugmanEntries = [0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u];
 byte[] DebugmanActor = [0x20, 0xEE, 0x8B];
@@ -75,6 +77,10 @@ using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\MenuBGPatch
 using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\SpritemapPatch.asm"))
     ParseAssembly(asmFile);
 using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\BitmapPatch.asm"))
+    ParseAssembly(asmFile);
+
+//Apply sfx load patch
+using (var asmFile = File.OpenRead("C:\\Games\\GaiaLabs\\GaiaPacker\\SFXTable.asm"))
     ParseAssembly(asmFile);
 
 //Debugman
@@ -400,15 +406,27 @@ void ApplyPatch(uint entry, byte[] asm)
     ApplyData(pos, asm);
 }
 
+int getSize(object obj)
+{
+    //var obj = objList[index];
+    if (obj is Op op)
+        return op.Size;
+    else if (obj is byte[] arr)
+        return arr.Length;
+    ///TODO: Add parsers for strings
+    throw new($"Unable to get size for operand '{obj}'");
+}
 
 void ParseAssembly(Stream inStream)
 {
     using var reader = new StreamReader(inStream);
 
     var blocks = new List<AsmBlock>();
-    var currentBlock = new AsmBlock();
+    AsmBlock current, target;
     var tags = new Dictionary<string, string>();
-    int ix, lineCount = 0;
+    int ix, bix = 0, lineCount = 0;
+
+    blocks.Add(current = new AsmBlock { Location = (uint)outRom.Position });
 
     while (!reader.EndOfStream)
     {
@@ -426,8 +444,14 @@ void ParseAssembly(Stream inStream)
         //Make everything case-sensitive
         line = line.ToUpper();
 
+        //Process directives
+        if (line[0] == '?')
+        {
+            continue;
+        }
+
         //Process tags
-        if (line.StartsWith('#'))
+        if (line[0] == '!')
         {
             line = line[1..];
             string name = line, value = null;
@@ -446,17 +470,66 @@ void ParseAssembly(Stream inStream)
             while ((ix = line.IndexOf(tag.Key)) >= 0)
                 line = line[..ix] + tag.Value + line[(ix + tag.Key.Length)..];
 
+        //Resolve addresses
+        while ((ix = line.IndexOfAny(_addressspace)) >= 0)
+        {
+            var endIx = line.IndexOfAny(_commaspace, ix);
+            if (endIx < 0) endIx = line.Length;
+            var label = line[(ix + 1)..endIx];
+            target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
+                ?? throw new($"Unable to find label {label}");
+
+            var result = (line[ix]) switch
+            {
+                '@' => (target.Location + 0xC00000u).ToString("X6"),
+                '&' => (target.Location & 0x00FFFFu).ToString("X4"),
+                '^' => ((target.Location >> 16) + 0xC0).ToString("X2"),
+                _ => throw new("Invalid address operator")
+            };
+
+            line = line[..ix] + '$' + result + line[endIx..];
+        }
+
+
+        //Process raw data
+        if (line[0] == '#')
+        {
+            bool reverse = false;
+            if (line[1] == '$')
+            {
+                reverse = true;
+                line = line[2..];
+            }
+            else
+                line = line[1..];
+
+            var data = Convert.FromHexString(line);
+            if (reverse)
+                for (int x = 0, y = data.Length; --y > x;)
+                {
+                    var sample = data[x];
+                    data[x++] = data[y];
+                    data[y] = sample;
+                }
+
+            current.ObjList.Add(data);
+            current.Size += (uint)data.Length;
+            continue;
+        }
+
+
         //Process labels
         if ((ix = line.IndexOf(':')) >= 0)
         {
             var label = line[..ix].Trim();
 
-            blocks.Add(currentBlock = new AsmBlock { });
+            blocks.Add(current = new AsmBlock { Location = current.Location + current.Size });
+            bix++;
 
             if (uint.TryParse(label, NumberStyles.HexNumber, null, out var addr))
-                currentBlock.Location = addr;
+                current.Location = addr;
             else
-                currentBlock.Label = label;
+                current.Label = label;
 
             continue;
         }
@@ -477,8 +550,8 @@ void ParseAssembly(Stream inStream)
         //No operand instructions
         if (string.IsNullOrEmpty(operand))
         {
-            currentBlock.OpList.Add(new Op { Code = codes.First(x => x.Size == 1), Operands = [], Size = 1 });
-            currentBlock.Size++;
+            current.ObjList.Add(new Op { Code = codes.First(x => x.Size == 1), Operands = [], Size = 1 });
+            current.Size++;
             continue;
         }
 
@@ -552,113 +625,141 @@ void ParseAssembly(Stream inStream)
                 throw new($"Unable to determine mode/code line {lineCount}: '{line}'");
         }
 
-        currentBlock.OpList.Add(new() { Code = opCode, Operands = [opnd ?? operand], Size = (byte)size });
-        currentBlock.Size += size;
+        current.ObjList.Add(new Op() { Code = opCode, Operands = [opnd ?? operand], Size = (byte)size });
+        current.Size += (uint)size;
     }
 
+    bix = 0;
     foreach (var block in blocks)
     {
         uint? oldPos = null;
-        if (block.Location != null)
+        if (block.Label == null)
         {
             oldPos = (uint)outRom.Position;
-            outRom.Position = block.Location.Value;
+            outRom.Position = block.Location;
         }
         else
             block.Location = (uint)outRom.Position;
 
-        var opList = block.OpList;
-        int bix = blocks.IndexOf(block);
-        foreach (var op in opList)
+        var objList = block.ObjList;
+        int oix = 0, opos = 0;
+        foreach (var obj in objList)
         {
-            outRom.WriteByte(op.Code.Code);
-            if (op.Code.Mode == AddressingMode.PCRelative || op.Code.Mode == AddressingMode.PCRelativeLong)
+            oix++;
+            if (obj is Op op)
             {
-                var label = (string)op.Operands[0];
-                if (label.StartsWith("#$"))
-                    op.Operands[0] = label[2..];
-                else
+                outRom.WriteByte(op.Code.Code);
+                opos += op.Size;
+
+                if (op.Code.Mode == AddressingMode.PCRelative || op.Code.Mode == AddressingMode.PCRelativeLong)
                 {
-                    var target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
-                        ?? throw new($"Unable to find label {label}");
-
-                    int offset = 0,
-                        tix = blocks.IndexOf(target),
-                        cic = opList.IndexOf(op) + 1;
-
-                    if (tix <= bix)
+                    var label = (string)op.Operands[0];
+                    if (label.StartsWith("#$"))
                     {
-                        while (tix < bix)
-                            offset += blocks[tix++].Size;
-
-                        while (--cic >= 0)
-                            offset += opList[cic].Size;
-
-                        offset = -offset;
+                        label = label[2..];
+                        if (label.Length > 4)
+                        {
+                            var offset = int.Parse(label, NumberStyles.HexNumber);
+                            offset -= (int)block.Location + opos;
+                            if (op.Code.Mode == AddressingMode.PCRelativeLong)
+                                op.Operands[0] = (ushort)offset;
+                            else
+                                op.Operands[0] = (byte)offset;
+                        }
+                        else
+                            op.Operands[0] = label;
                     }
                     else
                     {
-                        while (--tix > bix)
-                            offset += blocks[tix].Size;
+                        target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
+                            ?? throw new($"Unable to find label {label}");
 
-                        while (cic < opList.Count)
-                            offset += opList[cic++].Size;
+                        int offset = 0,
+                            tix = blocks.IndexOf(target),
+                            cic = oix;
+
+
+                        if (tix <= bix)
+                        {
+                            while (tix < bix)
+                            {
+                                var b = blocks[tix++];
+                                if (b.Label != null)
+                                    offset += (int)b.Size;
+                            }
+
+                            while (--cic >= 0)
+                                offset += getSize(objList[cic]);
+
+                            offset = -offset;
+                        }
+                        else
+                        {
+                            while (--tix > bix)
+                            {
+                                var b = blocks[tix];
+                                if (b.Label != null)
+                                    offset += (int)b.Size;
+                            }
+
+                            while (cic < objList.Count)
+                                offset += getSize(objList[cic++]);
+                        }
+
+                        outRom.WriteByte((byte)offset);
+                        if (op.Size == 3)
+                            outRom.WriteByte((byte)(offset >> 8));
+
+                        continue;
                     }
-
-                    outRom.WriteByte((byte)offset);
-                    if (op.Size == 3)
-                        outRom.WriteByte((byte)(offset >> 8));
-
-                    continue;
                 }
-            }
 
-
-            foreach (var opnd in op.Operands)
-            {
-                if (opnd is AsmBlock target)
+                foreach (var opnd in op.Operands)
                 {
-                    uint loc = target.Location.Value;
-                    if (op.Code.Mode == AddressingMode.PCRelativeLong)
-                    {
-                        outRom.WriteByte((byte)loc);
-                        outRom.WriteByte((byte)(loc >> 8));
-                        outRom.WriteByte((byte)((loc >> 16) + 0x80));
-                    }
+                    object result;
+
+                    if (opnd is AsmBlock tgt)
+                        result = op.Code.Mode == AddressingMode.PCRelativeLong
+                            ? (tgt.Location + 0x800000u)
+                            : (ushort)tgt.Location;
+                    else if (opnd is string str)
+                        result = (str.Length) switch
+                        {
+                            2 => result = byte.Parse(str, NumberStyles.HexNumber),
+                            4 => result = ushort.Parse(str, NumberStyles.HexNumber),
+                            6 => result = uint.Parse(str, NumberStyles.HexNumber),
+                            _ => throw new($"Incorrect operand length {str}")
+                        };
                     else
-                    {
-                        outRom.WriteByte((byte)loc);
-                        outRom.WriteByte((byte)(loc >> 8));
-                    }
-                    continue;
-                }
+                        result = opnd;
 
-                var str = (string)opnd;
-                switch (str.Length)
-                {
-                    case 2:
-                        byte b = byte.Parse(str, NumberStyles.HexNumber);
+                    if (result is uint ui)
+                    {
+                        outRom.WriteByte((byte)ui);
+                        outRom.WriteByte((byte)(ui >> 8));
+                        outRom.WriteByte((byte)(ui >> 16));
+                    }
+                    else if (result is ushort us)
+                    {
+                        outRom.WriteByte((byte)us);
+                        outRom.WriteByte((byte)(us >> 8));
+                    }
+                    else if (result is byte b)
                         outRom.WriteByte(b);
-                        break;
-                    case 4:
-                        ushort s = ushort.Parse(str, NumberStyles.HexNumber);
-                        outRom.WriteByte((byte)s);
-                        outRom.WriteByte((byte)(s >> 8));
-                        break;
-                    case 6:
-                        uint u = uint.Parse(str, NumberStyles.HexNumber);
-                        outRom.WriteByte((byte)u);
-                        outRom.WriteByte((byte)(u >> 8));
-                        outRom.WriteByte((byte)(u >> 16));
-                        break;
-                    default:
-                        throw new($"Incorrect operand length {str}");
                 }
+
+            }
+            else if (obj is byte[] arr)
+            {
+                outRom.Write(arr);
+                opos += arr.Length;
             }
         }
 
         if (oldPos != null)
             outRom.Position = oldPos.Value;
+
+        bix++;
     }
 }
 
