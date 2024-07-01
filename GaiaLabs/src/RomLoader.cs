@@ -163,11 +163,11 @@ namespace GaiaLabs
             return arr;
         }
 
-        public void DumpDatabase(string outPath, string dbFile = "database.json")
-        {
-            var reader = new RomReader();
-            reader.DumpDatabase(_baseAddress, outPath, dbFile);
-        }
+        //public void DumpDatabase(string outPath, string dbFile = "database.json")
+        //{
+        //    var reader = new RomReader();
+        //    reader.DumpDatabase(_baseAddress, outPath, dbFile);
+        //}
 
         //private static void UpdateFlags<T>(IDictionary<Location, T?> dictionary, Location loc, T? value) where T : struct
         //{

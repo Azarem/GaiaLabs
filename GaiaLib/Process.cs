@@ -1,4 +1,5 @@
-﻿using GaiaLib.Database;
+﻿using GaiaLib.Asm;
+using GaiaLib.Database;
 using GaiaLib.Structs;
 using System.Globalization;
 using System.Text;
@@ -175,7 +176,7 @@ namespace GaiaLib
         private static List<ChunkFile> DiscoverFiles(string baseDir, IEnumerable<DbFile> files)
             => files.Select(file =>
             {
-                string folder = null, extension = "bin";
+                string folder = "misc", extension = "bin";
                 switch (file.Type)
                 {
                     case BinType.Bitmap: folder = "graphics"; break;
@@ -324,6 +325,461 @@ namespace GaiaLib
         private static void ProcessPatches(IEnumerable<ChunkFile> patches, Func<ChunkFile, uint> process)
         {
 
+        }
+
+        public static int GetSize(object obj)
+        {
+            //var obj = objList[index];
+            if (obj is Op op)
+                return op.Size;
+            else if (obj is byte[] arr)
+                return arr.Length;
+            else if (obj is byte)
+                return 1;
+            else if (obj is ushort)
+                return 2;
+            else if (obj is uint)
+                return 3;
+            ///TODO: Add parsers for strings
+            throw new($"Unable to get size for operand '{obj}'");
+        }
+
+        private static char[]
+            _whitespace = [' ', '\t'],
+            _operators = ['-', '+'],
+            _commaspace = [',', ' ', '\t'],
+            _addressspace = ['@', '&', '^'],
+            _objectspace = ['<', '['];
+
+        public static List<AsmBlock> ParseAssembly(DbRoot root, Stream inStream, uint startLoc, IDictionary<string, Location> chunkLookup)
+        {
+            using var reader = new StreamReader(inStream);
+
+            var blocks = new List<AsmBlock>();
+            AsmBlock current;
+            AsmBlock? target;
+            var tags = new Dictionary<string, string?>();
+            int ix, bix = 0, lineCount = 0;
+
+            blocks.Add(current = new AsmBlock { Location = startLoc });
+
+            string? line = "";
+            string? getLine()
+            {
+                //This can happen
+                if (line == null)
+                    return null;
+
+                //Keep processing what we already have
+                if (line.Length > 0)
+                    return line;
+
+                Read:
+                line = reader.ReadLine();
+
+                //This can happen
+                if (line == null)
+                    return null;
+
+                lineCount++;
+
+                //Ignore comments
+                if ((ix = line.IndexOf("--")) >= 0)
+                    line = line[..ix];
+
+                //Ignore comments
+                if ((ix = line.IndexOf(';')) >= 0)
+                    line = line[..ix];
+
+                //Trim
+                line = line.Trim(_commaspace);
+
+                //This can happen
+                if (line.Length == 0)
+                    goto Read;
+
+                //Make everything case-insensitive
+                line = line.ToUpper();
+
+                //Process directives
+                if (line[0] == '?')
+                {
+                    ///TODO: Something later
+                    goto Read;
+                }
+
+                //Process tags
+                if (line[0] == '!')
+                {
+                    line = line[1..].TrimStart(_commaspace);
+
+                    while (line.Length > 0)
+                    {
+                        string name = line;
+                        string? value = null;
+                        if ((ix = line.IndexOfAny(_commaspace)) >= 0)
+                        {
+                            name = line[..ix];
+                            value = line[(ix + 1)..].TrimStart(_commaspace);
+                            if ((ix = value.IndexOfAny(_commaspace)) >= 0)
+                            {
+                                line = value[(ix + 1)..].TrimStart(_commaspace);
+                                value = value[..ix];
+                            }
+                            else
+                                line = "";
+                        }
+                        else
+                            line = "";
+
+                        tags[name] = value;
+                    }
+
+                    goto Read;
+                }
+
+                //Resolve tags
+                foreach (var tag in tags)
+                    while ((ix = line.IndexOf(tag.Key)) >= 0)
+                        line = line[..ix] + tag.Value + line[(ix + tag.Key.Length)..];
+
+                //Resolve addresses
+                while ((ix = line.IndexOfAny(_addressspace)) >= 0)
+                {
+                    var endIx = line.IndexOfAny(_commaspace, ix);
+                    if (endIx < 0) endIx = line.Length;
+                    var label = line[(ix + 1)..endIx];
+
+                    if (!chunkLookup.TryGetValue(label, out var loc))
+                    {
+                        target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
+                            ?? throw new($"Unable to find label {label}");
+                        loc = target.Location;
+                    }
+
+                    var result = (line[ix]) switch
+                    {
+                        '@' => (loc.Offset + 0xC00000u).ToString("X6"),
+                        '&' => (loc.Offset & 0x00FFFFu).ToString("X4"),
+                        '^' => ((loc.Offset >> 16) + 0xC0).ToString("X2"),
+                        _ => throw new("Invalid address operator")
+                    };
+
+                    line = line[..ix] + '$' + result + line[endIx..];
+                }
+
+
+                return line;
+            }
+
+            void processText(string? struc = null, char? openTag = null)
+            {
+
+                DbStruct? dbs = null;
+                uint memoff = 0;
+
+                if (struc != null)
+                    dbs = root.Structs.Values.FirstOrDefault(x => x.Name.Equals(struc, StringComparison.CurrentCultureIgnoreCase));
+
+                var parent = dbs?.Parent != null
+                    ? root.Structs.Values.FirstOrDefault(x => x.Name.Equals(dbs.Parent, StringComparison.CurrentCultureIgnoreCase))
+                    : null;
+
+                HexString? desc = parent?.Descriminator;
+                bool checkDesc()
+                {
+                    if (desc?.Value == memoff)
+                    {
+                        var obj = desc.Value.ToObject();
+                        current.ObjList.Add(obj);
+                        current.Size += (uint)GetSize(obj);
+                        return true;
+                    }
+                    return false;
+                }
+
+                checkDesc();
+
+                while (line != null)
+                {
+                    getLine();
+                    if (line == null)
+                        return;
+
+                    //Force a stop when we have processed all members of a struct?
+                    if (memoff >= dbs?.Parts?.Length)
+                    {
+                        return;
+                    }
+
+                    if (line.StartsWith("DB"))
+                    {
+                        string hex = OpCode.HexRegex().Replace(line[2..], "");
+                        var data = Convert.FromHexString(hex);
+                        current.ObjList.Add(data);
+                        current.Size += (uint)data.Length;
+                        line = "";
+                        continue;
+                    }
+
+
+                    string? mnem = null, operand = null;
+                    while (line.Length > 0)
+                    {
+                        //Process strings
+                        if (line[0] == '`')
+                        {
+                            string? str = null;
+                            if ((ix = line.IndexOf('`', 1)) >= 0)
+                            {
+                                str = line[1..ix];
+                                line = line[ix..];
+                            }
+                            else
+                            {
+                                str = line;
+                                line = "";
+                            }
+
+                            continue;
+                        }
+
+
+                        //Process raw data
+                        if (line[0] == '#')
+                        {
+                            bool reverse = false;
+                            if (line.StartsWith("#$"))
+                            {
+                                reverse = true;
+                                line = line[2..];
+                            }
+                            else
+                                line = line[1..];
+
+                            string hex;
+                            if ((ix = line.IndexOfAny(_commaspace)) >= 0)
+                            {
+                                hex = line[..ix];
+                                line = line[(ix + 1)..].TrimStart(_commaspace);
+                            }
+                            else
+                            {
+                                hex = line;
+                                line = "";
+                            }
+
+                            if (hex.Length > 0)
+                            {
+                                var data = Convert.FromHexString(hex);
+                                if (reverse)
+                                    for (int x = 0, y = data.Length; --y > x;)
+                                    {
+                                        var sample = data[x];
+                                        data[x++] = data[y];
+                                        data[y] = sample;
+                                    }
+
+                                current.ObjList.Add(data);
+                                current.Size += (uint)data.Length;
+                            }
+
+                            continue;
+                        }
+
+
+                        if (line[0] == '>')
+                        {
+                            if (openTag == '<')
+                                line = line[1..];
+                            return;
+                        }
+
+
+                        if (line[0] == ']')
+                        {
+                            if (openTag == '[')
+                                line = line[1..];
+                            return;
+                        }
+
+                        //break;
+
+
+                        //Process origin tags
+                        if (line.StartsWith("ORG"))
+                        {
+                            line = line[3..].TrimStart(_commaspace);
+                            if (line.StartsWith('$'))
+                                line = line[1..];
+
+                            string hex;
+                            if ((ix = line.IndexOfAny(_commaspace)) >= 0)
+                            {
+                                hex = line[..ix];
+                                line = line[(ix + 1)..].TrimStart(_commaspace);
+                            }
+                            else
+                            {
+                                hex = line;
+                                line = "";
+                            }
+
+                            var location = uint.Parse(hex, NumberStyles.HexNumber);
+
+                            blocks.Add(current = new AsmBlock { Location = location });
+                            bix++;
+
+                            continue;
+                        }
+
+                        //Process labels
+                        if ((ix = line.IndexOf(':')) >= 0)
+                        {
+                            var label = line[..ix].TrimEnd(_commaspace);
+
+                            if (label.StartsWith('$'))
+                                label = label[1..];
+
+                            if (label.Length == 6
+                                && uint.TryParse(label, NumberStyles.HexNumber, null, out var addr)
+                                && Location.MaxValue >= addr)
+                            {
+                                blocks.Add(current = new AsmBlock { Location = addr });
+                                bix++;
+                            }
+                            else if (label.Length > 0)
+                            {
+                                //if (current.Size == 0 && current.Label == null)
+                                //    current.Label = label;
+                                //else
+                                //{
+                                blocks.Add(current = new AsmBlock { Location = current.Location + current.Size, Label = label });
+                                bix++;
+                                //}
+                            }
+
+                            line = line[(ix + 1)..].TrimStart(_commaspace);
+                            continue;
+                        }
+
+                        //Separate instructions into mnemonic and operand parts
+                        if ((ix = line.IndexOfAny(_commaspace)) > 0)
+                        {
+                            mnem = line[..ix];
+                            operand = line[(ix + 1)..].TrimStart(_commaspace);
+
+                            //Process object tags
+                            if (operand.StartsWith('<'))
+                            {
+                                line = line[1..].TrimStart(_commaspace);
+                                processText(mnem, '<');
+                                mnem = null;
+                                continue;
+                            }
+                        }
+                        else
+                            mnem = line;
+
+                        line = "";
+                        break;
+                    }
+
+                    if (mnem?.Length > 0)
+                    {
+                        //Get list of opcodes from mnemonic
+                        if (!OpCode.Grouped.TryGetValue(mnem, out var codes))
+                            throw new($"Unknown instruction line {lineCount}: '{mnem}'");
+
+                        //No operand instructions
+                        if (string.IsNullOrEmpty(operand))
+                        {
+                            current.ObjList.Add(new Op { Code = codes.First(x => x.Size == 1), Operands = [], Size = 1 });
+                            current.Size++;
+                            continue;
+                        }
+
+                        //Do maths before regex processing
+                        while ((ix = operand.IndexOfAny(_operators)) >= 0)
+                        {
+                            var op = operand[ix];
+
+                            int vix = operand.LastIndexOf('$', ix) + 1;
+                            //if (vix == 0)
+                            //    throw new($"Unable to locate variable for operator line {lineCount}: '{op}'");
+
+                            var value = uint.Parse(operand[vix..ix], NumberStyles.HexNumber);
+
+                            var endIx = operand.IndexOfAny(_commaspace, ix + 1);
+                            if (endIx < 0) endIx = operand.Length;
+                            var number = uint.Parse(operand[(ix + 1)..endIx], NumberStyles.HexNumber);
+
+                            if (op == '-') value -= number;
+                            else value += number;
+
+                            var len = (ix - vix) switch
+                            {
+                                1 or 2 => 2,
+                                3 or 4 => 4,
+                                5 or 6 => 6,
+                                _ => throw new("Invalid size")
+                            };
+
+                            operand = operand[..vix] + value.ToString($"X{len}") + operand[endIx..];
+                        }
+
+                        OpCode opCode = null;
+                        int size = 1;
+                        foreach (var code in codes)
+                        {
+                            ///TODO: COP processing
+                            //Keep branch operands until all blocks are processed (for labels)
+                            if (code.Mode == AddressingMode.PCRelative || code.Mode == AddressingMode.PCRelativeLong)
+                            {
+                                opCode = code;
+                                size = code.Size;
+                                break;
+                            }
+
+                            if (OpCode.AddressingRegex.TryGetValue(code.Mode, out var regex))
+                            {
+                                var match = regex.Match(operand);
+                                if (match.Success)
+                                {
+                                    operand = match.Groups[1].Value;
+                                    opCode = code;
+                                    size = opCode.Size == -2 ? (operand.Length > 2 ? 3 : 2) : opCode.Size;
+                                    break;
+                                }
+                            }
+
+                        }
+
+                        if (opCode == null)
+                        {
+                            if (mnem.StartsWith('J'))
+                            {
+                                opCode = codes.Single(x => x.Mode == AddressingMode.Absolute || x.Mode == AddressingMode.AbsoluteLong);
+                                operand = $"@{operand}";
+                                size = opCode.Size;
+                                //opnd = blocks.FirstOrDefault(x => x.Label?.Equals(operand) == true)
+                                //    //if (!blocks.Any(x => x.Label?.Equals(operand) == true))
+                                //    ?? throw new($"Unable to locate target for label line {lineCount}: '{operand}'");
+                            }
+                            else
+                                throw new($"Unable to determine mode/code line {lineCount}: '{line}'");
+                        }
+
+                        current.ObjList.Add(new Op() { Code = opCode, Operands = [operand], Size = (byte)size });
+                        current.Size += (uint)size;
+                        //}
+                    }
+                }
+            }
+
+            processText(null);
+
+            return blocks;
         }
 
 

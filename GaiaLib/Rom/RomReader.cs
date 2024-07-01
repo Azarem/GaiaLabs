@@ -1,20 +1,17 @@
 ﻿using GaiaLib.Asm;
 using GaiaLib.Database;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.IO.MemoryMappedFiles;
 using System.Text;
 
 namespace GaiaLib.Rom
 {
-    public unsafe class RomReader
+    public unsafe class RomReader : IDisposable
     {
         public const char RefChar = '~';
         public const float Sample5to8 = 255.3f / 31f;
 
-        public DbRoot DbRoot { get; set; }
+        public DbRoot DbRoot;
         public Dictionary<Location, string> RefList = new();
         public Dictionary<Location, bool?> AccumulatorFlags = new();
         public Dictionary<Location, bool?> IndexFlags = new();
@@ -23,9 +20,60 @@ namespace GaiaLib.Rom
         private byte* _basePtr;
         private byte* _pCur, _pEnd;
         private Location _lCur, _lEnd;
-        private DbPart _part;
+        private DbPart? _part;
         private bool _isInline;
         private Dictionary<Location, string> _chunkTable = new();
+
+        private MemoryMappedFile? _mappedFile;
+        private MemoryMappedViewAccessor? _viewAccessor;
+
+        public RomReader(string romPath, string dbPath)
+        {
+            DbRoot = DbRoot.FromFile(dbPath);
+            _mappedFile = MemoryMappedFile.CreateFromFile(romPath, FileMode.Open, null, 0, MemoryMappedFileAccess.Read);
+            _viewAccessor = _mappedFile.CreateViewAccessor(0, new FileInfo(romPath).Length, MemoryMappedFileAccess.Read);
+            _viewAccessor.SafeMemoryMappedViewHandle.AcquirePointer(ref _basePtr);
+        }
+
+        public void Dispose()
+        {
+            if (_viewAccessor != null)
+            {
+                _viewAccessor.Dispose();
+                _viewAccessor = null;
+            }
+            if (_mappedFile != null)
+            {
+                _mappedFile.Dispose();
+                _mappedFile = null;
+            }
+            GC.SuppressFinalize(this);
+        }
+
+        public void DumpDatabase(string outPath)
+        {
+            ExtractFiles(outPath);
+            ExtractSfx(outPath);
+
+            //Process flag overrides
+            foreach (var over in DbRoot.Overrides)
+            {
+                switch (over.Register)
+                {
+                    case RegisterType.M:
+                        AccumulatorFlags[over.Location] = over.Value != 0u;
+                        break;
+                    case RegisterType.X:
+                        IndexFlags[over.Location] = over.Value != 0u;
+                        break;
+                }
+            }
+
+            AnalyzeBlocks();
+
+            ResolveReferences();
+            WriteBlocks(outPath);
+        }
 
         //private static void UpdateFlags<T>(IDictionary<Location, T?> dictionary, Location loc, T? value) where T : struct
         //{
@@ -51,7 +99,7 @@ namespace GaiaLib.Rom
             return orig;
         }
 
-        public string ResolveName(Location loc)
+        private string ResolveName(Location loc)
         {
             if (!RefList.TryGetValue(loc, out var name))
             {
@@ -76,45 +124,13 @@ namespace GaiaLib.Rom
         //        part.Includes.Add(p);
         //}
 
-        public DbRoot DumpDatabase(byte* basePtr, string outPath, string dbFile)
-        {
-            _basePtr = basePtr;
-            DbRoot = DbRoot.FromFile(dbFile);
-
-
-            ExtractFiles(outPath);
-            ExtractSfx(outPath);
-
-            //Process flag overrides
-            foreach (var over in DbRoot.Overrides)
-            {
-                switch (over.Register)
-                {
-                    case RegisterType.M:
-                        AccumulatorFlags[over.Location] = over.Value != 0u;
-                        break;
-                    case RegisterType.X:
-                        IndexFlags[over.Location] = over.Value != 0u;
-                        break;
-                }
-            }
-
-            AnalyzeBlocks();
-
-            ResolveReferences();
-            WriteBlocks(outPath);
-
-            return DbRoot;
-        }
-
-
         private void ExtractFiles(string outPath)
         {
             foreach (var file in DbRoot.Files)
             {
                 var start = file.Start;
                 RefList[start] = file.Name;
-                string folder = null, extension = "bin";
+                string folder = "misc", extension = "bin";
                 ushort mapSample = 0;
                 uint metaSample = 0;
 
@@ -135,7 +151,7 @@ namespace GaiaLib.Rom
                         start += 4;
                         break;
                     case BinType.Spritemap: folder = "spritemaps"; break;
-                    case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
+                        //case BinType.Sound: folder = "sfx"; extension = "bin"; break;
                 };
 
                 var filePath = outPath;
@@ -873,7 +889,7 @@ namespace GaiaLib.Rom
 
         }
 
-        public void ResolveReferences()
+        private void ResolveReferences()
         {
             foreach (var block in DbRoot.Blocks)
                 foreach (var part in block.Parts)
@@ -918,9 +934,13 @@ namespace GaiaLib.Rom
 
         public void WriteBlocks(string outPath)
         {
+            string folder = "asm", extension = "asm";
+            string folderPath = Path.Combine(outPath, folder);
+            Directory.CreateDirectory(folderPath);
+
             foreach (var block in DbRoot.Blocks)
             {
-                var outFile = Path.Combine(outPath, block.Name + ".asm");
+                var outFile = Path.Combine(folderPath, $"{block.Name}.{extension}");
                 using var outStream = File.Create(outFile);
                 using var writer = new StreamWriter(outStream);
 

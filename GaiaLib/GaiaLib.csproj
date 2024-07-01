@@ -11,4 +11,10 @@
     <Folder Include="Enum\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="database.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -64,20 +64,20 @@ public partial class ControlTest : Control
         //    }
         //}
 
-        //return;
-        var ldr = RomLoader.Load("C:\\Games\\SNES\\Illusion Of Gaia.smc");
+        ////return;
+        //var ldr = RomLoader.Load("C:\\Games\\SNES\\Illusion Of Gaia.smc");
 
-        //Process.Repack("C:\\Games\\Dump");
-        //Process.ReadMetaXrefs(ldr._baseAddress);
+        ////Process.Repack("C:\\Games\\Dump");
+        ////Process.ReadMetaXrefs(ldr._baseAddress);
 
-        try
-        {
-            ldr.DumpDatabase("C:\\Games\\Dump");
-        }
-        catch (Exception ex)
-        {
+        //try
+        //{
+        //    ldr.DumpDatabase("C:\\Games\\Dump");
+        //}
+        //catch (Exception ex)
+        //{
 
-        }
+        //}
 
         //var data = LZ77.Expand(ldr._basePtr + 0x176191, 0x800);
         //var data2 = LZ77.Expand(ldr._basePtr + 0x176852, 0x800);
