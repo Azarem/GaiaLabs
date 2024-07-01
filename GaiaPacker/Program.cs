@@ -1,5 +1,6 @@
 ﻿using GaiaLib;
 using GaiaLib.Asm;
+using GaiaLib.Database;
 using GaiaPacker;
 using System.Globalization;
 using System.Text.Json;
@@ -8,7 +9,8 @@ char[]
     _whitespace = [' ', '\t'],
     _operators = ['-', '+'],
     _commaspace = [',', ' ', '\t'],
-    _addressspace = ['@', '&', '^'];
+    _addressspace = ['@', '&', '^'],
+    _objectspace = ['<', '['];
 
 uint[] DebugmanEntries = [0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u];
 byte[] DebugmanActor = [0x20, 0xEE, 0x8B];
@@ -119,7 +121,7 @@ Process.Repack(baseDir, "C:\\Games\\GaiaLabs\\GaiaLabs\\database.json", WriteFil
 //    return (uint)outRom.Position;
 //}
 
-uint WriteFile(Process.ChunkFile file, IDictionary<string, Location> chunkLookup)
+uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location> chunkLookup)
 {
     uint filePos = file.Location;
     outRom.Position = filePos;
@@ -148,12 +150,8 @@ uint WriteFile(Process.ChunkFile file, IDictionary<string, Location> chunkLookup
                 break;
 
             case GaiaLib.Database.BinType.Assembly:
-                ParseAssembly(inFile, chunkLookup);
+                ParseAssembly(root, inFile, chunkLookup);
                 goto Next;
-
-                //case "Assembly":
-                //    ParseAssembly(inFile);
-                //    continue;
         }
 
         //Mark as not compressed
@@ -171,6 +169,7 @@ uint WriteFile(Process.ChunkFile file, IDictionary<string, Location> chunkLookup
         while ((sample = inFile.ReadByte()) >= 0)
             outRom.WriteByte((byte)sample);
     }
+
 
 Next:
     uint size = (uint)outRom.Position - filePos;
@@ -428,56 +427,102 @@ int getSize(object obj)
         return op.Size;
     else if (obj is byte[] arr)
         return arr.Length;
+    else if (obj is byte)
+        return 1;
+    else if (obj is ushort)
+        return 2;
+    else if (obj is uint)
+        return 3;
     ///TODO: Add parsers for strings
     throw new($"Unable to get size for operand '{obj}'");
 }
 
-void ParseAssembly(Stream inStream, IDictionary<string, Location> chunkLookup)
+void ParseAssembly(DbRoot root, Stream inStream, IDictionary<string, Location> chunkLookup)
 {
     using var reader = new StreamReader(inStream);
 
     var blocks = new List<AsmBlock>();
-    AsmBlock current, target;
-    var tags = new Dictionary<string, string>();
+    AsmBlock current;
+    AsmBlock? target;
+    var tags = new Dictionary<string, string?>();
     int ix, bix = 0, lineCount = 0;
 
     blocks.Add(current = new AsmBlock { Location = (uint)outRom.Position });
 
-    while (!reader.EndOfStream)
+    string? line = "";
+
+    string? getLine()
     {
-        var line = reader.ReadLine() ?? "";
+        //This can happen
+        if (line == null)
+            return null;
+
+        //Keep processing what we already have
+        if (line.Length > 0)
+            return line;
+
+        Read:
+        line = reader.ReadLine();
+
+        //This can happen
+        if (line == null)
+            return null;
+
         lineCount++;
 
         //Ignore comments
         if ((ix = line.IndexOf("--")) >= 0)
             line = line[..ix];
 
-        line = line.Trim();
-        if (line.Length == 0)
-            continue;
+        //Ignore comments
+        if ((ix = line.IndexOf(';')) >= 0)
+            line = line[..ix];
 
-        //Make everything case-sensitive
+        //Trim
+        line = line.Trim(_commaspace);
+
+        //This can happen
+        if (line.Length == 0)
+            goto Read;
+
+        //Make everything case-insensitive
         line = line.ToUpper();
 
         //Process directives
         if (line[0] == '?')
         {
-            continue;
+            ///TODO: Something later
+            goto Read;
         }
 
         //Process tags
         if (line[0] == '!')
         {
-            line = line[1..];
-            string name = line, value = null;
-            if ((ix = line.IndexOfAny(_whitespace)) >= 0)
+            line = line[1..].TrimStart(_commaspace);
+
+            while (line.Length > 0)
             {
-                name = line[..ix];
-                value = line[(ix + 1)..].Trim();
+                string name = line;
+                string? value = null;
+                if ((ix = line.IndexOfAny(_commaspace)) >= 0)
+                {
+                    name = line[..ix];
+                    value = line[(ix + 1)..].TrimStart(_commaspace);
+                    if ((ix = value.IndexOfAny(_commaspace)) >= 0)
+                    {
+                        line = value[(ix + 1)..].TrimStart(_commaspace);
+                        value = value[..ix];
+                    }
+                    else
+                        line = "";
+                }
+                else
+                    line = "";
+
+                tags[name] = value;
             }
 
-            tags[name] = value;
-            continue;
+            goto Read;
         }
 
         //Resolve tags
@@ -511,155 +556,330 @@ void ParseAssembly(Stream inStream, IDictionary<string, Location> chunkLookup)
         }
 
 
-        //Process raw data
-        if (line[0] == '#')
-        {
-            bool reverse = false;
-            if (line[1] == '$')
-            {
-                reverse = true;
-                line = line[2..];
-            }
-            else
-                line = line[1..];
+        return line;
+    }
 
-            var data = Convert.FromHexString(line);
-            if (reverse)
-                for (int x = 0, y = data.Length; --y > x;)
+    void processText(string? struc = null, char? openTag = null)
+    {
+
+        DbStruct? dbs = null;
+        uint memoff = 0;
+
+        if (struc != null)
+            dbs = root.Structs.Values.FirstOrDefault(x => x.Name.Equals(struc, StringComparison.CurrentCultureIgnoreCase));
+
+        var parent = dbs?.Parent != null
+            ? root.Structs.Values.FirstOrDefault(x => x.Name.Equals(dbs.Parent, StringComparison.CurrentCultureIgnoreCase))
+            : null;
+
+        HexString? desc = parent?.Descriminator;
+        bool checkDesc()
+        {
+            if (desc?.Value == memoff)
+            {
+                var obj = desc.Value.ToObject();
+                current.ObjList.Add(obj);
+                current.Size += (uint)getSize(obj);
+                return true;
+            }
+            return false;
+        }
+
+        checkDesc();
+
+        while (line != null)
+        {
+            getLine();
+            if (line == null)
+                return;
+
+            //Force a stop when we have processed all members of a struct?
+            if (memoff >= dbs?.Parts?.Length)
+            {
+                return;
+            }
+
+            if (line.StartsWith("DB"))
+            {
+                string hex = OpCode.HexRegex().Replace(line[2..], "");
+                var data = Convert.FromHexString(hex);
+                current.ObjList.Add(data);
+                current.Size += (uint)data.Length;
+                line = "";
+                continue;
+            }
+
+
+            string? mnem = null, operand = null;
+            while (line.Length > 0)
+            {
+                //Process strings
+                if (line[0] == '`')
                 {
-                    var sample = data[x];
-                    data[x++] = data[y];
-                    data[y] = sample;
+                    string? str = null;
+                    if ((ix = line.IndexOf('`', 1)) >= 0)
+                    {
+                        str = line[1..ix];
+                        line = line[ix..];
+                    }
+                    else
+                    {
+                        str = line;
+                        line = "";
+                    }
+
+                    continue;
                 }
 
-            current.ObjList.Add(data);
-            current.Size += (uint)data.Length;
-            continue;
-        }
+
+                //Process raw data
+                if (line[0] == '#')
+                {
+                    bool reverse = false;
+                    if (line.StartsWith("#$"))
+                    {
+                        reverse = true;
+                        line = line[2..];
+                    }
+                    else
+                        line = line[1..];
+
+                    string hex;
+                    if ((ix = line.IndexOfAny(_commaspace)) >= 0)
+                    {
+                        hex = line[..ix];
+                        line = line[(ix + 1)..].TrimStart(_commaspace);
+                    }
+                    else
+                    {
+                        hex = line;
+                        line = "";
+                    }
+
+                    if (hex.Length > 0)
+                    {
+                        var data = Convert.FromHexString(hex);
+                        if (reverse)
+                            for (int x = 0, y = data.Length; --y > x;)
+                            {
+                                var sample = data[x];
+                                data[x++] = data[y];
+                                data[y] = sample;
+                            }
+
+                        current.ObjList.Add(data);
+                        current.Size += (uint)data.Length;
+                    }
+
+                    continue;
+                }
 
 
-        //Process labels
-        if ((ix = line.IndexOf(':')) >= 0)
-        {
-            var label = line[..ix].Trim();
+                if (line[0] == '>')
+                {
+                    if (openTag == '<')
+                        line = line[1..];
+                    return;
+                }
 
-            blocks.Add(current = new AsmBlock { Location = current.Location + current.Size });
-            bix++;
 
-            if (uint.TryParse(label, NumberStyles.HexNumber, null, out var addr))
-                current.Location = addr;
-            else
-                current.Label = label;
+                if (line[0] == ']')
+                {
+                    if (openTag == '[')
+                        line = line[1..];
+                    return;
+                }
 
-            continue;
-        }
+                //break;
 
-        string? mnem, operand = null;
 
-        if ((ix = line.IndexOfAny(_whitespace)) > 0)
-        {
-            mnem = line[..ix];
-            operand = line[(ix + 1)..].Trim();
-        }
-        else
-            mnem = line;
+                //Process origin tags
+                if (line.StartsWith("ORG"))
+                {
+                    line = line[3..].TrimStart(_commaspace);
+                    if (line.StartsWith('$'))
+                        line = line[1..];
 
-        if (!OpCode.Grouped.TryGetValue(mnem, out var codes))
-            throw new($"Unknown instruction line {lineCount}: '{line}'");
+                    string hex;
+                    if ((ix = line.IndexOfAny(_commaspace)) >= 0)
+                    {
+                        hex = line[..ix];
+                        line = line[(ix + 1)..].TrimStart(_commaspace);
+                    }
+                    else
+                    {
+                        hex = line;
+                        line = "";
+                    }
 
-        //No operand instructions
-        if (string.IsNullOrEmpty(operand))
-        {
-            current.ObjList.Add(new Op { Code = codes.First(x => x.Size == 1), Operands = [], Size = 1 });
-            current.Size++;
-            continue;
-        }
+                    var location = uint.Parse(hex, NumberStyles.HexNumber);
 
-        //Do maths before regex processing
-        while ((ix = operand.IndexOfAny(_operators)) >= 0)
-        {
-            var op = operand[ix];
+                    blocks.Add(current = new AsmBlock { Location = location });
+                    bix++;
 
-            int vix = operand.LastIndexOf('$', ix) + 1;
-            //if (vix == 0)
-            //    throw new($"Unable to locate variable for operator line {lineCount}: '{op}'");
+                    continue;
+                }
 
-            var value = uint.Parse(operand[vix..ix], NumberStyles.HexNumber);
+                //Process labels
+                if ((ix = line.IndexOf(':')) >= 0)
+                {
+                    var label = line[..ix].TrimEnd(_commaspace);
 
-            var endIx = operand.IndexOfAny(_commaspace, ix + 1);
-            if (endIx < 0) endIx = operand.Length;
-            var number = uint.Parse(operand[(ix + 1)..endIx], NumberStyles.HexNumber);
+                    if (label.StartsWith('$'))
+                        label = label[1..];
 
-            if (op == '-') value -= number;
-            else value += number;
+                    if (label.Length == 6
+                        && uint.TryParse(label, NumberStyles.HexNumber, null, out var addr)
+                        && Location.MaxValue >= addr)
+                    {
+                        blocks.Add(current = new AsmBlock { Location = addr });
+                        bix++;
+                    }
+                    else if (label.Length > 0)
+                    {
+                        //if (current.Size == 0 && current.Label == null)
+                        //    current.Label = label;
+                        //else
+                        //{
+                        blocks.Add(current = new AsmBlock { Location = current.Location + current.Size, Label = label });
+                        bix++;
+                        //}
+                    }
 
-            var len = (ix - vix) switch
-            {
-                1 or 2 => 2,
-                3 or 4 => 4,
-                5 or 6 => 6,
-                _ => throw new("Invalid size")
-            };
+                    line = line[(ix + 1)..].TrimStart(_commaspace);
+                    continue;
+                }
 
-            operand = operand[..vix] + value.ToString($"X{len}") + operand[endIx..];
-        }
+                //Separate instructions into mnemonic and operand parts
+                if ((ix = line.IndexOfAny(_commaspace)) > 0)
+                {
+                    mnem = line[..ix];
+                    operand = line[(ix + 1)..].TrimStart(_commaspace);
 
-        OpCode opCode = null;
-        int size = 1;
-        foreach (var code in codes)
-        {
-            ///TODO: COP processing
-            //Keep branch operands until all blocks are processed (for labels)
-            if (code.Mode == AddressingMode.PCRelative || code.Mode == AddressingMode.PCRelativeLong)
-            {
-                opCode = code;
-                size = code.Size;
+                    //Process object tags
+                    if (operand.StartsWith('<'))
+                    {
+                        line = line[1..].TrimStart(_commaspace);
+                        processText(mnem, '<');
+                        mnem = null;
+                        continue;
+                    }
+                }
+                else
+                    mnem = line;
+
+                line = "";
                 break;
             }
 
-            if (OpCode.AddressingRegex.TryGetValue(code.Mode, out var regex))
+            if (mnem?.Length > 0)
             {
-                var match = regex.Match(operand);
-                if (match.Success)
+                //Get list of opcodes from mnemonic
+                if (!OpCode.Grouped.TryGetValue(mnem, out var codes))
+                    throw new($"Unknown instruction line {lineCount}: '{mnem}'");
+
+                //No operand instructions
+                if (string.IsNullOrEmpty(operand))
                 {
-                    operand = match.Groups[1].Value;
-                    opCode = code;
-                    size = opCode.Size == -2 ? (operand.Length > 2 ? 3 : 2) : opCode.Size;
-                    break;
+                    current.ObjList.Add(new Op { Code = codes.First(x => x.Size == 1), Operands = [], Size = 1 });
+                    current.Size++;
+                    continue;
                 }
+
+                //Do maths before regex processing
+                while ((ix = operand.IndexOfAny(_operators)) >= 0)
+                {
+                    var op = operand[ix];
+
+                    int vix = operand.LastIndexOf('$', ix) + 1;
+                    //if (vix == 0)
+                    //    throw new($"Unable to locate variable for operator line {lineCount}: '{op}'");
+
+                    var value = uint.Parse(operand[vix..ix], NumberStyles.HexNumber);
+
+                    var endIx = operand.IndexOfAny(_commaspace, ix + 1);
+                    if (endIx < 0) endIx = operand.Length;
+                    var number = uint.Parse(operand[(ix + 1)..endIx], NumberStyles.HexNumber);
+
+                    if (op == '-') value -= number;
+                    else value += number;
+
+                    var len = (ix - vix) switch
+                    {
+                        1 or 2 => 2,
+                        3 or 4 => 4,
+                        5 or 6 => 6,
+                        _ => throw new("Invalid size")
+                    };
+
+                    operand = operand[..vix] + value.ToString($"X{len}") + operand[endIx..];
+                }
+
+                OpCode opCode = null;
+                int size = 1;
+                foreach (var code in codes)
+                {
+                    ///TODO: COP processing
+                    //Keep branch operands until all blocks are processed (for labels)
+                    if (code.Mode == AddressingMode.PCRelative || code.Mode == AddressingMode.PCRelativeLong)
+                    {
+                        opCode = code;
+                        size = code.Size;
+                        break;
+                    }
+
+                    if (OpCode.AddressingRegex.TryGetValue(code.Mode, out var regex))
+                    {
+                        var match = regex.Match(operand);
+                        if (match.Success)
+                        {
+                            operand = match.Groups[1].Value;
+                            opCode = code;
+                            size = opCode.Size == -2 ? (operand.Length > 2 ? 3 : 2) : opCode.Size;
+                            break;
+                        }
+                    }
+
+                }
+
+                if (opCode == null)
+                {
+                    if (mnem.StartsWith('J'))
+                    {
+                        opCode = codes.Single(x => x.Mode == AddressingMode.Absolute || x.Mode == AddressingMode.AbsoluteLong);
+                        operand = $"@{operand}";
+                        size = opCode.Size;
+                        //opnd = blocks.FirstOrDefault(x => x.Label?.Equals(operand) == true)
+                        //    //if (!blocks.Any(x => x.Label?.Equals(operand) == true))
+                        //    ?? throw new($"Unable to locate target for label line {lineCount}: '{operand}'");
+                    }
+                    else
+                        throw new($"Unable to determine mode/code line {lineCount}: '{line}'");
+                }
+
+                current.ObjList.Add(new Op() { Code = opCode, Operands = [operand], Size = (byte)size });
+                current.Size += (uint)size;
+                //}
             }
-
         }
-
-        object opnd = null;
-        if (opCode == null)
-        {
-            if (mnem.StartsWith('J'))
-            {
-                opCode = codes.First(x => x.Mode == AddressingMode.Absolute || x.Mode == AddressingMode.AbsoluteLong);
-                opnd = blocks.FirstOrDefault(x => x.Label?.Equals(operand) == true)
-                //if (!blocks.Any(x => x.Label?.Equals(operand) == true))
-                    ?? throw new($"Unable to locate target for label line {lineCount}: '{operand}'");
-            }
-            else
-                throw new($"Unable to determine mode/code line {lineCount}: '{line}'");
-        }
-
-        current.ObjList.Add(new Op() { Code = opCode, Operands = [opnd ?? operand], Size = (byte)size });
-        current.Size += (uint)size;
     }
+
+    processText(null);
 
     bix = 0;
     foreach (var block in blocks)
     {
         uint? oldPos = null;
-        if (block.Label == null)
+        //if (block.Label == null)
+        if (block.Location != outRom.Position)
         {
             oldPos = (uint)outRom.Position;
             outRom.Position = block.Location;
         }
-        else
-            block.Location = (uint)outRom.Position;
+        //else if (block.Location != outRom.Position)
+        //    throw new("Location does not match");
+        //block.Location = (uint)outRom.Position;
+
 
         var objList = block.ObjList;
         int oix = 0, opos = 0;
@@ -674,63 +894,65 @@ void ParseAssembly(Stream inStream, IDictionary<string, Location> chunkLookup)
                 if (op.Code.Mode == AddressingMode.PCRelative || op.Code.Mode == AddressingMode.PCRelativeLong)
                 {
                     var label = (string)op.Operands[0];
-                    if (label.StartsWith("#$"))
+                    var isLong = op.Code.Mode == AddressingMode.PCRelativeLong;
+
+                    var isImm = label.StartsWith('#');
+                    if (isImm)
+                        label = label[1..];
+
+                    if (label.StartsWith('$'))
                     {
-                        label = label[2..];
+                        isImm = true;
+                        label = label[1..];
+                    }
+
+                    //op.Operands[0] = label.Length switch
+                    //{
+                    //    2 when byte.TryParse(label, NumberStyles.HexNumber, null, out var b) => b,
+                    //    4 when ushort.TryParse(label, NumberStyles.HexNumber, null, out var s) => s,
+                    //    6 when uint.TryParse(label, NumberStyles.HexNumber, null, out var i) => i,
+                    //    _ => blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
+                    //        ?? throw new($"Unable to find label {label}")
+                    //};
+
+                    //if (isRelative)
+                    //{
+
+                    //}
+
+                    Location? offset = null;
+                    if (isImm)
                         if (label.Length > 4)
-                        {
-                            var offset = int.Parse(label, NumberStyles.HexNumber);
-                            offset -= (int)block.Location + opos;
-                            if (op.Code.Mode == AddressingMode.PCRelativeLong)
-                                op.Operands[0] = (ushort)offset;
-                            else
-                                op.Operands[0] = (byte)offset;
-                        }
+                            offset = uint.Parse(label, NumberStyles.HexNumber);
+                        else if (label.Length > 2 && !isLong)
+                            throw new($"Invalid operand size for instruction '{op.Code.Mnem}'");
                         else
                             op.Operands[0] = label;
-                    }
                     else
                     {
                         target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
                             ?? throw new($"Unable to find label {label}");
 
-                        int offset = 0,
-                            tix = blocks.IndexOf(target),
-                            cic = oix;
+                        offset = target.Location;
+                    }
 
-
-                        if (tix <= bix)
-                        {
-                            while (tix < bix)
-                            {
-                                var b = blocks[tix++];
-                                if (b.Label != null)
-                                    offset += (int)b.Size;
-                            }
-
-                            while (--cic >= 0)
-                                offset += getSize(objList[cic]);
-
-                            offset = -offset;
-                        }
-                        else
-                        {
-                            while (--tix > bix)
-                            {
-                                var b = blocks[tix];
-                                if (b.Label != null)
-                                    offset += (int)b.Size;
-                            }
-
-                            while (cic < objList.Count)
-                                offset += getSize(objList[cic++]);
-                        }
-
-                        outRom.WriteByte((byte)offset);
-                        if (op.Size == 3)
-                            outRom.WriteByte((byte)(offset >> 8));
-
-                        continue;
+                    if (offset != null)
+                    {
+                        offset = offset.Value.Offset - (block.Location.Offset + (uint)opos);
+                        op.Operands[0] = isLong ? (ushort)offset.Value.Offset : (object)(byte)offset.Value.Offset;
+                    }
+                }
+                else if (op.Code.Mnem[0] == 'J'
+                    && (op.Code.Mode == AddressingMode.Absolute || op.Code.Mode == AddressingMode.AbsoluteLong))
+                {
+                    var label = (string)op.Operands[0];
+                    var isLong = op.Code.Mode == AddressingMode.AbsoluteLong;
+                    if (label.StartsWith('@'))
+                    {
+                        label = label[1..];
+                        target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
+                            ?? throw new($"Unable to find label {label}");
+                        op.Operands[0] = isLong ? (target.Location.Offset + 0x800000u) : (object)(ushort)target.Location.Offset;
                     }
                 }
 
@@ -738,20 +960,17 @@ void ParseAssembly(Stream inStream, IDictionary<string, Location> chunkLookup)
                 {
                     object result;
 
-                    if (opnd is AsmBlock tgt)
-                        result = op.Code.Mode == AddressingMode.PCRelativeLong
-                            ? (tgt.Location + 0x800000u)
-                            : (ushort)tgt.Location;
-                    else if (opnd is string str)
+                    if (opnd is string str)
                         result = (str.Length) switch
                         {
-                            2 => result = byte.Parse(str, NumberStyles.HexNumber),
-                            4 => result = ushort.Parse(str, NumberStyles.HexNumber),
-                            6 => result = uint.Parse(str, NumberStyles.HexNumber),
+                            1 or 2 => result = byte.Parse(str, NumberStyles.HexNumber),
+                            3 or 4 => result = ushort.Parse(str, NumberStyles.HexNumber),
+                            5 or 6 => result = uint.Parse(str, NumberStyles.HexNumber),
                             _ => throw new($"Incorrect operand length {str}")
                         };
                     else
                         result = opnd;
+
 
                     if (result is uint ui)
                     {
@@ -773,6 +992,24 @@ void ParseAssembly(Stream inStream, IDictionary<string, Location> chunkLookup)
             {
                 outRom.Write(arr);
                 opos += arr.Length;
+            }
+            else if (obj is uint ui)
+            {
+                outRom.WriteByte((byte)ui);
+                outRom.WriteByte((byte)(ui >> 8));
+                outRom.WriteByte((byte)(ui >> 16));
+                opos += 3;
+            }
+            else if (obj is ushort us)
+            {
+                outRom.WriteByte((byte)us);
+                outRom.WriteByte((byte)(us >> 8));
+                opos += 2;
+            }
+            else if (obj is byte b)
+            {
+                outRom.WriteByte(b);
+                opos++;
             }
         }
 

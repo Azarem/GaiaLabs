@@ -63,6 +63,11 @@ namespace GaiaLib
             _ => throw new($"Unsupported type {TypeCode}")
         };
 
+        public readonly object ToObject()
+        {
+            return Convert.ChangeType(Value, TypeCode);
+        }
+
         //public static HexString Parse(string str) => str.Length switch
         //{
         //    1 or 2 => new(byte.Parse(str, NumberStyles.HexNumber)),

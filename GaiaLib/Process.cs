@@ -18,7 +18,7 @@ namespace GaiaLib
             public Location Location;
         }
 
-        public static void Repack(string baseDir, string dbFile, Func<ChunkFile, IDictionary<string, Location>, uint> onProcess)
+        public static void Repack(string baseDir, string dbFile, Func<ChunkFile, DbRoot, IDictionary<string, Location>, uint> onProcess)
         {
             var root = DbRoot.FromFile(dbFile);
 
@@ -38,7 +38,7 @@ namespace GaiaLib
 
             //Write file contents
             foreach (var file in allFiles)
-                onProcess(file, chunkLookup);
+                onProcess(file, root, chunkLookup);
 
             //Write patch contents
             foreach (var grp in patches.GroupBy(x => x.Location))
@@ -46,9 +46,9 @@ namespace GaiaLib
                 var loc = grp.Key.Offset;
                 foreach (var file in grp)
                 {
-                    file.Location = loc;
-                    var size = onProcess(file, chunkLookup);
-                    loc += size;
+                    if (loc > 0) file.Location = loc;
+                    var size = onProcess(file, root, chunkLookup);
+                    if (loc > 0) loc += size;
                 }
             }
         }
@@ -224,7 +224,7 @@ namespace GaiaLib
 
             foreach (var file in Directory.GetFiles(Path.Combine(baseDir, folder), $"*.{extension}"))
             {
-                byte bank = 0;
+                byte? bank = null;
 
                 //Discover bank
                 using (var fileStream = File.OpenRead(file))
@@ -233,14 +233,14 @@ namespace GaiaLib
                     var line = (reader.ReadLine() ?? "").Trim().ToUpper();
                     if (line.StartsWith("?BANK"))
                         bank = byte.Parse(line[5..].Trim(), NumberStyles.HexNumber);
-                    else
-                        continue;
+                    //else
+                    //    continue;
                 }
 
                 patchList.Add(new ChunkFile
                 {
                     Path = file,
-                    Location = getOrReserve(bank),
+                    Location = bank != null ? getOrReserve(bank.Value) : 0u,
                     File = new() { Type = BinType.Assembly }
                 });
             }

@@ -1,5 +1,6 @@
 ﻿
 
+using GaiaLib;
 using GaiaLib.Asm;
 
 namespace GaiaPacker
@@ -7,7 +8,7 @@ namespace GaiaPacker
     internal class AsmBlock
     {
         public string? Label { get; set; }
-        public uint Location { get; set; }
+        public Location Location { get; set; }
         public uint Size { get; set; }
 
         public List<object> ObjList { get; set; } = [];
