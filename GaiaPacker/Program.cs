@@ -6,12 +6,12 @@ using GaiaPacker;
 using System.Globalization;
 using System.Text.Json;
 
-//char[]
-//    _whitespace = [' ', '\t'],
-//    _operators = ['-', '+'],
-//    _commaspace = [',', ' ', '\t'],
-//    _addressspace = ['@', '&', '^'],
-//    _objectspace = ['<', '['];
+char[]
+    _whitespace = [' ', '\t'],
+    _operators = ['-', '+'],
+    _commaspace = [',', ' ', '\t'],
+    _addressspace = ['@', '&', '^'],
+    _objectspace = ['<', '['];
 
 //uint[] DebugmanEntries = [0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u];
 //byte[] DebugmanActor = [0x20, 0xEE, 0x8B];
@@ -48,10 +48,18 @@ using (var file = File.OpenRead(path))
     project = JsonSerializer.Deserialize<ProjectRoot>(file, options)
         ?? throw new("Error deserializing project file");
 
+#if DEBUG
+    baseDir = "C:\\Games\\Dump";
+#else
     baseDir = string.IsNullOrWhiteSpace(project.BaseDir) ? Directory.GetParent(file.Name).FullName : project.BaseDir;
+#endif
 }
 
+#if DEBUG
+var databasePath = "C:\\Games\\GaiaLabs\\GaiaLib\\database.json";// Path.Combine(baseDir, "database.json");
+#else
 var databasePath = Path.Combine(baseDir, "database.json");
+#endif
 //var filePath = Path.Combine(baseDir, "files");
 
 if (isUnpack)
@@ -101,6 +109,23 @@ outRom.WriteByte(0x00);
 
 Process.Repack(baseDir, databasePath, WriteFile);
 
+//Calculate checksum
+int sum = 0;
+outRom.Position = 0;
+for (uint x = 0, size = (uint)outRom.Length; x++ < size;)
+    //while (outRom.Position < outRom.Length)
+    sum += outRom.ReadByte();// | (outRom.ReadByte() << 8);
+
+//Write checksum
+outRom.Position = 0xFFDEu;
+outRom.WriteByte((byte)sum);
+outRom.WriteByte((byte)(sum >> 8));
+
+//Write checksum compliment
+sum = ~sum;
+outRom.Position = 0xFFDCu;
+outRom.WriteByte((byte)sum);
+outRom.WriteByte((byte)(sum >> 8));
 
 uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location> chunkLookup)
 {
@@ -131,7 +156,21 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
                 break;
 
             case GaiaLib.Database.BinType.Assembly:
-                ParseAssembly(root, inFile, chunkLookup);
+                //Rebase assembly
+                if (file.Blocks?.Any() == true && file.Blocks[0].Location != file.Location && file.Location != 0u)
+                {
+                    uint loc = filePos;
+                    for (int x = 0; x < file.Blocks.Count; x++)
+                    {
+                        var block = file.Blocks[x];
+                        if (x > 0 && block.Label == null)
+                            break;
+                        block.Location = loc;
+                        loc += (uint)block.Size;
+                    }
+                }
+
+                ParseAssembly(file.Blocks, root, inFile, chunkLookup);
                 goto Next;
         }
 
@@ -156,15 +195,32 @@ Next:
     uint size = (uint)outRom.Position - filePos;
 
     //Write reference fixups
-    //var nextPos = outRom.Position;
-    if (file.File?.XRef?.Any() == true)
+    var nextPos = outRom.Position;
+    if (file.File?.XRef != null)
         foreach (var rf in file.File.XRef)
         {
             //var offset = uint.Parse(rf, NumberStyles.HexNumber);
             outRom.Position = rf;
             outRom.WriteByte((byte)filePos);
             outRom.WriteByte((byte)(filePos >> 8));
-            outRom.WriteByte((byte)((filePos >> 16) + 0xC0));
+            outRom.WriteByte((byte)((filePos >> 16) | 0xC0));
+        }
+
+    if (file.File?.LRef != null)
+        foreach (var rf in file.File.LRef)
+        {
+            //var offset = uint.Parse(rf, NumberStyles.HexNumber);
+            outRom.Position = rf;
+            outRom.WriteByte((byte)filePos);
+            outRom.WriteByte((byte)(filePos >> 8));
+        }
+
+    if (file.File?.HRef != null)
+        foreach (var rf in file.File.HRef)
+        {
+            //var offset = uint.Parse(rf, NumberStyles.HexNumber);
+            outRom.Position = rf;
+            outRom.WriteByte((byte)((filePos >> 16) | 0xC0));
         }
 
     //Move to next file
@@ -173,10 +229,10 @@ Next:
 }
 
 
-void ParseAssembly(DbRoot root, Stream inStream, IDictionary<string, Location> chunkLookup)
+void ParseAssembly(IEnumerable<AsmBlock> blocks, DbRoot root, Stream inStream, IDictionary<string, Location> chunkLookup)
 {
+    blocks ??= Process.ParseAssembly(root, inStream, (uint)outRom.Position);
 
-    var blocks = Process.ParseAssembly(root, inStream, (uint)outRom.Position, chunkLookup);
     int bix = 0;
 
     foreach (var block in blocks)
@@ -195,104 +251,104 @@ void ParseAssembly(DbRoot root, Stream inStream, IDictionary<string, Location> c
 
         var objList = block.ObjList;
         int oix = 0, opos = 0;
-        foreach (var obj in objList)
+
+
+        void ProcessObject(object obj, Op? parentOp = null)
         {
-            oix++;
+        Top:
             if (obj is Op op)
             {
                 outRom.WriteByte(op.Code.Code);
                 opos += op.Size;
 
-                if (op.Code.Mode == AddressingMode.PCRelative || op.Code.Mode == AddressingMode.PCRelativeLong)
-                {
-                    var label = (string)op.Operands[0];
-                    var isLong = op.Code.Mode == AddressingMode.PCRelativeLong;
-
-                    var isImm = label.StartsWith('#');
-                    if (isImm)
-                        label = label[1..];
-
-                    if (label.StartsWith('$'))
-                    {
-                        isImm = true;
-                        label = label[1..];
-                    }
-
-                    Location? offset = null;
-                    if (isImm)
-                        if (label.Length > 4)
-                            offset = uint.Parse(label, NumberStyles.HexNumber);
-                        else if (label.Length > 2 && !isLong)
-                            throw new($"Invalid operand size for instruction '{op.Code.Mnem}'");
-                        else
-                            op.Operands[0] = label;
-                    else
-                    {
-                        var target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
-                            ?? throw new($"Unable to find label {label}");
-
-                        offset = target.Location;
-                    }
-
-                    if (offset != null)
-                    {
-                        offset = offset.Value.Offset - (block.Location.Offset + (uint)opos);
-                        op.Operands[0] = isLong ? (ushort)offset.Value.Offset : (object)(byte)offset.Value.Offset;
-                    }
-                }
-                else if (op.Code.Mnem[0] == 'J'
-                    && (op.Code.Mode == AddressingMode.Absolute || op.Code.Mode == AddressingMode.AbsoluteLong))
-                {
-                    var label = (string)op.Operands[0];
-                    var isLong = op.Code.Mode == AddressingMode.AbsoluteLong;
-                    if (label.StartsWith('@'))
-                    {
-                        label = label[1..];
-                        var target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
-                            ?? throw new($"Unable to find label {label}");
-                        op.Operands[0] = isLong ? (target.Location.Offset + 0x800000u) : (object)(ushort)target.Location.Offset;
-                    }
-                }
-
                 foreach (var opnd in op.Operands)
-                {
-                    object result;
-
-                    if (opnd is string str)
-                        result = (str.Length) switch
-                        {
-                            1 or 2 => result = byte.Parse(str, NumberStyles.HexNumber),
-                            3 or 4 => result = ushort.Parse(str, NumberStyles.HexNumber),
-                            5 or 6 => result = uint.Parse(str, NumberStyles.HexNumber),
-                            _ => throw new($"Incorrect operand length {str}")
-                        };
-                    else
-                        result = opnd;
-
-
-                    if (result is uint ui)
-                    {
-                        outRom.WriteByte((byte)ui);
-                        outRom.WriteByte((byte)(ui >> 8));
-                        outRom.WriteByte((byte)(ui >> 16));
-                    }
-                    else if (result is ushort us)
-                    {
-                        outRom.WriteByte((byte)us);
-                        outRom.WriteByte((byte)(us >> 8));
-                    }
-                    else if (result is byte b)
-                        outRom.WriteByte(b);
-                }
-
+                    ProcessObject(opnd, op);
             }
             else if (obj is byte[] arr)
             {
                 outRom.Write(arr);
                 opos += arr.Length;
             }
+            else if (obj is string str)
+            {
+                var label = _addressspace.Contains(str[0]) ? str[1..] : str;
+
+                Location loc;
+                bool isRelative = parentOp != null &&
+                    (parentOp.Code.Mode == AddressingMode.PCRelative || parentOp.Code.Mode == AddressingMode.PCRelativeLong);
+
+                //Search local labels first
+                var target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true);
+                if (target != null)
+                    loc = target.Location;
+                else if (!chunkLookup.TryGetValue(label, out loc))
+                {
+                    if (label[0] == '#')
+                        label = label[1..];
+
+                    if (label[0] == '$')
+                        label = label[1..];
+
+                    if (isRelative && label.Length > 4)
+                    {
+                        var off = int.Parse(label, NumberStyles.HexNumber) - ((int)block.Location.Offset + opos);
+                        obj = parentOp.Size == 2 ? (object)(byte)off : (ushort)off;
+                    }
+                    else
+                        obj = (label.Length) switch
+                        {
+                            1 or 2 => (object)byte.Parse(label, NumberStyles.HexNumber),
+                            3 or 4 => ushort.Parse(label, NumberStyles.HexNumber),
+                            5 or 6 => uint.Parse(label, NumberStyles.HexNumber),
+                            _ => throw new($"Incorrect operand length {label}")
+                        };
+                    goto Top;
+                }
+
+                if (isRelative)
+                    loc -= block.Location.Offset + (uint)opos;
+
+                if (str[0] == '&' || parentOp?.Size == 3)
+                    obj = (ushort)loc.Offset;
+                else if (str[0] == '^')
+                    obj = (byte)((loc.Offset >> 16) | 0xC0);
+                else if (str[0] == '@')
+                    obj = loc.Offset | 0xC00000u;
+                else if (parentOp?.Size == 4)
+                    obj = loc.Offset;
+                else if (parentOp?.Size == 2)
+                    obj = (byte)loc.Offset;
+                else
+                    throw new("Unable to determine operand transform");
+
+                goto Top;
+            }
+            else if (obj is uint ui)
+            {
+                outRom.WriteByte((byte)ui);
+                outRom.WriteByte((byte)(ui >> 8));
+                outRom.WriteByte((byte)(ui >> 16));
+                //opos += 3;
+            }
+            else if (obj is ushort us)
+            {
+                outRom.WriteByte((byte)us);
+                outRom.WriteByte((byte)(us >> 8));
+                //opos += 2;
+            }
+            else if (obj is byte b)
+            {
+                outRom.WriteByte(b);
+                //opos += 1;
+            }
             else
                 throw new($"Unable to process '{obj}'");
+        }
+
+        foreach (var obj in objList)
+        {
+            oix++;
+            ProcessObject(obj);
         }
 
         if (oldPos != null)

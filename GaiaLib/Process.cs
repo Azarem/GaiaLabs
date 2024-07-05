@@ -17,6 +17,7 @@ namespace GaiaLib
             public string Path;
             public int Size;
             public Location Location;
+            public List<AsmBlock>? Blocks;
         }
 
         public static void Repack(string baseDir, string dbFile, Func<ChunkFile, DbRoot, IDictionary<string, Location>, uint> onProcess)
@@ -25,7 +26,7 @@ namespace GaiaLib
 
             var gaps = DiscoverAvailableSpace(root, out var files);
             var sfxFiles = DiscoverSfx(baseDir, root);
-            var chunkFiles = DiscoverFiles(baseDir, files);
+            var chunkFiles = DiscoverFiles(baseDir, root, files);
             var patches = DiscoverPatches(baseDir, gaps);
 
             //Process sfx files the same as others
@@ -35,7 +36,12 @@ namespace GaiaLib
             MatchChunks(gaps, allFiles);
 
             //Generate lookup table
-            var chunkLookup = allFiles.ToDictionary(x => x.File.Name.ToUpper(), x => x.Location);
+            //var chunkLookup = allFiles.ToDictionary(x => x.File.Name.ToUpper(), x => x.Location);
+
+            var chunkLookup = allFiles
+                .Concat(root.Files.Except(allFiles.Select(x => x.File))
+                .Select(x => new ChunkFile { File = x, Location = x.Start }))
+                .ToDictionary(x => x.File.Name.ToUpper(), x => x.Location);
 
             //Write file contents
             foreach (var file in allFiles)
@@ -58,7 +64,7 @@ namespace GaiaLib
         {
             var sfxStart = root.Sfx.Location.Offset;
             List<DbGap> gaps = new([new DbGap { Start = 0x200000u, End = Location.MaxValue }]);
-            files = root.Files.Where(x => x.XRef?.Any() == true).ToList();
+            files = root.Files.Where(x => x.XRef != null || x.HRef != null || x.LRef != null).ToList();
             //var sfxNearest = Location.MaxValue;
 
             void mergeGap(Location start, Location end)
@@ -173,7 +179,7 @@ namespace GaiaLib
             //return chunkFiles;
         }
 
-        private static List<ChunkFile> DiscoverFiles(string baseDir, IEnumerable<DbFile> files)
+        private static List<ChunkFile> DiscoverFiles(string baseDir, DbRoot root, IEnumerable<DbFile> files)
             => files.Select(file =>
             {
                 string folder = "misc", extension = "bin";
@@ -186,16 +192,28 @@ namespace GaiaLib
                     case BinType.Tilemap: folder = "tilemaps"; extension = "map"; break;
                     case BinType.Meta17: break;
                     case BinType.Spritemap: folder = "spritemaps"; break;
+                    case BinType.Assembly: folder = "asm"; extension = "asm"; break;
                         //case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
                 };
 
                 var path = Path.Combine(baseDir, folder ?? "", $"{file.Name}.{extension}");// File.Exists(path) ? path : Path.Combine(baseDir, path);
-                var size = (int)(new FileInfo(path).Length);
+                int size = 0;
+                List<AsmBlock>? blocks = null;
+                if (file.Type == BinType.Assembly)
+                {
+                    using (var inFile = File.OpenRead(path))
+                        blocks = ParseAssembly(root, inFile, file.Start);
 
-                if (file.Compressed != null)
-                    size += 2;
+                    size = blocks.Sum(x => x.Size);
+                }
+                else
+                {
+                    size = (int)new FileInfo(path).Length;
 
-                return new ChunkFile { File = file, Path = path, Size = size };
+                    if (file.Compressed != null)
+                        size += 2;
+                }
+                return new ChunkFile { File = file, Path = path, Size = size, Blocks = blocks };
             }).ToList();
 
         private static List<ChunkFile> DiscoverPatches(string baseDir, List<DbGap> gaps)
@@ -340,6 +358,16 @@ namespace GaiaLib
                 return 2;
             else if (obj is uint)
                 return 3;
+            else if (obj is string str)
+            {
+                if (str.Length > 0)
+                    if (str[0] == '@')
+                        return 3;
+                    else if (str[0] == '&')
+                        return 2;
+                    else if (str[0] == '^')
+                        return 1;
+            }
             ///TODO: Add parsers for strings
             throw new($"Unable to get size for operand '{obj}'");
         }
@@ -348,10 +376,10 @@ namespace GaiaLib
             _whitespace = [' ', '\t'],
             _operators = ['-', '+'],
             _commaspace = [',', ' ', '\t'],
-            _addressspace = ['@', '&', '^'],
+            _addressspace = ['@', '&', '^', '#', '$'],
             _objectspace = ['<', '['];
 
-        public static List<AsmBlock> ParseAssembly(DbRoot root, Stream inStream, uint startLoc, IDictionary<string, Location> chunkLookup)
+        public static List<AsmBlock> ParseAssembly(DbRoot root, Stream inStream, uint startLoc) //, IDictionary<string, Location> chunkLookup)
         {
             using var reader = new StreamReader(inStream);
 
@@ -443,30 +471,30 @@ namespace GaiaLib
                     while ((ix = line.IndexOf(tag.Key)) >= 0)
                         line = line[..ix] + tag.Value + line[(ix + tag.Key.Length)..];
 
-                //Resolve addresses
-                while ((ix = line.IndexOfAny(_addressspace)) >= 0)
-                {
-                    var endIx = line.IndexOfAny(_commaspace, ix);
-                    if (endIx < 0) endIx = line.Length;
-                    var label = line[(ix + 1)..endIx];
+                ////Resolve addresses
+                //while ((ix = line.IndexOfAny(_addressspace)) >= 0)
+                //{
+                //    var endIx = line.IndexOfAny(_commaspace, ix);
+                //    if (endIx < 0) endIx = line.Length;
+                //    var label = line[(ix + 1)..endIx];
 
-                    if (!chunkLookup.TryGetValue(label, out var loc))
-                    {
-                        target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
-                            ?? throw new($"Unable to find label {label}");
-                        loc = target.Location;
-                    }
+                //    if (!chunkLookup.TryGetValue(label, out var loc))
+                //    {
+                //        target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true)
+                //            ?? throw new($"Unable to find label {label}");
+                //        loc = target.Location;
+                //    }
 
-                    var result = (line[ix]) switch
-                    {
-                        '@' => (loc.Offset + 0xC00000u).ToString("X6"),
-                        '&' => (loc.Offset & 0x00FFFFu).ToString("X4"),
-                        '^' => ((loc.Offset >> 16) + 0xC0).ToString("X2"),
-                        _ => throw new("Invalid address operator")
-                    };
+                //    var result = (line[ix]) switch
+                //    {
+                //        '@' => (loc.Offset + 0xC00000u).ToString("X6"),
+                //        '&' => (loc.Offset & 0x00FFFFu).ToString("X4"),
+                //        '^' => ((loc.Offset >> 16) + 0xC0).ToString("X2"),
+                //        _ => throw new("Invalid address operator")
+                //    };
 
-                    line = line[..ix] + '$' + result + line[endIx..];
-                }
+                //    line = line[..ix] + '$' + result + line[endIx..];
+                //}
 
 
                 return line;
@@ -474,28 +502,34 @@ namespace GaiaLib
 
             void processText(string? struc = null, char? openTag = null)
             {
+                var dbs = struc == null ? null
+                    : root.Structs.Values.FirstOrDefault(x => x.Name.Equals(struc, StringComparison.CurrentCultureIgnoreCase));
 
-                DbStruct? dbs = null;
-                uint memoff = 0;
-
-                if (struc != null)
-                    dbs = root.Structs.Values.FirstOrDefault(x => x.Name.Equals(struc, StringComparison.CurrentCultureIgnoreCase));
-
-                var parent = dbs?.Parent != null
-                    ? root.Structs.Values.FirstOrDefault(x => x.Name.Equals(dbs.Parent, StringComparison.CurrentCultureIgnoreCase))
-                    : null;
+                var parent = dbs?.Parent == null ? null
+                    : root.Structs.Values.FirstOrDefault(x => x.Name.Equals(dbs.Parent, StringComparison.CurrentCultureIgnoreCase));
 
                 HexString? desc = parent?.Descriminator;
+                HexString? delimiter = dbs?.Delimiter;
+                uint memberOffset = 0u, dataOffset = 0u;
+                var memberTypes = dbs?.Types;
+                var currentType = memberTypes?[memberOffset];
+
                 bool checkDesc()
                 {
-                    if (desc?.Value == memoff)
+                    if (desc?.Value == dataOffset)
                     {
-                        var obj = desc.Value.ToObject();
+                        var obj = dbs.Descriminator.Value.ToObject();
                         current.ObjList.Add(obj);
-                        current.Size += (uint)GetSize(obj);
+                        current.Size += GetSize(obj);
                         return true;
                     }
                     return false;
+                }
+
+                void AdvancePart()
+                {
+                    if (memberTypes != null && memberOffset + 1 < memberTypes.Length)
+                        currentType = memberTypes[++memberOffset];
                 }
 
                 checkDesc();
@@ -506,18 +540,18 @@ namespace GaiaLib
                     if (line == null)
                         return;
 
-                    //Force a stop when we have processed all members of a struct?
-                    if (memoff >= dbs?.Parts?.Length)
-                    {
-                        return;
-                    }
+                    ////Force a stop when we have processed all members of a struct?
+                    //if (memberOffset >= dbs?.Parts?.Length)
+                    //{
+                    //    return;
+                    //}
 
                     if (line.StartsWith("DB"))
                     {
                         string hex = OpCode.HexRegex().Replace(line[2..], "");
                         var data = Convert.FromHexString(hex);
                         current.ObjList.Add(data);
-                        current.Size += (uint)data.Length;
+                        current.Size += data.Length;
                         line = "";
                         continue;
                     }
@@ -541,21 +575,24 @@ namespace GaiaLib
                                 line = "";
                             }
 
+                            AdvancePart();
                             continue;
                         }
 
 
                         //Process raw data
-                        if (line[0] == '#')
+                        if (_addressspace.Contains(line[0]))
                         {
                             bool reverse = false;
-                            if (line.StartsWith("#$"))
+
+                            if (line[0] == '#')
+                                line = line[1..];
+
+                            if (line[0] == '$')
                             {
                                 reverse = true;
-                                line = line[2..];
-                            }
-                            else
                                 line = line[1..];
+                            }
 
                             string hex;
                             if ((ix = line.IndexOfAny(_commaspace)) >= 0)
@@ -571,19 +608,29 @@ namespace GaiaLib
 
                             if (hex.Length > 0)
                             {
-                                var data = Convert.FromHexString(hex);
-                                if (reverse)
-                                    for (int x = 0, y = data.Length; --y > x;)
-                                    {
-                                        var sample = data[x];
-                                        data[x++] = data[y];
-                                        data[y] = sample;
-                                    }
+                                //Keep string values of address markers so they can be resolved later
+                                if (_addressspace.Contains(hex[0]))
+                                {
+                                    current.ObjList.Add(hex);
+                                    current.Size += GetSize(hex);
+                                }
+                                else
+                                {
+                                    var data = Convert.FromHexString(hex);
+                                    if (reverse)
+                                        for (int x = 0, y = data.Length; --y > x;)
+                                        {
+                                            var sample = data[x];
+                                            data[x++] = data[y];
+                                            data[y] = sample;
+                                        }
 
-                                current.ObjList.Add(data);
-                                current.Size += (uint)data.Length;
+                                    current.ObjList.Add(data);
+                                    current.Size += data.Length;
+                                }
                             }
 
+                            AdvancePart();
                             continue;
                         }
 
@@ -591,7 +638,7 @@ namespace GaiaLib
                         if (line[0] == '>')
                         {
                             if (openTag == '<')
-                                line = line[1..];
+                                line = line[1..].TrimStart(_commaspace);
                             return;
                         }
 
@@ -599,8 +646,21 @@ namespace GaiaLib
                         if (line[0] == ']')
                         {
                             if (openTag == '[')
-                                line = line[1..];
+                                line = line[1..].TrimStart(_commaspace);
+                            if (delimiter != null)
+                            {
+                                var obj = delimiter.Value.ToObject();
+                                current.ObjList.Add(obj);
+                                current.Size += GetSize(obj);
+                            }
                             return;
+                        }
+
+                        if (line[0] == '[')
+                        {
+                            line = line[1..].TrimStart(_commaspace);
+                            processText(currentType, '[');
+                            continue;
                         }
 
                         //break;
@@ -645,7 +705,7 @@ namespace GaiaLib
                                 && uint.TryParse(label, NumberStyles.HexNumber, null, out var addr)
                                 && Location.MaxValue >= addr)
                             {
-                                blocks.Add(current = new AsmBlock { Location = addr });
+                                blocks.Add(current = new() { Location = addr });
                                 bix++;
                             }
                             else if (label.Length > 0)
@@ -654,7 +714,7 @@ namespace GaiaLib
                                 //    current.Label = label;
                                 //else
                                 //{
-                                blocks.Add(current = new AsmBlock { Location = current.Location + current.Size, Label = label });
+                                blocks.Add(current = new() { Location = current.Location + (uint)current.Size, Label = label });
                                 bix++;
                                 //}
                             }
@@ -672,11 +732,23 @@ namespace GaiaLib
                             //Process object tags
                             if (operand.StartsWith('<'))
                             {
-                                line = line[1..].TrimStart(_commaspace);
+                                line = operand[1..].TrimStart(_commaspace);
                                 processText(mnem, '<');
                                 mnem = null;
                                 continue;
                             }
+                            //else if (operand.StartsWith('['))
+                            //{
+                            //    //Take mnem as a label
+                            //    var label = line[..ix];
+                            //    blocks.Add(current = new() { Label = label, Location = current.Location + (uint)current.Size });
+                            //    bix++;
+
+                            //    line = operand[1..].TrimStart(_commaspace);
+                            //    processText(null, '[');
+                            //    mnem = null;
+                            //    continue;
+                            //}
                         }
                         else
                             mnem = line;
@@ -689,7 +761,17 @@ namespace GaiaLib
                     {
                         //Get list of opcodes from mnemonic
                         if (!OpCode.Grouped.TryGetValue(mnem, out var codes))
+                        {
+                            //No mnemonic? Make a label!
+                            if (operand != null && operand[0] == '[')
+                            {
+                                blocks.Add(current = new() { Label = mnem, Location = current.Location + (uint)current.Size });
+                                bix++;
+                                line = operand[1..];
+                                continue;
+                            }
                             throw new($"Unknown instruction line {lineCount}: '{mnem}'");
+                        }
 
                         //No operand instructions
                         if (string.IsNullOrEmpty(operand))
@@ -728,8 +810,8 @@ namespace GaiaLib
                             operand = operand[..vix] + value.ToString($"X{len}") + operand[endIx..];
                         }
 
-                        OpCode opCode = null;
-                        int size = 1;
+                        OpCode? opCode = null;
+                        //int size = 1;
                         foreach (var code in codes)
                         {
                             ///TODO: COP processing
@@ -737,9 +819,10 @@ namespace GaiaLib
                             if (code.Mode == AddressingMode.PCRelative || code.Mode == AddressingMode.PCRelativeLong)
                             {
                                 opCode = code;
-                                size = code.Size;
+                                //size = code.Size;
                                 break;
                             }
+
 
                             if (OpCode.AddressingRegex.TryGetValue(code.Mode, out var regex))
                             {
@@ -748,30 +831,68 @@ namespace GaiaLib
                                 {
                                     operand = match.Groups[1].Value;
                                     opCode = code;
-                                    size = opCode.Size == -2 ? (operand.Length > 2 ? 3 : 2) : opCode.Size;
+                                    //size = opCode.Size == -2 ? (operand.Length > 2 ? 3 : 2) : opCode.Size;
                                     break;
                                 }
                             }
-
                         }
+
+                        if (operand[0] == '$')
+                            operand = operand[1..];
 
                         if (opCode == null)
                         {
-                            if (mnem.StartsWith('J'))
+                            if ((ix = operand.IndexOfAny(_addressspace)) >= 0)
                             {
-                                opCode = codes.Single(x => x.Mode == AddressingMode.Absolute || x.Mode == AddressingMode.AbsoluteLong);
-                                operand = $"@{operand}";
-                                size = opCode.Size;
-                                //opnd = blocks.FirstOrDefault(x => x.Label?.Equals(operand) == true)
-                                //    //if (!blocks.Any(x => x.Label?.Equals(operand) == true))
-                                //    ?? throw new($"Unable to locate target for label line {lineCount}: '{operand}'");
+                                var eix = operand.IndexOfAny([' ', '\t', ',', ']', ')'], ix);
+                                if (eix < 0) eix = operand.Length;
+                                operand = operand[ix..eix];
                             }
-                            else
+
+                            opCode = codes.SingleOrDefault(x => x.Mode == AddressingMode.Immediate)
+                                ?? codes.SingleOrDefault(x => x.Mode == AddressingMode.AbsoluteLong)
+                                ?? codes.SingleOrDefault(x => x.Mode == AddressingMode.Absolute);
+
+                            //if (operand[0] == '&')
+                            //{
+                            //    opCode = codes.SingleOrDefault(x => x.Mode == AddressingMode.Immediate)
+                            //        ?? codes.SingleOrDefault(x => x.Mode == AddressingMode.Absolute);
+                            //    size = (opCode.Size == -2) ? 2 : opCode.Size;
+                            //}
+                            //else if (operand[0] == '^')
+                            //{
+                            //    opCode = codes.SingleOrDefault(x => x.Mode == AddressingMode.Immediate);
+                            //    size = (opCode.Size == -2) ? 1 : opCode.Size;
+                            //}
+                            //else // (operand[0] == '@')
+                            //{
+                            //    opCode = codes.SingleOrDefault(x => x.Mode == AddressingMode.Immediate)
+                            //        ?? codes.SingleOrDefault(x => x.Mode == AddressingMode.AbsoluteLong)
+                            //        ?? codes.SingleOrDefault(x => x.Mode == AddressingMode.Absolute);
+
+                            //    size = (opCode.Size == -2) ? 2 : opCode.Size;
+                            //}
+
+                            //if (mnem[0] == 'J')
+                            //{
+                            //    opCode = codes.Single(x => x.Mode == AddressingMode.Absolute || x.Mode == AddressingMode.AbsoluteLong);
+                            //    operand = $"@{operand}";
+                            //    size = opCode.Size;
+                            //    //opnd = blocks.FirstOrDefault(x => x.Label?.Equals(operand) == true)
+                            //    //    //if (!blocks.Any(x => x.Label?.Equals(operand) == true))
+                            //    //    ?? throw new($"Unable to locate target for label line {lineCount}: '{operand}'");
+                            //}
+                            //else
+                            if (opCode == null)
                                 throw new($"Unable to determine mode/code line {lineCount}: '{line}'");
                         }
 
+                        int size = opCode.Size;
+                        if (opCode.Size == -2)
+                            size = (operand[0] == '^' || operand.Length == 2) ? 2 : 3;
+
                         current.ObjList.Add(new Op() { Code = opCode, Operands = [operand], Size = (byte)size });
-                        current.Size += (uint)size;
+                        current.Size += size;
                         //}
                     }
                 }

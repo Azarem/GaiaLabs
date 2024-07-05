@@ -8,10 +8,8 @@
 
 ; hirom
 
-; --------------------free space code
-; org $c7e930 ;free rom space
-
-track_table: ; ORG $c7fe00 ; track table for each room 
+;ORG $c7fe00 ; track table for each room 
+track_table: 
 ;   0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
 db $40,$03,$03,$03,$03,$03,$03,$03,$03,$03,$09,$00,$0A,$0A,$0A,$0A ; rooms 00-0f 
 db $0A,$0A,$0A,$0A,$03,$07,$07,$07,$07,$05,$05,$0A,$05,$0C,$0C,$0C ; rooms 10-1f
@@ -30,14 +28,16 @@ db $11,$11,$11,$11,$11,$11,$11,$11,$11,$11,$11,$11,$06,$12,$05,$05 ; rooms D0-Df
 db $05,$05,$05,$05,$13,$13,$04,$40,$40,$0A,$40,$40,$40,$40,$40,$40 ; rooms E0-Ef
 db $00,$40,$12,$12,$12,$12,$12,$40,$40,$40,$02,$00,$01,$00,$02,$40 ; rooms F0-Ff
 
-
-loop_table: ; ORG $c7ff00 ; loop table for each room 00: mute, 03:loop, 01 non-loop
+;ORG $c7ff00 ; loop table for each room 00: mute, 03:loop, 01 non-loop
+loop_table: 
 db $00,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03 ; tracks 00-0f 
 db $03,$03,$03,$03,$03,$03,$03,$01,$01,$01,$01,$03,$01,$01,$01,$01 ; tracks 10-1f
 db $03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03 ; tracks 20-2f
 db $03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03 ; tracks 30-3f 
 db $03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03 ; tracks 40-4f 
 
+; --------------------free space code
+;org $c7e930 ;free rom space
 
 loadTrack:
 	STZ $0642

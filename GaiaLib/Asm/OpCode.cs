@@ -335,6 +335,7 @@ namespace GaiaLib.Asm
             { AddressingMode.AbsoluteIndexedY, AbsoluteIndexedYRegex() },
             { AddressingMode.AbsoluteIndexedX, AbsoluteIndexedXRegex() },
             { AddressingMode.AbsoluteLongIndexedX, AbsoluteLongIndexedXRegex() },
+            { AddressingMode.AbsoluteIndexedIndirect, AbsoluteIndexedIndirectRegex() },
             { AddressingMode.BlockMove, BlockMoveRegex() },
         };
 
@@ -350,7 +351,7 @@ namespace GaiaLib.Asm
         [GeneratedRegex("^\\[\\$([A-F0-9]{2})\\]$", RegexOptions.Compiled)]
         private static partial Regex DirectPageIndirectLongRegex();
 
-        [GeneratedRegex("^#\\$([A-F0-9]{2,4})$", RegexOptions.Compiled)]
+        [GeneratedRegex("^#(\\$[A-F0-9]{2,4}|[&^][A-Z0-9-_]+)$", RegexOptions.Compiled)]
         private static partial Regex ImmediateRegex();
 
         [GeneratedRegex("^\\$([A-F0-9]{4})$", RegexOptions.Compiled)]
@@ -374,14 +375,17 @@ namespace GaiaLib.Asm
         [GeneratedRegex("^\\[\\$([A-F0-9]{2})\\],\\s?[Yy]$", RegexOptions.Compiled)]
         private static partial Regex DirectPageIndirectLongIndexedYRegex();
 
-        [GeneratedRegex("^\\$([A-F0-9]{4}),\\s?[Yy]$", RegexOptions.Compiled)]
+        [GeneratedRegex("^(\\$[A-F0-9]{4}|&[A-Z0-9-_]+),\\s?[Yy]$", RegexOptions.Compiled)]
         private static partial Regex AbsoluteIndexedYRegex();
 
-        [GeneratedRegex("^\\$([A-F0-9]{4}),\\s?[Xx]$", RegexOptions.Compiled)]
+        [GeneratedRegex("^(\\$[A-F0-9]{4}|&[A-Z0-9-_]+),\\s?[Xx]$", RegexOptions.Compiled)]
         private static partial Regex AbsoluteIndexedXRegex();
 
-        [GeneratedRegex("^\\$([A-F0-9]{6}),\\s?[Xx]$", RegexOptions.Compiled)]
+        [GeneratedRegex("^(\\$[A-F0-9]{6}|@[A-Z0-9-_]+),\\s?[Xx]$", RegexOptions.Compiled)]
         private static partial Regex AbsoluteLongIndexedXRegex();
+
+        [GeneratedRegex("^\\((\\$[A-F0-9]{4}|&[A-Z0-9-_]+),\\s*[Xx]\\)$", RegexOptions.Compiled)]
+        private static partial Regex AbsoluteIndexedIndirectRegex();
 
         [GeneratedRegex("^#\\$([A-F0-9]{2}),\\s?#\\$([A-F0-9]{2})$", RegexOptions.Compiled)]
         private static partial Regex BlockMoveRegex();

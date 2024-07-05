@@ -8,7 +8,7 @@ namespace GaiaLib.Structs
         //private readonly byte Command = 0x17;
         public byte Unknown1;
         public Address Address;
-        public byte Unknown2;
+        //public byte Unknown2; //This is unused and is better as a zero
 
         public Meta17() { }
     }

@@ -151,6 +151,8 @@ namespace GaiaLib.Rom
                         start += 4;
                         break;
                     case BinType.Spritemap: folder = "spritemaps"; break;
+                    case BinType.Assembly: folder = "asm"; extension = "asm"; 
+                        continue;
                         //case BinType.Sound: folder = "sfx"; extension = "bin"; break;
                 };
 
@@ -1073,7 +1075,7 @@ namespace GaiaLib.Rom
             }
             else if (obj is Location l) writer.Write(ResolveName(l));
             else if (obj is byte b) writer.Write("#{0:X2}", b);
-            else if (obj is ushort s) writer.Write("#{0:X4}", s);
+            else if (obj is ushort s) writer.Write("#${0:X4}", s);
             else if (obj is byte[] a)
             {
                 writer.Write("#");

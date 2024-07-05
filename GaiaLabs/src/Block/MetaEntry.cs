@@ -103,7 +103,7 @@ namespace GaiaLabs
                 case 0x17:
                     var s17 = loader.ReadStruct<Meta17>();
                     Value1 = s17.Unknown1;
-                    Value2 = s17.Unknown2;
+                    //Value2 = s17.Unknown2;
                     //var tex = loader.GetReference<TextureEntry>(s4.Address);
                     Reference = new DataReference((Address)Location, 3, 2);
                     //tex.References.Add(Reference);
