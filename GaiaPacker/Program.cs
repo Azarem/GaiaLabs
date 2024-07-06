@@ -10,7 +10,7 @@ char[]
     _whitespace = [' ', '\t'],
     _operators = ['-', '+'],
     _commaspace = [',', ' ', '\t'],
-    _addressspace = ['@', '&', '^'],
+    _addressspace = ['@', '&', '^', '%'],
     _objectspace = ['<', '['];
 
 //uint[] DebugmanEntries = [0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u];
@@ -159,18 +159,19 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
                 //Rebase assembly
                 if (file.Blocks?.Any() == true && file.Blocks[0].Location != file.Location && file.Location != 0u)
                 {
-                    uint loc = filePos;
-                    for (int x = 0; x < file.Blocks.Count; x++)
-                    {
-                        var block = file.Blocks[x];
-                        if (x > 0 && block.Label == null)
-                            break;
-                        block.Location = loc;
-                        loc += (uint)block.Size;
-                    }
+                    throw new("Assembly was not based properly");
+                    //uint loc = filePos;
+                    //for (int x = 0; x < file.Blocks.Count; x++)
+                    //{
+                    //    var block = file.Blocks[x];
+                    //    if (x > 0 && block.Label == null)
+                    //        break;
+                    //    block.Location = loc;
+                    //    loc += (uint)block.Size;
+                    //}
                 }
 
-                ParseAssembly(file.Blocks, root, inFile, chunkLookup);
+                ParseAssembly(file.Blocks, file.Includes, root, inFile, chunkLookup);
                 goto Next;
         }
 
@@ -196,32 +197,84 @@ Next:
 
     //Write reference fixups
     var nextPos = outRom.Position;
-    if (file.File?.XRef != null)
-        foreach (var rf in file.File.XRef)
-        {
-            //var offset = uint.Parse(rf, NumberStyles.HexNumber);
-            outRom.Position = rf;
-            outRom.WriteByte((byte)filePos);
-            outRom.WriteByte((byte)(filePos >> 8));
-            outRom.WriteByte((byte)((filePos >> 16) | 0xC0));
-        }
 
-    if (file.File?.LRef != null)
-        foreach (var rf in file.File.LRef)
+    if (file.File.XRef != null)
+    {
+        foreach (var str in file.File.XRef)
         {
-            //var offset = uint.Parse(rf, NumberStyles.HexNumber);
-            outRom.Position = rf;
-            outRom.WriteByte((byte)filePos);
-            outRom.WriteByte((byte)(filePos >> 8));
-        }
+            char c = str[0];
+            var hex = _addressspace.Contains(c) ? str[1..] : str;
+            var value = uint.Parse(hex, NumberStyles.HexNumber);
+            Location loc = value;
 
-    if (file.File?.HRef != null)
-        foreach (var rf in file.File.HRef)
-        {
-            //var offset = uint.Parse(rf, NumberStyles.HexNumber);
-            outRom.Position = rf;
-            outRom.WriteByte((byte)((filePos >> 16) | 0xC0));
+            outRom.Position = loc;
+            switch (c)
+            {
+                case '@':
+                    value = filePos | 0xC00000u;
+                    goto writeValue;
+
+                case '%':
+                    value = filePos | 0x800000u;
+                    goto writeValue;
+
+                case '^':
+                    outRom.WriteByte((byte)((filePos >> 16) | 0x80));
+                    break;
+
+                case '&':
+                    outRom.WriteByte((byte)filePos);
+                    outRom.WriteByte((byte)(filePos >> 8));
+                    break;
+
+                default:
+                    value = (value & 0xC00000) | filePos;
+
+                writeValue:
+                    outRom.WriteByte((byte)value);
+                    outRom.WriteByte((byte)(value >> 8));
+                    outRom.WriteByte((byte)(value >> 16));
+                    break;
+            }
         }
+    }
+
+    //if (file.File?.XRef != null)
+    //    foreach (var rf in file.File.XRef)
+    //    {
+    //        //var offset = uint.Parse(rf, NumberStyles.HexNumber);
+    //        outRom.Position = rf;
+    //        outRom.WriteByte((byte)filePos);
+    //        outRom.WriteByte((byte)(filePos >> 8));
+    //        outRom.WriteByte((byte)((filePos >> 16) | 0xC0)); //Code references need 0x80!!
+    //    }
+
+    //if (file.File?.CRef != null)
+    //    foreach (var rf in file.File.CRef)
+    //    {
+    //        //var offset = uint.Parse(rf, NumberStyles.HexNumber);
+    //        outRom.Position = rf;
+    //        outRom.WriteByte((byte)filePos);
+    //        outRom.WriteByte((byte)(filePos >> 8));
+    //        outRom.WriteByte((byte)((filePos >> 16) | 0x80)); //Code references need 0x80!!
+    //    }
+
+    //if (file.File?.LRef != null)
+    //    foreach (var rf in file.File.LRef)
+    //    {
+    //        //var offset = uint.Parse(rf, NumberStyles.HexNumber);
+    //        outRom.Position = rf;
+    //        outRom.WriteByte((byte)filePos);
+    //        outRom.WriteByte((byte)(filePos >> 8));
+    //    }
+
+    //if (file.File?.HRef != null)
+    //    foreach (var rf in file.File.HRef)
+    //    {
+    //        //var offset = uint.Parse(rf, NumberStyles.HexNumber);
+    //        outRom.Position = rf;
+    //        outRom.WriteByte((byte)((filePos >> 16) | 0x80)); //Code references need 0x80!!
+    //    }
 
     //Move to next file
     //outRom.Position = nextPos;
@@ -229,9 +282,11 @@ Next:
 }
 
 
-void ParseAssembly(IEnumerable<AsmBlock> blocks, DbRoot root, Stream inStream, IDictionary<string, Location> chunkLookup)
+void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot root, Stream inStream, IDictionary<string, Location> chunkLookup)
 {
-    blocks ??= Process.ParseAssembly(root, inStream, (uint)outRom.Position);
+    if (blocks == null)
+        throw new("Assembly has not been parsed");
+    //blocks ??= Process.ParseAssembly(root, inStream, (uint)outRom.Position, out includes);
 
     int bix = 0;
 
@@ -281,8 +336,9 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, DbRoot root, Stream inStream, I
                 var target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true);
                 if (target != null)
                     loc = target.Location;
-                else if (!chunkLookup.TryGetValue(label, out loc))
+                else if (!chunkLookup.TryGetValue(label.ToUpper(), out loc))
                 {
+                    //These now don't happen
                     if (label[0] == '#')
                         label = label[1..];
 

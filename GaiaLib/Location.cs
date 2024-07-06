@@ -9,7 +9,7 @@ namespace GaiaLib
 {
     [JsonConverter(typeof(LocationConverter))]
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public readonly struct Location :
+    public readonly struct Location(uint offset) :
         IComparable,
         IComparable<Location>,
         IComparable<uint>,
@@ -26,15 +26,14 @@ namespace GaiaLib
         IEqualityOperators<Location, Location, bool>,
         IMinMaxValue<Location>
     {
-        public readonly uint Offset;
+        public readonly uint Offset = offset & 0x3FFFFFu;
+        //public readonly byte Size = size;
 
         public byte Bank => (byte)(Offset >> 16);
 
         public static Location MaxValue => 0x3FFFFFu;
 
         public static Location MinValue => 0;
-
-        public Location(uint offset) { Offset = offset & 0x3FFFFFu; }
 
         public static implicit operator Location(uint off) => new(off);
         public static implicit operator uint(Location loc) => loc.Offset;
@@ -62,8 +61,8 @@ namespace GaiaLib
         public static bool operator <=(Location near, Location far) => near.Offset <= far.Offset;
         public static bool operator ==(Location near, Location far) => near.Offset == far.Offset;
         public static bool operator !=(Location near, Location far) => near.Offset != far.Offset;
-        public static Location operator &(Location near, Location far) => new(near.Offset & far.Offset);
-        public static Location operator |(Location near, Location far) => new(near.Offset | far.Offset);
+        //public static Location operator &(Location near, Location far) => new(near.Offset & far.Offset);
+        //public static Location operator |(Location near, Location far) => new(near.Offset | far.Offset);
 
         public override string ToString() => Offset.ToString("X6");
 

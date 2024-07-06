@@ -7,7 +7,7 @@
 
 ### Getting Started
 
-1. Get the latest release from GitHub and extract the package contents to a folder on your PC. We will be using this as a project folder so make sure it is empty beforehand.
+1. Get the latest release from GitHub and extract the package contents to a folder on your PC. You will be using this as a project folder so make sure it is empty beforehand.
 2. Open the 'project.json' file in a text editor and change the `romPath` property to reflect the full path of an unheadered Illusion of Gaia (USA) ROM file on your PC.
 3. Open a command prompt in your new project directory and run `GaiaPacker.exe --unpack`; this will dump all of the game files into your project folder.
 4. Make modifications to game files or patches. Included is an MSU-1 patch (credits to Conn), if you would like to use it to add MSU support simply remove the underscore `_` from the file name to be `iog_msu.asm`
