@@ -1,4 +1,4 @@
-﻿# GaiaPacker v1.0
+﻿# GaiaLabs BaseROM Toolkit v1.0b
 
 ### Requirements
 
