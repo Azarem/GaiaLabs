@@ -11,8 +11,8 @@
 2. Open the 'project.json' file in a text editor and change the `romPath` property to reflect the full path of an unheadered Illusion of Gaia (USA) ROM file on your PC.
 3. Open a command prompt in your new project directory and run `GaiaPacker.exe --unpack`; this will dump all of the game files into your project folder.
 4. Make modifications to game files or patches. Included is an MSU-1 patch (credits to Conn), if you would like to use it to add MSU support simply remove the underscore `_` from the file name to be `iog_msu.asm`
-5. Check out `asm/scene__meta.asm`, this file is connected to struct processing and will be rebuilt along with other files. Add more scenes or assets to this file using a text editor.
-6. Look at `asm/scene__events.asm`, this file contains all actors and events.
+5. Check out `asm/scene_meta.asm`, this file is connected to struct processing and will be rebuilt along with other files. Add more scenes or assets to this file using a text editor.
+6. Look at `asm/scene_events.asm`, this file contains all actors and events.
 7. Go back to your command prompt and run `GaiaPacker.exe`. This will re-build the ROM along with any changes you made.
 
 *__Using this package will allow you to make changes to nearly any part of the game, and rebuild the ROM for patch creation.__*

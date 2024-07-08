@@ -3,8 +3,8 @@ namespace GaiaLib.Asm
 {
     public class Stack
     {
-        public byte[] Bytes = new byte[60];
-        public int Location = 0;
+        public byte[] Bytes = new byte[70];
+        public int Location = 10;
 
         public void Push(byte b)
             => Bytes[Location++] = b;
@@ -16,10 +16,10 @@ namespace GaiaLib.Asm
         }
 
         public byte PopByte()
-            => Bytes[Location--];
+            => Bytes[--Location];
 
         public ushort PopUInt16()
-            => (ushort)(Bytes[Location--] << 8 | Bytes[Location--]);
+            => (ushort)(Bytes[--Location] << 8 | Bytes[--Location]);
 
     }
 }

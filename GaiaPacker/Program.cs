@@ -132,47 +132,51 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
     uint filePos = file.Location;
     outRom.Position = filePos;
 
-    //Open source file
-    using (var inFile = File.OpenRead(file.Path))
+
+    if (file.File.Type == BinType.Assembly)
     {
+        //Rebase assembly
+        if (file.Blocks?.Any() == true && file.Blocks[0].Location != file.Location && file.Location != 0u)
+        {
+            throw new("Assembly was not based properly");
+            //uint loc = filePos;
+            //for (int x = 0; x < file.Blocks.Count; x++)
+            //{
+            //    var block = file.Blocks[x];
+            //    if (x > 0 && block.Label == null)
+            //        break;
+            //    block.Location = loc;
+            //    loc += (uint)block.Size;
+            //}
+        }
+
+        ParseAssembly(file.Blocks, file.Includes, root, chunkLookup);
+    }
+    else
+    {
+        //Open source file
+        using var inFile = File.OpenRead(file.Path);
+
         switch (file.File.Type)
         {
-            case GaiaLib.Database.BinType.Tilemap:
+            case BinType.Tilemap:
                 outRom.WriteByte((byte)inFile.ReadByte());
                 outRom.WriteByte((byte)inFile.ReadByte());
                 break;
 
-            case GaiaLib.Database.BinType.Meta17:
+            case BinType.Meta17:
                 outRom.WriteByte((byte)inFile.ReadByte());
                 outRom.WriteByte((byte)inFile.ReadByte());
                 outRom.WriteByte((byte)inFile.ReadByte());
                 outRom.WriteByte((byte)inFile.ReadByte());
                 break;
 
-            case GaiaLib.Database.BinType.Sound:
+            case BinType.Sound:
                 var s = file.Size - 2;
                 outRom.WriteByte((byte)s);
                 outRom.WriteByte((byte)(s >> 8));
                 break;
 
-            case GaiaLib.Database.BinType.Assembly:
-                //Rebase assembly
-                if (file.Blocks?.Any() == true && file.Blocks[0].Location != file.Location && file.Location != 0u)
-                {
-                    throw new("Assembly was not based properly");
-                    //uint loc = filePos;
-                    //for (int x = 0; x < file.Blocks.Count; x++)
-                    //{
-                    //    var block = file.Blocks[x];
-                    //    if (x > 0 && block.Label == null)
-                    //        break;
-                    //    block.Location = loc;
-                    //    loc += (uint)block.Size;
-                    //}
-                }
-
-                ParseAssembly(file.Blocks, file.Includes, root, inFile, chunkLookup);
-                goto Next;
         }
 
         //Mark as not compressed
@@ -192,7 +196,6 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
     }
 
 
-Next:
     uint size = (uint)outRom.Position - filePos;
 
     //Write reference fixups
@@ -282,7 +285,7 @@ Next:
 }
 
 
-void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot root, Stream inStream, IDictionary<string, Location> chunkLookup)
+void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot root, IDictionary<string, Location> chunkLookup)
 {
     if (blocks == null)
         throw new("Assembly has not been parsed");
