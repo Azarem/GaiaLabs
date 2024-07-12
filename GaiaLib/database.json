@@ -433,8 +433,8 @@
     { "start": "01AADE", "end": "01ABDE", "name": "reward_table_01AADE", "type": "Assembly", "xref": [ "&00C354", "&00DA96", "&00DD8E", "%0381CE" ] },
     //{ "start": "01D3CE", "end": "01D8BE", "name": "array_01D3CE", "type": "Assembly", "xref": [ ] },
     { "start": "01D9D8", "end": "01EBA8", "name": "system_strings", "type": "Assembly", "xref": [ ] },
-    { "start": "01EBA8", "end": "01F54D", "name": "lookup_table_01EBA8", "type": "Assembly", "xref": [ "^02A1AD", "&02A1BA", "^03E751", "&03E757" ] },
-    { "start": "01F54D", "end": "01FD24", "name": "lookup_table_01F54D", "type": "Assembly", "xref": [ "^02A1C2", "&02A1CF", "^03E777", "&03E77D" ] },
+    { "start": "01EBA8", "end": "01F54D", "name": "dictionary_01EBA8", "type": "Assembly", "xref": [ "^02A1AD", "&02A1BA", "^03E751", "&03E757" ] },
+    { "start": "01F54D", "end": "01FD24", "name": "dictionary_01F54D", "type": "Assembly", "xref": [ "^02A1C2", "&02A1CF", "^03E777", "&03E77D" ] },
     { "start": "01FD24", "end": "01FF6C", "name": "itemget_table_01FD24", "type": "Assembly", "xref": [ ] },
     
     { "start": "020000", "end": "021A20", "name": "bmp_020000", "type": "Bitmap", "compressed": true, "xref": [ ] },
@@ -2044,15 +2044,15 @@
       ]
     },  
     {
-      "name": "lookup_table_01EBA8",
+      "name": "dictionary_01EBA8",
       "parts": [
-        { "start": "01EBA8", "end": "01F54D", "name": "lookup_table_01EBA8", "struct": "*WideString" }
+        { "start": "01EBA8", "end": "01F54D", "name": "dictionary_01EBA8", "struct": "*WideString" }
       ]
     },
     {
-      "name": "lookup_table_01F54D",
+      "name": "dictionary_01F54D",
       "parts": [
-        { "start": "01F54D", "end": "01FD24", "name": "lookup_table_01F54D", "struct": "*WideString" }
+        { "start": "01F54D", "end": "01FD24", "name": "dictionary_01F54D", "struct": "*WideString" }
       ]
     },
     {

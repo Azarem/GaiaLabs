@@ -1,4 +1,6 @@
-﻿# GaiaLabs BaseROM Toolkit v1.0b
+﻿# GaiaLabs BaseROM Toolkit v1.0d
+
+This is a development toolkit for Illusion of Gaia (SNES). Using it will allow you to browse every asset and piece of code in the game. In addition, it will also allow you to rebuild all of these assets into new ROM files. All assets are decompressed so you can enjoy lightning fast screen transitions and load times. Any files changes you make, as well as any assembly patches you create, will be integrated in this process. Please note that only a handful of files in the `asm/` folder are rebuilt into the ROM (see below).
 
 ### Requirements
 
@@ -15,7 +17,18 @@
 6. Look at `asm/scene_events.asm`, this file contains all actors and events.
 7. Go back to your command prompt and run `GaiaPacker.exe`. This will re-build the ROM along with any changes you made.
 
-*__Using this package will allow you to make changes to nearly any part of the game, and rebuild the ROM for patch creation.__*
+### ASM Files Currently Supported
 
-## Support the project on Patreon!
+Only a handful of files in the `asm/` folder are supported. All others are for reference.
+
+* dictionary_01EBA8
+* dictionary_01F54D
+* itemget_table_01FD24
+* map_names_03B1D4
+* reward_table_01AADE
+* scene_events
+* scene_meta
+* system_strings
+
+### Support the project on Patreon!
 https://www.patreon.com/GaiaLabs
