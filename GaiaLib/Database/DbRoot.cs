@@ -23,6 +23,7 @@ namespace GaiaLib.Database
         //public DbMisc Misc { get; set; }
         public IEnumerable<DbOverride> Overrides { get; set; }
         public IDictionary<Location, DbOverride> Returns { get; set; }
+        public IDictionary<Location, DbTransform> Transforms { get; set; }
 
 
         private static readonly JsonSerializerOptions _jsonOptions = new()

@@ -10,7 +10,7 @@ char[]
     _whitespace = [' ', '\t'],
     _operators = ['-', '+'],
     _commaspace = [',', ' ', '\t'],
-    _addressspace = ['@', '&', '^', '%'],
+    _addressspace = ['@', '&', '^', '%', '*'],
     _objectspace = ['<', '['];
 
 //uint[] DebugmanEntries = [0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u];
@@ -107,7 +107,7 @@ outRom.WriteByte(0x00);
 //foreach (var loc in DebugmanEntries)
 //    ApplyData(loc, DebugmanActor);
 
-Process.Repack(baseDir, databasePath, WriteFile);
+Process.Repack(baseDir, databasePath, WriteFile, WriteTransform);
 
 //Calculate checksum
 int sum = 0;
@@ -126,6 +126,22 @@ sum = ~sum;
 outRom.Position = 0xFFDCu;
 outRom.WriteByte((byte)sum);
 outRom.WriteByte((byte)(sum >> 8));
+
+void WriteTransform(uint location, object value)
+{
+    outRom.Position = location;
+    if (value is ushort us)
+    {
+        outRom.WriteByte((byte)us);
+        outRom.WriteByte((byte)(us >> 8));
+    }
+    if (value is uint ui)
+    {
+        outRom.WriteByte((byte)ui);
+        outRom.WriteByte((byte)(ui >> 8));
+        outRom.WriteByte((byte)(ui >> 16));
+    }
+}
 
 uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location> chunkLookup)
 {
@@ -207,6 +223,16 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
         {
             char c = str[0];
             var hex = _addressspace.Contains(c) ? str[1..] : str;
+            var targetPos = filePos;
+
+            var opIx = hex.IndexOf('+');
+            if(opIx > 0)
+            {
+                var num = uint.Parse(hex[(opIx + 1)..], NumberStyles.HexNumber);
+                targetPos += num;
+                hex = hex[..opIx];
+            }
+
             var value = uint.Parse(hex, NumberStyles.HexNumber);
             Location loc = value;
 
@@ -214,24 +240,28 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
             switch (c)
             {
                 case '@':
-                    value = filePos | 0xC00000u;
+                    value = targetPos | 0xC00000u;
                     goto writeValue;
 
                 case '%':
-                    value = filePos | 0x800000u;
+                    value = targetPos | 0x800000u;
                     goto writeValue;
 
                 case '^':
-                    outRom.WriteByte((byte)((filePos >> 16) | 0x80));
+                    outRom.WriteByte((byte)((targetPos >> 16) | 0x80));
+                    break;
+
+                case '*':
+                    outRom.WriteByte((byte)((targetPos >> 16) | 0xC0));
                     break;
 
                 case '&':
-                    outRom.WriteByte((byte)filePos);
-                    outRom.WriteByte((byte)(filePos >> 8));
+                    outRom.WriteByte((byte)targetPos);
+                    outRom.WriteByte((byte)(targetPos >> 8));
                     break;
 
                 default:
-                    value = (value & 0xC00000) | filePos;
+                    value = (value & 0xC00000) | targetPos;
 
                 writeValue:
                     outRom.WriteByte((byte)value);
@@ -336,7 +366,7 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot r
                     (parentOp.Code.Mode == AddressingMode.PCRelative || parentOp.Code.Mode == AddressingMode.PCRelativeLong);
 
                 //Search local labels first
-                var target = blocks.FirstOrDefault(x => x.Label?.Equals(label) == true);
+                var target = blocks.FirstOrDefault(x => x.Label?.Equals(label, StringComparison.CurrentCultureIgnoreCase) == true);
                 if (target != null)
                     loc = target.Location;
                 else if (!chunkLookup.TryGetValue(label.ToUpper(), out loc))
@@ -370,7 +400,9 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot r
                 if (str[0] == '&' || parentOp?.Size == 3)
                     obj = (ushort)loc.Offset;
                 else if (str[0] == '^')
-                    obj = (byte)((loc.Offset >> 16) | 0xC0);
+                    obj = (byte)((loc.Offset >> 16) | 0x80);
+                else if (str[0] == '%')
+                    obj = loc.Offset | 0x800000u;
                 else if (str[0] == '@')
                     obj = loc.Offset | 0xC00000u;
                 else if (parentOp?.Size == 4)

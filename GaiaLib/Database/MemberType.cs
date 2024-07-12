@@ -11,7 +11,7 @@ namespace GaiaLib.Database
         Address,
         Binary,
         String,
-        CompString,
+        CharString,
         WideString,
         Code
     }

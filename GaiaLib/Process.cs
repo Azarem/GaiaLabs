@@ -1,10 +1,6 @@
 ﻿using GaiaLib.Asm;
 using GaiaLib.Database;
-using GaiaLib.Structs;
 using System.Globalization;
-using System.Text;
-using System.Xml.Linq;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace GaiaLib
 {
@@ -20,6 +16,7 @@ namespace GaiaLib
             public Location Location;
             public List<AsmBlock>? Blocks;
             public List<string>? Includes;
+            public byte? Bank;
 
             public ChunkFile(string path, DbFile file)
             {
@@ -71,7 +68,7 @@ namespace GaiaLib
 
         }
 
-        public static void Repack(string baseDir, string dbFile, Func<ChunkFile, DbRoot, IDictionary<string, Location>, uint> onProcess)
+        public static void Repack(string baseDir, string dbFile, Func<ChunkFile, DbRoot, IDictionary<string, Location>, uint> onProcess, Action<uint, object> onTransform)
         {
             var root = DbRoot.FromFile(dbFile);
 
@@ -81,7 +78,7 @@ namespace GaiaLib
             var patches = DiscoverPatches(baseDir, root, gaps);
 
             //Process sfx files the same as others
-            var allFiles = sfxFiles.Concat(chunkFiles).OrderBy(x => x.Location);
+            var allFiles = sfxFiles.Concat(chunkFiles).Concat(patches).ToArray();
 
             //Assign locations
             MatchChunks(gaps, allFiles);
@@ -90,7 +87,7 @@ namespace GaiaLib
 
             //Rebase assemblies
             //var hasBlocks = allFiles.Where(x => x.Blocks != null).ToArray();
-            foreach (var file in allFiles.Where(x => x.Blocks != null))
+            foreach (var file in allFiles)
                 file.Rebase();
 
             //foreach (var file in hasBlocks.Concat(patches))
@@ -110,10 +107,29 @@ namespace GaiaLib
                 blockLookup[f.Name.ToUpper()] = f.Start;
 
             //Add files to lookup
-            foreach (var f in allFiles)
+            foreach (var f in allFiles.Except(patches))
                 blockLookup[f.File.Name.ToUpper()] = f.Location;
 
+            //Process transforms
+            foreach (var tr in root.Transforms.Values)
+            {
+                var name = tr.Name;
+                if (!blockLookup.TryGetValue(name.ToUpper(), out var loc))
+                {
+                    var matchingBlock = allFiles.Where(x => x.File.Type == BinType.Assembly)
+                        .SelectMany(x => x.Blocks)
+                        .SingleOrDefault(x => name.Equals(x.Label, StringComparison.CurrentCultureIgnoreCase));
+                    if (matchingBlock == null)
+                        continue;
+                    loc = matchingBlock.Location;
+                }
 
+                onTransform(tr.Location.Offset, tr.Type switch
+                {
+                    "%" => (loc.Offset | 0x800000),
+                    _ => (object)(ushort)loc.Offset
+                });
+            }
 
             //Generate lookup table
             //var chunkLookup = allFiles.ToDictionary(x => x.File.Name.ToUpper(), x => x.Location);
@@ -128,16 +144,16 @@ namespace GaiaLib
                 onProcess(file, root, blockLookup);
 
             //Write patch contents
-            foreach (var grp in patches.GroupBy(x => x.Location))
-            {
-                var loc = grp.Key.Offset;
-                foreach (var file in grp)
-                {
-                    if (loc > 0) file.Location = loc;
-                    var size = onProcess(file, root, blockLookup);
-                    if (loc > 0) loc += size;
-                }
-            }
+            //foreach (var grp in patches.GroupBy(x => x.Location))
+            //{
+            //    var loc = grp.Key.Offset;
+            //    foreach (var file in grp)
+            //    {
+            //        if (loc > 0) file.Location = loc;
+            //        var size = onProcess(file, root, blockLookup);
+            //        if (loc > 0) loc += size;
+            //    }
+            //}
         }
 
         private static List<DbGap> DiscoverAvailableSpace(DbRoot root, out IEnumerable<DbFile> files)
@@ -274,10 +290,11 @@ namespace GaiaLib
                 int size;
                 List<AsmBlock>? blocks = null;
                 List<string>? includes = null;
+                byte? bank = null;
                 if (file.Type == BinType.Assembly)
                 {
                     using (var inFile = File.OpenRead(path))
-                        (blocks, includes) = ParseAssembly(root, inFile, file.Start);
+                        (blocks, includes, bank) = ParseAssembly(root, inFile, file.Start);
 
                     size = ChunkFile.CalculateSize(blocks);
                 }
@@ -288,7 +305,7 @@ namespace GaiaLib
                     if (file.Compressed != null)
                         size += 2;
                 }
-                return new ChunkFile(path, file) { Size = size, Blocks = blocks, Includes = includes };
+                return new ChunkFile(path, file) { Size = size, Blocks = blocks, Includes = includes, Bank = bank };
             }).ToList();
 
         private static List<ChunkFile> DiscoverPatches(string baseDir, DbRoot root, List<DbGap> gaps)
@@ -296,7 +313,7 @@ namespace GaiaLib
             string folder = "patches", extension = "asm";
             var patchList = new List<ChunkFile>();
 
-            var patchReserves = new Dictionary<byte, uint>();
+            //var patchReserves = new Dictionary<byte, uint>();
 
             //uint getOrReserve(byte bank)
             //{
@@ -320,92 +337,104 @@ namespace GaiaLib
             {
                 byte? bank = null;
 
-                using (var fileStream = File.OpenRead(file))
-                using (var reader = new StreamReader(fileStream))
-                {
-                    var line = (reader.ReadLine() ?? "").Trim().ToUpper();
-                    if (line.StartsWith("?BANK"))
-                        bank = byte.Parse(line[5..].Trim(), NumberStyles.HexNumber);
-                }
-
-                patchList.Add(new ChunkFile(file, new()
+                var chunkFile = new ChunkFile(file, new()
                 {
                     Type = BinType.Assembly,
                     Name = new FileInfo(file).Name[..^(extension.Length + 1)]
-                })
-                {
-                    Location = bank != null ? (bank.Value & 0x3Fu) : 0xFFu
                 });
+
+                using (var fileStream = File.OpenRead(file))
+                    (chunkFile.Blocks, chunkFile.Includes, chunkFile.Bank) = ParseAssembly(root, fileStream, 0);
+
+                chunkFile.CalculateSize();
+                patchList.Add(chunkFile);
+
+                //using (var fileStream = File.OpenRead(file))
+                //using (var reader = new StreamReader(fileStream))
+                //{
+                //    var line = (reader.ReadLine() ?? "").Trim().ToUpper();
+                //    if (line.StartsWith("?BANK"))
+                //        bank = byte.Parse(line[5..].Trim(), NumberStyles.HexNumber);
+                //}
+
+                //patchList.Add(new ChunkFile(file, new()
+                //{
+                //    Type = BinType.Assembly,
+                //    Name = new FileInfo(file).Name[..^(extension.Length + 1)]
+                //})
+                //{
+                //    Bank = bank != null ? (byte)(bank.Value & 0x3F) : null
+                //});
             }
 
-            foreach (var group in patchList.GroupBy(x => x.Location))
-            {
-                var bank = (byte)group.Key.Offset;
-                int currentRemaining = 0;
-                Location currentLoc = 0u;
-                DbGap? currentGap = null;
+            //foreach (var group in patchList.GroupBy(x => x.Bank))
+            //{
+            //    var bank = group.Key;
+            //    int currentRemaining = 0;
+            //    Location currentLoc = 0u;
+            //    DbGap? currentGap = null;
 
-                void reserveSpace()
-                {
-                    //Gap is full, take it out of processing
-                    if (currentGap != null)
-                    {
-                        gaps.Remove(currentGap);
-                        Console.WriteLine($"Gap full, finding another");
-                    }
+            //    void reserveSpace()
+            //    {
+            //        //Gap is full, take it out of processing
+            //        if (currentGap != null)
+            //        {
+            //            gaps.Remove(currentGap);
+            //            Console.WriteLine($"Gap full, finding another");
+            //        }
 
-                    currentGap = gaps.Where(x => x.Start.Bank == bank && (x.Start.Offset & 0x8000u) != 0u)
-                        .OrderByDescending(x => x.Size)
-                        .FirstOrDefault()
-                        ?? throw new($"Unable to reserve patch space for bank {bank:X2}");
+            //        currentGap = gaps.Where(x => x.Start.Bank == bank && (x.Start.Offset & 0x8000u) != 0u)
+            //            .OrderByDescending(x => x.Size)
+            //            .FirstOrDefault()
+            //            ?? throw new($"Unable to reserve patch space for bank {bank:X2}");
 
-                    Console.WriteLine($"Processing space {currentGap.Start} - {currentGap.End} for patches");
-                    //gaps.Remove(gap);
+            //        Console.WriteLine($"Processing space {currentGap.Start} - {currentGap.End} for patches");
+            //        //gaps.Remove(gap);
 
-                    currentRemaining = currentGap.Size;
-                    currentLoc = currentGap.Start;
-                }
+            //        currentRemaining = currentGap.Size;
+            //        currentLoc = currentGap.Start;
+            //    }
 
-                foreach (var file in group)
-                {
-                    if (bank != 0xFF && currentRemaining == 0)
-                        reserveSpace();
+            //    foreach (var file in group)
+            //    {
+            //        if (bank != null && currentRemaining == 0)
+            //            reserveSpace();
 
-                    using (var fileStream = File.OpenRead(file.Path))
-                        (file.Blocks, file.Includes) = ParseAssembly(root, fileStream, currentLoc);
+            //        using (var fileStream = File.OpenRead(file.Path))
+            //            (file.Blocks, file.Includes, file.Bank) = ParseAssembly(root, fileStream, currentLoc);
 
-                    if (bank != 0xFF)
-                    {
-                        var size = file.CalculateSize();
-                        if (size > currentRemaining)
-                        {
-                            reserveSpace();
-                            if (size > currentRemaining)
-                                throw new($"Not enough available space for patch bank {bank}");
-                            file.Rebase(currentLoc);
-                        }
-                        else
-                            file.Location = currentLoc;
+            //        if (bank != null)
+            //        {
+            //            var size = file.CalculateSize();
+            //            if (size > currentRemaining)
+            //            {
+            //                reserveSpace();
+            //                if (size > currentRemaining)
+            //                    throw new($"Not enough available space for patch bank {bank}");
+            //                file.Rebase(currentLoc);
+            //            }
+            //            else
+            //                file.Location = currentLoc;
 
-                        currentLoc += (uint)size;
-                        currentRemaining -= size;
-                    }
-                }
+            //            currentLoc += (uint)size;
+            //            currentRemaining -= size;
+            //        }
+            //    }
 
-                //Adjust space of used gap
-                if (currentGap != null)
-                    if (currentRemaining == 0)
-                    {
-                        Console.WriteLine($"Gap full");
-                        gaps.Remove(currentGap);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Adjusting new gap start {currentLoc}");
-                        currentGap.Start = currentLoc;
-                    }
+            //    //Adjust space of used gap
+            //    if (currentGap != null)
+            //        if (currentRemaining == 0)
+            //        {
+            //            Console.WriteLine($"Gap full");
+            //            gaps.Remove(currentGap);
+            //        }
+            //        else
+            //        {
+            //            Console.WriteLine($"Adjusting new gap start {currentLoc}");
+            //            currentGap.Start = currentLoc;
+            //        }
 
-            }
+            //}
 
             return patchList;
         }
@@ -413,7 +442,7 @@ namespace GaiaLib
         private static void MatchChunks(IEnumerable<DbGap> gaps, IEnumerable<ChunkFile> files)
         {
             var allFiles = files.OrderByDescending(x => x.Size).ToList();
-            var bestBuffer = new int[0x100];
+            var bestResult = new int[0x100];
             var bestSample = new int[0x100];
 
             foreach (var gap in gaps.OrderBy(x => x.Size).ThenBy(x => x.Start.Offset))
@@ -422,11 +451,12 @@ namespace GaiaLib
                 var count = allFiles.Count;
                 if (count == 0)
                     break;
-                var smallest = allFiles[count - 1].Size;
+                var smallest = allFiles[^1].Size;
+                var isUpper = (gap.Start.Offset & 0x8000) != 0;
+                var bank = gap.Start.Bank;
+                int bestDepth = 0, bestRemain = remain, bestOffset = 0;
 
-                int bestDepth = 0, bestRemain = remain;
-
-                bool testDepth(int ix, int depth, int remain)
+                bool testDepth(int ix, int depth, int remain, bool asmMode)
                 {
                     if (ix >= count)
                         return true;
@@ -437,6 +467,22 @@ namespace GaiaLib
                         if (file.Size > remain)
                             continue;
 
+                        if (file.File.Type == BinType.Assembly)
+                        {
+                            if (!asmMode || file.Bank != bank)
+                                continue;
+                        }
+                        else if (asmMode)
+                            continue;
+
+                        var inList = false;
+                        for (var y = bestOffset; --y >= 0;)
+                            if (bestResult[y] == i)
+                            { inList = true; break; }
+
+                        if (inList)
+                            continue;
+
                         bestSample[depth] = i;
 
                         var newRemain = remain - file.Size;
@@ -444,7 +490,7 @@ namespace GaiaLib
                         {
                             bestRemain = newRemain;
                             bestDepth = depth + 1;
-                            Array.Copy(bestSample, bestBuffer, bestDepth);
+                            Array.Copy(bestSample, bestOffset, bestResult, bestOffset, bestDepth - bestOffset);
                         }
 
                         //Stop when we have an "exact" match
@@ -456,37 +502,54 @@ namespace GaiaLib
                             return false;
 
                         //Process next iteration and stop if exact
-                        if (testDepth(i + 1, depth + 1, newRemain))
+                        if (testDepth(i + 1, depth + 1, newRemain, asmMode))
                             return true;
                     }
 
                     return false;
                 };
 
-                testDepth(0, 0, remain);
+                testDepth(0, 0, remain, isUpper);
+                if (isUpper && bestRemain >= smallest)
+                {
+                    bestOffset = bestDepth;
+                    testDepth(0, bestDepth, bestRemain, false);
+                }
 
                 var position = gap.Start;
                 for (int i = 0; i < bestDepth;)
                 {
-                    var file = allFiles[bestBuffer[i++]];
+                    var file = allFiles[bestResult[i++]];
                     file.Location = position;
                     //onProcess?.Invoke(file);
+                    Console.WriteLine($"  {position}: {file.File.Name}");
                     position += (uint)file.Size;
                 }
 
                 Console.WriteLine($"Chunk {gap.Start} - {gap.End} matched with {bestDepth} files {bestRemain:X} remaining");
 
-                for (int i = bestDepth; i > 0;)
-                    allFiles.RemoveAt(bestBuffer[--i]);
+                if (bestOffset > 0)
+                    for (int i = bestDepth; --i >= 0;)
+                    {
+                        int lastIx = 0, lastX = 0, y;
+                        for (var x = bestDepth; --x >= 0;)
+                            if ((y = bestResult[x]) > lastIx)
+                            {
+                                lastIx = y;
+                                lastX = x;
+                            }
+
+                        bestResult[lastX] = 0;
+                        allFiles.RemoveAt(lastIx);
+                    }
+                else
+                    for (int i = bestDepth; --i >= 0;)
+                        allFiles.RemoveAt(bestResult[i]);
 
             }
 
         }
 
-        private static void ProcessPatches(IEnumerable<ChunkFile> patches, Func<ChunkFile, uint> process)
-        {
-
-        }
 
         public static int GetSize(object obj)
         {
@@ -508,6 +571,7 @@ namespace GaiaLib
                     switch (str[0])
                     {
                         case '@': return 3;
+                        case '%': return 3;
                         case '&': return 2;
                         case '^': return 1;
                     }
@@ -531,10 +595,11 @@ namespace GaiaLib
             _operators = ['-', '+'],
             _commaspace = [',', ' ', '\t'],
             _addressspace = ['@', '&', '^', '#', '$'],
-            _symbolSpace = [',', ' ', '\t', '<', '>', '(', ')'],
+            _symbolSpace = [',', ' ', '\t', '<', '>', '(', ')', ':', '[', ']', '{', '}', '`', '~', '|'],
+            _labelSpace = ['[', '{', '#', '`', '~', '|', ':'],
             _objectspace = ['<', '['];
 
-        public static (List<AsmBlock>, List<string>) ParseAssembly(DbRoot root, Stream inStream, uint startLoc)//, out IDictionary<string, Location> includes) //, IDictionary<string, Location> chunkLookup)
+        public static (List<AsmBlock>, List<string>, byte?) ParseAssembly(DbRoot root, Stream inStream, uint startLoc)//, out IDictionary<string, Location> includes) //, IDictionary<string, Location> chunkLookup)
         {
             using var reader = new StreamReader(inStream);
 
@@ -545,6 +610,7 @@ namespace GaiaLib
             var tags = new Dictionary<string, string?>();
             var memStream = new MemoryStream();
             int ix, bix = 0, lineCount = 0;
+            byte? bank = null;
 
             blocks.Add(current = new AsmBlock { Location = startLoc });
 
@@ -592,16 +658,18 @@ namespace GaiaLib
                     ///TODO: Something later
                     ix = line.IndexOfAny(_commaspace);
                     if (ix < 0) ix = line.Length;
+                    var value = line[ix..].TrimStart(_commaspace);
 
                     switch (line[1..ix].ToUpper())
                     {
                         //This is taken care of by the loader
-                        case "BANK": break;
+                        case "BANK":
+                            bank = byte.Parse(value, NumberStyles.HexNumber);
+                            break;
 
                         case "INCLUDE":
-                            var incl = line[ix..].TrimStart(_commaspace);
-                            if (incl.Length > 0)
-                                includes.Add(incl);
+                            if (value.Length > 0)
+                                includes.Add(value);
                             break;
                     }
 
@@ -737,54 +805,125 @@ namespace GaiaLib
                     string? mnem = null, operand = null;
                     while (line.Length > 0)
                     {
+                        if (line[0] == ';')
+                        {
+                            line = "";
+                            break;
+                        }
+
                         //Process strings
-                        if (line[0] == '`')
+                        if (line[0] == '`' || line[0] == '~' || line[0] == '|')
                         {
                             string? str = null;
-                            if ((ix = line.IndexOf('`', 1)) >= 0)
+                            var c = line[0];
+                            if ((ix = line.IndexOf(c, 1)) >= 0)
                             {
                                 str = line[1..ix];
                                 line = line[(ix + 1)..].TrimStart(_commaspace);
                             }
                             else
                             {
-                                str = line;
+                                str = line[1..];
                                 line = "";
                             }
 
                             memStream.Position = 0;
                             memStream.SetLength(0);
 
-                            switch (currentType)
+                            switch (c)
                             {
-                                case "WideString":
-                                    var dict = root.WideCommands;
-                                    for (int x = 0; x < str.Length; x++)
+                                case '`':
+                                    ProcessString(root.WideCommands, root.WideMap, i => (byte)((i & 0x70) << 1 | (i & 0x0F)));
+                                    goto Terminate;
+                                case '~':
+                                    ProcessString(root.WideCommands, root.CharMap, i => (byte)((i & 0x38) << 1 | (i & 0x07)));
+                                Terminate:
+                                    int last = 0;
+                                    if (memStream.Position > 0)
                                     {
-                                        var c = str[x];
-                                        if (c == '[')
-                                        {
-                                            ix = str.IndexOf(']', x + 1);
-                                            var splitChars = new char[] { ':', ',', ' ' };
-                                            var parts = str[(x + 1)..ix].Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
-                                            var cmd = dict.Values.Single(x => x.Value == parts[0]);
+                                        memStream.Position--;
+                                        last = memStream.ReadByte();
+                                    }
+                                    if (last != 0xC0 && last != 0xCA)
+                                        memStream.WriteByte(0xCA);
+                                    break;
+                                case '|':
+                                    ProcessString(root.StringCommands, null, null);
+                                    memStream.WriteByte(0);
+                                    break;
+                            }
 
+                            void ProcessString(IDictionary<HexString, DbStringCommand> dict, string[]? charMap, Func<byte, byte>? shift)
+                            {
+                                void processChar(char c)
+                                {
+                                    if (charMap != null)
+                                        for (int i = 0, len = charMap.Length; i < len; i++)
+                                        {
+                                            var v = charMap[i];
+                                            if (c == v[0])
+                                            {
+                                                memStream.WriteByte(shift((byte)i));
+                                                break;
+                                            }
+                                        }
+                                    else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))
+                                        memStream.WriteByte((byte)c);
+                                    else
+                                    {
+                                        var entry = dict.Values.FirstOrDefault(x => x.Types == null && x.Value == c.ToString());
+                                        if (entry != null)
+                                            memStream.WriteByte((byte)entry.Code.Value);
+                                        else
+                                            memStream.WriteByte((byte)c); //ASCII
+                                    }
+                                }
+
+                                for (int x = 0; x < str.Length; x++)
+                                {
+                                    var c = str[x];
+                                    if (c == '[')
+                                    {
+                                        ix = str.IndexOf(']', x + 1);
+                                        var splitChars = new char[] { ':', ',', ' ' };
+                                        var parts = str[(x + 1)..ix].Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
+                                        var cmd = dict.Values.SingleOrDefault(x => x.Value == parts[0]);
+
+                                        if (cmd != null)
+                                        {
                                             memStream.WriteByte((byte)cmd.Code.Value);
 
                                             if (cmd.Types != null)
-                                                for (int y = 0; y < cmd.Types.Length;)
+                                                for (int y = 0, pix = 1; y < cmd.Types.Length; y++, pix++)
                                                 {
-                                                    switch (cmd.Types[y++])
+                                                    switch (cmd.Types[y])
                                                     {
                                                         case MemberType.Byte:
-                                                            memStream.WriteByte(byte.Parse(parts[y], NumberStyles.HexNumber));
+                                                            memStream.WriteByte(byte.Parse(parts[pix], NumberStyles.HexNumber));
                                                             break;
+
                                                         case MemberType.Word:
-                                                            var us = ushort.Parse(parts[y], NumberStyles.HexNumber);
+                                                            var us = ushort.Parse(parts[pix], NumberStyles.HexNumber);
                                                             memStream.WriteByte((byte)us);
                                                             memStream.WriteByte((byte)(us >> 8));
                                                             break;
+
                                                         case MemberType.Binary:
+                                                            while (pix < parts.Length)
+                                                            {
+                                                                var ch = byte.Parse(parts[pix], NumberStyles.HexNumber);
+                                                                memStream.WriteByte(ch);
+                                                                pix++;
+                                                            }
+                                                            memStream.WriteByte((byte)cmd.Delimiter.Value);
+                                                            break;
+
+                                                        case MemberType.Offset:
+                                                        case MemberType.Address:
+                                                            //Have to keep these for later since we don't have lookups yet
+                                                            flushBuffer();
+                                                            current.ObjList.Add(parts[pix]);
+                                                            current.Size += cmd.Types[y] == MemberType.Offset ? 2 : 3;
                                                             break;
                                                     }
                                                 }
@@ -796,30 +935,28 @@ namespace GaiaLib
                                             x = ix;
                                             continue;
                                         }
-
-                                        for (int i = 0, len = root.WideMap.Length; i < len; i++)
-                                        {
-                                            var v = root.WideMap[i];
-                                            if (c == v[0])
-                                            {
-                                                i = ((i & 0x70) << 1) | (i & 0x0F);
-                                                memStream.WriteByte((byte)i);
-                                                break;
-                                            }
-                                        }
                                     }
-                                    memStream.WriteByte(0xCA);
+                                    processChar(c);
+                                }
 
-                                    break;
                             }
 
-                            var buffer = memStream.GetBuffer();
-                            var size = (int)memStream.Length;
-                            var newBuffer = new byte[size];
-                            Array.Copy(buffer, newBuffer, size);
-                            current.ObjList.Add(newBuffer);
-                            current.Size += size;
+                            void flushBuffer()
+                            {
+                                var buffer = memStream.GetBuffer();
+                                var size = (int)memStream.Length;
+                                if (size > 0)
+                                {
+                                    var newBuffer = new byte[size];
+                                    Array.Copy(buffer, newBuffer, size);
+                                    current.ObjList.Add(newBuffer);
+                                    current.Size += size;
+                                    memStream.Position = 0;
+                                    memStream.SetLength(0);
+                                }
+                            }
 
+                            flushBuffer();
                             AdvancePart();
                             continue;
                         }
@@ -843,7 +980,7 @@ namespace GaiaLib
                             if ((ix = line.IndexOfAny(_symbolSpace)) >= 0)
                             {
                                 hex = line[..ix];
-                                line = line[(ix + 1)..].TrimStart(_commaspace);
+                                line = line[ix..].TrimStart(_commaspace);
                             }
                             else
                             {
@@ -904,6 +1041,13 @@ namespace GaiaLib
                             return;
                         }
 
+                        if (line[0] == '}')
+                        {
+                            if (openTag == '{')
+                                line = line[1..].TrimStart(_commaspace);
+                            return;
+                        }
+
                         if (line[0] == '[')
                         {
                             line = line[1..].TrimStart(_commaspace);
@@ -942,41 +1086,41 @@ namespace GaiaLib
                             continue;
                         }
 
-                        //Process labels
-                        if ((ix = line.IndexOf(':')) >= 0)
-                        {
-                            var label = line[..ix].TrimEnd(_commaspace);
+                        ////Process labels
+                        //if ((ix = line.IndexOf(':')) >= 0)
+                        //{
+                        //    var label = line[..ix].TrimEnd(_commaspace);
 
-                            if (label.StartsWith('$'))
-                                label = label[1..];
+                        //    if (label.StartsWith('$'))
+                        //        label = label[1..];
 
-                            if (label.Length == 6
-                                && uint.TryParse(label, NumberStyles.HexNumber, null, out var addr)
-                                && Location.MaxValue >= addr)
-                            {
-                                blocks.Add(current = new() { Location = addr });
-                                bix++;
-                            }
-                            else if (label.Length > 0)
-                            {
-                                //if (current.Size == 0 && current.Label == null)
-                                //    current.Label = label;
-                                //else
-                                //{
-                                blocks.Add(current = new() { Location = current.Location + (uint)current.Size, Label = label });
-                                bix++;
-                                //}
-                            }
+                        //    if (label.Length == 6
+                        //        && uint.TryParse(label, NumberStyles.HexNumber, null, out var addr)
+                        //        && Location.MaxValue >= addr)
+                        //    {
+                        //        blocks.Add(current = new() { Location = addr });
+                        //        bix++;
+                        //    }
+                        //    else if (label.Length > 0)
+                        //    {
+                        //        //if (current.Size == 0 && current.Label == null)
+                        //        //    current.Label = label;
+                        //        //else
+                        //        //{
+                        //        blocks.Add(current = new() { Location = current.Location + (uint)current.Size, Label = label });
+                        //        bix++;
+                        //        //}
+                        //    }
 
-                            line = line[(ix + 1)..].TrimStart(_commaspace);
-                            continue;
-                        }
+                        //    line = line[(ix + 1)..].TrimStart(_commaspace);
+                        //    continue;
+                        //}
 
                         //Separate instructions into mnemonic and operand parts
                         if ((ix = line.IndexOfAny(_symbolSpace)) > 0)
                         {
                             mnem = line[..ix];
-                            operand = line[(ix + 1)..].TrimStart(_commaspace);
+                            operand = line[ix..].TrimStart(_commaspace);
 
                             //Process object tags
                             if (operand.StartsWith('<'))
@@ -986,6 +1130,8 @@ namespace GaiaLib
                                 mnem = null;
                                 continue;
                             }
+
+                            line = operand;
                             //else if (operand.StartsWith('['))
                             //{
                             //    //Take mnem as a label
@@ -1000,9 +1146,11 @@ namespace GaiaLib
                             //}
                         }
                         else
+                        {
                             mnem = line;
+                            line = "";
+                        }
 
-                        line = "";
                         break;
                     }
 
@@ -1012,22 +1160,48 @@ namespace GaiaLib
                         if (!OpCode.Grouped.TryGetValue(mnem.ToUpper(), out var codes))
                         {
                             //No mnemonic? Make a label!
-                            if (operand != null && operand[0] == '[')
+                            if (operand != null && _labelSpace.Contains(operand[0]))
                             {
-                                blocks.Add(current = new() { Label = mnem, Location = current.Location + (uint)current.Size });
-                                bix++;
-                                line = operand[1..].TrimStart(_commaspace);
-                                processText(currentType, '[');
-                                AdvancePart();
+                                if (mnem.StartsWith('$'))
+                                    mnem = mnem[1..];
+
+                                if (mnem.Length == 6
+                                    && uint.TryParse(mnem, NumberStyles.HexNumber, null, out var addr)
+                                    && Location.MaxValue >= addr)
+                                {
+                                    blocks.Add(current = new() { Location = addr });
+                                    bix++;
+                                }
+                                else if (mnem.Length > 0)
+                                {
+                                    blocks.Add(current = new() { Location = current.Location + (uint)current.Size, Label = mnem });
+                                    bix++;
+                                }
+
+                                switch (operand[0])
+                                {
+                                    case ':':
+                                        line = line[1..];
+                                        continue;
+                                    case '{':
+                                    case '[':
+                                        line = operand[1..].TrimStart(_commaspace);
+                                        processText(currentType, operand[0]);
+                                        AdvancePart();
+                                        continue;
+                                }
+
                                 continue;
                             }
                             throw new($"Unknown instruction line {lineCount}: '{mnem}'");
                         }
 
+                        line = "";
+
                         //No operand instructions
                         if (string.IsNullOrEmpty(operand))
                         {
-                            current.ObjList.Add(new Op { Code = codes.First(x => x.Size == 1), Operands = [], Size = 1 });
+                            current.ObjList.Add(new Op { Code = codes.Single(x => x.Size == 1), Operands = [], Size = 1 });
                             current.Size++;
                             continue;
                         }
@@ -1066,6 +1240,19 @@ namespace GaiaLib
                         foreach (var code in codes)
                         {
                             ///TODO: COP processing
+                            if (code.Mnem == "COP")
+                            {
+                                var splitChars = new char[] { ' ', '\t', ',', '(', ')', '[', ']', '$', '#' };
+                                var parts = operand.Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
+                                if (!root.CopLib.Codes.TryGetValue(parts[0], out var cop))
+                                    throw new($"Unknown COP command {parts[0]}");
+
+                                current.ObjList.Add(new Op() { Code = code, CopDef = cop, Operands = parts, Size = (byte)(cop.Size + 2) });
+                                current.Size += cop.Size + 2;
+
+                                goto Next;
+                            }
+
                             //Keep branch operands until all blocks are processed (for labels)
                             if (code.Mode == AddressingMode.PCRelative || code.Mode == AddressingMode.PCRelativeLong)
                             {
@@ -1147,14 +1334,15 @@ namespace GaiaLib
 
                         current.ObjList.Add(new Op() { Code = opCode, Operands = [operand], Size = (byte)size });
                         current.Size += size;
-                        //}
+                    //}
+                    Next:;
                     }
                 }
             }
 
             processText(null);
 
-            return (blocks, includes);
+            return (blocks, includes, bank);
         }
 
 
