@@ -226,7 +226,7 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
             var targetPos = filePos;
 
             var opIx = hex.IndexOf('+');
-            if(opIx > 0)
+            if (opIx > 0)
             {
                 var num = uint.Parse(hex[(opIx + 1)..], NumberStyles.HexNumber);
                 targetPos += num;
@@ -365,6 +365,16 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot r
                 bool isRelative = parentOp != null &&
                     (parentOp.Code.Mode == AddressingMode.PCRelative || parentOp.Code.Mode == AddressingMode.PCRelativeLong);
 
+                var mathIx = label.IndexOfAny(_operators);
+                int? offset = null;
+                if (mathIx > 0)
+                {
+                    offset = int.Parse(label[(mathIx + 1)..], NumberStyles.HexNumber);
+                    if (label[mathIx] == '-')
+                        offset = -offset;
+                    label = label[..mathIx];
+                }
+
                 //Search local labels first
                 var target = blocks.FirstOrDefault(x => x.Label?.Equals(label, StringComparison.CurrentCultureIgnoreCase) == true);
                 if (target != null)
@@ -396,6 +406,9 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot r
 
                 if (isRelative)
                     loc -= block.Location.Offset + (uint)opos;
+
+                if (offset != null)
+                    loc = (uint)((int)loc.Offset + offset.Value);
 
                 if (str[0] == '&' || parentOp?.Size == 3)
                     obj = (ushort)loc.Offset;

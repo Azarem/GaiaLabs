@@ -469,8 +469,14 @@ namespace GaiaLib
 
                         if (file.File.Type == BinType.Assembly)
                         {
-                            if (!asmMode || file.Bank != bank)
+                            if (!asmMode)
+                            {
+                                if (!isUpper || file.File.Move != true)
+                                    continue;
+                            }
+                            else if (file.Bank != bank || file.File.Move == true)
                                 continue;
+
                         }
                         else if (asmMode)
                             continue;
@@ -494,7 +500,7 @@ namespace GaiaLib
                         }
 
                         //Stop when we have an "exact" match
-                        if (newRemain < 40)
+                        if (newRemain < 20)
                             return true;
 
                         //Stop processing if nothing else can fit
@@ -547,6 +553,9 @@ namespace GaiaLib
                         allFiles.RemoveAt(bestResult[i]);
 
             }
+
+            if (allFiles.Count > 0)
+                throw new($"Unable to match {allFiles.Count} files, perhaps there is no room\r\n! {string.Join("\r\n", allFiles.Select(x => x.File.Name))}");
 
         }
 
@@ -611,6 +620,7 @@ namespace GaiaLib
             var memStream = new MemoryStream();
             int ix, bix = 0, lineCount = 0;
             byte? bank = null;
+            string? lastStruct = null;
 
             blocks.Add(current = new AsmBlock { Location = startLoc });
 
@@ -1030,14 +1040,21 @@ namespace GaiaLib
 
                         if (line[0] == ']')
                         {
-                            if (openTag == '[')
-                                line = line[1..].TrimStart(_commaspace);
+                            if (openTag != '[')
+                                throw new("Missing open tag '['");
+
+                            line = line[1..].TrimStart(_commaspace);
+
+                            if (delimiter == null && lastStruct != null)
+                                delimiter = root.Structs.Values.Single(x => x.Name.Equals(lastStruct, StringComparison.CurrentCultureIgnoreCase)).Delimiter;
+
                             if (delimiter != null)
                             {
                                 var obj = delimiter.Value.ToObject();
                                 current.ObjList.Add(obj);
                                 current.Size += GetSize(obj);
                             }
+
                             return;
                         }
 
@@ -1127,6 +1144,8 @@ namespace GaiaLib
                             {
                                 line = operand[1..].TrimStart(_commaspace);
                                 processText(mnem, '<');
+                                if (openTag == '[' && currentType == null)
+                                    lastStruct = mnem;
                                 mnem = null;
                                 continue;
                             }

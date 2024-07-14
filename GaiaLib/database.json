@@ -2,8 +2,8 @@
   "coplib": {
     "codes": {
       "00" : { "mnem": "00", "code": "00", "size": 0, "parts": [], "halt": false },
-      "01" : { "mnem": "01", "code": "01", "size": 4, "parts": [ "&dma_data", "Byte" ], "halt": false },
-      "02" : { "mnem": "02", "code": "02", "size": 4, "parts": [ "&dma_data", "Byte" ], "halt": false },
+      "01" : { "mnem": "01", "code": "01", "size": 4, "parts": [ "%dma_data", "Byte" ], "halt": false },
+      "02" : { "mnem": "02", "code": "02", "size": 4, "parts": [ "%dma_data", "Byte" ], "halt": false },
       "03" : { "mnem": "03", "code": "03", "size": 5, "parts": [ "Byte", "Word", "Word" ], "halt": false },
       "04" : { "mnem": "04", "code": "04", "size": 1, "parts": [ "Byte" ], "halt": false },
       "05" : { "mnem": "05", "code": "05", "size": 1, "parts": [ "Byte" ], "halt": false },
@@ -20,37 +20,37 @@
       "10" : { "mnem": "10", "code": "10", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
       "11" : { "mnem": "11", "code": "11", "size": 0, "parts": [], "halt": false },
       "12" : { "mnem": "12", "code": "12", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
-      "13" : { "mnem": "13", "code": "13", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "14" : { "mnem": "14", "code": "14", "size": 4, "parts": [ "Byte", "Byte", "*Code" ], "halt": false },
-      "15" : { "mnem": "15", "code": "15", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "16" : { "mnem": "16", "code": "16", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "17" : { "mnem": "17", "code": "17", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "18" : { "mnem": "18", "code": "18", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "19" : { "mnem": "19", "code": "19", "size": 4, "parts": [ "Byte", "&WideString" ], "halt": false },
-      "1A" : { "mnem": "1A", "code": "1A", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
-      "1B" : { "mnem": "1B", "code": "1B", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
-      "1C" : { "mnem": "1C", "code": "1C", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
-      "1D" : { "mnem": "1D", "code": "1D", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
-      "1E" : { "mnem": "1E", "code": "1E", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
-      "1F" : { "mnem": "1F", "code": "1F", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "20" : { "mnem": "20", "code": "20", "size": 4, "parts": [ "Byte", "Byte", "*Code" ], "halt": false },
-      "21" : { "mnem": "21", "code": "21", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
+      "13" : { "mnem": "13", "code": "13", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "14" : { "mnem": "14", "code": "14", "size": 4, "parts": [ "Byte", "Byte", "&Code" ], "halt": false },
+      "15" : { "mnem": "15", "code": "15", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "16" : { "mnem": "16", "code": "16", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "17" : { "mnem": "17", "code": "17", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "18" : { "mnem": "18", "code": "18", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "19" : { "mnem": "19", "code": "19", "size": 4, "parts": [ "Byte", "%WideString" ], "halt": false },
+      "1A" : { "mnem": "1A", "code": "1A", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
+      "1B" : { "mnem": "1B", "code": "1B", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
+      "1C" : { "mnem": "1C", "code": "1C", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
+      "1D" : { "mnem": "1D", "code": "1D", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
+      "1E" : { "mnem": "1E", "code": "1E", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
+      "1F" : { "mnem": "1F", "code": "1F", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "20" : { "mnem": "20", "code": "20", "size": 4, "parts": [ "Byte", "Byte", "&Code" ], "halt": false },
+      "21" : { "mnem": "21", "code": "21", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
       "22" : { "mnem": "22", "code": "22", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
       "23" : { "mnem": "23", "code": "23", "size": 0, "parts": [], "halt": false },
       "24" : { "mnem": "24", "code": "24", "size": 1, "parts": [ "Byte" ], "halt": false },
       "25" : { "mnem": "25", "code": "25", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
       "26" : { "mnem": "26", "code": "26", "size": 8, "parts": [ "Byte", "Word", "Word", "Byte", "Word" ], "halt": false },
       "27" : { "mnem": "27", "code": "27", "size": 1, "parts": [ "Byte" ], "halt": false },
-      "28" : { "mnem": "28", "code": "28", "size": 6, "parts": [ "Word", "Word", "*Code" ], "halt": false },
-      "29" : { "mnem": "29", "code": "29", "size": 7, "parts": [ "Byte", "Word", "Word", "*Code" ], "halt": false },
-      "2A" : { "mnem": "2A", "code": "2A", "size": 8, "parts": [ "Word", "*Code", "*Code", "*Code" ], "halt": false },
-      "2B" : { "mnem": "2B", "code": "2B", "size": 8, "parts": [ "Word", "*Code", "*Code", "*Code" ], "halt": false },
-      "2C" : { "mnem": "2C", "code": "2C", "size": 4, "parts": [ "*Code", "*Code" ], "halt": false },
+      "28" : { "mnem": "28", "code": "28", "size": 6, "parts": [ "Word", "Word", "&Code" ], "halt": false },
+      "29" : { "mnem": "29", "code": "29", "size": 7, "parts": [ "Byte", "Word", "Word", "&Code" ], "halt": false },
+      "2A" : { "mnem": "2A", "code": "2A", "size": 8, "parts": [ "Word", "&Code", "&Code", "&Code" ], "halt": false },
+      "2B" : { "mnem": "2B", "code": "2B", "size": 8, "parts": [ "Word", "&Code", "&Code", "&Code" ], "halt": false },
+      "2C" : { "mnem": "2C", "code": "2C", "size": 4, "parts": [ "&Code", "&Code" ], "halt": false },
       "2D" : { "mnem": "2D", "code": "2D", "size": 0, "parts": [], "halt": false },
       "2E" : { "mnem": "2E", "code": "2E", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
-      "2F" : { "mnem": "2F", "code": "2F", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
-      "30" : { "mnem": "30", "code": "30", "size": 3, "parts": [ "Byte", "Byte", "Byte", "*Code" ], "halt": false },
-      "31" : { "mnem": "31", "code": "31", "size": 10, "parts": [ "*Code", "*Code", "*Code", "*Code", "*Code" ], "halt": false },
+      "2F" : { "mnem": "2F", "code": "2F", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
+      "30" : { "mnem": "30", "code": "30", "size": 3, "parts": [ "Byte", "Byte", "Byte", "&Code" ], "halt": false },
+      "31" : { "mnem": "31", "code": "31", "size": 10, "parts": [ "&Code", "&Code", "&Code", "&Code", "&Code" ], "halt": false },
       "32" : { "mnem": "32", "code": "32", "size": 1, "parts": [ "Byte" ], "halt": false },
       "33" : { "mnem": "33", "code": "33", "size": 0, "parts": [], "halt": false },
       "34" : { "mnem": "34", "code": "34", "size": 0, "parts": [], "halt": false },
@@ -60,21 +60,21 @@
       "38" : { "mnem": "38", "code": "38", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
       "39" : { "mnem": "39", "code": "39", "size": 0, "parts": [], "halt": false },
       "3A" : { "mnem": "3A", "code": "3A", "size": 0, "parts": [], "halt": false },
-      "3B" : { "mnem": "3B", "code": "3B", "size": 4, "parts": [ "Byte", "&Code" ], "halt": false },
-      "3C" : { "mnem": "3C", "code": "3C", "size": 3, "parts": [ "&Code" ], "halt": false },
+      "3B" : { "mnem": "3B", "code": "3B", "size": 4, "parts": [ "Byte", "%Code" ], "halt": false },
+      "3C" : { "mnem": "3C", "code": "3C", "size": 3, "parts": [ "%Code" ], "halt": false },
       "3D" : { "mnem": "3D", "code": "3D", "size": 0, "parts": [], "halt": false },
       "3E" : { "mnem": "3E", "code": "3E", "size": 2, "parts": [ "Word" ], "halt": false },
       "3F" : { "mnem": "3F", "code": "3F", "size": 2, "parts": [ "Word" ], "halt": false },
-      "40" : { "mnem": "40", "code": "40", "size": 4, "parts": [ "Word", "*Code" ], "halt": false },
-      "41" : { "mnem": "41", "code": "41", "size": 4, "parts": [ "Word", "*Code" ], "halt": false },
+      "40" : { "mnem": "40", "code": "40", "size": 4, "parts": [ "Word", "&Code" ], "halt": false },
+      "41" : { "mnem": "41", "code": "41", "size": 4, "parts": [ "Word", "&Code" ], "halt": false },
       "42" : { "mnem": "42", "code": "42", "size": 3, "parts": [ "Byte", "Byte", "Byte" ], "halt": false },
       "43" : { "mnem": "43", "code": "43", "size": 0, "parts": [], "halt": false },
-      "44" : { "mnem": "44", "code": "44", "size": 6, "parts": [ "Byte", "Byte", "Byte", "Byte", "*Code" ], "halt": false },
-      "45" : { "mnem": "45", "code": "45", "size": 6, "parts": [ "Byte", "Byte", "Byte", "Byte", "*Code" ], "halt": false },
+      "44" : { "mnem": "44", "code": "44", "size": 6, "parts": [ "Byte", "Byte", "Byte", "Byte", "&Code" ], "halt": false },
+      "45" : { "mnem": "45", "code": "45", "size": 6, "parts": [ "Byte", "Byte", "Byte", "Byte", "&Code" ], "halt": false },
       "46" : { "mnem": "46", "code": "46", "size": 0, "parts": [], "halt": false },
       "47" : { "mnem": "47", "code": "47", "size": 0, "parts": [], "halt": false },
       "48" : { "mnem": "48", "code": "48", "size": 0, "parts": [], "halt": false },
-      "49" : { "mnem": "49", "code": "49", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
+      "49" : { "mnem": "49", "code": "49", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
       "4A" : { "mnem": "4A", "code": "4A", "size": 0, "parts": [], "halt": false },
       "4B" : { "mnem": "4B", "code": "4B", "size": 3, "parts": [ "Byte", "Byte", "Byte" ], "halt": false },
       "4C" : { "mnem": "4C", "code": "4C", "size": 1, "parts": [ "Byte" ], "halt": false },
@@ -88,27 +88,27 @@
       "54" : { "mnem": "54", "code": "54", "size": 3, "parts": [ "Address" ], "halt": false },
       "55" : { "mnem": "55", "code": "55", "size": 3, "parts": [ "Byte", "Word" ], "halt": false },
       "56" : { "mnem": "56", "code": "56", "size": 0, "parts": [], "halt": false },
-      "57" : { "mnem": "57", "code": "57", "size": 3, "parts": [ "&Code" ], "halt": false },
-      "58" : { "mnem": "58", "code": "58", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "59" : { "mnem": "59", "code": "59", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "5A" : { "mnem": "5A", "code": "5A", "size": 2, "parts": [ "*Code" ], "halt": false },
+      "57" : { "mnem": "57", "code": "57", "size": 3, "parts": [ "%Code" ], "halt": false },
+      "58" : { "mnem": "58", "code": "58", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "59" : { "mnem": "59", "code": "59", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "5A" : { "mnem": "5A", "code": "5A", "size": 2, "parts": [ "&Code" ], "halt": false },
       "5B" : { "mnem": "5B", "code": "5B", "size": 2, "parts": [ "Word" ], "halt": false },
       "5C" : { "mnem": "5C", "code": "5C", "size": 2, "parts": [ "Word" ], "halt": false },
-      "5D" : { "mnem": "5D", "code": "5D", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "5E" : { "mnem": "5E", "code": "5E", "size": 2, "parts": [ "*Code" ], "halt": false },
+      "5D" : { "mnem": "5D", "code": "5D", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "5E" : { "mnem": "5E", "code": "5E", "size": 2, "parts": [ "&Code" ], "halt": false },
       "5F" : { "mnem": "5F", "code": "5F", "size": 3, "parts": [ "Word", "Byte" ], "halt": false },
       "60" : { "mnem": "60", "code": "60", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
       "61" : { "mnem": "61", "code": "61", "size": 4, "parts": [ "Address", "Byte" ], "halt": false },
-      "62" : { "mnem": "62", "code": "62", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
+      "62" : { "mnem": "62", "code": "62", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
       "63" : { "mnem": "63", "code": "63", "size": 3, "parts": [ "Byte", "Byte", "Byte" ], "halt": false },
       "64" : { "mnem": "64", "code": "64", "size": 0, "parts": [], "halt": false },
       "65" : { "mnem": "65", "code": "65", "size": 6, "parts": [ "Word", "Word", "Byte", "Byte" ], "halt": false },
       "66" : { "mnem": "66", "code": "66", "size": 5, "parts": [ "Word", "Word", "Byte" ], "halt": false },
       "67" : { "mnem": "67", "code": "67", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
-      "68" : { "mnem": "68", "code": "68", "size": 2, "parts": [ "*Code" ], "halt": false },
+      "68" : { "mnem": "68", "code": "68", "size": 2, "parts": [ "&Code" ], "halt": false },
       "69" : { "mnem": "69", "code": "69", "size": 4, "parts": [ "Word" ], "halt": false },
-      "6A" : { "mnem": "6A", "code": "6A", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "6B" : { "mnem": "6B", "code": "6B", "size": 2, "parts": [ "*WideString" ], "halt": false },
+      "6A" : { "mnem": "6A", "code": "6A", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "6B" : { "mnem": "6B", "code": "6B", "size": 2, "parts": [ "&WideString" ], "halt": false },
       "6C" : { "mnem": "6C", "code": "6C", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
       "6D" : { "mnem": "6D", "code": "6D", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
       "6E" : { "mnem": "6E", "code": "6E", "size": 0, "parts": [], "halt": false },
@@ -121,7 +121,7 @@
       "85" : { "mnem": "85", "code": "85", "size": 3, "parts": [ "Byte", "Byte", "Byte" ], "halt": false },
       "86" : { "mnem": "86", "code": "86", "size": 3, "parts": [ "Byte", "Byte", "Byte" ], "halt": false },
       "87" : { "mnem": "87", "code": "87", "size": 4, "parts": [ "Byte", "Byte", "Byte", "Byte" ], "halt": false },
-      "88" : { "mnem": "88", "code": "88", "size": 3, "parts": [ "&*unk12" ], "halt": false },
+      "88" : { "mnem": "88", "code": "88", "size": 3, "parts": [ "%&unk12" ], "halt": false },
       "89" : { "mnem": "89", "code": "89", "size": 0, "parts": [], "halt": false },
       "8A" : { "mnem": "8A", "code": "8A", "size": 0, "parts": [], "halt": false },
       "8B" : { "mnem": "8B", "code": "8B", "size": 0, "parts": [], "halt": false },
@@ -138,23 +138,23 @@
       "96" : { "mnem": "96", "code": "96", "size": 2, "parts": [ "Word" ], "halt": false },
       "97" : { "mnem": "97", "code": "97", "size": 2, "parts": [ "Word" ], "halt": false },
       "98" : { "mnem": "98", "code": "98", "size": 2, "parts": [ "Word" ], "halt": false },
-      "99" : { "mnem": "99", "code": "99", "size": 3, "parts": [ "&Code" ], "halt": false },
-      "9A" : { "mnem": "9A", "code": "9A", "size": 5, "parts": [ "&Code", "Word" ], "halt": false },
-      "9B" : { "mnem": "9B", "code": "9B", "size": 3, "parts": [ "&Code" ], "halt": false },
-      "9C" : { "mnem": "9C", "code": "9C", "size": 5, "parts": [ "&Code", "Word" ], "halt": false },
+      "99" : { "mnem": "99", "code": "99", "size": 3, "parts": [ "%Code" ], "halt": false },
+      "9A" : { "mnem": "9A", "code": "9A", "size": 5, "parts": [ "%Code", "Word" ], "halt": false },
+      "9B" : { "mnem": "9B", "code": "9B", "size": 3, "parts": [ "%Code" ], "halt": false },
+      "9C" : { "mnem": "9C", "code": "9C", "size": 5, "parts": [ "%Code", "Word" ], "halt": false },
       "9D" : { "mnem": "9D", "code": "9D", "size": 7, "parts": [ "Word", "Byte", "Word", "Word" ], "halt": false },
-      "9E" : { "mnem": "9E", "code": "9E", "size": 9, "parts": [ "&Code", "Word", "Word", "Word" ], "halt": false },
+      "9E" : { "mnem": "9E", "code": "9E", "size": 9, "parts": [ "%Code", "Word", "Word", "Word" ], "halt": false },
       "9F" : { "mnem": "9F", "code": "9F", "size": 7, "parts": [ "Word", "Byte", "Word", "Word" ], "halt": false },
-      "A0" : { "mnem": "A0", "code": "A0", "size": 9, "parts": [ "&Code", "Word", "Word", "Word" ], "halt": false },
-      "A1" : { "mnem": "A1", "code": "A1", "size": 5, "parts": [ "&Code", "Word" ], "halt": false },
-      "A2" : { "mnem": "A2", "code": "A2", "size": 5, "parts": [ "&Code", "Word" ], "halt": false },
-      "A3" : { "mnem": "A3", "code": "A3", "size": 9, "parts": [ "&Code", "Word", "Word", "Word" ], "halt": false },
-      "A4" : { "mnem": "A4", "code": "A4", "size": 7, "parts": [ "&Code", "Byte", "Byte", "Word" ], "halt": false },
-      "A5" : { "mnem": "A5", "code": "A5", "size": 7, "parts": [ "&Code", "Byte", "Byte", "Word" ], "halt": false },
+      "A0" : { "mnem": "A0", "code": "A0", "size": 9, "parts": [ "%Code", "Word", "Word", "Word" ], "halt": false },
+      "A1" : { "mnem": "A1", "code": "A1", "size": 5, "parts": [ "%Code", "Word" ], "halt": false },
+      "A2" : { "mnem": "A2", "code": "A2", "size": 5, "parts": [ "%Code", "Word" ], "halt": false },
+      "A3" : { "mnem": "A3", "code": "A3", "size": 9, "parts": [ "%Code", "Word", "Word", "Word" ], "halt": false },
+      "A4" : { "mnem": "A4", "code": "A4", "size": 7, "parts": [ "%Code", "Byte", "Byte", "Word" ], "halt": false },
+      "A5" : { "mnem": "A5", "code": "A5", "size": 7, "parts": [ "%Code", "Byte", "Byte", "Word" ], "halt": false },
       "A6" : { "mnem": "A6", "code": "A6", "size": 8, "parts": [ "Word", "Byte", "Byte", "Byte", "Byte", "Word" ], "halt": false },
-      "A7" : { "mnem": "A7", "code": "A7", "size": 0, "parts": [], "halt": false },
-      "A8" : { "mnem": "A8", "code": "A8", "size": 0, "parts": [], "halt": false },
-      "A9" : { "mnem": "A9", "code": "A9", "size": 0, "parts": [], "halt": false },
+      "A7" : { "mnem": "A7", "code": "A7", "size": 0, "parts": [ ], "halt": false },
+      "A8" : { "mnem": "A8", "code": "A8", "size": 0, "parts": [ ], "halt": false },
+      "A9" : { "mnem": "A9", "code": "A9", "size": 0, "parts": [ ], "halt": false },
       "AA" : { "mnem": "AA", "code": "AA", "size": 1, "parts": [ "Byte" ], "halt": false },
       "AB" : { "mnem": "AB", "code": "AB", "size": 1, "parts": [ "Byte" ], "halt": false },
       "AC" : { "mnem": "AC", "code": "AC", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
@@ -162,55 +162,55 @@
       "AE" : { "mnem": "AE", "code": "AE", "size": 1, "parts": [ "Byte" ], "halt": false },
       "AF" : { "mnem": "AF", "code": "AF", "size": 1, "parts": [ "Byte" ], "halt": false },
       "B0" : { "mnem": "B0", "code": "B0", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
-      "B1" : { "mnem": "B1", "code": "B1", "size": 0, "parts": [], "halt": false },
-      "B2" : { "mnem": "B2", "code": "B2", "size": 0, "parts": [], "halt": false },
-      "B3" : { "mnem": "B3", "code": "B3", "size": 0, "parts": [], "halt": false },
-      "B4" : { "mnem": "B4", "code": "B4", "size": 0, "parts": [], "halt": false },
-      "B5" : { "mnem": "B5", "code": "B5", "size": 0, "parts": [], "halt": false },
+      "B1" : { "mnem": "B1", "code": "B1", "size": 0, "parts": [ ], "halt": false },
+      "B2" : { "mnem": "B2", "code": "B2", "size": 0, "parts": [ ], "halt": false },
+      "B3" : { "mnem": "B3", "code": "B3", "size": 0, "parts": [ ], "halt": false },
+      "B4" : { "mnem": "B4", "code": "B4", "size": 0, "parts": [ ], "halt": false },
+      "B5" : { "mnem": "B5", "code": "B5", "size": 0, "parts": [ ], "halt": false },
       "B6" : { "mnem": "B6", "code": "B6", "size": 1, "parts": [ "Byte" ], "halt": false },
       "B7" : { "mnem": "B7", "code": "B7", "size": 1, "parts": [ "Byte" ], "halt": false },
-      "B8" : { "mnem": "B8", "code": "B8", "size": 0, "parts": [], "halt": false },
-      "B9" : { "mnem": "B9", "code": "B9", "size": 0, "parts": [], "halt": false },
-      "BA" : { "mnem": "BA", "code": "BA", "size": 0, "parts": [], "halt": false },
-      "BB" : { "mnem": "BB", "code": "BB", "size": 0, "parts": [], "halt": false },
+      "B8" : { "mnem": "B8", "code": "B8", "size": 0, "parts": [ ], "halt": false },
+      "B9" : { "mnem": "B9", "code": "B9", "size": 0, "parts": [ ], "halt": false },
+      "BA" : { "mnem": "BA", "code": "BA", "size": 0, "parts": [ ], "halt": false },
+      "BB" : { "mnem": "BB", "code": "BB", "size": 0, "parts": [ ], "halt": false },
       "BC" : { "mnem": "BC", "code": "BC", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
       "BD" : { "mnem": "BD", "code": "BD", "size": 3, "parts": [ "Address" ], "halt": false },
-      "BE" : { "mnem": "BE", "code": "BE", "size": 4, "parts": [ "Byte", "Byte", "**Code" ], "halt": true },
-      "BF" : { "mnem": "BF", "code": "BF", "size": 2, "parts": [ "*WideString" ], "halt": false },
-      "C0" : { "mnem": "C0", "code": "C0", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "C1" : { "mnem": "C1", "code": "C1", "size": 0, "parts": [], "halt": false },
-      "C2" : { "mnem": "C2", "code": "C2", "size": 0, "parts": [], "halt": false },
-      "C3" : { "mnem": "C3", "code": "C3", "size": 5, "parts": [ "&Code", "Word" ], "halt": false },
-      "C4" : { "mnem": "C4", "code": "C4", "size": 3, "parts": [ "&Code" ], "halt": true },
-      "C5" : { "mnem": "C5", "code": "C5", "size": 0, "parts": [], "halt": true },
-      "C6" : { "mnem": "C6", "code": "C6", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "C7" : { "mnem": "C7", "code": "C7", "size": 3, "parts": [ "&Code" ], "halt": true },
-      "C8" : { "mnem": "C8", "code": "C8", "size": 2, "parts": [ "*Code" ], "halt": false },
-      "C9" : { "mnem": "C9", "code": "C9", "size": 2, "parts": [ "*Code" ], "halt": false },
+      "BE" : { "mnem": "BE", "code": "BE", "size": 4, "parts": [ "Byte", "Byte", "&&Code" ], "halt": true },
+      "BF" : { "mnem": "BF", "code": "BF", "size": 2, "parts": [ "&WideString" ], "halt": false },
+      "C0" : { "mnem": "C0", "code": "C0", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "C1" : { "mnem": "C1", "code": "C1", "size": 0, "parts": [ ], "halt": false },
+      "C2" : { "mnem": "C2", "code": "C2", "size": 0, "parts": [ ], "halt": false },
+      "C3" : { "mnem": "C3", "code": "C3", "size": 5, "parts": [ "%Code", "Word" ], "halt": false },
+      "C4" : { "mnem": "C4", "code": "C4", "size": 3, "parts": [ "%Code" ], "halt": true },
+      "C5" : { "mnem": "C5", "code": "C5", "size": 0, "parts": [ ], "halt": true },
+      "C6" : { "mnem": "C6", "code": "C6", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "C7" : { "mnem": "C7", "code": "C7", "size": 3, "parts": [ "%Code" ], "halt": true },
+      "C8" : { "mnem": "C8", "code": "C8", "size": 2, "parts": [ "&Code" ], "halt": false },
+      "C9" : { "mnem": "C9", "code": "C9", "size": 2, "parts": [ "&Code" ], "halt": false },
       "CA" : { "mnem": "CA", "code": "CA", "size": 1, "parts": [ "Byte" ], "halt": false },
-      "CB" : { "mnem": "CB", "code": "CB", "size": 0, "parts": [], "halt": false },
+      "CB" : { "mnem": "CB", "code": "CB", "size": 0, "parts": [ ], "halt": false },
       "CC" : { "mnem": "CC", "code": "CC", "size": 1, "parts": [ "Byte" ], "halt": false },
       "CD" : { "mnem": "CD", "code": "CD", "size": 2, "parts": [ "Word" ], "halt": false },
       "CE" : { "mnem": "CE", "code": "CE", "size": 1, "parts": [ "Byte" ], "halt": false },
       "CF" : { "mnem": "CF", "code": "CF", "size": 2, "parts": [ "Word" ], "halt": false },
-      "D0" : { "mnem": "D0", "code": "D0", "size": 4, "parts": [ "Byte", "Byte", "*Code" ], "halt": false },
-      "D1" : { "mnem": "D1", "code": "D1", "size": 5, "parts": [ "Word", "Byte", "*Code" ], "halt": false },
+      "D0" : { "mnem": "D0", "code": "D0", "size": 4, "parts": [ "Byte", "Byte", "&Code" ], "halt": false },
+      "D1" : { "mnem": "D1", "code": "D1", "size": 5, "parts": [ "Word", "Byte", "&Code" ], "halt": false },
       "D2" : { "mnem": "D2", "code": "D2", "size": 2, "parts": [ "Byte", "Byte" ], "halt": false },
       "D3" : { "mnem": "D3", "code": "D3", "size": 3, "parts": [ "Word", "Byte" ], "halt": false },
-      "D4" : { "mnem": "D4", "code": "D4", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
+      "D4" : { "mnem": "D4", "code": "D4", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
       "D5" : { "mnem": "D5", "code": "D5", "size": 1, "parts": [ "Byte" ], "halt": false },
-      "D6" : { "mnem": "D6", "code": "D6", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
-      "D7" : { "mnem": "D7", "code": "D7", "size": 3, "parts": [ "Byte", "*Code" ], "halt": false },
-      "D8" : { "mnem": "D8", "code": "D8", "size": 0, "parts": [], "halt": false },
-      "D9" : { "mnem": "D9", "code": "D9", "size": 4, "parts": [ "Word", "**Code" ], "halt": true },
+      "D6" : { "mnem": "D6", "code": "D6", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
+      "D7" : { "mnem": "D7", "code": "D7", "size": 3, "parts": [ "Byte", "&Code" ], "halt": false },
+      "D8" : { "mnem": "D8", "code": "D8", "size": 0, "parts": [ ], "halt": false },
+      "D9" : { "mnem": "D9", "code": "D9", "size": 4, "parts": [ "Word", "&&Code" ], "halt": true },
       "DA" : { "mnem": "DA", "code": "DA", "size": 1, "parts": [ "Byte" ], "halt": false },
       "DB" : { "mnem": "DB", "code": "DB", "size": 2, "parts": [ "Word" ], "halt": false },
-      "DC" : { "mnem": "DC", "code": "DC", "size": 0, "parts": [], "halt": false },
-      "DD" : { "mnem": "DD", "code": "DD", "size": 0, "parts": [], "halt": false },
-      "DE" : { "mnem": "DE", "code": "DE", "size": 0, "parts": [], "halt": false },
-      "DF" : { "mnem": "DF", "code": "DF", "size": 0, "parts": [], "halt": false },
-      "E0" : { "mnem": "E0", "code": "E0", "size": 0, "parts": [], "halt": true },
-      "E1" : { "mnem": "E1", "code": "E1", "size": 0, "parts": [], "halt": false },
+      "DC" : { "mnem": "DC", "code": "DC", "size": 0, "parts": [ ], "halt": false },
+      "DD" : { "mnem": "DD", "code": "DD", "size": 0, "parts": [ ], "halt": false },
+      "DE" : { "mnem": "DE", "code": "DE", "size": 0, "parts": [ ], "halt": false },
+      "DF" : { "mnem": "DF", "code": "DF", "size": 0, "parts": [ ], "halt": false },
+      "E0" : { "mnem": "E0", "code": "E0", "size": 0, "parts": [ ], "halt": true },
+      "E1" : { "mnem": "E1", "code": "E1", "size": 0, "parts": [ ], "halt": false },
       "E2" : { "mnem": "E2", "code": "E2", "size": 3, "parts": [ "Word", "Byte" ], "halt": false }
     },
     "formats": {
@@ -377,43 +377,43 @@
     "F9": { "code": "F9", "value": "\\9" }
   },
   "structs": {
-    "d_gap": { "name": "d_gap", "parts": [ "unk1", "unk2", "unk3" ], "types": [ "Byte", "Byte", "Byte" ] },
-    "d_gap2": { "name": "d_gap2", "parts": [ "unk1", "unk2" ], "types": [ "Byte", "Byte" ] },
-    "dma_data": { "name": "dma_data", "delimiter": "00", "parts": [ "unk1", "unk2", "unk3" ], "types": [ "Byte", "Byte", "Byte" ] },
-    "unk1": { "name": "unk1", "parts": [ "value", "code" ], "types": [ "Word", "*Code" ] },
-    "unk2": { "name": "unk2", "parts": [ "u1", "u2", "u3", "u4" ], "types": [ "Byte", "Byte", "Byte", "Byte" ] },
-    "unk3": { "name": "unk3", "delimiter": "00", "parts": [ "u1", "data" ], "types": [ "Byte", "*CharString" ] },
-    "unk5": { "name": "unk5", "parts": [ "u1", "u2", "u3", "u4" ], "types": [ "Byte", "Byte", "Byte", "Byte" ] },
-    "unk6": { "name": "unk6", "parts": [ "u1", "u2" ], "types": [ "Byte", "Word" ] },
-    "unk7": { "name": "unk7", "parts": [ ], "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] },
-    "unk8": { "name": "unk8", "parts": [ "value", "next" ], "types": [ "Word", "*unk8" ] },
-    "unk9": { "name": "unk9", "delimiter": "FFFF", "parts": [ "u1", "u2", "u3" ], "types": [ "Word", "Word", "Word" ] },
-    "unk10": { "name": "unk10", "parts": [ "u1", "u2" ], "types": [ "Word", "Word" ] },
-    "unk11": { "name": "unk11", "delimiter": "FF", "parts": [ "u1", "u2", "u3", "u4", "u5" ], "types": [ "Byte", "Byte", "Byte", "Byte", "Byte" ] },
-    "unk12": { "name": "unk12", "delimiter": "FFFF", "parts": [ "value", "data" ], "types": [ "Word", "*Binary" ] },
-    "unk13": { "name": "unk13", "delimiter": "00", "parts": [ "unk1", "addr", "unk2", "unk3", "unk4" ], "types": [ "Byte", "*Word", "Byte", "Byte", "Byte" ] },
-    "unk14": { "name": "unk14", "parts": [ "addr", "u1", "u2" ], "types": [ "Address", "Byte", "Word" ] },
-    "unk15": { "name": "unk15", "parts": [ "u1", "u2", "u3", "u4", "u5", "u6", "u7", "u8" ], "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] },
-    "unk16": { "name": "unk16", "parts": [ "str", "dat" ], "types": [ "WideString", "Binary" ] },
-    "unk17": { "name": "unk17", "parts": [ "data", "size" ], "types": [ "*Binary", "Byte" ] },
+    "d_gap": { "name": "d_gap", "types": [ "Byte", "Byte", "Byte" ] },
+    "d_gap2": { "name": "d_gap2", "types": [ "Byte", "Byte" ] },
+    "dma_data": { "name": "dma_data", "delimiter": "00", "types": [ "Byte", "Byte", "Byte" ] },
+    "unk1": { "name": "unk1", "types": [ "Word", "&Code" ] },
+    "unk2": { "name": "unk2", "types": [ "Byte", "Byte", "Byte", "Byte" ] },
+    "unk3": { "name": "unk3", "delimiter": "00", "types": [ "Byte", "&CharString" ] },
+    "unk5": { "name": "unk5", "types": [ "Byte", "Byte", "Byte", "Byte" ] },
+    "unk6": { "name": "unk6", "types": [ "Byte", "Word" ] },
+    "unk7": { "name": "unk7", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] },
+    "unk8": { "name": "unk8", "types": [ "Word", "&unk8" ] },
+    "unk9": { "name": "unk9", "delimiter": "FFFF", "types": [ "Word", "Word", "Word" ] },
+    "unk10": { "name": "unk10", "types": [ "Word", "Word" ] },
+    "unk11": { "name": "unk11", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte" ] },
+    "unk12": { "name": "unk12", "delimiter": "FFFF", "types": [ "Word", "&Binary" ] },
+    "unk13": { "name": "unk13", "delimiter": "00", "types": [ "Byte", "&Word", "Byte", "Byte", "Byte" ] },
+    "unk14": { "name": "unk14", "types": [ "Address", "Byte", "Word" ] },
+    "unk15": { "name": "unk15", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] },
+    "unk16": { "name": "unk16", "types": [ "WideString", "Binary" ] },
+    "unk17": { "name": "unk17", "types": [ "&Binary", "Byte" ] },
     "meta<>": { "name": "meta<>", "descriminator": "00", "delimiter": "00" },
-    "meta2":  { "name": "meta2", "parent": "meta<>", "descriminator": "02", "parts": [ "unk1" ], "types": [ "Byte" ] },
-    "bitmap":  { "name": "bitmap", "parent": "meta<>", "descriminator": "03", "parts": [ "unk1", "unk2", "unk3", "addr", "unk4" ], "types": [ "Byte", "Byte", "Byte", "Address", "Byte" ] },
-    "palette":  { "name": "palette", "parent": "meta<>", "descriminator": "04", "parts": [ "unk1", "unk2", "unk3", "addr" ], "types": [ "Byte", "Byte", "Byte", "Address" ] },
-    "tileset":  { "name": "tileset", "parent": "meta<>", "descriminator": "05", "parts": [ "unk1", "unk2", "unk3", "unk4", "addr" ], "types": [ "Byte", "Byte", "Byte", "Byte", "Address" ] },
-    "tilemap":  { "name": "tilemap", "parent": "meta<>", "descriminator": "06", "parts": [ "unk1", "addr" ], "types": [ "Byte", "Address" ] },
-    "metaE":  { "name": "metaE", "parent": "meta<>", "descriminator": "0E", "parts": [ "unk1", "unk2", "unk3" ], "types": [ "Byte", "Byte", "Byte" ] },
-    "spritemap":  { "name": "spritemap", "parent": "meta<>", "descriminator": "10", "parts": [ "unk1", "unk2", "unk3", "addr" ], "types": [ "Byte", "Byte", "Byte", "Address" ] },
-    "music":  { "name": "music", "parent": "meta<>", "descriminator": "11", "parts": [ "unk1", "unk2", "addr" ], "types": [ "Byte", "Byte", "Address" ] },
-    "meta13":  { "name": "meta13", "parent": "meta<>", "descriminator": "13", "parts": [ "unk1", "unk2" ], "types": [ "Byte", "Byte" ] },
-    "meta14":  { "name": "meta14", "parent": "meta<>", "descriminator": "14", "parts": [ "unk1" ], "types": [ "Byte" ] },
-    "meta15":  { "name": "meta15", "parent": "meta<>", "descriminator": "15", "parts": [ "unk1" ], "types": [ "Byte" ] },
-    "meta17":  { "name": "meta17", "parent": "meta<>", "descriminator": "17", "parts": [ "unk1", "addr" ], "types": [ "Byte", "Address" ] },
+    "meta2":  { "name": "meta2", "parent": "meta<>", "descriminator": "02", "types": [ "Byte" ] },
+    "bitmap":  { "name": "bitmap", "parent": "meta<>", "descriminator": "03", "types": [ "Byte", "Byte", "Byte", "@Binary", "Byte" ] },
+    "palette":  { "name": "palette", "parent": "meta<>", "descriminator": "04", "types": [ "Byte", "Byte", "Byte", "@Binary" ] },
+    "tileset":  { "name": "tileset", "parent": "meta<>", "descriminator": "05", "types": [ "Byte", "Byte", "Byte", "Byte", "@Binary" ] },
+    "tilemap":  { "name": "tilemap", "parent": "meta<>", "descriminator": "06", "types": [ "Byte", "@Binary" ] },
+    "metaE":  { "name": "metaE", "parent": "meta<>", "descriminator": "0E", "types": [ "Byte", "Byte", "Byte" ] },
+    "spritemap":  { "name": "spritemap", "parent": "meta<>", "descriminator": "10", "types": [ "Byte", "Byte", "Byte", "@Binary" ] },
+    "music":  { "name": "music", "parent": "meta<>", "descriminator": "11", "types": [ "Byte", "Byte", "@Binary" ] },
+    "meta13":  { "name": "meta13", "parent": "meta<>", "descriminator": "13", "types": [ "Byte", "Byte" ] },
+    "meta14":  { "name": "meta14", "parent": "meta<>", "descriminator": "14", "types": [ "Byte" ] },
+    "meta15":  { "name": "meta15", "parent": "meta<>", "descriminator": "15", "types": [ "Byte" ] },
+    "meta17":  { "name": "meta17", "parent": "meta<>", "descriminator": "17", "types": [ "Byte", "@Binary" ] },
     "mapdef": { "name":  "mapdef", "parts": [ "id", "meta" ], "types": [ "Word", "meta<>" ] },
-    "enemy": { "name": "enemy", "descriminator": "06", "delimiter": "FF", "parts": [ "unk1", "unk2", "unk3", "addr", "unk4", "unk5", "unk6" ], "types": [ "Byte", "Byte", "Byte", "Address", "Byte", "Byte", "Byte" ] },
-    "actor": { "name": "actor", "parent": "enemy", "descriminator": "00", "parts": [ "unk1", "unk2", "unk3", "addr" ], "types": [ "Byte", "Byte", "Byte", "Address" ] },
-    "deleg3": { "name": "deleg3", "delimiter": "FF", "parts": [ "unk1", "addr" ], "types": [ "Byte", "Address" ] },
-    "event_def": { "name": "event_def", "parts": [ "delegs", "str" ], "types": [ "enemy", "WideString" ]}
+    "enemy": { "name": "enemy", "descriminator": "06", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "%d_gap", "Byte", "Byte", "Byte" ] },
+    "actor": { "name": "actor", "parent": "enemy", "descriminator": "00", "types": [ "Byte", "Byte", "Byte", "%d_gap" ] },
+    "deleg3": { "name": "deleg3", "delimiter": "FF", "types": [ "Byte", "%d_gap2" ] },
+    "event_def": { "name": "event_def", "types": [ "enemy", "WideString" ]}
   },
   "files":  [
     { "start": "000000", "end": "001C00", "name": "bmp_000000", "type": "Bitmap" },
@@ -432,9 +432,10 @@
     { "start": "017FBE", "end": "017FFE", "name": "palette_017FBE", "type": "Palette", "xref": [ "@0BC92F" ] },
     { "start": "01AADE", "end": "01ABDE", "name": "reward_table_01AADE", "type": "Assembly", "xref": [ "&00C354", "&00DA96", "&00DD8E", "%0381CE" ] },
     //{ "start": "01D3CE", "end": "01D8BE", "name": "array_01D3CE", "type": "Assembly", "xref": [ ] },
-    { "start": "01D9D8", "end": "01EBA8", "name": "system_strings", "type": "Assembly", "xref": [ ] },
-    { "start": "01EBA8", "end": "01F54D", "name": "dictionary_01EBA8", "type": "Assembly", "xref": [ "^02A1AD", "&02A1BA", "^03E751", "&03E757" ] },
-    { "start": "01F54D", "end": "01FD24", "name": "dictionary_01F54D", "type": "Assembly", "xref": [ "^02A1C2", "&02A1CF", "^03E777", "&03E77D" ] },
+    { "start": "01D9D8", "end": "01EB0F", "name": "system_strings", "type": "Assembly", "xref": [ ] },
+    { "start": "01EB0F", "end": "01EBA8", "name": "itemcomp_table_01EB0F", "type": "Assembly", "move": true, "xref": [ "^03EACD", "&03EAD4" ] },
+    { "start": "01EBA8", "end": "01F54D", "name": "dictionary_01EBA8", "type": "Assembly", "move": true, "xref": [ "^02A1AD", "&02A1BA", "^03E751", "&03E757" ] },
+    { "start": "01F54D", "end": "01FD24", "name": "dictionary_01F54D", "type": "Assembly", "move": true, "xref": [ "^02A1C2", "&02A1CF", "^03E777", "&03E77D" ] },
     { "start": "01FD24", "end": "01FF6C", "name": "itemget_table_01FD24", "type": "Assembly", "xref": [ ] },
     
     { "start": "020000", "end": "021A20", "name": "bmp_020000", "type": "Bitmap", "compressed": true, "xref": [ ] },
@@ -474,6 +475,7 @@
     { "start": "0B472B", "end": "0B5E8E", "name": "bmp_0B472B", "type": "Bitmap", "compressed": true, "xref": [ ] },
     { "start": "0B5E8E", "end": "0B75D9", "name": "sprite_0B5E8E", "type": "Spritemap", "compressed": true, "xref": [ ] },
     { "start": "0B75D9", "end": "0B7FF4", "name": "sprite_0B75D9", "type": "Spritemap", "compressed": true, "xref": [ "@06A799", "@06D1E1" ] },
+    { "start": "0BF706", "end": "0BFA57", "name": "strings_0BF706", "type": "Assembly", "xref": [ "%0BE533", "&0BE538", "%0BE53E", "%0BE549", "%0BE54E+2" ] },
 
     { "start": "0C0000", "end": "0C1734", "name": "bgm_0C0000", "type": "Music", "xref": [ "@01CBD3" ] },
     { "start": "0C1734", "end": "0C2E2D", "name": "bmp_0C1734", "type": "Bitmap", "compressed": true, "xref": [ ] },
@@ -481,7 +483,8 @@
     { "start": "0C4524", "end": "0C5C16", "name": "sprite_0C4524", "type": "Spritemap", "compressed": true, "xref": [ ] },
     { "start": "0C5C16", "end": "0C7308", "name": "bmp_0C5C16", "type": "Bitmap", "compressed": true, "xref": [ ] },
     { "start": "0C7308", "end": "0C8000", "name": "sprite_0C7308", "type": "Spritemap", "compressed": true, "xref": [ ] },
-    { "start": "0C8000", "end": "0CE5E5", "name": "scene_events", "type": "Assembly", "xref": [ "^03CEAB", "%03CEB3" ] },
+    { "start": "0C8000", "end": "0CE5E5", "name": "scene_events", "type": "Assembly", "move": true, "xref": [ "^03CEAB", "%03CEB3" ] },
+    { "start": "0CE5E5", "end": "0CEB5B", "name": "table_0CE5E5", "type": "Assembly", "xref": [ "%03D7F4" ] },
     //{ "start": "0CF623", "end": "0D0000", "name": "bmp_0CF620_noref", "type": "Bitmap", "compressed": true },
     
     { "start": "0D0000", "end": "0D16E7", "name": "bmp_0D0000", "type": "Bitmap", "compressed": true, "xref": [ "@09D6B2" ] },
@@ -491,7 +494,7 @@
     { "start": "0D59EC", "end": "0D7007", "name": "bmp_0D59EC", "type": "Bitmap", "compressed": true, "xref": [ ] },
     { "start": "0D7007", "end": "0D7D6B", "name": "bgm_0D7007", "type": "Music", "xref": [ "@01CBC4" ] },
     { "start": "0D7D6B", "end": "0D7FED", "name": "map_0D7D6B", "type": "Tilemap", "compressed": true, "xref": [ ] },
-    { "start": "0D8000", "end": "0DAFFF", "name": "scene_meta", "type": "Assembly", "xref": [ "&029EBF", "^029EC3" ] },
+    { "start": "0D8000", "end": "0DAFFF", "name": "scene_meta", "type": "Assembly", "move":  true, "xref": [ "&029EBF", "^029EC3" ] },
     { "start": "0DAFFF", "end": "0DF001", "name": "bmp_0DAFFF", "type": "Bitmap", "compressed": false, "xref": [ ] },
     { "start": "0DF001", "end": "0DFF8B", "name": "bmp_0DF001", "type": "Bitmap", "compressed": true, "xref": [ ] },
     { "start": "0DFF8B", "end": "0E0000", "name": "map_0DFF8B", "type": "Tilemap", "compressed": true, "xref": [ ] },
@@ -1123,7 +1126,7 @@
     { "start": "1F2A1D", "end": "1F2AAE", "name": "empty_bgm_1F2A1D", "type": "Music", "xref": [ "@01CBF4" ] },
     { "start": "1F2AAE", "end": "1F2B3D", "name": "map_1F2AAE", "type": "Tilemap", "compressed": true, "xref": [ ] },
     { "start": "1F2B3D", "end": "1F2BCB", "name": "map_1F2B3D", "type": "Tilemap", "compressed": true, "xref": [ ] },
-    { "start": "1F2BCB", "end": "1F2C59", "name": "bgm_1F2BCB", "type": "Music", "xref": [ "@01CBFC" ] },
+    { "start": "1F2BCB", "end": "1F2C59", "name": "bgm_1F2BCB", "type": "Music", "xref": [ "@01CBFA" ] },
     { "start": "1F2C59", "end": "1F2CE6", "name": "map_1F2C59", "type": "Tilemap", "compressed": true, "xref": [ ] },
     { "start": "1F2CE6", "end": "1F2D73", "name": "map_1F2CE6", "type": "Tilemap", "compressed": true, "xref": [ ] },
     { "start": "1F2D73", "end": "1F2DFE", "name": "map_1F2D73", "type": "Tilemap", "compressed": true, "xref": [ ] },
@@ -1256,7 +1259,7 @@
     { "start": "0A7FFF", "end": "0A8000" },
     { "start": "0AFD87", "end": "0B0000" },
     { "start": "0B7FF4", "end": "0B8000" },
-    { "start": "0BFA74", "end": "0C0000" },
+    { "start": "0BFA57", "end": "0C0000" },
     { "start": "0D7FED", "end": "0D8000" },
     { "start": "0E7FFC", "end": "0E8000" },
     { "start": "0EDFFC", "end": "0EE000" },
@@ -1314,9 +1317,9 @@
         { "start": "008438", "end": "00846C", "name": "sub_008438_noref", "struct": "Code" },
         { "start": "00846C", "end": "00846D", "name": "byte_00846C", "struct": "Byte" },
         { "start": "00846D", "end": "008485", "name": "native_mode_cop_handler_00846D", "struct": "Code" },
-        { "start": "008485", "end": "008561", "name": "cop_table_008485", "struct": "*Code" },
+        { "start": "008485", "end": "008561", "name": "cop_table_008485", "struct": "&Code" },
         { "start": "008561", "end": "008585", "name": "cop_junk_008561", "struct": "Word" },
-        { "start": "008585", "end": "00864B", "name": "cop_table2_008585", "struct": "*Code" },
+        { "start": "008585", "end": "00864B", "name": "cop_table2_008585", "struct": "&Code" },
         { "start": "00864B", "end": "00864E", "name": "cop_footer_00864B", "struct": "Binary" },
         { "start": "00864E", "end": "008689", "name": "cop_handler_00_00864E", "struct": "Code" },
         { "start": "008689", "end": "0086A0", "name": "cop_handler_01_008689", "struct": "Code" },
@@ -1747,7 +1750,7 @@
         { "start": "00C66F", "end": "00C672", "name": "head_00C66F", "struct": "d_gap" },
         { "start": "00C672", "end": "00C6E4", "name": "func_00C672", "struct": "Code" },
         { "start": "00C6E4", "end": "00C710", "name": "func_00C6E4", "struct": "Code" },
-        { "start": "00C710", "end": "00C718", "name": "func_00C710", "struct": "*Code" },
+        { "start": "00C710", "end": "00C718", "name": "func_00C710", "struct": "&Code" },
         { "start": "00C718", "end": "00C725", "name": "func_00C718", "struct": "Code" },
         { "start": "00C725", "end": "00C7FA", "name": "func_00C725", "struct": "Code" },
         { "start": "00C7FA", "end": "00C806", "name": "func_00C7FA", "struct": "Code" },
@@ -1881,7 +1884,7 @@
         { "start": "00EDA8", "end": "00EE1C", "name": "sub_00EDA8", "struct": "Code" },
         { "start": "00EE1C", "end": "00EE7C", "name": "sub_00EE1C", "struct": "Code" },
         { "start": "00EE7C", "end": "00EF72", "name": "sub_00EE7C", "struct": "Code" },
-        { "start": "00EF72", "end": "00F193", "name": "table_00EF72", "struct": "*Code" },
+        { "start": "00EF72", "end": "00F193", "name": "table_00EF72", "struct": "&Code" },
         { "start": "00F193", "end": "00F3B3", "name": "binary_00F193", "struct": "Binary" },
         { "start": "00F3B3", "end": "00F428", "name": "func_00F3B3", "struct": "Code" },
         { "start": "00F428", "end": "00F432", "name": "code_00F428_noref", "struct": "Code" },
@@ -1891,19 +1894,19 @@
     {
       "name": "table_018000",
       "parts": [
-        { "start": "018000", "end": "018234", "name": "table_018000", "struct": "*unk7" }
+        { "start": "018000", "end": "018234", "name": "table_018000", "struct": "&unk7" }
       ]
     },
     {
       "name": "table_018234",
       "parts": [
-        { "start": "018234", "end": "01A95E", "name": "table_018234", "struct": "*Binary" }
+        { "start": "018234", "end": "01A95E", "name": "table_018234", "struct": "&Binary" }
       ]
     },
     {
       "name": "table_01A95E",
       "parts": [
-        { "start": "01A95E", "end": "01AADE", "name": "table_01A95E", "struct": "*Binary" }
+        { "start": "01A95E", "end": "01AADE", "name": "table_01A95E", "struct": "&Binary" }
       ]
     },
     {
@@ -1924,13 +1927,13 @@
     {
       "name": "table_01ADA8",
       "parts": [
-        { "start": "01ADA8", "end": "01B086", "name": "table_01ADA8", "struct": "*Binary" }
+        { "start": "01ADA8", "end": "01B086", "name": "table_01ADA8", "struct": "&Binary" }
       ]
     },
     {
       "name": "table_01B086",
       "parts": [
-        { "start": "01B086", "end": "01C384", "name": "table_01B086", "struct": "*unk8" }
+        { "start": "01B086", "end": "01C384", "name": "table_01B086", "struct": "&unk8" }
       ]
     },
     {
@@ -1949,7 +1952,7 @@
     {
       "name": "table_01CA95",
       "parts": [
-        { "start": "01CA95", "end": "01CBA6", "name": "table_01CA95", "struct": "*WideString" }
+        { "start": "01CA95", "end": "01CBA6", "name": "table_01CA95", "struct": "&WideString" }
       ]
     },
     {
@@ -1961,7 +1964,7 @@
     {
       "name": "table_01CC00",
       "parts": [
-        { "start": "01CC00", "end": "01D3CE", "name": "table_01CC00", "struct": "*Binary" }
+        { "start": "01CC00", "end": "01D3CE", "name": "table_01CC00", "struct": "&Binary" }
       ]
     },
     {
@@ -1987,13 +1990,13 @@
     {
       "name": "table_01D9A7",
       "parts": [
-        { "start": "01D9A7", "end": "01D9BF", "name": "table_01D9A7", "struct": "*Binary" }
+        { "start": "01D9A7", "end": "01D9BF", "name": "table_01D9A7", "struct": "&Binary" }
       ]
     },
     {
       "name": "table_01D9BF",
       "parts": [
-        { "start": "01D9BF", "end": "01D9D8", "name": "table_01D9BF", "struct": "*Binary" }
+        { "start": "01D9BF", "end": "01D9D8", "name": "table_01D9BF", "struct": "&Binary" }
       ]
     },
     {
@@ -2002,14 +2005,14 @@
         { "start": "01D9D8", "end": "01DA47", "name": "string_01D9D8", "struct": "String" },
         { "start": "01DA47", "end": "01DA5E", "name": "string_01DA47", "struct": "String" },
         { "start": "01DA5E", "end": "01DABF", "name": "string_01DA5E", "struct": "String" },
-        { "start": "01DABF", "end": "01DE1E", "name": "itemname_table_01DABF", "struct": "*String" },
-        { "start": "01DE1E", "end": "01E12A", "name": "itemmenu_table_01DE1E", "struct": "*String" },
+        { "start": "01DABF", "end": "01DE1E", "name": "itemname_table_01DABF", "struct": "&String" },
+        { "start": "01DE1E", "end": "01E12A", "name": "itemmenu_table_01DE1E", "struct": "&String" },
         { "start": "01E12A", "end": "01E132", "name": "binary_01E12A", "struct": "Binary" },
-        { "start": "01E132", "end": "01E5EC", "name": "itemdesc_table_01E132", "struct": "*String" },
-        { "start": "01E5EC", "end": "01E65D", "name": "abilmenu_table_01E5EC", "struct": "*String" },
-        { "start": "01E65D", "end": "01E6DC", "name": "abilname_table_01E65D", "struct": "*String" },
-        { "start": "01E6DC", "end": "01E7CE", "name": "abildesc_table_01E6DC", "struct": "*String" },
-        { "start": "01E7CE", "end": "01E7F6", "name": "charname_table_01E7CE", "struct": "*String" },
+        { "start": "01E132", "end": "01E5EC", "name": "itemdesc_table_01E132", "struct": "&String" },
+        { "start": "01E5EC", "end": "01E65D", "name": "abilmenu_table_01E5EC", "struct": "&String" },
+        { "start": "01E65D", "end": "01E6DC", "name": "abilname_table_01E65D", "struct": "&String" },
+        { "start": "01E6DC", "end": "01E7CE", "name": "abildesc_table_01E6DC", "struct": "&String" },
+        { "start": "01E7CE", "end": "01E7F6", "name": "charname_table_01E7CE", "struct": "&String" },
         { "start": "01E7F6", "end": "01E818", "name": "string_01E7F6", "struct": "String" },
         { "start": "01E818", "end": "01E869", "name": "string_01E818", "struct": "String" },
         { "start": "01E869", "end": "01E870", "name": "string_01E869", "struct": "String" },
@@ -2019,7 +2022,7 @@
         { "start": "01E90B", "end": "01E912", "name": "string_01E90B", "struct": "String" },
         { "start": "01E912", "end": "01E919", "name": "string_01E912", "struct": "String" },
         { "start": "01E919", "end": "01E94C", "name": "string_01E919", "struct": "String" },
-        { "start": "01E94C", "end": "01E954", "name": "table_01E94C", "struct": "*String" },
+        { "start": "01E94C", "end": "01E954", "name": "table_01E94C", "struct": "&String" },
         { "start": "01E954", "end": "01E962", "name": "string_01E954", "struct": "String" },
         { "start": "01E962", "end": "01E975", "name": "string_01E962", "struct": "String" },
         { "start": "01E975", "end": "01E98C", "name": "string_01E975", "struct": "String" },
@@ -2039,26 +2042,31 @@
         { "start": "01EAB4", "end": "01EAC6", "name": "string_01EAB4", "struct": "String" },
         { "start": "01EAC6", "end": "01EAD1", "name": "string_01EAC6", "struct": "String" },
         { "start": "01EAD1", "end": "01EADC", "name": "string_01EAD1", "struct": "String" },
-        { "start": "01EADC", "end": "01EB0F", "name": "string_01EADC", "struct": "String" },
-        { "start": "01EB0F", "end": "01EBA8", "name": "itemcomp_table_01EB0F", "struct": "*String" }
+        { "start": "01EADC", "end": "01EB0F", "name": "string_01EADC", "struct": "String" }
       ]
-    },  
+    },
+    {
+      "name": "itemcomp_table_01EB0F",
+      "parts": [
+        { "start": "01EB0F", "end": "01EBA8", "name": "itemcomp_table_01EB0F", "struct": "&String" }
+      ]
+    },
     {
       "name": "dictionary_01EBA8",
       "parts": [
-        { "start": "01EBA8", "end": "01F54D", "name": "dictionary_01EBA8", "struct": "*WideString" }
+        { "start": "01EBA8", "end": "01F54D", "name": "dictionary_01EBA8", "struct": "&WideString" }
       ]
     },
     {
       "name": "dictionary_01F54D",
       "parts": [
-        { "start": "01F54D", "end": "01FD24", "name": "dictionary_01F54D", "struct": "*WideString" }
+        { "start": "01F54D", "end": "01FD24", "name": "dictionary_01F54D", "struct": "&WideString" }
       ]
     },
     {
       "name": "itemget_table_01FD24",
       "parts": [
-        { "start": "01FD24", "end": "01FF02", "name": "itemget_table_01FD24", "struct": "*WideString" },
+        { "start": "01FD24", "end": "01FF02", "name": "itemget_table_01FD24", "struct": "&WideString" },
         { "start": "01FF02", "end": "01FF1F", "name": "widestring_01FF02", "struct": "WideString" },
         { "start": "01FF1F", "end": "01FF2D", "name": "widestring_01FF1F", "struct": "WideString" },
         { "start": "01FF2D", "end": "01FF36", "name": "widestring_01FF2D", "struct": "WideString" },
@@ -2087,7 +2095,7 @@
         { "start": "0283A2", "end": "0283BB", "name": "func_0283A2", "struct": "Code" },
         { "start": "0283BB", "end": "0283E7", "name": "func_0283BB", "struct": "Code" },
         { "start": "0283E7", "end": "028416", "name": "func_0283E7", "struct": "Code" },
-        { "start": "028416", "end": "028446", "name": "table_028416", "struct": "*Code" },
+        { "start": "028416", "end": "028446", "name": "table_028416", "struct": "&Code" },
         { "start": "028446", "end": "02845B", "name": "func_028446", "struct": "Code" },
         { "start": "02845B", "end": "02845D", "name": "func_02845B", "struct": "Code" },
         { "start": "02845D", "end": "028552", "name": "func_02845D", "struct": "Code" },
@@ -2196,7 +2204,7 @@
         { "start": "02B42B", "end": "02B538", "name": "func_02B42B", "struct": "Code" },
         { "start": "02B538", "end": "02B550", "name": "func_02B538", "struct": "Code" },
         { "start": "02B550", "end": "02B57C", "name": "func_02B550", "struct": "Code" },
-        { "start": "02B57C", "end": "02B59C", "name": "table_02B57C", "struct": "*Code" },
+        { "start": "02B57C", "end": "02B59C", "name": "table_02B57C", "struct": "&Code" },
         { "start": "02B59C", "end": "02B5E2", "name": "sub_02B59C", "struct": "Code" },
         { "start": "02B5E2", "end": "02B5FE", "name": "sub_02B5E2", "struct": "Code" },
         { "start": "02B5FE", "end": "02B61E", "name": "sub_02B5FE", "struct": "Code" },
@@ -2247,7 +2255,7 @@
       "parts": [
         { "start": "02C38C", "end": "02C38F", "name": "head_02C38C", "struct": "d_gap" },
         { "start": "02C38F", "end": "02C447", "name": "func_02C38F", "struct": "Code" },
-        { "start": "02C447", "end": "02C47F", "name": "table_02C447", "struct": "*Code" },
+        { "start": "02C447", "end": "02C47F", "name": "table_02C447", "struct": "&Code" },
         { "start": "02C47F", "end": "02C48A", "name": "func_02C47F", "struct": "Code" },
         { "start": "02C48A", "end": "02C48F", "name": "func_02C48A", "struct": "Code" },
         { "start": "02C48F", "end": "02C49A", "name": "func_02C48F", "struct": "Code" },
@@ -2490,7 +2498,7 @@
         { "start": "0383D6", "end": "038410", "name": "word_0383D6", "struct": "Word" },
         { "start": "038410", "end": "03842F", "name": "sub_038410", "struct": "Code" },
         { "start": "03842F", "end": "03843F", "name": "sub_03842F", "struct": "Code" },
-        { "start": "03843F", "end": "0384BF", "name": "table_03843F", "struct": "*Code" },
+        { "start": "03843F", "end": "0384BF", "name": "table_03843F", "struct": "&Code" },
         { "start": "0384BF", "end": "0384D5", "name": "func_0384BF", "struct": "Code" },
         { "start": "0384D5", "end": "0385C2", "name": "func_0384D5", "struct": "Code" },
         { "start": "0385C2", "end": "038691", "name": "func_0385C2", "struct": "Code" },
@@ -2550,7 +2558,7 @@
         { "start": "03A1FD", "end": "03A2F1", "name": "func_03A1FD", "struct": "Code" },
         { "start": "03A2F1", "end": "03A2F4", "name": "head_03A2F1", "struct": "d_gap" },
         { "start": "03A2F4", "end": "03A503", "name": "func_03A2F4", "struct": "Code" },
-        { "start": "03A503", "end": "03A52F", "name": "table_03A503", "struct": "*Binary" },
+        { "start": "03A503", "end": "03A52F", "name": "table_03A503", "struct": "&Binary" },
         { "start": "03A52F", "end": "03A681", "name": "func_03A52F", "struct": "Code" },
         { "start": "03A681", "end": "03A692", "name": "sub_03A681", "struct": "Code" },
         { "start": "03A692", "end": "03A6BA", "name": "sub_03A692", "struct": "Code" },
@@ -2571,7 +2579,7 @@
     {
       "name": "table_03AD77",
       "parts": [
-        { "start": "03AD77", "end": "03B1D4", "name": "table_03AD77", "struct": "*unk2" }
+        { "start": "03AD77", "end": "03B1D4", "name": "table_03AD77", "struct": "&unk2" }
       ]
     },
     {
@@ -2583,7 +2591,7 @@
     {
       "name": "table_03B401",
       "parts": [
-        { "start": "03B401", "end": "03BAE1", "name": "table_03B401", "struct": "*Code" }
+        { "start": "03B401", "end": "03BAE1", "name": "table_03B401", "struct": "&Code" }
       ]
     },
     {
@@ -2625,8 +2633,8 @@
         { "start": "03D1C2", "end": "03D1F5", "name": "func_03D1C2", "struct": "Code" },
         { "start": "03D1F5", "end": "03D276", "name": "func_03D1F5", "struct": "Code" },
         { "start": "03D276", "end": "03D4AD", "name": "func_03D276", "struct": "Code" },
-        { "start": "03D4AD", "end": "03D65C", "name": "func_03D4AD", "struct": "*Code" },
-        { "start": "03D65C", "end": "03D67C", "name": "func_03D65C", "struct": "*Code" },
+        { "start": "03D4AD", "end": "03D65C", "name": "func_03D4AD", "struct": "&Code" },
+        { "start": "03D65C", "end": "03D67C", "name": "func_03D65C", "struct": "&Code" },
         { "start": "03D67C", "end": "03D6EF", "name": "func_03D67C", "struct": "Code" },
         { "start": "03D6EF", "end": "03D704", "name": "func_03D6EF", "struct": "Code" },
         { "start": "03D704", "end": "03D708", "name": "func_03D704", "struct": "Code" },
@@ -2665,7 +2673,7 @@
         { "start": "03E1D6", "end": "03E21E", "name": "func_03E1D6", "struct": "Code" },
         { "start": "03E21E", "end": "03E255", "name": "func_03E21E", "struct": "Code" },
         { "start": "03E255", "end": "03E2C3", "name": "sub_03E255", "struct": "Code" },
-        { "start": "03E2C3", "end": "03E2F5", "name": "wide_cmd_table_03E2C3", "struct": "*Code" },
+        { "start": "03E2C3", "end": "03E2F5", "name": "wide_cmd_table_03E2C3", "struct": "&Code" },
         { "start": "03E2F5", "end": "03E30F", "name": "cmd_c0_03E2F5", "struct": "Code" },
         { "start": "03E30F", "end": "03E335", "name": "cmd_c1_03E30F", "struct": "Code" },
         { "start": "03E335", "end": "03E35B", "name": "cmd_c2_03E335", "struct": "Code" },
@@ -2701,7 +2709,7 @@
         { "start": "03E983", "end": "03EA2A", "name": "sub_03E983", "struct": "Code" },
         { "start": "03EA2A", "end": "03EA62", "name": "sub_03EA2A", "struct": "Code" },
         { "start": "03EA62", "end": "03EA8C", "name": "func_03EA62", "struct": "Code" },
-        { "start": "03EA8C", "end": "03EAB0", "name": "string_cmd_table_03EA8C", "struct": "*Code" },
+        { "start": "03EA8C", "end": "03EAB0", "name": "string_cmd_table_03EA8C", "struct": "&Code" },
         { "start": "03EAB0", "end": "03EABD", "name": "cmd_11_03EAB0", "struct": "Code" },
         { "start": "03EABD", "end": "03EAE2", "name": "cmd_10_03EABD", "struct": "Code" },
         { "start": "03EAE2", "end": "03EB1B", "name": "cmd_0F_03EAE2", "struct": "Code" },
@@ -2727,7 +2735,7 @@
         { "start": "03F0B3", "end": "03F0CA", "name": "func_03F0B3", "struct": "Code" },
         { "start": "03F0CA", "end": "03F11F", "name": "func_03F0CA", "struct": "Code" },
         { "start": "03F11F", "end": "03F177", "name": "binary_03F11F", "struct": "Binary" },
-        { "start": "03F177", "end": "03F1D0", "name": "table_03F177", "struct": "*Binary" },
+        { "start": "03F177", "end": "03F1D0", "name": "table_03F177", "struct": "&Binary" },
         { "start": "03F1D0", "end": "03F201", "name": "func_03F1D0", "struct": "Code" }
       ]
     },
@@ -3732,8 +3740,8 @@
         { "start": "08EB2F", "end": "08EB5A", "name": "sub_08EB2F", "struct": "Code" },
         { "start": "08EB5A", "end": "08EB68", "name": "binary_08EB5A", "struct": "Binary" },
         { "start": "08EB68", "end": "08EB8F", "name": "widestring_08EB68", "struct": "WideString" },
-        { "start": "08EB8F", "end": "08EBD3", "name": "table_08EB8F", "struct": "*WideString" },
-        { "start": "08EBD3", "end": "08EF32", "name": "table_08EBD3", "struct": "*WideString" },
+        { "start": "08EB8F", "end": "08EBD3", "name": "table_08EB8F", "struct": "&WideString" },
+        { "start": "08EBD3", "end": "08EF32", "name": "table_08EBD3", "struct": "&WideString" },
         { "start": "08EF32", "end": "08F235", "name": "func_08EF32", "struct": "Code" },
         { "start": "08F235", "end": "08F26E", "name": "func_08F235", "struct": "Code" },
         { "start": "08F26E", "end": "08F2A3", "name": "func_08F26E", "struct": "Code" },
@@ -3960,7 +3968,7 @@
         { "start": "09E919", "end": "09EC23", "name": "func_09E919", "struct": "Code" },
         { "start": "09EC23", "end": "09EC70", "name": "sub_09EC23", "struct": "Code" },
         { "start": "09EC70", "end": "09EC74", "name": "func_09EC70", "struct": "Code" },
-        { "start": "09EC74", "end": "09ECBF", "name": "table_09EC74", "struct": "*Code" },
+        { "start": "09EC74", "end": "09ECBF", "name": "table_09EC74", "struct": "&Code" },
         { "start": "09ECBF", "end": "09ECE7", "name": "credits_09ECBF", "struct": "WideString" },
         { "start": "09ECE7", "end": "09ED10", "name": "credits_09ECE7", "struct": "WideString" },
         { "start": "09ED10", "end": "09ED3C", "name": "credits_09ED10", "struct": "WideString" },
@@ -4316,7 +4324,7 @@
     {
       "name": "strings_0BF706",
       "parts": [
-        { "start": "0BF706", "end": "0BFA57", "name": "strings_0BF706", "struct": "*unk16" }
+        { "start": "0BF706", "end": "0BFA57", "name": "strings_0BF706", "struct": "&unk16" }
       ]
     },
     {
@@ -4573,7 +4581,7 @@
         { "start": "0BECB1", "end": "0BECD9", "name": "sub_0BECB1", "struct": "Code" },
         { "start": "0BECD9", "end": "0BECFB", "name": "sub_0BECD9", "struct": "Code" },
         { "start": "0BECFB", "end": "0BED3C", "name": "sub_0BECFB", "struct": "Code" },
-        { "start": "0BED3C", "end": "0BED64", "name": "table_0BED3C", "struct": "*Word" },
+        { "start": "0BED3C", "end": "0BED64", "name": "table_0BED3C", "struct": "&Word" },
         { "start": "0BED64", "end": "0BEE20", "name": "sub_0BED64", "struct": "Code" },
         { "start": "0BEE20", "end": "0BEE23", "name": "head_0BEE20", "struct": "d_gap" },
         { "start": "0BEE23", "end": "0BF178", "name": "func_0BEE23", "struct": "Code" },
@@ -4588,13 +4596,13 @@
         { "start": "0BF261", "end": "0BF2A6", "name": "func_0BF261_noref", "struct": "Code" },
         { "start": "0BF2A6", "end": "0BF3F4", "name": "func_0BF2A6", "struct": "Code" },
         { "start": "0BF3F4", "end": "0BF63B", "name": "widestring_0BF3F4", "struct": "WideString" },
-        { "start": "0BF63B", "end": "0BF667", "name": "table_0BF63B", "struct": "*WideString" },
-        { "start": "0BF667", "end": "0BF679", "name": "table_0BF667", "struct": "*WideString" },
+        { "start": "0BF63B", "end": "0BF667", "name": "table_0BF63B", "struct": "&WideString" },
+        { "start": "0BF667", "end": "0BF679", "name": "table_0BF667", "struct": "&WideString" },
         { "start": "0BF679", "end": "0BF6A4", "name": "widestring_0BF679", "struct": "WideString" },
         { "start": "0BF6A4", "end": "0BF6AD", "name": "widestring_0BF6A4", "struct": "WideString" },
         { "start": "0BF6AD", "end": "0BF6B3", "name": "table_0BF6AD", "struct": "Word" },
         { "start": "0BF6B3", "end": "0BF6D9", "name": "widestring_0BF6B3", "struct": "WideString" },
-        { "start": "0BF6D9", "end": "0BF706", "name": "table_0BF6D9", "struct": "*WideString" },
+        { "start": "0BF6D9", "end": "0BF706", "name": "table_0BF6D9", "struct": "&WideString" },
         
         { "start": "0BFA57", "end": "0BFA5A", "name": "head_0BFA57_noref", "struct": "d_gap" },
         { "start": "0BFA5A", "end": "0BFA74", "name": "func_0BFA5A", "struct": "Code" }
@@ -4603,19 +4611,19 @@
     {
       "name": "scene_events",
       "parts": [
-        { "start": "0C8000", "end": "0CE5E5", "name": "scene_events", "struct": "*event_def" }
+        { "start": "0C8000", "end": "0CE5E5", "name": "scene_events", "struct": "&event_def" }
       ]
     },
     {
       "name": "table_0CE5E5",
       "parts": [
-        { "start": "0CE5E5", "end": "0CEB5B", "name": "table_0CE5E5", "struct": "*deleg3" }
+        { "start": "0CE5E5", "end": "0CEB5B", "name": "table_0CE5E5", "struct": "&deleg3" }
       ]
     },
     {
       "name": "chunk_0CEB5B",
       "parts": [
-        { "start": "0CE5E5", "end": "0CEB5D", "name": "head_0CE5E5", "struct": "d_gap2" },
+        { "start": "0CEB5B", "end": "0CEB5D", "name": "head_0CEB5B", "struct": "d_gap2" },
         { "start": "0CEB5D", "end": "0CEB74", "name": "func_0CEB5D", "struct": "Code" },
         { "start": "0CEB74", "end": "0CEB76", "name": "head_0CEB74", "struct": "d_gap2" },
         { "start": "0CEB76", "end": "0CEBA1", "name": "func_0CEB76", "struct": "Code" },
@@ -4647,109 +4655,109 @@
     {
       "name": "table_0E8000",
       "parts": [
-        { "start": "0E8000", "end": "0ECADB", "name": "table_0E8000", "struct": "*unk12" }
+        { "start": "0E8000", "end": "0ECADB", "name": "table_0E8000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_0EDA00",
       "parts": [
-        { "start": "0EDA00", "end": "0EDD40", "name": "table_0EDA00", "struct": "*unk12" }
+        { "start": "0EDA00", "end": "0EDD40", "name": "table_0EDA00", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_0EE000",
       "parts": [
-        { "start": "0EE000", "end": "0EFDCF", "name": "table_0EE000", "struct": "*unk12" }
+        { "start": "0EE000", "end": "0EFDCF", "name": "table_0EE000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_0F8000",
       "parts": [
-        { "start": "0F8000", "end": "0F90E5", "name": "table_0F8000", "struct": "*unk12" }
+        { "start": "0F8000", "end": "0F90E5", "name": "table_0F8000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_0FC000",
       "parts": [
-        { "start": "0FC000", "end": "0FED85", "name": "table_0FC000", "struct": "*unk12" }
+        { "start": "0FC000", "end": "0FED85", "name": "table_0FC000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_108000",
       "parts": [
-        { "start": "108000", "end": "108F07", "name": "table_108000", "struct": "*unk12" }
+        { "start": "108000", "end": "108F07", "name": "table_108000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_148000",
       "parts": [
-        { "start": "148000", "end": "14B09B", "name": "table_148000", "struct": "*unk12" }
+        { "start": "148000", "end": "14B09B", "name": "table_148000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_14C000",
       "parts": [
-        { "start": "14C000", "end": "14C0C8", "name": "table_14C000", "struct": "*unk12" }
+        { "start": "14C000", "end": "14C0C8", "name": "table_14C000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_14C0C8",
       "parts": [
-        { "start": "14C0C8", "end": "14C12C", "name": "table_14C0C8", "struct": "*unk12" }
+        { "start": "14C0C8", "end": "14C12C", "name": "table_14C0C8", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_14C12C",
       "parts": [
-        { "start": "14C12C", "end": "14C198", "name": "table_14C12C", "struct": "*unk12" }
+        { "start": "14C12C", "end": "14C198", "name": "table_14C12C", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_158000",
       "parts": [
-        { "start": "158000", "end": "15C421", "name": "table_158000", "struct": "*unk12" }
+        { "start": "158000", "end": "15C421", "name": "table_158000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_168000",
       "parts": [
-        { "start": "168000", "end": "16D82C", "name": "table_168000", "struct": "*unk13" }
+        { "start": "168000", "end": "16D82C", "name": "table_168000", "struct": "&unk13" }
       ]
     },
     {
       "name": "table_178000",
       "parts": [
-        { "start": "178000", "end": "17841D", "name": "table_178000", "struct": "*unk12" }
+        { "start": "178000", "end": "17841D", "name": "table_178000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_179000",
       "parts": [
-        { "start": "179000", "end": "1791AA", "name": "table_179000", "struct": "*unk12" }
+        { "start": "179000", "end": "1791AA", "name": "table_179000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_17A000",
       "parts": [
-        { "start": "17A000", "end": "17A4F2", "name": "table_17A000", "struct": "*unk12" }
+        { "start": "17A000", "end": "17A4F2", "name": "table_17A000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_17B000",
       "parts": [
-        { "start": "17B000", "end": "17B3A6", "name": "table_17B000", "struct": "*unk12" }
+        { "start": "17B000", "end": "17B3A6", "name": "table_17B000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_17C000",
       "parts": [
-        { "start": "17C000", "end": "17C443", "name": "table_17C000", "struct": "*unk12" }
+        { "start": "17C000", "end": "17C443", "name": "table_17C000", "struct": "&unk12" }
       ]
     },
     {
       "name": "table_17D000",
       "parts": [
-        { "start": "17D000", "end": "17D3F0", "name": "table_17D000", "struct": "*unk12" }
+        { "start": "17D000", "end": "17D3F0", "name": "table_17D000", "struct": "&unk12" }
       ]
     }
   ],
@@ -4762,6 +4770,18 @@
   "returns": {
     "008FDC": { "location": "008FDC", "register": "M", "value": "00" },
     "02E0FA": { "location": "02E0FA", "register": "M", "value": "00" }
+  },
+  "rewrites": {
+    "0CE7EE": "0CE7EA+4",
+    "0CE7F2": "0CE7EA+8",
+    "0CE810": "0CE80C+4",
+    "0CE847": "0CE843+4",
+    "0CE869": "0CE861+8",
+    "0CE883": "0CE87F+4",
+    "0CE8A9": "0CE8A1+8",
+    "0CE977": "0CE96F+8",
+    "0CE9E5": "0CE9E1+4",
+    "0CEA15": "0CEA11+4"
   },
   "transforms": {
     "008276":  { "location": "008276", "name": "string_01E7F6", "type": "%" },
@@ -4812,7 +4832,7 @@
     "03806F":  { "location": "03806F", "name": "string_01EAC6", "type": "%" },
     "038245":  { "location": "038245", "name": "string_01EAD1", "type": "%" },
     "03C4EF":  { "location": "03C4EF", "name": "widestring_01FF02" },
-    "03EAD4":  { "location": "03EAD4", "name": "itemcomp_table_01EB0F", "type": "&" },
+    //"03EAD4":  { "location": "03EAD4", "name": "itemcomp_table_01EB0F", "type": "&" },
     "03F07B":  { "location": "03F07B", "name": "widestring_01FF1F" },
     "03F088":  { "location": "03F088", "name": "widestring_01FF02" },
     "0BC8A9":  { "location": "0BC8A9", "name": "string_01D9D8", "type": "%" },

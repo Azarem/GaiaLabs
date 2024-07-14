@@ -105,6 +105,7 @@ namespace GaiaLib.Rom
                 _part.Includes.Add(p);
         }
 
+        private static string[] strictAsm = ["scene_events", "table_0CE5E5"];
         private string ResolveName(Location loc, byte size, bool isBranch)
         {
             var prefix = size switch
@@ -117,7 +118,17 @@ namespace GaiaLib.Rom
             };
 
             string? name;
-            if (_part.Block.Name == "scene_events" && _part.Block.IsOutside(loc, out var p))
+
+            if (DbRoot.Rewrites.TryGetValue(loc, out var label))
+            {
+                var offIx = label.IndexOfAny(['-', '+']);
+                if (offIx < 0) offIx = label.Length;
+                loc = Location.Parse(label[..offIx]);
+                label = label[offIx..];
+            }
+
+
+            if (strictAsm.Contains(_part.Block.Name) && _part.Block.IsOutside(loc, out var p))
             {
                 name = (loc.Offset | 0x800000u).ToString("X6");
                 prefix = '$';
@@ -154,6 +165,9 @@ namespace GaiaLib.Rom
         Next:
             if (prefix != 0)
                 name = $"{prefix}{name}";
+
+            if (!string.IsNullOrEmpty(label))
+                name += label;
 
             return name;
         }
@@ -709,26 +723,33 @@ namespace GaiaLib.Rom
                             //size = cop.Size + 2;
                             foreach (var p in copDef.Parts)
                             {
-                                var str = p;
-                                bool isPtr = str[0] == '*', isAddr = str[0] == '&';
-                                var otherStr = (isPtr || isAddr) ? str[1..] : "Binary";
+                                var isPtr = _adrSpace.Contains(p[0]);
+                                string otherStr, str;
+                                char type;
 
-                                if (isPtr) str = "Offset";
-                                else if (isAddr) str = "Address";
+                                (otherStr, type, str) = isPtr
+                                    ? (p[1..], p[0], p[0] == '&' ? "Offset" : "Address")
+                                    : (_part.Struct ?? "Binary", (char)0, p);
+
+                                //bool isPtr = str[0] == '*', isAddr = str[0] == '&';
+                                //var otherStr = (isPtr || isAddr) ? str[1..] : "Binary";
+
+                                //if (isPtr) str = "Offset";
+                                //else if (isAddr) str = "Address";
 
                                 if (!Enum.TryParse<MemberType>(str, true, out var mtype))
                                     throw new("Cannot use structs in cop def");
 
                                 object copLoc(ushort offset, byte? bank)
                                 {
-                                    var addr = new Address(bank ?? next.Bank, offset);
+                                    var addr = new Address(bank ?? (byte)(next.Bank | (type == '@' ? 0xC0 : 0x80)), offset);
                                     if (addr.Space == AddressSpace.ROM)
                                     {
                                         var l = (Location)addr;
-                                        if (p != "Address" && (isPtr || isAddr))
+                                        if (p != "Address" && isPtr)
                                             noteType(l, otherStr, true);
-                                        return new LocationWrapper(l, bank == null ? (byte)2 :
-                                            (otherStr == "Code") ? (byte)4 : (byte)3);
+                                        return new LocationWrapper(l, type == '&' ? (byte)2 :
+                                            (otherStr == "Code") || type == '%' ? (byte)4 : (byte)3);
                                     }
                                     return addr;
                                 }
@@ -776,35 +797,47 @@ namespace GaiaLib.Rom
             return opList;
         }
 
-        private object ParseLocation(ushort offset, byte? bank, string otherStr)
+        private object ParseLocation(ushort offset, byte? bank, string otherStr, char cmd)
         {
             if (bank == null && offset == 0)
                 return offset;
 
-            var adrs = new Address(bank ?? _lCur.Bank, offset);
+            var adrs = new Address(bank ?? (byte)(_lCur.Bank | (cmd == '@' ? 0xC0 : 0x80)), offset);
             if (adrs.Space == AddressSpace.ROM)
             {
                 var loc = (Location)adrs;
 
-                if (_part.IsInside(loc))
+                if (_part.IsInside(loc) && !DbRoot.Rewrites.ContainsKey(loc))
                 {
                     _chunkTable.TryAdd(loc, otherStr);
                     RefList.TryAdd(loc, $"{otherStr.ToLower()}_{loc}");
                 }
 
-                return new LocationWrapper(loc, bank == null ? (byte)2 : otherStr == "Code" ? (byte)4 : (byte)3);
+                return new LocationWrapper(loc, cmd == '&' ? (byte)2 : otherStr == "Code" || cmd == '%' ? (byte)4 : (byte)3);
             }
 
             return adrs;
         }
 
-        private object ParseType(string str, Registers reg)
-        {
-            bool isPtr = str[0] == '*', isAddr = str[0] == '&';
-            var otherStr = (isPtr || isAddr) ? str[1..] : (_part.Struct ?? "Binary");
+        private static char[] _adrSpace = ['&', '@', '%'];
 
-            if (isPtr) str = "Offset";
-            else if (isAddr) str = "Address";
+        private object ParseType(string str, Registers reg, int depth)
+        {
+            var isPtr = _adrSpace.Contains(str[0]);
+            string otherStr;
+            char cmd;
+
+            (otherStr, cmd, str) = isPtr
+                ? (str[1..], str[0], str[0] == '&' ? "Offset" : "Address")
+                : (_part.Struct ?? "Binary", (char)0, str);
+
+
+            //bool isPtr = str[0] == '*', isAddr = str[0] == '&';
+            //var otherStr = isPtr ? str[1..] : (_part.Struct ?? "Binary");
+
+            //char cmd = isPtr ? str[0] : (char)0;
+            //if (isPtr)
+            //    str = str[0] == '&' ? "Offset" : "Address";
 
             //Parse raw values
             if (Enum.TryParse<MemberType>(str, true, out var mType))
@@ -812,8 +845,8 @@ namespace GaiaLib.Rom
                 {
                     MemberType.Byte => *Advance(1),
                     MemberType.Word => *(ushort*)Advance(2),
-                    MemberType.Offset => ParseLocation(*(ushort*)Advance(2), null, otherStr),
-                    MemberType.Address => ParseLocation(*(ushort*)Advance(2), *Advance(), otherStr),
+                    MemberType.Offset => ParseLocation(*(ushort*)Advance(2), null, otherStr, cmd),
+                    MemberType.Address => ParseLocation(*(ushort*)Advance(2), *Advance(), otherStr, cmd),
                     MemberType.Binary => ParseBinary(),
                     MemberType.String => ParseASCIIString(),
                     MemberType.CharString => ParseCharString(),
@@ -828,7 +861,8 @@ namespace GaiaLib.Rom
             var objects = new List<object>();
 
             //Continue to iterate until end or delimiter is reached
-            while (!DelimiterReached(delimiter))
+            bool delReached;
+            while (!(delReached = DelimiterReached(delimiter)))
             {
                 var target = parent;
                 if (descriminator != null) //Is composite?
@@ -869,7 +903,7 @@ namespace GaiaLib.Rom
 
                     //Parse each member of the struct
                     for (int i = 0; i < members; i++)
-                        parts[i] = ParseType(types[i], null);
+                        parts[i] = ParseType(types[i], null, depth + 1);
 
                     //Advance for descriminator when we have reached it
                     if (descriminator != null && descriminator.Value.Value == (uint)(_pCur - prevPtr))
@@ -881,11 +915,18 @@ namespace GaiaLib.Rom
                 if (!CanContinue()) break;
             }
 
+            if (delReached && depth == 0)
+                _chunkTable.TryAdd(_lCur, str);
+
             return objects;
         }
 
         private void AnalyzeBlocks()
         {
+            foreach (var block in DbRoot.Blocks)
+                foreach (var part in block.Parts)
+                    _chunkTable[part.Start] = part.Struct;
+
             //Read and analyze data/code and place markers
             foreach (var block in DbRoot.Blocks)
                 foreach (var part in block.Parts)
@@ -920,11 +961,11 @@ namespace GaiaLib.Rom
                         {
                             if (last.Object is not List<object> list)
                                 last.Object = list = [last.Object];
-                            list.Add(ParseType(current, reg));
+                            list.Add(ParseType(current, reg, 0));
                             continue;
                         }
 
-                        chunks.Add(last = new(_lCur) { Object = ParseType(current, reg) });
+                        chunks.Add(last = new(_lCur) { Object = ParseType(current, reg, 0) });
                     }
 
                     part.ObjectRoot = chunks;
