@@ -127,6 +127,8 @@ namespace GaiaLib
                 onTransform(tr.Location.Offset, tr.Type switch
                 {
                     "%" => (loc.Offset | 0x800000),
+                    "*" => (byte)(loc.Bank | 0xC0),
+                    "^" => (byte)(loc.Bank | 0x80),
                     _ => (object)(ushort)loc.Offset
                 });
             }
@@ -480,6 +482,8 @@ namespace GaiaLib
                         }
                         else if (asmMode)
                             continue;
+                        else if (file.File.Upper == true && !isUpper)
+                            continue;
 
                         var inList = false;
                         for (var y = bestOffset; --y >= 0;)
@@ -537,16 +541,16 @@ namespace GaiaLib
                 if (bestOffset > 0)
                     for (int i = bestDepth; --i >= 0;)
                     {
-                        int lastIx = 0, lastX = 0, y;
+                        int lastY = 0, lastX = 0, y;
                         for (var x = bestDepth; --x >= 0;)
-                            if ((y = bestResult[x]) > lastIx)
+                            if ((y = bestResult[x]) > lastY)
                             {
-                                lastIx = y;
+                                lastY = y;
                                 lastX = x;
                             }
 
                         bestResult[lastX] = 0;
-                        allFiles.RemoveAt(lastIx);
+                        allFiles.RemoveAt(lastY);
                     }
                 else
                     for (int i = bestDepth; --i >= 0;)
@@ -603,7 +607,7 @@ namespace GaiaLib
             _whitespace = [' ', '\t'],
             _operators = ['-', '+'],
             _commaspace = [',', ' ', '\t'],
-            _addressspace = ['@', '&', '^', '#', '$'],
+            _addressspace = ['@', '&', '^', '#', '$', '%'],
             _symbolSpace = [',', ' ', '\t', '<', '>', '(', ')', ':', '[', ']', '{', '}', '`', '~', '|'],
             _labelSpace = ['[', '{', '#', '`', '~', '|', ':'],
             _objectspace = ['<', '['];
@@ -1021,6 +1025,9 @@ namespace GaiaLib
                                     current.Size += data.Length;
                                 }
                             }
+
+                            if (openTag == '[' && lastStruct != null)
+                                lastStruct = null;
 
                             AdvancePart();
                             continue;

@@ -135,12 +135,14 @@ void WriteTransform(uint location, object value)
         outRom.WriteByte((byte)us);
         outRom.WriteByte((byte)(us >> 8));
     }
-    if (value is uint ui)
+    else if (value is uint ui)
     {
         outRom.WriteByte((byte)ui);
         outRom.WriteByte((byte)(ui >> 8));
         outRom.WriteByte((byte)(ui >> 16));
     }
+    else if (value is byte b)
+        outRom.WriteByte(b);
 }
 
 uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location> chunkLookup)

@@ -9,5 +9,6 @@
         public bool? Compressed { get; set; }
         public IEnumerable<string>? XRef { get; set; }
         public bool? Move { get; set; }
+        public bool? Upper { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace GaiaLib
                 if ((Bank & 0x40) == 0)
                 {
                     if (Offset >= 0x8000) return AddressSpace.ROM;
-                    if (Offset >= 0x6000 && (Bank & 0x20) != 0) 
+                    if (Offset >= 0x6000 && (Bank & 0x20) != 0)
                         return AddressSpace.SRAM;
                     if (Offset < 0x2000) return AddressSpace.WRAM;
                     if (Offset < 0x2100) goto None;
@@ -65,6 +65,7 @@ namespace GaiaLib
             }
         }
 
+
         public static implicit operator Address(uint addr)
             => new((byte)(addr >> 16), (ushort)addr);
 
@@ -73,6 +74,26 @@ namespace GaiaLib
 
         public override readonly string ToString()
             => ((uint)this).ToString("X6");
+
+        public static AddressType TypeFromCode(char code) => code switch
+        {
+            '^' => AddressType.Bank,
+            '&' => AddressType.Offset,
+            '%' => AddressType.Code,
+            '@' => AddressType.Data,
+            '*' => AddressType.DBank,
+            _ => AddressType.Unknown
+        };
+
+        public static char? CodeFromType(AddressType type) => type switch
+        {
+            AddressType.Bank => '^',
+            AddressType.Offset => '&',
+            AddressType.Code => '%',
+            AddressType.Data => '@',
+            AddressType.DBank => '*',
+            _ => null
+        };
     }
 
     public enum AddressSpace

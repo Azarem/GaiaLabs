@@ -5,6 +5,7 @@ namespace GaiaLib.Database
     {
         public Location Location { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; }
+        public string? Type { get; set; }
+        public HexString? Bank { get; set; }
     }
 }

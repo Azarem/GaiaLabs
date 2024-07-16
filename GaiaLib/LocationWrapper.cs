@@ -1,9 +1,9 @@
 ﻿
 namespace GaiaLib
 {
-    public class LocationWrapper(Location location, byte size)
+    public class LocationWrapper(Location location, AddressType type)
     {
         public Location Location = location;
-        public byte Size = size;
+        public AddressType Type = type;
     }
 }

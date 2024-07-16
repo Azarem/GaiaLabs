@@ -99,23 +99,18 @@ namespace GaiaLib.Rom
             return orig;
         }
 
-        private void ResolveInclude(Location loc)
+        private void ResolveInclude(Location loc, bool isBranch)
         {
             if (_part.Block.IsOutside(loc, out var p))
                 _part.Includes.Add(p);
+            else if (isBranch && !RefList.ContainsKey(loc))
+                RefList[loc] = $"loc_{loc}";
         }
 
         private static string[] strictAsm = ["scene_events", "table_0CE5E5"];
-        private string ResolveName(Location loc, byte size, bool isBranch)
+        private string ResolveName(Location loc, AddressType type, bool isBranch)
         {
-            var prefix = size switch
-            {
-                1 => '^',
-                2 => '&',
-                3 => '@',
-                4 => '%',
-                _ => (char)0
-            };
+            var prefix = Address.CodeFromType(type);
 
             string? name;
 
@@ -142,14 +137,28 @@ namespace GaiaLib.Rom
                 }
                 else
                 {
+                    uint closest = 999;
+                    string? bestMatch = null;
                     foreach (var entry in RefList)
                     {
+                        if (entry.Key > loc)
+                            continue;
+
                         var range = loc.Offset - entry.Key.Offset;
-                        if (range < 10)
-                        {
-                            name = $"{entry.Value}+{range:X}";
-                            goto Next;
-                        }
+                        if (range > 10 || range <= closest)
+                            continue;
+
+                        closest = range;
+                        bestMatch = entry.Value;
+
+                        if (closest == 1)
+                            break;
+                    }
+
+                    if (bestMatch != null)
+                    {
+                        name = $"{bestMatch}+{closest:X}";
+                        goto Next;
                     }
 
                     //File references
@@ -163,7 +172,7 @@ namespace GaiaLib.Rom
 
 
         Next:
-            if (prefix != 0)
+            if (prefix != null)
                 name = $"{prefix}{name}";
 
             if (!string.IsNullOrEmpty(label))
@@ -526,11 +535,23 @@ namespace GaiaLib.Rom
             else if (code.Mnem == "LDY") reg.YIndex = null;
 
             byte bank;
-            if (DbRoot.Transforms.TryGetValue(_lCur, out var obj) && obj.Type == null)
+            if (DbRoot.Transforms.TryGetValue(_lCur, out var obj) && (obj.Type == null || obj.Type == "*" || obj.Type == "^"))
             {
-                var value = *(ushort*)Advance(2);
-                var addr = new Address(reg.DataBank ?? 0x81, value);
-                operands.Add(new LocationWrapper((Location)addr, 2));
+                if (obj.Type == null)
+                {
+                    var value = *(ushort*)Advance(2);
+                    var addr = new Address((byte)(obj.Bank?.Value ?? reg.DataBank ?? 0x81u), value);
+                    operands.Add(new LocationWrapper((Location)addr, AddressType.Offset));
+                }
+                else
+                {
+                    Advance(); //Ignore operand
+                    if (size == 3)
+                        Advance();
+
+                    var entry = RefList.First(x => obj.Name.Equals(x.Value, StringComparison.CurrentCultureIgnoreCase));
+                    operands.Add(new LocationWrapper(entry.Key, obj.Type == "^" ? AddressType.Bank : AddressType.DBank));
+                }
             }
             else
                 switch (code.Mode)
@@ -645,7 +666,7 @@ namespace GaiaLib.Rom
                             var addr = new Address(bank, refLoc); //Add Data bank
                             if (addr.Space == AddressSpace.ROM)
                             {
-                                var wrapper = new LocationWrapper((Location)addr, 2);
+                                var wrapper = new LocationWrapper((Location)addr, AddressType.Offset);
                                 if (isJump)
                                     noteType(wrapper.Location, "Code"); //Add PC bank
 
@@ -665,11 +686,11 @@ namespace GaiaLib.Rom
                         //    operands.Add(new Address(bank, refLoc));
                         if (adrs.Space == AddressSpace.ROM)
                         {
-                            var wrapper = new LocationWrapper((Location)adrs, 3);
+                            var wrapper = new LocationWrapper((Location)adrs, (bank & 0x40) == 0 ? AddressType.Code : AddressType.Data);
                             if (code.Mnem[0] == 'J')
                             {
                                 noteType(wrapper.Location, "Code");
-                                wrapper.Size = 4;
+                                wrapper.Type = AddressType.Code;
                             }
                             operands.Add(wrapper);
                         }
@@ -725,11 +746,11 @@ namespace GaiaLib.Rom
                             {
                                 var isPtr = _adrSpace.Contains(p[0]);
                                 string otherStr, str;
-                                char type;
+                                char? type;
 
                                 (otherStr, type, str) = isPtr
                                     ? (p[1..], p[0], p[0] == '&' ? "Offset" : "Address")
-                                    : (_part.Struct ?? "Binary", (char)0, p);
+                                    : (_part.Struct ?? "Binary", (char?)null, p);
 
                                 //bool isPtr = str[0] == '*', isAddr = str[0] == '&';
                                 //var otherStr = (isPtr || isAddr) ? str[1..] : "Binary";
@@ -748,8 +769,8 @@ namespace GaiaLib.Rom
                                         var l = (Location)addr;
                                         if (p != "Address" && isPtr)
                                             noteType(l, otherStr, true);
-                                        return new LocationWrapper(l, type == '&' ? (byte)2 :
-                                            (otherStr == "Code") || type == '%' ? (byte)4 : (byte)3);
+                                        return new LocationWrapper(l, type != null ? Address.TypeFromCode(type.Value)
+                                            : (addr.Bank & 0x40) == 0 ? AddressType.Code : AddressType.Data);
                                     }
                                     return addr;
                                 }
@@ -797,7 +818,7 @@ namespace GaiaLib.Rom
             return opList;
         }
 
-        private object ParseLocation(ushort offset, byte? bank, string otherStr, char cmd)
+        private object ParseLocation(ushort offset, byte? bank, string otherStr, char? cmd)
         {
             if (bank == null && offset == 0)
                 return offset;
@@ -813,7 +834,8 @@ namespace GaiaLib.Rom
                     RefList.TryAdd(loc, $"{otherStr.ToLower()}_{loc}");
                 }
 
-                return new LocationWrapper(loc, cmd == '&' ? (byte)2 : otherStr == "Code" || cmd == '%' ? (byte)4 : (byte)3);
+                return new LocationWrapper(loc, cmd != null ? Address.TypeFromCode(cmd.Value)
+                    : (adrs.Bank & 0x40) == 0 ? AddressType.Code : AddressType.Data);
             }
 
             return adrs;
@@ -825,11 +847,11 @@ namespace GaiaLib.Rom
         {
             var isPtr = _adrSpace.Contains(str[0]);
             string otherStr;
-            char cmd;
+            char? cmd;
 
             (otherStr, cmd, str) = isPtr
                 ? (str[1..], str[0], str[0] == '&' ? "Offset" : "Address")
-                : (_part.Struct ?? "Binary", (char)0, str);
+                : (_part.Struct ?? "Binary", (char?)null, str);
 
 
             //bool isPtr = str[0] == '*', isAddr = str[0] == '&';
@@ -839,12 +861,13 @@ namespace GaiaLib.Rom
             //if (isPtr)
             //    str = str[0] == '&' ? "Offset" : "Address";
 
+
             //Parse raw values
             if (Enum.TryParse<MemberType>(str, true, out var mType))
                 return mType switch
                 {
-                    MemberType.Byte => *Advance(1),
-                    MemberType.Word => *(ushort*)Advance(2),
+                    MemberType.Byte => *Advance(),
+                    MemberType.Word => _chunkTable.ContainsKey(_lCur + 1) ? (object)*Advance() : *(ushort*)Advance(2),
                     MemberType.Offset => ParseLocation(*(ushort*)Advance(2), null, otherStr, cmd),
                     MemberType.Address => ParseLocation(*(ushort*)Advance(2), *Advance(), otherStr, cmd),
                     MemberType.Binary => ParseBinary(),
@@ -925,7 +948,10 @@ namespace GaiaLib.Rom
         {
             foreach (var block in DbRoot.Blocks)
                 foreach (var part in block.Parts)
+                {
                     _chunkTable[part.Start] = part.Struct;
+                    RefList[part.Start] = part.Name;
+                }
 
             //Read and analyze data/code and place markers
             foreach (var block in DbRoot.Blocks)
@@ -939,9 +965,10 @@ namespace GaiaLib.Rom
                     //_chunkTable.Clear();
 
                     part.Includes = new(); //Initialize part
-                    RefList[_lCur] = part.Name; //Add reference name
+                    //RefList[_lCur] = part.Name; //Add reference name
 
-                    var isInit = false; // part.Type == PartType.Table;
+
+                    //var isInit = false; // part.Type == PartType.Table;
                     var current = part.Struct ?? "Binary";
                     //var locations = new List<Location>();
                     var chunks = new List<TableEntry>();
@@ -951,7 +978,7 @@ namespace GaiaLib.Rom
                     {
                         if (_chunkTable.TryGetValue(_lCur, out var value))
                         {
-                            if (isInit) isInit = false;
+                            //if (isInit) isInit = false;
                             current = value;
 
                         }
@@ -965,7 +992,15 @@ namespace GaiaLib.Rom
                             continue;
                         }
 
-                        chunks.Add(last = new(_lCur) { Object = ParseType(current, reg, 0) });
+                        object wrapType()
+                        {
+                            var res = ParseType(current, reg, 0);
+                            if (_adrSpace.Contains(current[0]) && res is not List<object>)
+                                res = new List<object>() { res };
+                            return res;
+                        }
+
+                        chunks.Add(last = new(_lCur) { Object = wrapType() });
                     }
 
                     part.ObjectRoot = chunks;
@@ -979,11 +1014,11 @@ namespace GaiaLib.Rom
                 foreach (var part in block.Parts)
                 {
                     _part = part;
-                    ResolveObject(part.ObjectRoot);
+                    ResolveObject(part.ObjectRoot, false);
                 }
         }
 
-        private void ResolveObject(object obj)
+        private void ResolveObject(object obj, bool isBranch)
         {
             if (obj is string str)
             {
@@ -993,7 +1028,7 @@ namespace GaiaLib.Rom
                     var addr = new Address((byte)(sloc >> 16), (ushort)sloc);
                     if (addr.Space == AddressSpace.ROM)
                     {
-                        ResolveInclude(sloc);
+                        ResolveInclude(sloc, false);
                     }
                     //var sLoc = Location.Parse(str.Substring(ix + 1, 6));
                     //str = str.Replace(str.Substring(ix, 7), ResolveName(part, sLoc));
@@ -1001,17 +1036,17 @@ namespace GaiaLib.Rom
             }
             else if (obj is IEnumerable arr)
                 foreach (var o in arr)
-                    ResolveObject(o);
+                    ResolveObject(o, isBranch);
             else if (obj is Location loc)
-                ResolveInclude(loc);
+                ResolveInclude(loc, isBranch);
             else if (obj is LocationWrapper lw)
-                ResolveInclude(lw.Location);
+                ResolveInclude(lw.Location, isBranch);
             else if (obj is StringWrapper sw)
-                ResolveObject(sw.String);
+                ResolveObject(sw.String, isBranch);
             else if (obj is StructDef sdef)
-                ResolveObject(sdef.Parts);
+                ResolveObject(sdef.Parts, isBranch);
             else if (obj is TableEntry tab)
-                ResolveObject(tab.Object);
+                ResolveObject(tab.Object, isBranch);
             //else if (obj is TableGroup tgrp)
             //{
             //    ResolveObject(tgrp.Locations);
@@ -1020,7 +1055,9 @@ namespace GaiaLib.Rom
             else if (obj is Op op)
             {
                 foreach (var opnd in op.Operands)
-                    ResolveObject(opnd);
+                    ResolveObject(opnd, op.Code.Mode == AddressingMode.PCRelative 
+                        || op.Code.Mode == AddressingMode.PCRelativeLong
+                        || op.Code.Mnem[0] == 'J');
                 //for (int i = 0; i < op.Operands.Length; i++)
                 //if (op.Operands[i] is Location l)
                 //    ResolveInclude(l);
@@ -1149,7 +1186,7 @@ namespace GaiaLib.Rom
                         if (obj is Location l)
                             return ResolveName(l, 0, isBranch);
                         else if (obj is LocationWrapper lw)
-                            return ResolveName(lw.Location, lw.Size, isBranch);
+                            return ResolveName(lw.Location, lw.Type, isBranch);
                         else if (obj is Address addr)
                             if (op.Size == 4)
                                 return (uint)addr;
@@ -1199,7 +1236,7 @@ namespace GaiaLib.Rom
                 writer.WriteLine("}");
             }
             else if (obj is Location l) writer.Write(ResolveName(l, 0, true));
-            else if (obj is LocationWrapper lw) writer.Write(ResolveName(lw.Location, lw.Size, true));
+            else if (obj is LocationWrapper lw) writer.Write(ResolveName(lw.Location, lw.Type, true));
             else if (obj is Address addr) writer.Write("${0:X6}", (uint)addr);
             else if (obj is byte b) writer.Write("#{0:X2}", b);
             else if (obj is ushort s) writer.Write("#${0:X4}", s);
@@ -1220,7 +1257,8 @@ namespace GaiaLib.Rom
                     var adrs = new Address((byte)(sloc >> 16), (ushort)sloc);
                     if (adrs.Space == AddressSpace.ROM)
                     {
-                        var name = ResolveName(sloc, str[ix] == '^' ? (byte)2 : (adrs.Bank & 0x40) == 0x40 ? (byte)3 : (byte)4, false);
+                        var name = ResolveName(sloc, str[ix] == '^' ? AddressType.Offset
+                            : (adrs.Bank & 0x40) == 0 ? AddressType.Code : AddressType.Data, false);
                         sw.String = str = str.Replace(str.Substring(ix, 7), name);
                     }
                     else
