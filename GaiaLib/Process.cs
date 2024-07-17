@@ -111,9 +111,9 @@ namespace GaiaLib
                 blockLookup[f.File.Name.ToUpper()] = f.Location;
 
             //Process transforms
-            foreach (var tr in root.Transforms.Values)
+            foreach (var tr in root.Transforms)
             {
-                var name = tr.Name;
+                var name = tr.Value.Name;
                 if (!blockLookup.TryGetValue(name.ToUpper(), out var loc))
                 {
                     var matchingBlock = allFiles.Where(x => x.File.Type == BinType.Assembly)
@@ -124,7 +124,7 @@ namespace GaiaLib
                     loc = matchingBlock.Location;
                 }
 
-                onTransform(tr.Location.Offset, tr.Type switch
+                onTransform(tr.Key.Offset, tr.Value.Type switch
                 {
                     "%" => (loc.Offset | 0x800000),
                     "*" => (byte)(loc.Bank | 0xC0),

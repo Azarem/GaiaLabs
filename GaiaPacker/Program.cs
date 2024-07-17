@@ -227,11 +227,14 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
             var hex = _addressspace.Contains(c) ? str[1..] : str;
             var targetPos = filePos;
 
-            var opIx = hex.IndexOf('+');
+            var opIx = hex.IndexOfAny(['-', '+']);
             if (opIx > 0)
             {
                 var num = uint.Parse(hex[(opIx + 1)..], NumberStyles.HexNumber);
-                targetPos += num;
+                if (hex[opIx] == '-')
+                    targetPos -= num;
+                else
+                    targetPos += num;
                 hex = hex[..opIx];
             }
 

@@ -17,21 +17,16 @@ This is a development toolkit for Illusion of Gaia (SNES). Using it will allow y
 6. Look at `asm/scene_events.asm`, this file contains all actors and events.
 7. Go back to your command prompt and run `GaiaPacker.exe`. This will re-build the ROM along with any changes you made.
 
-### ASM Files Currently Supported
+### ASM Files Currently Not Supported
 
-Only a handful of files in the `asm/` folder are supported. All others are for reference.
+Some files in the `asm/` folder are not supported for rebuild, they are included for reference.
 
-* dictionary_01EBA8
-* dictionary_01F54D
-* itemcomp_table_01EB0F
-* itemget_table_01FD24
-* map_names_03B1D4
-* reward_table_01AADE
-* scene_events
-* scene_meta
-* strings_0BF706
-* system_strings
-* table_0CE5E5
+* Files beginning with `chunk_*`
+* binary_01ABDE
+* binary_01C384
+* binary_01D8BE
+* table_03B401
+
 
 ### Support the project on Patreon!
 https://www.patreon.com/GaiaLabs
