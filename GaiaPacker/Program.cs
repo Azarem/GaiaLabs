@@ -420,7 +420,10 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot r
                 else if (str[0] == '^')
                     obj = (byte)((loc.Offset >> 16) | 0x80);
                 else if (str[0] == '%')
-                    obj = loc.Offset | 0x800000u;
+                    if ((loc.Offset & 0xFFFFu) < 0x8000u)
+                        obj = loc.Offset | 0xC00000u; //Pull up address for rare cases
+                    else
+                        obj = loc.Offset | 0x800000u;
                 else if (str[0] == '@')
                     obj = loc.Offset | 0xC00000u;
                 else if (parentOp?.Size == 4)

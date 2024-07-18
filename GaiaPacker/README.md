@@ -21,7 +21,7 @@ This is a development toolkit for Illusion of Gaia (SNES). Using it will allow y
 
 Some files in the `asm/` folder are not supported for rebuild, they are included for reference.
 
-* Files beginning with `chunk_*`
+* Files beginning with `chunk_`
 * binary_01ABDE
 * binary_01C384
 * binary_01D8BE
