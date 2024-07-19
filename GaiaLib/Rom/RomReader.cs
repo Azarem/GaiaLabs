@@ -721,9 +721,7 @@ namespace GaiaLib.Rom
                     case AddressingMode.PCRelativeLong:
                         relative = (uint)((int)next.Offset + *(short*)Advance(2));
                     noteRelative:
-                        operands.Add(code.Mnem == "BRA" || code.Mnem == "BRL"
-                            ? noteType(relative, "Code")
-                            : xferRegs(relative));
+                        operands.Add(xferRegs(noteType(relative, "Code")));
                         break;
 
                     case AddressingMode.StackRelative:
@@ -1054,10 +1052,11 @@ namespace GaiaLib.Rom
             //}
             else if (obj is Op op)
             {
-                foreach (var opnd in op.Operands)
-                    ResolveObject(opnd, op.Code.Mode == AddressingMode.PCRelative 
+                var branch = op.Code.Mode == AddressingMode.PCRelative
                         || op.Code.Mode == AddressingMode.PCRelativeLong
-                        || op.Code.Mnem[0] == 'J');
+                        || op.Code.Mnem[0] == 'J';
+                foreach (var opnd in op.Operands)
+                    ResolveObject(opnd, branch);
                 //for (int i = 0; i < op.Operands.Length; i++)
                 //if (op.Operands[i] is Location l)
                 //    ResolveInclude(l);

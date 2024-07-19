@@ -439,7 +439,7 @@
     { "start": "01CA95", "end": "01CBA6", "name": "table_01CA95", "type": "Assembly", "xref": [ "&03E349" ] },
     { "start": "01CBA6", "end": "01CC00", "name": "music_array_01CBA6", "type": "Assembly", "xref": [ "%03E22F-3", "%03E238-2" ] },
     { "start": "01CC00", "end": "01D3CE", "name": "table_01CC00", "type": "Assembly", "xref": [ "&00B8EA" ] },
-    { "start": "01D3CE", "end": "01D8BE", "name": "array_01D3CE", "type": "Assembly", "xref": [ "&02A36B", "&02A37D+7", "&02A382+5", "&02A387+6", "&02A38C+1", "&02A391+2", "&02A396+3", "&02A39D+4", "%02A5C6+1", "%02A5CF+5" ] },
+    { "start": "01D3CE", "end": "01D8BE", "name": "array_01D3CE", "type": "Assembly", "xref": [ "&00DE28+3", "&00DE36+5", "&00DE48+4", "&00DE56+6", "&02A36B", "&02A37D+7", "&02A382+5", "&02A387+6", "&02A38C+1", "&02A391+2", "&02A396+3", "&02A39D+4", "%02A5C6+1", "%02A5CF+5" ] },
     { "start": "01D971", "end": "01D9A7", "name": "array_01D971", "type": "Assembly", "xref": [ "&00A04E", "&00A055+2", "&00AF78", "&00AF7F+2", "%03C941+3", "%03C948+5", "&03D05A", "&03D061+2" ] },
     { "start": "01D9A7", "end": "01D9BF", "name": "table_01D9A7", "type": "Assembly", "xref": [ "%02C342", "%02C34B+2", "%02C35A+4" ] },
     { "start": "01D9BF", "end": "01D9D8", "name": "table_01D9BF", "type": "Assembly", "xref": [ "%02C369", "%02C372+2", "%02C381+4" ] },
