@@ -91,17 +91,21 @@ outRom.WriteByte(0x0C);
 //outRom.WriteByte(0x47);
 
 //Fix for Meta17 overflow (last byte is not used)
-outRom.Position = 0x0DAFFEu;
-outRom.WriteByte(0x00);
+//outRom.Position = 0x0DAFFEu;
+//outRom.WriteByte(0x00);
 
 //Fix for music load speed (bypass long code sequence)
-outRom.Position = 0x0281C9u;
-outRom.WriteByte(0x6B);
+//outRom.Position = 0x0281C9u;
+//outRom.WriteByte(0x6B);
+
+//outRom.Position = 0x028B91u;
+//for (int i = 0; i < 6; i++)
+//    outRom.WriteByte(0xEA);
 
 //Modify SPC program (force command $F0 to always process regardless of data state)
-outRom.Position = 0x02944Cu;
-outRom.WriteByte(0x00);
-outRom.WriteByte(0x00);
+//outRom.Position = 0x02944Cu;
+//outRom.WriteByte(0x00);
+//outRom.WriteByte(0x00);
 
 //Debugman
 //foreach (var loc in DebugmanEntries)

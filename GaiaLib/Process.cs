@@ -1233,7 +1233,7 @@ namespace GaiaLib
                         }
 
                         //Do maths before regex processing
-                        while ((ix = operand.IndexOfAny(_operators)) >= 0)
+                        if ((ix = operand.IndexOfAny(_operators)) >= 0)
                         {
                             var op = operand[ix];
 
@@ -1241,24 +1241,25 @@ namespace GaiaLib
                             //if (vix == 0)
                             //    throw new($"Unable to locate variable for operator line {lineCount}: '{op}'");
 
-                            var value = uint.Parse(operand[vix..ix], NumberStyles.HexNumber);
-
-                            var endIx = operand.IndexOfAny(_symbolSpace, ix + 1);
-                            if (endIx < 0) endIx = operand.Length;
-                            var number = uint.Parse(operand[(ix + 1)..endIx], NumberStyles.HexNumber);
-
-                            if (op == '-') value -= number;
-                            else value += number;
-
-                            var len = (ix - vix) switch
+                            if (uint.TryParse(operand[vix..ix], NumberStyles.HexNumber, null, out var value))
                             {
-                                1 or 2 => 2,
-                                3 or 4 => 4,
-                                5 or 6 => 6,
-                                _ => throw new("Invalid size")
-                            };
+                                var endIx = operand.IndexOfAny(_symbolSpace, ix + 1);
+                                if (endIx < 0) endIx = operand.Length;
+                                var number = uint.Parse(operand[(ix + 1)..endIx], NumberStyles.HexNumber);
 
-                            operand = operand[..vix] + value.ToString($"X{len}") + operand[endIx..];
+                                if (op == '-') value -= number;
+                                else value += number;
+
+                                var len = (ix - vix) switch
+                                {
+                                    1 or 2 => 2,
+                                    3 or 4 => 4,
+                                    5 or 6 => 6,
+                                    _ => throw new("Invalid size")
+                                };
+
+                                operand = operand[..vix] + value.ToString($"X{len}") + operand[endIx..];
+                            }
                         }
 
                         OpCode? opCode = null;
