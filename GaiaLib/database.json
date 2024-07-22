@@ -2000,7 +2000,7 @@
     {
       "name": "music_array_01CBA6",
       "parts": [
-        { "start": "01CBA6", "end": "01CC00", "name": "music_array_01CBA6", "struct": "Address" }
+        { "start": "01CBA6", "end": "01CC00", "name": "music_array_01CBA6", "struct": "@Binary" }
       ]
     },
     {
