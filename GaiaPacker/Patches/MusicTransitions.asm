@@ -50,7 +50,7 @@ return:
   JMP $D9F9
 
 count_check:
-  CMP #09
+  CMP #06
   BNE count_ret
   PHA
   LDA #F2
