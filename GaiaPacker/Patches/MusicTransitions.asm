@@ -26,6 +26,18 @@ bgm_table [
 
 
 check_bgm:
+  LDA $0654
+  BMI jmp_mi
+  BEQ jmp_eq
+  BRA do_check
+
+jmp_mi:
+  JMP $DA03
+
+jmp_eq:
+  JMP $DA00
+
+do_check:
   PHX
   PHY
   LDX meta_next_id
@@ -46,8 +58,7 @@ check_bgm:
 return:
   PLY
   PLX
-  LDA $0654
-  JMP $D9F9
+  JMP $D9FD
 
 count_check:
   CMP #06
