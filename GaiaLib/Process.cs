@@ -107,7 +107,7 @@ namespace GaiaLib
                 blockLookup[f.Name.ToUpper()] = f.Start;
 
             //Add files to lookup
-            foreach (var f in allFiles.Except(patches))
+            foreach (var f in allFiles)//.Except(patches))
                 blockLookup[f.File.Name.ToUpper()] = f.Location;
 
             //Process transforms

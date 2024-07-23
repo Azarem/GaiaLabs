@@ -1,0 +1,129 @@
+﻿?BANK 01
+
+!t_size  $0006
+!token   00E8
+
+head:
+  d_gap < #00, #00, #30 >
+
+main:
+  COP [C1]
+  COP [28] ( #$00D8, #$00C0, &is_standing_right )
+  COP [28] ( #$0028, #$00C0, &is_standing_left )
+  RTL
+
+is_standing_right:
+  LDX $09AA
+  LDA #$0029
+  STA $0014, X		;Set player position
+  
+  LDY #t_size		;Set index
+  
+do_prev:
+  DEY
+  BMI take_first
+
+  TYA
+  ASL
+  ASL
+  ASL
+  ASL
+  TAX
+  LDA &space_table+A, X
+  CMP $0B12
+  BEQ take_next
+  BMI take_next
+  BRA do_prev
+
+is_standing_left:
+  LDX $09AA
+  LDA #$00D7
+  STA $0014, X		;Set player position
+  
+  LDY #$0000
+
+do_next:
+  CPY #t_size
+  BEQ take_last
+
+  TYA
+  ASL
+  ASL
+  ASL
+  ASL
+  TAX
+  LDA &space_table+A, X
+  CMP $0B12
+  BPL take_prev
+  INY
+  BRA do_next
+
+take_prev:
+  DEY
+  BPL do_change
+
+take_last:
+  LDY #t_size-1
+  BRA do_change
+
+take_next:
+  INY
+  CPY #t_size
+  BMI do_change
+
+take_first:
+  LDY #$0000
+
+do_change:
+  TYA
+  ASL
+  ASL
+  ASL
+  ASL
+  TAX
+  LDA &space_table, X
+  STA $0B08
+  LDA &space_table+2, X
+  STA $0B0A
+  LDA &space_table+4, X
+  STA $0B0C
+  LDA &space_table+6, X
+  STA $0B0E
+  LDA &space_table+8, X
+  STA $0B10
+  LDA &space_table+A, X
+  STA $0B12
+  ;LDA &space_table+E, X
+  STY $token
+  COP [BF] ( &display_str )
+  RTL
+
+display_str `[CLR][ADR:&string_table,token]`
+
+space_table:
+  #$000E #$0001 #$0005 #$0001 #$4300 #$0001 #$0000 #$0000 ;XPos, XSize, YPos, YSize, CamFlags, Scene
+  #$0019 #$0001 #$0009 #$0001 #$1201 #$006C #$0000 #$0000
+  #$0004 #$0001 #$0008 #$0001 #$1100 #$007C #$0000 #$0000
+  #$000B #$0001 #$0009 #$0001 #$1100 #$0099 #$0000 #$0000
+  #$001C #$0001 #$0003 #$0001 #$2200 #$00AC #$0000 #$0000
+  #$0027 #$0001 #$001A #$0001 #$4400 #$00CC #$0000 #$0000
+
+string_table:
+  &south_cape
+  &angel_village
+  &watermia
+  &euro
+  &native_village
+  &pyramid
+
+south_cape `South Cape`
+
+angel_village `Angel Village`
+
+watermia `Watermia`
+
+euro `Euro`
+
+native_village `Native Village`
+
+pyramid `Pyramid`

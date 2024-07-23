@@ -48,18 +48,18 @@ using (var file = File.OpenRead(path))
     project = JsonSerializer.Deserialize<ProjectRoot>(file, options)
         ?? throw new("Error deserializing project file");
 
-#if DEBUG
-    baseDir = "C:\\Games\\Dump";
-#else
+//#if DEBUG
+//    baseDir = "C:\\Games\\Dump";
+//#else
     baseDir = string.IsNullOrWhiteSpace(project.BaseDir) ? Directory.GetParent(file.Name).FullName : project.BaseDir;
-#endif
+//#endif
 }
 
-#if DEBUG
-var databasePath = "C:\\Games\\GaiaLabs\\GaiaLib\\database.json";// Path.Combine(baseDir, "database.json");
-#else
+//#if DEBUG
+//var databasePath = "C:\\Games\\GaiaLabs\\GaiaLib\\database.json";// Path.Combine(baseDir, "database.json");
+//#else
 var databasePath = Path.Combine(baseDir, "database.json");
-#endif
+//#endif
 //var filePath = Path.Combine(baseDir, "files");
 
 if (isUnpack)

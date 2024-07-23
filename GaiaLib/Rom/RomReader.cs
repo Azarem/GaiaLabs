@@ -1280,8 +1280,12 @@ namespace GaiaLib.Rom
             {
                 writer.Write('[');
                 _isInline = false;
+                int ix = 0;
                 foreach (var o in arr)
+                {
                     WriteObject(writer, o, depth + 1);
+                    writer.Write("   ;{0:X2}", ix++);
+                }
 
                 writer.WriteLine();
                 Indent();

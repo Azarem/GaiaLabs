@@ -413,7 +413,10 @@
     "enemy": { "name": "enemy", "descriminator": "06", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "%d_gap", "Byte", "Byte", "Byte" ] },
     "actor": { "name": "actor", "parent": "enemy", "descriminator": "00", "types": [ "Byte", "Byte", "Byte", "%d_gap" ] },
     "deleg3": { "name": "deleg3", "delimiter": "FF", "types": [ "Byte", "%d_gap2" ] },
-    "event_def": { "name": "event_def", "types": [ "enemy", "WideString" ]}
+    "event_def": { "name": "event_def", "types": [ "enemy", "WideString" ]},
+    "warp_def": { "name": "warp_def", "types": [ "scene_warp", "stair_warp"  ] },
+    "scene_warp": { "name": "scene_warp", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Word", "Word", "Byte", "Word" ] },
+    "stair_warp": { "name": "stair_warp", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Word", "Word", "Word", "Byte", "Word" ] }
   },
   "files":  [
     { "start": "000000", "end": "001C00", "name": "bmp_000000", "type": "Bitmap", "xref": [ ] },
@@ -431,7 +434,7 @@
     { "start": "016A81", "end": "017FBE", "name": "bmp_016A81", "type": "Bitmap", "compressed": true, "xref": [ ] },
     { "start": "017FBE", "end": "017FFE", "name": "palette_017FBE", "type": "Palette", "xref": [ "@0BC92F" ] },
     { "start": "018000", "end": "018234", "name": "table_018000", "type": "Assembly", "xref": [ "%028A79", "%028A84", "%028A8E+1", "%028A98+2", "%028A9F+3", "%028AA6+4", "%028AAF+4", "%028B00+5", "%028B3B+6", "%028B42+7", "%028B60+8", "%028B64+9" ] },
-    { "start": "018234", "end": "01A95E", "name": "table_018234", "type": "Assembly", "xref": [ "&02A95E" ] },
+    { "start": "018234", "end": "01A95E", "name": "scene_warps", "type": "Assembly", "xref": [ "&02A95E" ] },
     { "start": "01A95E", "end": "01AADE", "name": "table_01A95E", "type": "Assembly", "xref": [ "&00EBC8", "&00EC1C", "&00EC70", "&00ECC4" ] },
     { "start": "01AADE", "end": "01ABDE", "name": "reward_table_01AADE", "type": "Assembly", "xref": [ "&00C354", "&00DA96", "&00DD8E", "%0381CE" ] },
     { "start": "01ADA8", "end": "01B086", "name": "table_01ADA8", "type": "Assembly", "xref": [ "&02A5F7", "&02A6E8", "%038284", "%03828F", "%0382A6", "%0382C2" ] },
@@ -1938,9 +1941,9 @@
       ]
     },
     {
-      "name": "table_018234",
+      "name": "scene_warps",
       "parts": [
-        { "start": "018234", "end": "01A95E", "name": "table_018234", "struct": "&Binary" }
+        { "start": "018234", "end": "01A95E", "name": "scene_warps", "struct": "&warp_def" }
       ]
     },
     {
