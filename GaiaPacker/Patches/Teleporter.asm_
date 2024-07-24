@@ -1,6 +1,6 @@
 ﻿?BANK 01
 
-!t_size  $0006
+!t_size  $0012
 !token   00E8
 
 head:
@@ -100,30 +100,78 @@ do_change:
 
 display_str `[CLR][ADR:&string_table,token]`
 
-space_table:
-  #$000E #$0001 #$0005 #$0001 #$4300 #$0001 #$0000 #$0000 ;XPos, XSize, YPos, YSize, CamFlags, Scene
-  #$0019 #$0001 #$0009 #$0001 #$1201 #$006C #$0000 #$0000
-  #$0004 #$0001 #$0008 #$0001 #$1100 #$007C #$0000 #$0000
-  #$000B #$0001 #$0009 #$0001 #$1100 #$0099 #$0000 #$0000
-  #$001C #$0001 #$0003 #$0001 #$2200 #$00AC #$0000 #$0000
-  #$0027 #$0001 #$001A #$0001 #$4400 #$00CC #$0000 #$0000
-
 string_table:
   &south_cape
+  &castle_dungeon
+  &itory
+  &inca_cliff
+  &frejia
+  &diamond_mine
+  &sky_garden
+  &seaside_palace
   &angel_village
   &watermia
+  &great_wall
   &euro
+  &mt_temple
   &native_village
+  &ankor_wat
+  &dao
   &pyramid
+  &babel
+
+space_table:
+  #$000E #$0001 #$0005 #$0001 #$4300 #$0001 #$0000 #$0000 ;XPos, XSize, YPos, YSize, CamFlags, Scene
+  #$000A #$0001 #$004B #$0001 #$6300 #$0012 #$0000 #$0000
+  #$0043 #$0001 #$0007 #$0001 #$3500 #$0015 #$0000 #$0000
+  #$002C #$0001 #$0004 #$0001 #$2400 #$001E #$0000 #$0000
+  #$0004 #$0001 #$0008 #$0001 #$1100 #$0034 #$0000 #$0000
+  #$0027 #$0001 #$0005 #$0001 #$1302 #$0042 #$0000 #$0000
+  #$0009 #$0001 #$0005 #$0001 #$2200 #$004C #$0000 #$0000
+  #$002F #$0001 #$0007 #$0001 #$1400 #$005A #$0000 #$0000
+  #$0019 #$0001 #$0009 #$0001 #$1201 #$006C #$0000 #$0000
+  #$0004 #$0001 #$0008 #$0001 #$1100 #$007C #$0000 #$0000
+  #$0015 #$0001 #$0046 #$0001 #$6300 #$0086 #$0000 #$0000
+  #$000B #$0001 #$0009 #$0001 #$1100 #$0099 #$0000 #$0000
+  #$001F #$0001 #$002F #$0001 #$4400 #$00A1 #$0000 #$0000
+  #$001C #$0001 #$0003 #$0001 #$2200 #$00AC #$0000 #$0000
+  #$0042 #$0001 #$0031 #$0001 #$4600 #$00B6 #$0000 #$0000
+  #$0002 #$0001 #$0006 #$0001 #$2300 #$00C3 #$0000 #$0000
+  #$0027 #$0001 #$001A #$0001 #$4400 #$00CC #$0000 #$0000
+  #$0046 #$0001 #$0039 #$0001 #$4830 #$00E0 #$0000 #$0000
 
 south_cape `South Cape`
+
+castle_dungeon `Castle Dungeon`
+
+itory `Itory`
+
+inca_cliff `Inca Cliff`
+
+frejia `Frejia`
+
+diamond_mine `Diamond Mine`
+
+sky_garden `Sky Garden`
+
+seaside_palace `Seaside Palace`
 
 angel_village `Angel Village`
 
 watermia `Watermia`
 
+great_wall `Great Wall`
+
 euro `Euro`
+
+mt_temple `Mt Temple`
 
 native_village `Native Village`
 
+ankor_wat `Ankor Wat`
+
+dao `Dao`
+
 pyramid `Pyramid`
+
+babel `Babel`
