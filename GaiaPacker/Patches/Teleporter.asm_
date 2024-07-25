@@ -3,6 +3,12 @@
 !t_size  $0012
 !token   00E8
 
+;This is an example script showing how you can create a teleporter in dark space
+;Walk to either side of the screen to trigger a change in the dark space settings
+;This will cause you to leave in a different place than you had entered
+
+--------------------------------------------
+
 head:
   d_gap < #00, #00, #30 >
 
