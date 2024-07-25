@@ -1,0 +1,93 @@
+﻿?BANK 00
+
+!token		00E6
+
+;This is an example script showing how to create a new item drop table for room clear rewards
+;Open up the reward_table asm file and change a room reward to > 3
+;Those rewards will be mapped to an item drop = ID + 3
+;Only a limited number of items are supported here (needs text)
+;Feel free to cusomize this to your own list of items
+;Would also be nice to have the item icon show
+
+--------------------------------------------------
+
+main:
+  BNE $03
+  JMP $DDCA
+  DEC
+  BNE $03
+  JMP $DDDE
+  STA $token
+  COP [A5] ( %drop_actor, #00, #00, #$1000 )
+  LDA $0012, Y
+  ORA #$1000
+  STA $0012, Y
+  COP [E0]
+
+drop_actor:
+  COP [88] ( %table_0EE000 )
+  COP [B7] ( #00 )
+  COP [8D] ( #0C )
+  COP [C8] ( #$E110 )
+  
+  LDA $token
+  INC
+  JSL $83EF97
+  BCS inv_full
+
+  COP [BF] ( &get_message )
+  COP [E0]
+
+inv_full:
+  COP [BF] ( &full_message )
+  COP [E0]
+
+
+
+get_message `[DEF][DLY:1][SFX:0]You found[N][ADR:&string_table,token]! [END]`
+full_message `[DEF][DLY:1]Your inventory is full![END]`
+
+
+string_table:
+  &red_jewel
+  &prison_key
+  &inca_statue_a
+  &inca_statue_b
+  &inca_melody
+  &herb
+  &blue_rock
+  &wind_melody
+  &lolas_melody
+  &meat
+  &mine_key_a
+  &mine_key_b
+
+
+red_jewel `Red Jewel`
+
+prison_key `[LU2:26]Key`
+
+inca_statue_a `[LU1:1E][LU1:48]A`
+
+inca_statue_b `[LU1:1E][LU1:48]B`
+
+inca_melody `[LU1:1E][LU1:34]`
+
+herb `Herb`
+
+blue_rock `Blue Rock`
+
+wind_melody `[LU2:3D][LU1:34]`
+
+lolas_melody `[LU1:2D][LU1:34]`
+
+meat `Meat`
+
+mine_key_a `Mine Key A`
+
+mine_key_B `Mine Key B`
+
+
+
+00DDAF:
+  JMP main
