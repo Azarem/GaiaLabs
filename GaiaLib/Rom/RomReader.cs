@@ -525,6 +525,12 @@ namespace GaiaLib.Rom
             Location noteType(Location loc, string type, bool silent = false)
             {
                 _chunkTable.TryAdd(loc, type);
+
+                var name = type.ToLower();
+                while (_adrSpace.Contains(name[0]))
+                    name = name[1..] + "_list";
+
+                RefList.TryAdd(loc, $"{name}_{loc}");
                 if (!silent && type == "Code")
                     return xferRegs(loc);
                 return loc;
@@ -711,7 +717,8 @@ namespace GaiaLib.Rom
                     case AddressingMode.DirectPageIndirectIndexedY:
                     case AddressingMode.DirectPageIndirectLong:
                     case AddressingMode.DirectPageIndirectLongIndexedY:
-                        operands.Add(new Address(0, (ushort)((reg.Direct ?? 0) + *Advance())));
+                        operands.Add(*Advance());
+                        //operands.Add(new Address(0, (ushort)((reg.Direct ?? 0) + *Advance())));
                         break;
 
                     case AddressingMode.PCRelative:

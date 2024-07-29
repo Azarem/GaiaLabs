@@ -78,7 +78,7 @@ namespace GaiaLib
             var patches = DiscoverPatches(baseDir, root, gaps);
 
             //Process sfx files the same as others
-            var allFiles = sfxFiles.Concat(chunkFiles).Concat(patches).ToArray();
+            var allFiles = sfxFiles.Concat(chunkFiles).Concat(patches.Where(x => x.Bank != null)).ToArray();
 
             //Assign locations
             MatchChunks(gaps, allFiles);
@@ -143,6 +143,9 @@ namespace GaiaLib
 
             //Write file contents
             foreach (var file in allFiles)
+                onProcess(file, root, blockLookup);
+
+            foreach (var file in patches.Where(x => x.Bank == null))
                 onProcess(file, root, blockLookup);
 
             //Write patch contents

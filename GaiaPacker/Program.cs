@@ -431,7 +431,7 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot r
                 else if (str[0] == '@')
                     obj = loc.Offset | 0xC00000u;
                 else if (parentOp?.Size == 4)
-                    obj = loc.Offset;
+                    obj = loc.Offset | ((ushort)loc.Offset >= 0x8000 ? 0x800000u : 0xC00000u);
                 else if (parentOp?.Size == 2)
                     obj = (byte)loc.Offset;
                 else

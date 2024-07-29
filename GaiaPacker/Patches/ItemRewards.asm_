@@ -1,4 +1,4 @@
-﻿?BANK 00
+﻿?BANK 01
 
 !token		00E6
 
@@ -13,10 +13,10 @@
 
 main:
   BNE $03
-  JMP $DDCA
+  JML $80DDCA
   DEC
   BNE $03
-  JMP $DDDE
+  JML $80DDDE
   STA $token
   COP [A5] ( %drop_actor, #00, #00, #$1000 )
   LDA $0012, Y
@@ -44,50 +44,9 @@ inv_full:
 
 
 
-get_message `[DEF][DLY:1][SFX:0]You found[N][ADR:&string_table,token]! [END]`
+get_message `[DEF][DLY:1][SFX:0]You found[N][ADR:&itemDictionary,token]! [END]`
 full_message `[DEF][DLY:1]Your inventory is full![END]`
 
 
-string_table:
-  &red_jewel
-  &prison_key
-  &inca_statue_a
-  &inca_statue_b
-  &inca_melody
-  &herb
-  &blue_rock
-  &wind_melody
-  &lolas_melody
-  &meat
-  &mine_key_a
-  &mine_key_b
-
-
-red_jewel `Red Jewel`
-
-prison_key `[LU2:26]Key`
-
-inca_statue_a `[LU1:1E][LU1:48]A`
-
-inca_statue_b `[LU1:1E][LU1:48]B`
-
-inca_melody `[LU1:1E][LU1:34]`
-
-herb `Herb`
-
-blue_rock `Blue Rock`
-
-wind_melody `[LU2:3D][LU1:34]`
-
-lolas_melody `[LU1:2D][LU1:34]`
-
-meat `Meat`
-
-mine_key_a `Mine Key A`
-
-mine_key_B `Mine Key B`
-
-
-
 00DDAF:
-  JMP main
+  JML main

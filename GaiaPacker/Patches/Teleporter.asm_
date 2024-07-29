@@ -1,4 +1,4 @@
-﻿?BANK 01
+﻿?BANK 0C
 
 !t_size  $0012
 !token   00E8
@@ -8,9 +8,7 @@
 ;This will cause you to leave in a different place than you had entered
 
 --------------------------------------------
-
-head:
-  d_gap < #00, #00, #30 >
+  h_event < #00, #00, #30 >
 
 main:
   COP [C1]
@@ -22,6 +20,8 @@ is_standing_right:
   LDX $09AA
   LDA #$0029
   STA $0014, X		;Set player position
+  LDA #$0003
+  STA $09B2			;Set running speed
   
   LDY #t_size		;Set index
   
@@ -35,7 +35,7 @@ do_prev:
   ASL
   ASL
   TAX
-  LDA &space_table+A, X
+  LDA %space_table+A, X
   CMP $0B12
   BEQ take_next
   BMI take_next
@@ -45,6 +45,8 @@ is_standing_left:
   LDX $09AA
   LDA #$00D7
   STA $0014, X		;Set player position
+  LDA #$FFFD
+  STA $09B2			;Set running speed
   
   LDY #$0000
 
@@ -58,7 +60,7 @@ do_next:
   ASL
   ASL
   TAX
-  LDA &space_table+A, X
+  LDA %space_table+A, X
   CMP $0B12
   BPL take_prev
   INY
@@ -87,19 +89,19 @@ do_change:
   ASL
   ASL
   TAX
-  LDA &space_table, X
+  LDA %space_table, X
   STA $0B08
-  LDA &space_table+2, X
+  LDA %space_table+2, X
   STA $0B0A
-  LDA &space_table+4, X
+  LDA %space_table+4, X
   STA $0B0C
-  LDA &space_table+6, X
+  LDA %space_table+6, X
   STA $0B0E
-  LDA &space_table+8, X
+  LDA %space_table+8, X
   STA $0B10
-  LDA &space_table+A, X
+  LDA %space_table+A, X
   STA $0B12
-  ;LDA &space_table+E, X
+  ;LDA %space_table+E, X
   STY $token
   COP [BF] ( &display_str )
   RTL
