@@ -19,12 +19,9 @@ stairway_move_down:
   BEQ stairway_return
   RTL
 
-
 stairway_return:
   JMP $C575
    
-
-
 ----------------------------
 
 ;Skip not equipped message
@@ -32,6 +29,14 @@ stairway_return:
   RTS
 
 03A126 #$0100  ;Plane crash delay
+
+04B8E3 #30  ;Cave delay 1
+04B8F6 #20  ;Cave delay 2
+04B90C #80  ;Cave delay 3
+04B919 #50  ;Cave delay 4
+
+04B9AF `[DLG:3,6][SIZ:D,3]Suddenly Erik rushed in[N][LU1:F0]a desperate look[N]on his face.[CLD]`
+
 
 ;Skip flag checks for bread drop
 04D234:
@@ -57,9 +62,11 @@ stairway_return:
 ;04DBEC:			;Free up chain flag (04)
 ;  COP [E0]
   
+04F38D `[TPL:A][SFX:0][DLY:9][LU1:67]found[N]Incan [LU1:48]A.[PAU:B0][END]`
+04FAF9 `[DLG:3,6][SIZ:D,3][SFX:0][DLY:9][LU1:67]got[N]Incan [LU1:48]B![PAU:B0][END]`
 
-0592A6 #30  ;Ship tremor delay 1
-0592CE #80  ;Ship tremor delay 2
+0592A6 #40  ;Ship tremor delay 1
+0592CE #90  ;Ship tremor delay 2
 
 
 0592FF `[TPL:E][TPL:4]Lance: [N][LU1:62][LU1:9D]to Seth? [N][LU1:4B]happened! [FIN][TPL:3]Erik: [N]Eeeeeeeh!!! [N][LU1:1D]Seth!!... [FIN]A huge, enormous, giant [N][LU2:62]ran [LU1:A1]the ship![N]Sob... [FIN]Seth fell in the [N]water! Sob... [FIN]He was swallowed!  [N]Gulp...Sob... [FIN][TPL:4]Lance: [N][LU1:62]was that?[PAL:0][END]`

@@ -26,8 +26,6 @@ main_press_lr:
   TSB $0658
   JMP on_press_lr
   
-
-  
 -------------------------------------------
 
 item_handler:

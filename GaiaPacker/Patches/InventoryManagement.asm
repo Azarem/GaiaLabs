@@ -2,13 +2,11 @@
 
 !page_1        0AB4
 !page_2        0B34  ;16 items per page
-;!page_3        0B44
 
 !state_1       0B54
 !herb_count    0B55
 !jewel_count   0B56
 !crystal_count 0B57
-
 
 
 --------------------------------
@@ -34,6 +32,7 @@ give_jewel:
   LDA #01
   JSR check_pages
   INC $jewel_count
+  LDA #01
   JMP $F074
 
 give_herb:
@@ -43,6 +42,7 @@ give_herb:
   JSR check_pages
   BCS exit_fail
   INC $herb_count
+  LDA #06
   JMP $F074
   
 give_crystal:
@@ -52,6 +52,7 @@ give_crystal:
   JSR check_pages
   BCS exit_fail
   INC $crystal_count
+  LDA #0E
   JMP $F074
 
 --------------------------------
@@ -86,7 +87,6 @@ give_item:
   STA $0000, Y
   CLC
   RTS
-
 
 --------------------------------
 
@@ -160,7 +160,6 @@ remove_item:
   PLX
   RTS
 
-
 --------------------------------
 
 ;Prevent gem count increase on use handler
@@ -173,4 +172,3 @@ remove_item:
 ;Entry point for adding an item to the inventory
 03EF9E:
   JMP give_item_handler
-

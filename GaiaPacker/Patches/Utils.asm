@@ -89,14 +89,14 @@ bcd_end:
   JMP bcd_hex_fix
 
 ;DMA size (two lines)
-02B065:
-  LDX #$0080
+;02B065:
+;  LDX #$0080
 
 ;VRAM DMA arguments (when copying BG3 layer)
-02B078:
-  LDX #$7820
-  STX $2116
-  LDX #$0240
+;02B078:
+;  LDX #$7820
+;  STX $2116
+;  LDX #$0240
 
 ;Entry point for actor scripts
 03CB1A:
