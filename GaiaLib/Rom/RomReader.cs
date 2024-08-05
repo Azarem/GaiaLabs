@@ -541,257 +541,259 @@ namespace GaiaLib.Rom
             else if (code.Mnem == "LDY") reg.YIndex = null;
 
             byte bank;
-            if (DbRoot.Transforms.TryGetValue(_lCur, out var obj) && (obj.Type == null || obj.Type == "*" || obj.Type == "^"))
+            DbRoot.Transforms.TryGetValue(_lCur, out var xform);
+
+            switch (code.Mode)
             {
-                if (obj.Type == null)
-                {
-                    var value = *(ushort*)Advance(2);
-                    var addr = new Address((byte)(obj.Bank?.Value ?? reg.DataBank ?? 0x81u), value);
-                    operands.Add(new LocationWrapper((Location)addr, AddressType.Offset));
-                }
-                else
-                {
-                    Advance(); //Ignore operand
-                    if (size == 3)
-                        Advance();
+                case AddressingMode.Stack:
+                case AddressingMode.Implied:
+                    switch (code.Mnem)
+                    {
+                        case "PHD": reg.Stack.Push(reg.Direct ?? 0); break;
+                        case "PLD": reg.Direct = reg.Stack.PopUInt16(); break;
+                        case "PHK": reg.Stack.Push((byte)(loc.Bank | 0x80)); break;
+                        case "PHB": reg.Stack.Push(reg.DataBank ?? 0x81); break;
+                        case "PLB": reg.DataBank = reg.Stack.PopByte(); break;
+                        case "PHP": reg.Stack.Push((byte)reg.StatusFlags); break;
+                        case "PLP": reg.StatusFlags = (StatusFlags)reg.Stack.PopByte(); break;
 
-                    var entry = RefList.First(x => obj.Name.Equals(x.Value, StringComparison.CurrentCultureIgnoreCase));
-                    operands.Add(new LocationWrapper(entry.Key, obj.Type == "^" ? AddressType.Bank : AddressType.DBank));
-                }
-            }
-            else
-                switch (code.Mode)
-                {
-                    case AddressingMode.Stack:
-                    case AddressingMode.Implied:
-                        switch (code.Mnem)
-                        {
-                            case "PHD": reg.Stack.Push(reg.Direct ?? 0); break;
-                            case "PLD": reg.Direct = reg.Stack.PopUInt16(); break;
-                            case "PHK": reg.Stack.Push((byte)(loc.Bank | 0x80)); break;
-                            case "PHB": reg.Stack.Push(reg.DataBank ?? 0x81); break;
-                            case "PLB": reg.DataBank = reg.Stack.PopByte(); break;
-                            case "PHP": reg.Stack.Push((byte)reg.StatusFlags); break;
-                            case "PLP": reg.StatusFlags = (StatusFlags)reg.Stack.PopByte(); break;
-
-                            case "PHA":
-                                if (reg.AccumulatorFlag == true)
-                                    reg.Stack.Push((byte)(reg.Accumulator ?? 0));
-                                else
-                                    reg.Stack.Push(reg.Accumulator ?? 0);
-                                break;
-
-                            case "PLA":
-                                if (reg.AccumulatorFlag == true)
-                                    reg.Accumulator = (ushort)((reg.Accumulator ?? 0) & 0xFF00u | reg.Stack.PopByte());
-                                else
-                                    reg.Accumulator = reg.Stack.PopUInt16();
-                                break;
-
-                            case "PHX":
-                                if (reg.IndexFlag == true)
-                                    reg.Stack.Push((byte)(reg.XIndex ?? 0));
-                                else
-                                    reg.Stack.Push(reg.XIndex ?? 0);
-                                break;
-
-                            case "PLX":
-                                if (reg.IndexFlag == true)
-                                    reg.XIndex = (ushort)((reg.XIndex ?? 0) & 0xFF00u | reg.Stack.PopByte());
-                                else
-                                    reg.XIndex = reg.Stack.PopUInt16();
-                                break;
-
-                            case "PHY":
-                                if (reg.IndexFlag == true)
-                                    reg.Stack.Push((byte)(reg.YIndex ?? 0));
-                                else
-                                    reg.Stack.Push(reg.YIndex ?? 0);
-                                break;
-
-                            case "PLY":
-                                if (reg.IndexFlag == true)
-                                    reg.YIndex = (ushort)((reg.YIndex ?? 0) & 0xFF00u | reg.Stack.PopByte());
-                                else
-                                    reg.YIndex = reg.Stack.PopUInt16();
-                                break;
-
-                            case "XBA":
-                                reg.Accumulator = (ushort)((reg.Accumulator ?? 0) >> 8 | (reg.Accumulator ?? 0) << 8);
-                                break;
-                        }
-                        break;
-
-                    case AddressingMode.Immediate:
-                        if (size == 3)
-                            operands.Add(*(ushort*)Advance(2));
-                        else
-                            operands.Add(*Advance());
-
-                        switch (code.Mnem)
-                        {
-                            case "LDA":
-                                reg.Accumulator = size == 3 ? (ushort)operands[^1]
-                                    : (ushort)((reg.Accumulator ?? 0) & 0xFF00u | (byte)operands[^1]);
-                                break;
-                            case "LDX":
-                                reg.XIndex = size == 3 ? (ushort)operands[^1]
-                                    : (ushort)((reg.XIndex ?? 0) & 0xFF00u | (byte)operands[^1]);
-                                break;
-                            case "LDY":
-                                reg.YIndex = size == 3 ? (ushort)operands[^1]
-                                    : (ushort)((reg.YIndex ?? 0) & 0xFF00u | (byte)operands[^1]);
-                                break;
-                            case "SEP":
-                            case "REP":
-                                var flag = (StatusFlags)(byte)operands[^1];
-                                if (flag.HasFlag(StatusFlags.AccumulatorMode))
-                                    AccumulatorFlags.TryAdd(_lCur, code.Mnem == "SEP");
-                                if (flag.HasFlag(StatusFlags.IndexMode))
-                                    IndexFlags.TryAdd(_lCur, code.Mnem == "SEP");
-                                break;
-                        }
-
-
-
-                        break;
-
-                    case AddressingMode.AbsoluteIndirect:
-                    case AddressingMode.AbsoluteIndirectLong:
-                    case AddressingMode.AbsoluteIndexedIndirect:
-                    case AddressingMode.Absolute:
-                    case AddressingMode.AbsoluteIndexedX:
-                    case AddressingMode.AbsoluteIndexedY:
-                        var refLoc = *(ushort*)Advance(2);
-                        if (code.Mnem[0] == 'P')
-                            operands.Add(refLoc);
-                        else
-                        {
-                            var isJump = code.Mnem[0] == 'J';
-                            bank = isJump ? (byte)(next >> 16) : (reg.DataBank ?? 0x81);
-                            var addr = new Address(bank, refLoc); //Add Data bank
-                            if (addr.Space == AddressSpace.ROM)
-                            {
-                                var wrapper = new LocationWrapper((Location)addr, AddressType.Offset);
-                                if (isJump)
-                                    noteType(wrapper.Location, "Code"); //Add PC bank
-
-                                operands.Add(wrapper);
-                            }
+                        case "PHA":
+                            if (reg.AccumulatorFlag == true)
+                                reg.Stack.Push((byte)(reg.Accumulator ?? 0));
                             else
-                                operands.Add(addr);
-                        }
-                        break;
+                                reg.Stack.Push(reg.Accumulator ?? 0);
+                            break;
 
-                    case AddressingMode.AbsoluteLong:
-                    case AddressingMode.AbsoluteLongIndexedX:
-                        refLoc = *(ushort*)Advance(2);
-                        bank = *Advance();
-                        var adrs = new Address(bank, refLoc);
-                        //if (bank == 0 || bank == 0x7E || bank == 0x7F || ((bank & 0x40) == 0 && refLoc < 0x8000))
-                        //    operands.Add(new Address(bank, refLoc));
-                        if (adrs.Space == AddressSpace.ROM)
+                        case "PLA":
+                            if (reg.AccumulatorFlag == true)
+                                reg.Accumulator = (ushort)((reg.Accumulator ?? 0) & 0xFF00u | reg.Stack.PopByte());
+                            else
+                                reg.Accumulator = reg.Stack.PopUInt16();
+                            break;
+
+                        case "PHX":
+                            if (reg.IndexFlag == true)
+                                reg.Stack.Push((byte)(reg.XIndex ?? 0));
+                            else
+                                reg.Stack.Push(reg.XIndex ?? 0);
+                            break;
+
+                        case "PLX":
+                            if (reg.IndexFlag == true)
+                                reg.XIndex = (ushort)((reg.XIndex ?? 0) & 0xFF00u | reg.Stack.PopByte());
+                            else
+                                reg.XIndex = reg.Stack.PopUInt16();
+                            break;
+
+                        case "PHY":
+                            if (reg.IndexFlag == true)
+                                reg.Stack.Push((byte)(reg.YIndex ?? 0));
+                            else
+                                reg.Stack.Push(reg.YIndex ?? 0);
+                            break;
+
+                        case "PLY":
+                            if (reg.IndexFlag == true)
+                                reg.YIndex = (ushort)((reg.YIndex ?? 0) & 0xFF00u | reg.Stack.PopByte());
+                            else
+                                reg.YIndex = reg.Stack.PopUInt16();
+                            break;
+
+                        case "XBA":
+                            reg.Accumulator = (ushort)((reg.Accumulator ?? 0) >> 8 | (reg.Accumulator ?? 0) << 8);
+                            break;
+                    }
+                    break;
+
+                case AddressingMode.Immediate:
+                    if (size == 3)
+                        operands.Add(*(ushort*)Advance(2));
+                    else
+                        operands.Add(*Advance());
+
+                    switch (code.Mnem)
+                    {
+                        case "LDA":
+                            reg.Accumulator = size == 3 ? (ushort)operands[^1]
+                                : (ushort)((reg.Accumulator ?? 0) & 0xFF00u | (byte)operands[^1]);
+                            break;
+                        case "LDX":
+                            reg.XIndex = size == 3 ? (ushort)operands[^1]
+                                : (ushort)((reg.XIndex ?? 0) & 0xFF00u | (byte)operands[^1]);
+                            break;
+                        case "LDY":
+                            reg.YIndex = size == 3 ? (ushort)operands[^1]
+                                : (ushort)((reg.YIndex ?? 0) & 0xFF00u | (byte)operands[^1]);
+                            break;
+                        case "SEP":
+                        case "REP":
+                            var flag = (StatusFlags)(byte)operands[^1];
+                            if (flag.HasFlag(StatusFlags.AccumulatorMode))
+                                AccumulatorFlags.TryAdd(_lCur, code.Mnem == "SEP");
+                            if (flag.HasFlag(StatusFlags.IndexMode))
+                                IndexFlags.TryAdd(_lCur, code.Mnem == "SEP");
+                            break;
+                    }
+
+
+
+                    break;
+
+                case AddressingMode.AbsoluteIndirect:
+                case AddressingMode.AbsoluteIndirectLong:
+                case AddressingMode.AbsoluteIndexedIndirect:
+                case AddressingMode.Absolute:
+                case AddressingMode.AbsoluteIndexedX:
+                case AddressingMode.AbsoluteIndexedY:
+                    var refLoc = *(ushort*)Advance(2);
+                    if (code.Mnem[0] == 'P')
+                        operands.Add(refLoc);
+                    else
+                    {
+                        var isJump = code.Mnem[0] == 'J';
+                        bank = xform?.Bank != null ? (byte)xform.Bank.Value
+                            : (isJump ? (byte)(next >> 16) : (reg.DataBank ?? 0x81));
+                        var addr = new Address(bank, refLoc); //Add Data bank
+
+
+                        if (addr.Space == AddressSpace.ROM)
                         {
-                            var wrapper = new LocationWrapper((Location)adrs, (bank & 0x40) == 0 ? AddressType.Code : AddressType.Data);
-                            if (code.Mnem[0] == 'J')
-                            {
-                                noteType(wrapper.Location, "Code");
-                                wrapper.Type = AddressType.Code;
-                            }
+                            var wrapper = new LocationWrapper((Location)addr, AddressType.Offset);
+                            if (isJump)
+                                noteType(wrapper.Location, "Code"); //Add PC bank
+
                             operands.Add(wrapper);
                         }
                         else
-                            operands.Add(adrs);
-                        break;
+                            operands.Add(addr);
+                    }
+                    break;
 
-                    case AddressingMode.BlockMove:
-                        operands.Add(*Advance());
-                        operands.Add(*Advance());
-                        break;
-
-                    case AddressingMode.DirectPage:
-                    case AddressingMode.DirectPageIndexedIndirectX:
-                    case AddressingMode.DirectPageIndexedX:
-                    case AddressingMode.DirectPageIndexedY:
-                    case AddressingMode.DirectPageIndirect:
-                    case AddressingMode.DirectPageIndirectIndexedY:
-                    case AddressingMode.DirectPageIndirectLong:
-                    case AddressingMode.DirectPageIndirectLongIndexedY:
-                        operands.Add(*Advance());
-                        //operands.Add(new Address(0, (ushort)((reg.Direct ?? 0) + *Advance())));
-                        break;
-
-                    case AddressingMode.PCRelative:
-                        Location relative = (uint)((int)next.Offset + *(sbyte*)Advance());
-                        goto noteRelative;
-
-                    case AddressingMode.PCRelativeLong:
-                        relative = (uint)((int)next.Offset + *(short*)Advance(2));
-                    noteRelative:
-                        operands.Add(xferRegs(noteType(relative, "Code")));
-                        break;
-
-                    case AddressingMode.StackRelative:
-                    case AddressingMode.StackRelativeIndirectIndexedY:
-                        operands.Add(*Advance());
-                        break;
-
-                    case AddressingMode.StackInterrupt:
-                        var cmd = *Advance();
-                        operands.Add(cmd);
-                        if (code.Mnem == "COP")
+                case AddressingMode.AbsoluteLong:
+                case AddressingMode.AbsoluteLongIndexedX:
+                    refLoc = *(ushort*)Advance(2);
+                    bank = *Advance();
+                    var adrs = new Address(bank, refLoc);
+                    //if (bank == 0 || bank == 0x7E || bank == 0x7F || ((bank & 0x40) == 0 && refLoc < 0x8000))
+                    //    operands.Add(new Address(bank, refLoc));
+                    if (adrs.Space == AddressSpace.ROM)
+                    {
+                        var wrapper = new LocationWrapper((Location)adrs, (bank & 0x40) == 0 ? AddressType.Code : AddressType.Data);
+                        if (code.Mnem[0] == 'J')
                         {
-                            if (!DbRoot.CopLib.Codes.TryGetValue(cmd, out copDef))
-                                throw new("Unknown COP command");
+                            noteType(wrapper.Location, "Code");
+                            wrapper.Type = AddressType.Code;
+                        }
+                        operands.Add(wrapper);
+                    }
+                    else
+                        operands.Add(adrs);
+                    break;
 
-                            //var cop = db.CopLib.Codes[cmd];
-                            //var parts = cop.Parts;
-                            //size = cop.Size + 2;
-                            foreach (var p in copDef.Parts)
+                case AddressingMode.BlockMove:
+                    operands.Add(*Advance());
+                    operands.Add(*Advance());
+                    break;
+
+                case AddressingMode.DirectPage:
+                case AddressingMode.DirectPageIndexedIndirectX:
+                case AddressingMode.DirectPageIndexedX:
+                case AddressingMode.DirectPageIndexedY:
+                case AddressingMode.DirectPageIndirect:
+                case AddressingMode.DirectPageIndirectIndexedY:
+                case AddressingMode.DirectPageIndirectLong:
+                case AddressingMode.DirectPageIndirectLongIndexedY:
+                    operands.Add(*Advance());
+                    //operands.Add(new Address(0, (ushort)((reg.Direct ?? 0) + *Advance())));
+                    break;
+
+                case AddressingMode.PCRelative:
+                    Location relative = (uint)((int)next.Offset + *(sbyte*)Advance());
+                    goto noteRelative;
+
+                case AddressingMode.PCRelativeLong:
+                    relative = (uint)((int)next.Offset + *(short*)Advance(2));
+                noteRelative:
+                    operands.Add(xferRegs(noteType(relative, "Code")));
+                    break;
+
+                case AddressingMode.StackRelative:
+                case AddressingMode.StackRelativeIndirectIndexedY:
+                    operands.Add(*Advance());
+                    break;
+
+                case AddressingMode.StackInterrupt:
+                    var cmd = *Advance();
+                    operands.Add(cmd);
+                    if (code.Mnem == "COP")
+                    {
+                        if (!DbRoot.CopLib.Codes.TryGetValue(cmd, out copDef))
+                            throw new("Unknown COP command");
+
+                        //var cop = db.CopLib.Codes[cmd];
+                        //var parts = cop.Parts;
+                        //size = cop.Size + 2;
+                        foreach (var p in copDef.Parts)
+                        {
+                            var isPtr = _adrSpace.Contains(p[0]);
+                            string otherStr, str;
+                            char? type;
+
+                            (otherStr, type, str) = isPtr
+                                ? (p[1..], p[0], p[0] == '&' ? "Offset" : "Address")
+                                : (_part.Struct ?? "Binary", (char?)null, p);
+
+                            //bool isPtr = str[0] == '*', isAddr = str[0] == '&';
+                            //var otherStr = (isPtr || isAddr) ? str[1..] : "Binary";
+
+                            //if (isPtr) str = "Offset";
+                            //else if (isAddr) str = "Address";
+
+                            if (!Enum.TryParse<MemberType>(str, true, out var mtype))
+                                throw new("Cannot use structs in cop def");
+
+                            object copLoc(ushort offset, byte? bank)
                             {
-                                var isPtr = _adrSpace.Contains(p[0]);
-                                string otherStr, str;
-                                char? type;
-
-                                (otherStr, type, str) = isPtr
-                                    ? (p[1..], p[0], p[0] == '&' ? "Offset" : "Address")
-                                    : (_part.Struct ?? "Binary", (char?)null, p);
-
-                                //bool isPtr = str[0] == '*', isAddr = str[0] == '&';
-                                //var otherStr = (isPtr || isAddr) ? str[1..] : "Binary";
-
-                                //if (isPtr) str = "Offset";
-                                //else if (isAddr) str = "Address";
-
-                                if (!Enum.TryParse<MemberType>(str, true, out var mtype))
-                                    throw new("Cannot use structs in cop def");
-
-                                object copLoc(ushort offset, byte? bank)
+                                var addr = new Address(bank ?? (byte)(next.Bank | (type == '@' ? 0xC0 : 0x80)), offset);
+                                if (addr.Space == AddressSpace.ROM)
                                 {
-                                    var addr = new Address(bank ?? (byte)(next.Bank | (type == '@' ? 0xC0 : 0x80)), offset);
-                                    if (addr.Space == AddressSpace.ROM)
-                                    {
-                                        var l = (Location)addr;
-                                        if (p != "Address" && isPtr)
-                                            noteType(l, otherStr, true);
-                                        return new LocationWrapper(l, type != null ? Address.TypeFromCode(type.Value)
-                                            : (addr.Bank & 0x40) == 0 ? AddressType.Code : AddressType.Data);
-                                    }
-                                    return addr;
+                                    var l = (Location)addr;
+                                    if (p != "Address" && isPtr)
+                                        noteType(l, otherStr, true);
+                                    return new LocationWrapper(l, type != null ? Address.TypeFromCode(type.Value)
+                                        : (addr.Bank & 0x40) == 0 ? AddressType.Code : AddressType.Data);
                                 }
+                                return addr;
+                            }
 
-                                switch (mtype)
-                                {
-                                    case MemberType.Byte: operands.Add(*Advance()); break;
-                                    case MemberType.Word: operands.Add(*(ushort*)Advance(2)); break;
-                                    case MemberType.Offset: operands.Add(copLoc(*(ushort*)Advance(2), null)); break;
-                                    case MemberType.Address: operands.Add(copLoc(*(ushort*)Advance(2), *Advance())); break;
-                                    default: throw new("Unsuported COP member type");
-                                }
+                            switch (mtype)
+                            {
+                                case MemberType.Byte: operands.Add(*Advance()); break;
+                                case MemberType.Word: operands.Add(*(ushort*)Advance(2)); break;
+                                case MemberType.Offset: operands.Add(copLoc(*(ushort*)Advance(2), null)); break;
+                                case MemberType.Address: operands.Add(copLoc(*(ushort*)Advance(2), *Advance())); break;
+                                default: throw new("Unsuported COP member type");
                             }
                         }
-                        break;
+                    }
+                    break;
+            }
+
+            if (xform != null && (xform.Type == null || xform.Type == "*" || xform.Type == "^"))
+            {
+                if (xform.Type == null)
+                {
+                    var value = (ushort)operands[0];
+                    var addr = new Address((byte)(xform.Bank?.Value ?? reg.DataBank ?? 0x81u), value);
+                    operands[0] = new LocationWrapper((Location)addr, AddressType.Offset);
                 }
+                else
+                {
+                    //Ignore operand
+                    var entry = RefList.First(x => xform.Name.Equals(x.Value, StringComparison.CurrentCultureIgnoreCase));
+                    operands[0] = new LocationWrapper(entry.Key, xform.Type == "^" ? AddressType.Bank : AddressType.DBank);
+                }
+            }
 
             return new Op { Location = loc, Code = code, Size = (byte)(_lCur - loc), Operands = [.. operands], CopDef = copDef };
         }

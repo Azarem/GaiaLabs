@@ -1,20 +1,37 @@
 ﻿?BANK 0C
 
-!t_size  $0012
-!token   00E8
+!t_size   $0012
+!token1    00E6
+!token2    00E8
+
 
 ;This is an example script showing how you can create a teleporter in dark space
 ;Walk to either side of the screen to trigger a change in the dark space settings
 ;This will cause you to leave in a different place than you had entered
+;To use this script, add a new entry to scene_events under ID E6
+;Example: actor < #00, #01, #00, %Teleporter >
 
 --------------------------------------------
   h_event < #00, #00, #30 >
 
 main:
-  COP [C1]
+  COP [C4] ( %location_check )
+
+clear_check:
+  LDA #$004A
+  STA $token2
+  COP [C2]
+  DEC $token2
+  BEQ clear_screen
+
+location_check:
   COP [28] ( #$00D8, #$00C0, &is_standing_right )
   COP [28] ( #$0028, #$00C0, &is_standing_left )
   RTL
+
+clear_screen:
+  COP [BF] ( &clear_str )
+  COP [C7] ( %location_check )
 
 is_standing_right:
   LDX $09AA
@@ -102,11 +119,12 @@ do_change:
   LDA %space_table+A, X
   STA $0B12
   ;LDA %space_table+E, X
-  STY $token
+  STY $token1
   COP [BF] ( &display_str )
-  RTL
+  JMP clear_check
 
-display_str `[CLR][ADR:&string_table,token]`
+display_str `[DLG:7,6][SIZ:9,1][ADR:&string_table,token1]`
+clear_str   `[CLD]`
 
 string_table:
   &south_cape

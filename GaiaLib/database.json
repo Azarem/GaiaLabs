@@ -263,7 +263,7 @@
     "C3": { "code": "C3", "value": "PAL", "types": [ "Byte" ] },
     "C4": { "code": "C4", "value": "XXX", "types": [ ] },
     "C5": { "code": "C5", "value": "ADR", "types": [ "Offset", "Word" ] },
-    "C6": { "code": "C6", "value": "NUM", "types": [ "Word", "Word" ] },
+    "C6": { "code": "C6", "value": "BCD", "types": [ "Word", "Word" ] },
     "C7": { "code": "C7", "value": "SIZ", "types": [ "Byte", "Byte" ] },
     "C8": { "code": "C8", "value": "CLD", "types": [ ] },
     "C9": { "code": "C9", "value": "PAU", "types": [ "Byte" ] },
@@ -416,7 +416,8 @@
     "event_def": { "name": "event_def", "types": [ "enemy", "WideString" ]},
     "warp_def": { "name": "warp_def", "types": [ "scene_warp", "stair_warp"  ] },
     "scene_warp": { "name": "scene_warp", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Word", "Word", "Byte", "Word" ] },
-    "stair_warp": { "name": "stair_warp", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Word", "Word", "Word", "Byte", "Word" ] }
+    "stair_warp": { "name": "stair_warp", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Word", "Word", "Word", "Byte", "Word" ] },
+    "const":  { "name": "const", "delimiter": "FFFF", "types": [ "Word", "Word" ] }
   },
   "files":  [
     { "start": "000000", "end": "001C00", "name": "bmp_000000", "type": "Bitmap", "xref": [ ] },
@@ -465,7 +466,7 @@
     { "start": "034AB8", "end": "03638B", "name": "bmp_034AB8", "type": "Bitmap", "compressed": true, "xref": [ ] },
     { "start": "03638B", "end": "037C5D", "name": "bmp_03638B", "type": "Bitmap", "compressed": true, "xref": [ ] },
     { "start": "037C5D", "end": "037FF1", "name": "map_037C5D", "type": "Tilemap", "compressed": true, "xref": [ ] },
-    { "start": "03AD77", "end": "03B1D4", "name": "table_03AD77", "type": "Assembly", "xref": [ "%03A536" ] },
+    { "start": "03AD77", "end": "03B1D4", "name": "table_03AD77", "type": "Assembly", "move": true, "xref": [ "%03A536" ] },
     { "start": "03B1D4", "end": "03B401", "name": "map_names_03B1D4", "type": "Assembly", "xref": [ "&03A69F", "&03A6B0+1" ] },
     { "start": "03B401", "end": "03BAE1", "name": "overworld_scripts", "type": "Assembly", "xref": [ "&03A33F" ] },
     
@@ -2187,7 +2188,7 @@
         { "start": "029DE2", "end": "029E1D", "name": "func_029DE2", "struct": "Code" },
         { "start": "029E1D", "end": "029E44", "name": "func_029E1D", "struct": "Code" },
         { "start": "029E44", "end": "029E85", "name": "func_029E44", "struct": "Code" },
-        { "start": "029E85", "end": "029F0F", "name": "binary_029E85", "struct": "Binary" },
+        { "start": "029E85", "end": "029F0F", "name": "constants_029E85", "struct": "const" },
         { "start": "029F0F", "end": "029F31", "name": "sub_029F0F", "struct": "Code" },
         { "start": "029F31", "end": "029F4E", "name": "func_029F31", "struct": "Code" },
         { "start": "029F4E", "end": "029F5A", "name": "binary_029F4E", "struct": "Binary" },
@@ -2296,7 +2297,7 @@
       ]
     },
     {
-      "name":  "chunk_02C38F",
+      "name":  "chunk_02C38C",
       "parts": [
         { "start": "02C38C", "end": "02C38F", "name": "head_02C38C", "struct": "h_event" },
         { "start": "02C38F", "end": "02C447", "name": "func_02C38F", "struct": "Code" },
@@ -2472,8 +2473,8 @@
         { "start": "02E396", "end": "02E399", "name": "head_02E396", "struct": "h_event" },
         { "start": "02E399", "end": "02E404", "name": "func_02E399", "struct": "Code" },
         { "start": "02E404", "end": "02E445", "name": "func_02E404", "struct": "Code" },
-        { "start": "02E445", "end": "02E5B1", "name": "func_02E445", "struct": "Code" },
-        { "start": "02E5B1", "end": "02E7A3", "name": "func_02E5B1", "struct": "Code" },
+        { "start": "02E445", "end": "02E7A3", "name": "func_02E445", "struct": "Code" },
+        //{ "start": "02E5B1", "end": "02E7A3", "name": "func_02E5B1", "struct": "Code" },
         { "start": "02E7A3", "end": "02E7BB", "name": "sub_02E7A3", "struct": "Code" },
         { "start": "02E7BB", "end": "02E7C7", "name": "binary_02E7BB", "struct": "Word" },
         { "start": "02E7C7", "end": "02E7E6", "name": "func_02E7C7", "struct": "Code" },
@@ -2662,7 +2663,7 @@
         { "start": "03C849", "end": "03CA19", "name": "func_03C849", "struct": "Code" },
         { "start": "03CA19", "end": "03CA55", "name": "func_03CA19", "struct": "Code" },
         { "start": "03CA55", "end": "03CAF5", "name": "func_03CA55", "struct": "Code" },
-        { "start": "03CAF5", "end": "03CCFF", "name": "func_03CAF5", "struct": "Code" },
+        { "start": "03CAF5", "end": "03CCFF", "name": "run_actors_03CAF5", "struct": "Code" },
         { "start": "03CCFF", "end": "03CD6E", "name": "func_03CCFF", "struct": "Code" },
         { "start": "03CD6E", "end": "03CDDC", "name": "func_03CD6E", "struct": "Code" },
         { "start": "03CDDC", "end": "03CE8F", "name": "func_03CDDC", "struct": "Code" },

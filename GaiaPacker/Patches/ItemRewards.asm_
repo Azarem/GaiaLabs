@@ -5,9 +5,6 @@
 ;This is an example script showing how to create a new item drop table for room clear rewards
 ;Open up the reward_table asm file and change a room reward to > 3
 ;Those rewards will be mapped to an item drop = ID + 3
-;Only a limited number of items are supported here (needs text)
-;Feel free to cusomize this to your own list of items
-;Would also be nice to have the item icon show
 
 --------------------------------------------------
 

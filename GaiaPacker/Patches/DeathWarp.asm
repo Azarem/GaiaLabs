@@ -3,7 +3,12 @@
 !current_scene  0644
 !player_health  0ACE
 
----------------------------------
+;This script replaces the default death warp process with a lookup table
+;This clears up $0AF0 which no longer gets utilized (fixes potential softlock when loading a save file from a modified rom and dying)
+;The script also prevents the dungeon clear flags from being reset, so dying does not reset rooms. 
+;If dungeon reset is to be enabled again, you would need to add a new hook for 00D6CC instead of replacing the code
+
+----------------------------------------
 
 main:
   LDA $09AE
@@ -67,7 +72,7 @@ warp_lookup:
   #11 #11 #11 #11 #11 #11 #11 #11 #11 #11 #11 #00 #00 #00 #00 #00 ;A0
   #12 #12 #12 #12 #12 #12 #13 #13 #13 #13 #13 #13 #00 #00 #00 #00 ;B0
   #00 #00 #00 #00 #00 #00 #00 #00 #00 #00 #00 #00 #14 #15 #16 #16 ;C0
-  #17 #17 #18 #18 #19 #19 #1A #1A #1B #1B #1B #00 #00 #15 #00 #00 ;D0
+  #17 #17 #18 #18 #19 #19 #1A #1A #1B #1B #1B #1B #00 #15 #00 #00 ;D0
   #1D #1D #1E #1F #00 #00 #00 #00 #22 #23 #23 #00 #00 #00 #00 #00 ;E0
   #00 #00 #1D #1D #1E #1E #1F #00 #00 #00 #00 #00 #00 #00 #00 #00 ;F0
 
@@ -85,11 +90,11 @@ warp_data:
   #53 #$03E0 #$0068 #86 #$4400  ;09 - Sky Garden (West)
   #5A #$0090 #$0070 #83 #$1400  ;0A - Seaside Palace
   #5F #$0080 #$0040 #83 #$4400  ;0B - Mu
-  #66 #$00F8 #$01D8 #80 #$2200  ;0C - Mu (inner)
+  #66 #$00F8 #$01D8 #80 #$2200  ;0C - Mu (boss)
   #6D #$0078 #$0070 #83 #$1400  ;0D - Angel Tunnel
   #79 #$0070 #$00B0 #80 #$1100  ;0E - Watermia House
   #82 #$0020 #$0090 #87 #$1800  ;0F - Great Wall
-  #8A #$0050 #$0090 #87 #$3300  ;10 - Great Wall (inner)
+  #8A #$0050 #$0090 #87 #$3300  ;10 - Great Wall (boss)
   #A0 #$02C8 #$01B0 #86 #$2300  ;11 - Mountain Temple
   #B0 #$01F8 #$04C0 #80 #$5400  ;12 - Ankor Wat (Entrance)
   #B6 #$02F8 #$03D0 #80 #$4600  ;13 - Ankor Wat (Garden)
@@ -135,6 +140,7 @@ do_normal:
 00D68B:     ;Entry point for start of death logic
   JML do_check
 
+;(Exact fit, do not modify, use a hook)
 00D6CC:     ;Entry point for code that executes when clear data is about to be erased
   PHX
   LDX $current_scene

@@ -1,8 +1,8 @@
 ﻿?BANK 03
 
-!meta_next_id		$0642
-!meta_current_id	$0644
-!token              $E6
+!meta_next_id       $0642
+!meta_current_id    $0644
+!token              $00E6
 ---------------------------------------
 
 bgm_table [

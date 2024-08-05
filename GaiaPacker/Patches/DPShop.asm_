@@ -4,6 +4,12 @@
 !token2   00E8
 !dp_owned 0AD6
 
+
+;This is a sample actor that behaves like a shop which takes DP
+;To use this, replace an actor in scene events with this
+;Example for Euro market: actor < #1A, #40, #00, %DPShop >   ;1E
+
+
 -------------------------------
 
   h_event < #02, #00, #10 >
@@ -26,6 +32,16 @@ main:
   COP [C1]
   RTL 
 
+------------------------------------------------
+
+reward_table:
+  #$0006 #$0081 #$0082 #$001A #$001D #$0012
+
+price_table:
+  #$0028 #$0032 #$0032 #$0032 #$0004 #$0005
+
+------------------------------------------------
+
 on_interact:
   COP [BF] ( &dialog_intro )
 
@@ -39,37 +55,37 @@ on_interact:
   ;COP [BF] ( &palette )
 
 print1:
-  LDY #$0000
+  LDA #$0000
   JSR print_entry
-  COP [D0] ( #02, #00, &print2 )
+  COP [D1] ( #$0180, #00, &print2 )
   COP [BF] ( &palette )
 
 print2:
-  LDY #$0001
+  LDA #$0001
   JSR print_entry
-  COP [D0] ( #03, #00, &print3 )
+  COP [D1] ( #$0181, #00, &print3 )
   COP [BF] ( &palette )
   
 print3:
-  LDY #$0002
+  LDA #$0002
   JSR print_entry
-  COP [D0] ( #04, #00, &print4 )
+  COP [D1] ( #$0182, #00, &print4 )
   COP [BF] ( &palette )
 
 print4:
-  LDY #$0003
+  LDA #$0003
   JSR print_entry
 ;  COP [D0] ( #ED, #00, &print5 )
 ;  COP [BF] ( &palette )
 
 ;print5:
-;  LDY #$0004
+;  LDA #$0004
 ;  JSR print_entry
 ;  COP [D0] ( #EE, #00, &print6 )
 ;  COP [BF] ( &palette )
 
 ;print6:
-;  LDY #$0005
+;  LDA #$0005
 ;  JSR print_entry
 
   COP [BE] ( #04, #01, &selection_table )
@@ -78,30 +94,36 @@ print4:
 -----------------------------------------------
 
 print_entry:
-  TYA
+  PHX
   ASL
   TAX
   LDA %price_table, X
   JSR double_dabble
   STA $token2		;Store price for string
   LDA %reward_table, X
-  BEQ show_nothing
-  DEC
+  PLX
+  
+  BIT #$0080
+  BEQ show_item
+  SEC
+  SBC #$0080
   BEQ show_hp
   DEC
   BEQ show_str
   DEC
   BEQ show_def
-  DEC
+  
+  COP [BF] ( &heal )
+  BRA do_price
+
+show_item:
   STA $token1		;Store item ID for string
-  
   JSL GemShop
-  ;COP [BF] ( &item1 )
   BRA do_price
   
-show_nothing:
-  COP [BF] ( &nothing )
-  BRA do_price
+;show_nothing:
+;  COP [BF] ( &nothing )
+;  BRA do_price
   
 show_hp:
   COP [BF] ( &health )
@@ -115,6 +137,10 @@ show_def:
   COP [BF] ( &defense )
   
 do_price:
+  LDA $0998
+  AND #$FFC0
+  ORA #$0030
+  STA $0998
   COP [BF] ( &price )
   RTS
 
@@ -122,7 +148,7 @@ do_price:
 --------------------------------------------
 
 give_reward:
-  TYA
+  PHX
   ASL
   TAX
   LDA $dp_owned
@@ -131,59 +157,24 @@ give_reward:
   SBC %price_table, X
   BPL has_enough
   
+  PLX
   COP [BF] ( &not_enough )
-  CLC
+  SEC
   RTS
 
 has_enough:
   STA $dp_owned
   LDA %reward_table, X
-  BEQ give_nothing
-  DEC
-  BEQ give_hp
-  DEC
-  BEQ give_str
-  DEC
-  BEQ give_def
+  PLX
 
   JSL $83EF97
   BCS no_room
-
-  SEC
   RTS
 
 no_room:
   LDA $0000
   STA $dp_owned
   COP [BF] ( &inv_full )
-  CLC
-  RTS
-
-give_nothing:
-  SEC
-  RTS
-
-give_hp:
-  LDA $0ACA
-  CLC
-  ADC #$0001
-  STA $0ACA
-  SEC
-  RTS
-  
-give_str:
-  LDA $0ADE
-  CLC
-  ADC #$0001
-  STA $0ADE
-  SEC
-  RTS
-  
-give_def:
-  LDA $0ADC
-  CLC
-  ADC #$0001
-  STA $0ADC
   SEC
   RTS
 
@@ -204,34 +195,34 @@ on_cancel:
 
 on_select1:
   ;COP [D0] ( #E9, #01, &on_reselect )
-  LDY #$0000
+  LDA #$0000
   JSR give_reward
-  BCC no_reward
+  BCS no_reward
   ;COP [CC] ( #E9 )
   BRA on_finish
 
 on_select2:
-  COP [D0] ( #02, #01, &on_reselect )
-  LDY #$0001
+  COP [D1] ( #0180, #01, &on_reselect )
+  LDA #$0001
   JSR give_reward
-  BCC no_reward
-  COP [CC] ( #02 )
+  BCS no_reward
+  COP [CD] ( #0180 )
   BRA on_finish
 
 on_select3:
-  COP [D0] ( #03, #01, &on_reselect )
-  LDY #$0002
+  COP [D1] ( #0181, #01, &on_reselect )
+  LDA #$0002
   JSR give_reward
-  BCC no_reward
-  COP [CC] ( #03 )
+  BCS no_reward
+  COP [CD] ( #$0181 )
   BRA on_finish
 
 on_select4:
-  COP [D0] ( #04, #01, &on_reselect )
-  LDY #$0003
+  COP [D1] ( #$0182, #01, &on_reselect )
+  LDA #$0003
   JSR give_reward
-  BCC no_reward
-  COP [CC] ( #04 )
+  BCS no_reward
+  COP [CD] ( #$0182 )
   BRA on_finish
 
 ;on_select5:
@@ -320,23 +311,18 @@ dabble_end:
 
 ----------------------------------------------------
 
-reward_table:
-  #$0009 #$0001 #$0002 #$0003 #$001D #$0012
-
-price_table:
-  #$0028 #$0032 #$0032 #$0032 #$0004 #$0005
-
 dialog_intro `[DEF]Welcome to my shop.[N]Take a look around![END]`
-dialog_setup `[DLG:3,D][SIZ:D,5][CLR][SFX:0]    Dark Points: [NUM:3,token1]`
-not_enough   `[CLD][DEF][CLR]You don't have enough[N]Dark Points.[END]`
-farewell     `[CLD][DEF][CLR]Come back soon![END]`
-thankyou     `[CLD][DEF][CLR]Thank you![END]`
-reselect     `[CLD][DEF][CLR]You already bought this.[END]`
-inv_full	 `[CLD][DEF][CLR]Your inventory is full![END]`
+dialog_setup `[DLG:3,D][SIZ:D,5][CLR][SFX:0]    Dark Points: [BCD:3,token1]`
+not_enough   `[CLD][DEF]You don't have enough[N]Dark Points.[END]`
+farewell     `[CLD][DEF]Come back soon![END]`
+thankyou     `[CLD][DEF]Thank you![END]`
+reselect     `[CLD][DEF]You already bought this.[END]`
+inv_full     `[CLD][DEF]Your inventory is full![END]`
 
-price		`  [NUM:2,token2][PAL:0]`
-strength	`[N] Strength`
-defense		`[N] Defense`
-health		`[N] Health`
-nothing		`[N] Nothing`
-palette		`[PAL:4]`
+price        `  [BCD:2,token2][PAL:0]`
+strength     `[N] Strength`
+defense      `[N] Defense`
+health       `[N] Health`
+heal         `[N] Heal`
+;nothing      `[N] Nothing`
+palette      `[PAL:4]`

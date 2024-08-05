@@ -25,7 +25,6 @@ Some files in the `asm/` folder are not supported for rebuild, they are included
 * binary_01ABDE
 * binary_01C384
 * binary_01D8BE
-* table_03B401
 
 
 ### Support the project on Patreon!
