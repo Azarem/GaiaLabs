@@ -54,25 +54,30 @@ price_table:   ;(BCD format)
 on_interact:
   COP [BF] ( &dialog_intro )
   
+  SEP #$20
+  LDA #$00
+  XBA
   LDA $jewel_count
-  AND #$00FF
   BEQ search_inventory
+  STZ $jewel_count
+  REP #$20
+  STA $26
   SED
   LDA $0AB0
 
 search_add_top:
   CLC
   ADC #$0001
-  DEC $jewel_count
+  DEC $26
   BEQ search_store_gems
   BRA search_add_top
   
 search_store_gems:
   STA $0AB0
   CLD
+  SEP #$20
 
 search_inventory:
-  SEP #$20
   LDA #$gem_id
   LDY #$000F
 
