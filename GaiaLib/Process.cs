@@ -627,7 +627,8 @@ namespace GaiaLib
             var memStream = new MemoryStream();
             int ix, bix = 0, lineCount = 0;
             byte? bank = null;
-            string? lastStruct = null;
+            //string? lastStruct = null;
+            HexString? lastDelimiter = null;
 
             blocks.Add(current = new AsmBlock { Location = startLoc });
 
@@ -757,7 +758,7 @@ namespace GaiaLib
                 return line;
             }
 
-            void processText(string? struc = null, char? openTag = null)
+            void processText(string? struc = null, char? openTag = null, bool saveDelimiter = false)
             {
                 var dbs = struc == null ? null
                     : root.Structs.Values.FirstOrDefault(x => x.Name.Equals(struc, StringComparison.CurrentCultureIgnoreCase));
@@ -770,6 +771,9 @@ namespace GaiaLib
                 uint memberOffset = 0u, dataOffset = 0u;
                 var memberTypes = dbs?.Types;
                 var currentType = memberTypes?[memberOffset];
+
+                if (saveDelimiter)
+                    lastDelimiter = dbs?.Delimiter ?? parent?.Delimiter;
 
                 bool checkDesc()
                 {
@@ -1029,8 +1033,8 @@ namespace GaiaLib
                                 }
                             }
 
-                            if (openTag == '[' && lastStruct != null)
-                                lastStruct = null;
+                            if (openTag == '[' && lastDelimiter != null)
+                                lastDelimiter = null;
 
                             AdvancePart();
                             continue;
@@ -1055,8 +1059,9 @@ namespace GaiaLib
 
                             line = line[1..].TrimStart(_commaspace);
 
-                            if (delimiter == null && lastStruct != null)
-                                delimiter = root.Structs.Values.Single(x => x.Name.Equals(lastStruct, StringComparison.CurrentCultureIgnoreCase)).Delimiter;
+                            if (delimiter == null && lastDelimiter != null)
+                                delimiter = lastDelimiter;
+                                //delimiter = root.Structs.Values.Single(x => x.Name.Equals(lastStruct, StringComparison.CurrentCultureIgnoreCase)).Delimiter;
 
                             if (delimiter != null)
                             {
@@ -1153,9 +1158,7 @@ namespace GaiaLib
                             if (operand.StartsWith('<'))
                             {
                                 line = operand[1..].TrimStart(_commaspace);
-                                processText(mnem, '<');
-                                if (openTag == '[' && currentType == null)
-                                    lastStruct = mnem;
+                                processText(mnem, '<', openTag == '[' && currentType == null);
                                 mnem = null;
                                 continue;
                             }

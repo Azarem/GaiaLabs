@@ -48,6 +48,9 @@ stairway_return:
 
 
 048AE9 `[DLG:3,6][SIZ:D,3][TPL:0]My name is Will.[FIN]A year has passed since[N]I [LU2:C1]to the Tower of[N]Babel [LU1:F0]my father.[FIN]My [LU2:67]and his party[N]met [LU1:F0]disaster.[FIN]Somehow, I [LU1:B3]it[N][LU1:73]to [LU1:47]Cape...[FIN]I [LU1:D3][LU1:78]believe[N]my [LU2:67]is gone.[N][LU1:1F][LU1:BB]believe it...[FIN][LU1:61]I grow up, I'll[N]be an [LU1:8A]and[N]see the world.[FIN]Somewhere, I [LU1:EF]meet[N]my father...[END]`
+
+04D141 `[DEF][SFX:0][DLY:9][LU1:67][LU1:8F]a large,[N]yummy roast leg of yak![FIN][DEF][TPL:1][LU1:25][N]Everything's ready![N][LU1:2B]go [LU1:74]the[N][LU2:A2][LU1:90]us![PAL:0][END]`
+
 04D732 `[DLG:3,11][SIZ:D,3]A familiar voice[N]speaks [LU1:8E]the flute.[FIN][TPL:E][TPL:4][LU2:E][N][LU1:3A][FIN][LU2:E][N]This is [LU1:FE]father.[END]`
 04D78A `[TPL:E][TPL:0]Will: [N]Father...? [FIN][TPL:4][LU2:E]You were[N]a cute child, but now[N]you've grown up.[FIN]Isn't [LU1:17]Lola's[N]pie delicious?[FIN][TPL:0]Will: [N]Uh, sure, Dad![N][LU1:65]are you?![FIN][TPL:4][LU2:E][N]I [LU1:78][LU2:AD]you now...[FIN][TPL:F][TPL:4]I [LU1:98][LU1:C8]to ask[N]of [LU2:C7]Listen...[N][PAL:0] [LU1:6A]if [LU1:9F][LU1:FE]wish![N] No! You deserted me!`
 04D87D `[CLD][TPL:F][TPL:4][CLR]Flute:[N]I [LU1:F1]you to[N][LU1:D1]me....[FIN]I, [LU2:B7]was once[N]held in [LU1:D6]cell.[N]Look at the[N][LU2:82]wall.[END]`
@@ -66,7 +69,7 @@ stairway_return:
 04FAF9 `[DLG:3,6][SIZ:D,3][SFX:0][DLY:9][LU1:67]got[N]Incan [LU1:48]B![PAU:B0][END]`
 
 0592A6 #40  ;Ship tremor delay 1
-0592CE #90  ;Ship tremor delay 2
+0592CF #40  ;Ship tremor delay 2
 
 
 0592FF `[TPL:E][TPL:4]Lance: [N][LU1:62][LU1:9D]to Seth? [N][LU1:4B]happened! [FIN][TPL:3]Erik: [N]Eeeeeeeh!!! [N][LU1:1D]Seth!!... [FIN]A huge, enormous, giant [N][LU2:62]ran [LU1:A1]the ship![N]Sob... [FIN]Seth fell in the [N]water! Sob... [FIN]He was swallowed!  [N]Gulp...Sob... [FIN][TPL:4]Lance: [N][LU1:62]was that?[PAL:0][END]`
@@ -74,6 +77,7 @@ stairway_return:
 
 0597C6 #$00B0  ;Raft day 1 delay
 059AE5 #$9B33  ;Raft skip health check
+059B73 #20     ;Raft night delay
 059C02 #$00B0  ;Raft shark delay
 
 
