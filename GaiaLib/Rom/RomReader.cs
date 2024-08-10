@@ -3,6 +3,8 @@ using GaiaLib.Database;
 using System.Collections;
 using System.IO.MemoryMappedFiles;
 using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace GaiaLib.Rom
 {
@@ -1076,6 +1078,7 @@ namespace GaiaLib.Rom
         {
             string folder = "asm", extension = "asm";
             string folderPath = Path.Combine(outPath, folder);
+            string transformPath = Path.Combine(outPath, "transforms");
             Directory.CreateDirectory(folderPath);
 
             foreach (var block in DbRoot.Blocks)
@@ -1091,6 +1094,57 @@ namespace GaiaLib.Rom
 
                 writer.WriteLine(); //Empty line
 
+                IEnumerable<XformDef>? xforms = null;
+                var xformFile = Path.Combine(transformPath, $"{block.Name}.json");
+                if (File.Exists(xformFile))
+                    using (var xformStream = File.OpenRead(xformFile))
+                        xforms = JsonSerializer.Deserialize<IEnumerable<XformDef>>(xformStream, DbRoot._jsonOptions);
+
+                if (xforms != null)
+                    foreach (var x in xforms.Where(x => x.Type == XformType.Lookup))
+                    {
+                        var table = block.Parts.First().ObjectRoot as IEnumerable<TableEntry>;
+                        var tableEntry = table?.First();
+                        var entries = tableEntry?.Object as IEnumerable<object>;
+                        var newParts = new List<TableEntry>();
+                        var newList = new List<object>();
+
+                        newParts.Add(new() { Location = tableEntry.Location, Object = newList });
+                        //RefList[tableEntry.Location] = block.Name;
+
+                        uint eIx = 1;
+                        foreach (var entry in entries.OfType<StructDef>())
+                        {
+                            int cIx = 0;
+                            int? key = null;
+                            object? value = null;
+                            foreach (var obj in entry.Parts)
+                            {
+                                if (cIx == x.KeyIx) key = Convert.ToInt32(obj);
+                                else if (cIx == x.ValueIx) value = obj;
+                                cIx++;
+                            }
+
+                            if (key == null || value == null)
+                                throw new("Could not locate key or value for transform");
+
+                            var name = $"entry_{key:X2}";
+                            var loc = tableEntry.Location + eIx;
+
+                            newParts.Add(new() { Location = loc, Object = value });
+                            RefList[loc] = name;
+
+                            while (newList.Count <= key)
+                                newList.Add((ushort)0);
+
+                            newList[key.Value] = $"&{name}";
+
+                            eIx++;
+                        }
+
+                        block.Parts.First().ObjectRoot = newParts;
+                    }
+
                 bool inBlock = false;
                 foreach (var part in block.Parts) //Iterate over each part
                 {
@@ -1101,6 +1155,25 @@ namespace GaiaLib.Rom
                     else inBlock = true;
 
                     WriteObject(writer, part.ObjectRoot, 0);
+                }
+
+                writer.Flush();
+
+                if (xforms?.Any(x => x.Type == XformType.Replace) == true)
+                {
+                    string inString;
+                    outStream.Position = 0;
+                    using (var reader = new StreamReader(outStream, leaveOpen: true))
+                        inString = reader.ReadToEnd();
+
+                    foreach (var x in xforms.Where(x => x.Type == XformType.Replace))
+                        inString = Regex.Replace(inString, x.Key, x.Value);
+                    
+                    outStream.Position = 0;
+                    using (var nw = new StreamWriter(outStream, leaveOpen: true))
+                        nw.Write(inString);
+
+                    outStream.SetLength(outStream.Position);
                 }
             }
         }
@@ -1284,6 +1357,10 @@ namespace GaiaLib.Rom
                 writer.Write(refChar);
                 writer.Write(str);
                 writer.Write(refChar);
+            }
+            else if (obj is string str)
+            {
+                writer.Write(str);
             }
             else if (obj is IEnumerable arr)
             {

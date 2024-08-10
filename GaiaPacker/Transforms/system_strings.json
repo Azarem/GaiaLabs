@@ -1,0 +1,12 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "\\[NHM:14]\\[CUR:6C,0]\\[ESC:8,9,A,B,C]\\[NHM:4]\\[CUR:A8,0]\\[HE]",
+    "value": "[NHM:4][CUR:66,0][HE]"
+  },
+  {
+    "type": "Replace",
+    "key": "\\[CUR:48,0]\\[NHM:14]\\[ESC:1,2,3,4,5]\\[CUR:84,0]\\[NHM:8]\\[HP]\\[CUR:9C,0]\\[NHM:14]\\[BCD:1,AD8]\\[CUR:A2,0]\\[NUM:AD6]",
+    "value": "[CUR:46,0][NHM:8][HP][CUR:9C,0][NHM:14][BCD:1,AD8][CUR:A0,0][NUM:AD6][CUR:5E,0][BCD:2,644][CUR:7A,0][BCD:3,9A2][CUR:BA,0][BCD:3,9A4]"
+  }
+]

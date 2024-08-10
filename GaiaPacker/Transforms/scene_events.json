@@ -1,0 +1,12 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "actor < #1A, #40, #05, \\$87C402 >",
+    "value": "actor < #1A, #40, #05, %DpShop >"
+  },
+  {
+    "type": "Replace",
+    "key": "actor < #00, #01, #00, \\$88D7A8 >",
+    "value": "$&\r\n    actor < #00, #01, #00, %Teleporter >"
+  }
+]

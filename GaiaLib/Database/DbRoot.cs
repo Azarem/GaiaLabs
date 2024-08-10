@@ -27,7 +27,7 @@ namespace GaiaLib.Database
         public IDictionary<Location, string> Rewrites { get; set; }
 
 
-        private static readonly JsonSerializerOptions _jsonOptions = new()
+        internal static readonly JsonSerializerOptions _jsonOptions = new()
         {
             PropertyNameCaseInsensitive = true,
             ReadCommentHandling = JsonCommentHandling.Skip
