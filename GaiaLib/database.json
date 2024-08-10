@@ -230,8 +230,8 @@
       "DirectPageIndexedIndirectX": "(${0:X2}, X)",
       "DirectPageIndirectIndexedY": "(${0:X2}), Y",
       "DirectPageIndirectLongIndexedY": "[${0:X2}], Y",
-      "StackRelative": "${0:2}, S",
-      "StackRelativeIndirectIndexedY": "(${0:2}, S), Y",
+      "StackRelative": "${0:X2}, S",
+      "StackRelativeIndirectIndexedY": "(${0:X2}, S), Y",
       "PCRelative": "{0}",
       "PCRelativeLong": "{0}",
       "BlockMove": "#${0:X2}, #${1:X2}"
