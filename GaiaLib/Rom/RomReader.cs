@@ -109,6 +109,14 @@ namespace GaiaLib.Rom
                 RefList[loc] = $"loc_{loc}";
         }
 
+        private void ResolveMnemonic(Address addr)
+        {
+            HexString hexString = (addr.Bank == 0x7E || addr.Bank == 0x7F) ? new((uint)addr) : new(addr.Offset);
+
+            if (DbRoot.Mnemonics.TryGetValue(hexString, out var label) && label.IndexOfAny(['-', '+']) < 0)
+                _part.Block.Mnemonics.Add((hexString, label));
+        }
+
         private static string[] strictAsm = ["scene_events", "table_0CE5E5"];
         private string ResolveName(Location loc, AddressType type, bool isBranch)
         {
@@ -1046,6 +1054,8 @@ namespace GaiaLib.Rom
             else if (obj is IEnumerable arr)
                 foreach (var o in arr)
                     ResolveObject(o, isBranch);
+            else if (obj is Address addr)
+                ResolveMnemonic(addr);
             else if (obj is Location loc)
                 ResolveInclude(loc, isBranch);
             else if (obj is LocationWrapper lw)
@@ -1091,6 +1101,11 @@ namespace GaiaLib.Rom
 
                 foreach (var inc in block.GetIncludes())
                     writer.WriteLine("?INCLUDE '{0}'", inc.Name); //Write includes
+
+                writer.WriteLine(); //Empty line
+
+                foreach (var mnem in block.Mnemonics.OrderBy(x => x.Item1.Value))
+                    writer.WriteLine("!{0} {1:X4}", mnem.Item2.PadRight(30, ' '), mnem.Item1.Value);
 
                 writer.WriteLine(); //Empty line
 
@@ -1145,14 +1160,13 @@ namespace GaiaLib.Rom
                         block.Parts.First().ObjectRoot = newParts;
                     }
 
-                bool inBlock = false;
                 foreach (var part in block.Parts) //Iterate over each part
                 {
                     _part = part;
                     _isInline = true;
 
-                    if (inBlock) writer.WriteLine("------------------------------------"); //Serparator
-                    else inBlock = true;
+                    writer.WriteLine("---------------------------------------------");
+                    writer.WriteLine();
 
                     WriteObject(writer, part.ObjectRoot, 0);
                 }
@@ -1168,7 +1182,7 @@ namespace GaiaLib.Rom
 
                     foreach (var x in xforms.Where(x => x.Type == XformType.Replace))
                         inString = Regex.Replace(inString, x.Key, x.Value);
-                    
+
                     outStream.Position = 0;
                     using (var nw = new StreamWriter(outStream, leaveOpen: true))
                         nw.Write(inString);
@@ -1269,10 +1283,18 @@ namespace GaiaLib.Rom
                         else if (obj is LocationWrapper lw)
                             return ResolveName(lw.Location, lw.Type, isBranch);
                         else if (obj is Address addr)
+                        {
+                            HexString hexString = (addr.Bank == 0x7E || addr.Bank == 0x7F)
+                                ? new((uint)addr) : new(addr.Offset);
+
+                            if (DbRoot.Mnemonics.TryGetValue(hexString, out var label))
+                                return label;
+
                             if (op.Size == 4)
                                 return (uint)addr;
                             else
                                 return addr.Offset;
+                        }
                         return obj;
                     }
 

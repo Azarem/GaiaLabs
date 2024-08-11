@@ -376,6 +376,23 @@
     "F8": { "code": "F8", "value": "\\8" },
     "F9": { "code": "F9", "value": "\\9" }
   },
+  "mnemonics" : {
+    "003A": "meta_addr",
+    "0642": "scene_next",
+    "0644": "scene_current",
+    "09A2": "player_x_pos",
+    "09A4": "player_y_pos",
+    "09A6": "player_x_tile",
+    "09A8": "player_y_tile",
+    "09AA": "player_actor",
+    "09AE": "player_flags",
+    "09B2": "player_speed_ew",
+    "09B4": "player_speed_ns",
+    "0AB0": "jewels_collected",
+    "0AB4": "inventory_slots",
+    "0AC4": "inventory_equipped_index",
+    "0AC6": "inventory_equipped_type"
+  },
   "structs": {
     "h_event": { "name": "h_event", "types": [ "Byte", "Byte", "Byte" ] },
     "h_proc": { "name": "h_proc", "types": [ "Byte", "Byte" ] },

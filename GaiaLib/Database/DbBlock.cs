@@ -4,6 +4,7 @@ namespace GaiaLib.Database
     public class DbBlock
     {
         internal DbRoot Root;
+        internal HashSet<(HexString, string)> Mnemonics = new();
 
         public string Name { get; set; }
 

@@ -9,6 +9,7 @@ namespace GaiaLib.Database
         public string[] WideMap { get; set; }
         public IDictionary<HexString, DbStringCommand> WideCommands { get; set; }
         public IDictionary<HexString, DbStringCommand> StringCommands { get; set; }
+        public IDictionary<HexString, string> Mnemonics { get; set; }
         public IDictionary<string, DbStruct> Structs { get; set; }
 
         public IEnumerable<DbFile> Files { get; set; }
