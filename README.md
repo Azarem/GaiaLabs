@@ -1,12 +1,13 @@
+# Illusion of Gaia ROM Hacking
+
 ![logo_small](https://github.com/Azarem/GaiaLabs/assets/7395229/cbb7c720-ebec-4cf9-8110-edd6f2fbe057)
 
-# GaiaLabs
-Illusion of Gaia (dis)assembler with COProcessor call awareness and data struct support. Adding more features regularly.
+GaiaLabs is a collection of tools used for Illusion of Gaia ROM hacking. It has a (dis)assembler with COProcessor call awareness and data struct support. Adding more features regularly.
 The goal is to re-assemble all the pieces and create new rom files. This will allow you to potentially change any part of the game.
 
 ## Potential Uses
 - ~~Expand rom to 4mb and remove file compression to improve load times~~ (complete)
-- Write new code modules and apply them to the rom (75%)
+- ~~Write new code modules and apply them to the rom~~ (complete)
 - Add completely new areas to the game
 - Enhancements to the world map
 
