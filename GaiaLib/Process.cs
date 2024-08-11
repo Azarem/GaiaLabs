@@ -615,6 +615,21 @@ namespace GaiaLib
             _labelSpace = ['[', '{', '#', '`', '~', '|', ':'],
             _objectspace = ['<', '['];
 
+        private class StringSizeComparer : IComparer<string>
+        {
+            public int Compare(string? x, string? y)
+            {
+                if (x == null)
+                    return (y == null) ? 0 : 1;
+                else if (y == null)
+                    return -1;
+
+                return (x.Length > y.Length) ? -1 : (x.Length < y.Length) ? 1 : 0;
+            }
+        }
+
+        private static StringSizeComparer _staticComparer = new StringSizeComparer();
+
         public static (List<AsmBlock>, List<string>, byte?) ParseAssembly(DbRoot root, Stream inStream, uint startLoc)//, out IDictionary<string, Location> includes) //, IDictionary<string, Location> chunkLookup)
         {
             using var reader = new StreamReader(inStream);
@@ -623,7 +638,7 @@ namespace GaiaLib
             var blocks = new List<AsmBlock>();
             AsmBlock current;
             //AsmBlock? target;
-            var tags = new Dictionary<string, string?>();
+            var tags = new SortedDictionary<string, string?>(_staticComparer);
             var memStream = new MemoryStream();
             int ix, bix = 0, lineCount = 0;
             byte? bank = null;
@@ -1061,7 +1076,7 @@ namespace GaiaLib
 
                             if (delimiter == null && lastDelimiter != null)
                                 delimiter = lastDelimiter;
-                                //delimiter = root.Structs.Values.Single(x => x.Name.Equals(lastStruct, StringComparison.CurrentCultureIgnoreCase)).Delimiter;
+                            //delimiter = root.Structs.Values.Single(x => x.Name.Equals(lastStruct, StringComparison.CurrentCultureIgnoreCase)).Delimiter;
 
                             if (delimiter != null)
                             {

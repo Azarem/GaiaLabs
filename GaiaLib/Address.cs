@@ -21,7 +21,7 @@ namespace GaiaLib
                     if (Offset < 0x2100) goto None;
                     if (Offset < 0x2200) return AddressSpace.System;
                     if (Offset < 0x3000) goto None;
-                    if (Offset < 0x4000) return AddressSpace.System;
+                    //if (Offset < 0x4000) return AddressSpace.System;
                     if (Offset < 0x4100) return AddressSpace.System;
                     if (Offset < 0x4200) goto None;
                     if (Offset < 0x4500) return AddressSpace.System;
@@ -36,34 +36,34 @@ namespace GaiaLib
             }
         }
 
-        public readonly uint Position
-        {
-            get
-            {
-                if ((Bank & 0x40) == 0)
-                {
-                    if (Offset >= 0x8000) return ((Bank & 0x3Fu) << 16) | Offset;
-                    if (Offset >= 0x6000 && (Bank & 0x20) != 0) return Offset - 0x6000u;
-                    if (Offset < 0x2000) return offset;
-                    if (Offset < 0x2100) goto Throw;
-                    if (Offset < 0x2200) return offset;
-                    if (Offset < 0x3000) goto Throw;
-                    if (Offset < 0x4000) return offset;
-                    if (Offset < 0x4100) return offset;
-                    if (Offset < 0x4200) goto Throw;
-                    if (Offset < 0x4500) return offset;
-                }
-                else if (Bank == 0x7E)
-                    return Offset;
-                else if (Bank == 0x7F)
-                    return Offset + 0x10000u;
-                else
-                    return ((Bank & 0x3Fu) << 16) | Offset;
+        //public readonly uint Position
+        //{
+        //    get
+        //    {
+        //        if ((Bank & 0x40) == 0)
+        //        {
+        //            if (Offset >= 0x8000) return ((Bank & 0x3Fu) << 16) | Offset;
+        //            if (Offset >= 0x6000 && (Bank & 0x20) != 0) return Offset - 0x6000u;
+        //            if (Offset < 0x2000) return offset;
+        //            if (Offset < 0x2100) goto Throw;
+        //            if (Offset < 0x2200) return offset;
+        //            if (Offset < 0x3000) goto Throw;
+        //            if (Offset < 0x4000) return offset;
+        //            if (Offset < 0x4100) return offset;
+        //            if (Offset < 0x4200) goto Throw;
+        //            if (Offset < 0x4500) return offset;
+        //        }
+        //        else if (Bank == 0x7E)
+        //            return Offset;
+        //        else if (Bank == 0x7F)
+        //            return Offset + 0x10000u;
+        //        else
+        //            return ((Bank & 0x3Fu) << 16) | Offset;
 
-                Throw:
-                throw new("Cannot process NULL address space");
-            }
-        }
+        //        Throw:
+        //        throw new("Cannot process NULL address space");
+        //    }
+        //}
 
 
         public static implicit operator Address(uint addr)
