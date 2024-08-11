@@ -624,7 +624,7 @@ namespace GaiaLib
                 else if (y == null)
                     return -1;
 
-                return (x.Length > y.Length) ? -1 : (x.Length < y.Length) ? 1 : 0;
+                return (x.Length > y.Length) ? -1 : (x.Length < y.Length) ? 1 : string.Compare(x, y);
             }
         }
 
