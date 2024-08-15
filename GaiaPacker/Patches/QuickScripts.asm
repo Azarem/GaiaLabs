@@ -88,6 +88,16 @@ stairway_return:
 05A5AB `[TPL:A][TPL:0]Will: I [LU2:71]for  [N][LU1:8B]safety, and [N]for my father...[PAL:0][END]`
 05A9F9 `[TPL:A][TPL:0]Will: Suddenly Will[N]fell over,[N]unconscious... [FIN][TPL:1][LU1:25][N]Will! Will!! [N][LU1:64]wrong!! [FIN]Wake up!! Don't[N][LU1:AC]me [LU2:73]alone![PAL:0][END]`
 
+05C85E `[TPL:B][TPL:4]Lance: [N][LU1:62]is [LU1:D6]place? [FIN][TPL:1][LU1:25][LU1:49]I [LU1:91][N]a [LU1:A7]homesick... [FIN][TPL:3]Erik: [N]I [LU1:91][LU1:A5]I'm [LU1:73]in [N]the womb.... [FIN][TPL:2][LU1:2A]Everything[N]that's [LU1:9D]and the[N][LU1:C1][LU1:20]met are[N]pouring [LU1:A1]my head...[FIN][TPL:4]Lance: I was [LU1:C5]in [N]the [LU1:E2]of [LU1:47]Cape. [FIN][LU1:61]my [LU2:67][N][LU1:83][LU1:79][LU1:73][N][LU1:8E]an expedition... [FIN]The [LU2:88]important [LU1:E3][N]in my [LU1:B0]was gone. I [N][LU1:83][LU1:A4][LU1:F7]to do. [FIN][TPL:1][LU1:25]I couldn't [N]stand my [LU2:67]using [N][LU2:A2]to invade [N][LU1:BD]countries. [FIN][LU1:1D]awful [LU1:F6]someone[N]loses [LU1:E1]life.[FIN][LU1:62]had [LU2:AF]years[N]to put together was[N][LU2:59]in one moment.[FIN][TPL:3]Erik: I [LU1:F9]if Seth [N]is all right...? [FIN][TPL:2][LU1:2A][LU1:3D][LU1:AF]on[N]because [LU2:AB]forget[N][LU1:6B]unpleasant things.[PAL:0][END]`
+
+05E6C0 `[DEF][TPL:0]There's a tile buried[N]in the sand...[FIN][LU1:61]Will's Flute [N]touched it, [LU1:D9][N]was a rumbling sound![PAL:0][END]`
+05E753 `[DEF][TPL:3]Erik: [N][LU2:15][LU1:4B][LU1:9C][N]is [LU1:81]down!![PAL:0][END]`
+05E774 `[TPL:E][TPL:1][LU1:25][N]Will! Will! [N]Wi-i-i-i-i-i-l-l-l-l! [PAL:0][CLD]`
+
+05EB4F `[DEF][TPL:6][LU1:36]Of course! [N]Cygnus has nine stars,[N]and [LU1:D9]are nine[N]stones... [FIN]`
+
+05F160 `[DEF][TPL:2]Look! Look [LU1:F4]the[N]rocks are on the ground![FIN][LU1:5D]positioned like[N]the stars in the[N][LU1:7E]of Cygnus![PAL:0][END]`
+
 
 0683C4 #00  ;Parachute delay
 

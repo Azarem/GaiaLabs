@@ -48,11 +48,11 @@ using (var file = File.OpenRead(path))
     project = JsonSerializer.Deserialize<ProjectRoot>(file, options)
         ?? throw new("Error deserializing project file");
 
-//#if DEBUG
-//    baseDir = "C:\\Games\\Dump";
-//#else
+    //#if DEBUG
+    //    baseDir = "C:\\Games\\Dump";
+    //#else
     baseDir = string.IsNullOrWhiteSpace(project.BaseDir) ? Directory.GetParent(file.Name).FullName : project.BaseDir;
-//#endif
+    //#endif
 }
 
 //#if DEBUG
@@ -159,20 +159,9 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
     {
         //Rebase assembly
         if (file.Blocks?.Any() == true && file.Blocks[0].Location != file.Location && file.Location != 0u)
-        {
             throw new("Assembly was not based properly");
-            //uint loc = filePos;
-            //for (int x = 0; x < file.Blocks.Count; x++)
-            //{
-            //    var block = file.Blocks[x];
-            //    if (x > 0 && block.Label == null)
-            //        break;
-            //    block.Location = loc;
-            //    loc += (uint)block.Size;
-            //}
-        }
 
-        ParseAssembly(file.Blocks, file.Includes, root, chunkLookup);
+        ParseAssembly(file.Blocks, file.Includes, root, chunkLookup, file.IncludeLookup);
     }
     else
     {
@@ -281,54 +270,16 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
         }
     }
 
-    //if (file.File?.XRef != null)
-    //    foreach (var rf in file.File.XRef)
-    //    {
-    //        //var offset = uint.Parse(rf, NumberStyles.HexNumber);
-    //        outRom.Position = rf;
-    //        outRom.WriteByte((byte)filePos);
-    //        outRom.WriteByte((byte)(filePos >> 8));
-    //        outRom.WriteByte((byte)((filePos >> 16) | 0xC0)); //Code references need 0x80!!
-    //    }
-
-    //if (file.File?.CRef != null)
-    //    foreach (var rf in file.File.CRef)
-    //    {
-    //        //var offset = uint.Parse(rf, NumberStyles.HexNumber);
-    //        outRom.Position = rf;
-    //        outRom.WriteByte((byte)filePos);
-    //        outRom.WriteByte((byte)(filePos >> 8));
-    //        outRom.WriteByte((byte)((filePos >> 16) | 0x80)); //Code references need 0x80!!
-    //    }
-
-    //if (file.File?.LRef != null)
-    //    foreach (var rf in file.File.LRef)
-    //    {
-    //        //var offset = uint.Parse(rf, NumberStyles.HexNumber);
-    //        outRom.Position = rf;
-    //        outRom.WriteByte((byte)filePos);
-    //        outRom.WriteByte((byte)(filePos >> 8));
-    //    }
-
-    //if (file.File?.HRef != null)
-    //    foreach (var rf in file.File.HRef)
-    //    {
-    //        //var offset = uint.Parse(rf, NumberStyles.HexNumber);
-    //        outRom.Position = rf;
-    //        outRom.WriteByte((byte)((filePos >> 16) | 0x80)); //Code references need 0x80!!
-    //    }
-
-    //Move to next file
-    //outRom.Position = nextPos;
     return size;
 }
 
 
-void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot root, IDictionary<string, Location> chunkLookup)
+void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot root, IDictionary<string, Location> chunkLookup, IDictionary<string, Location> includeLookup)
 {
     if (blocks == null)
         throw new("Assembly has not been parsed");
     //blocks ??= Process.ParseAssembly(root, inStream, (uint)outRom.Position, out includes);
+
 
     int bix = 0;
 
@@ -368,7 +319,14 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot r
             }
             else if (obj is string str)
             {
-                var label = _addressspace.Contains(str[0]) ? str[1..] : str;
+                var label = str;
+
+                var ix = 0;
+                while (Process._addressspace.Contains(label[ix]))
+                    ix++;
+
+                if (ix > 0)
+                    label = label[ix..];
 
                 Location loc;
                 bool isRelative = parentOp != null &&
@@ -388,7 +346,8 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot r
                 var target = blocks.FirstOrDefault(x => x.Label?.Equals(label, StringComparison.CurrentCultureIgnoreCase) == true);
                 if (target != null)
                     loc = target.Location;
-                else if (!chunkLookup.TryGetValue(label.ToUpper(), out loc))
+                else if (!chunkLookup.TryGetValue(label.ToUpper(), out loc)
+                    && includeLookup?.TryGetValue(label.ToUpper(), out loc) != true)
                 {
                     //These now don't happen
                     if (label[0] == '#')
@@ -408,7 +367,7 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot r
                             1 or 2 => (object)byte.Parse(label, NumberStyles.HexNumber),
                             3 or 4 => ushort.Parse(label, NumberStyles.HexNumber),
                             5 or 6 => uint.Parse(label, NumberStyles.HexNumber),
-                            _ => throw new($"Incorrect operand length {label}")
+                            _ => throw new($"Invalid operand '{label}'")
                         };
                     goto Top;
                 }

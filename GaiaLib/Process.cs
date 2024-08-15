@@ -16,6 +16,7 @@ namespace GaiaLib
             public Location Location;
             public List<AsmBlock>? Blocks;
             public List<string>? Includes;
+            public Dictionary<string, Location> IncludeLookup;
             public byte? Bank;
 
             public ChunkFile(string path, DbFile file)
@@ -77,8 +78,12 @@ namespace GaiaLib
             var chunkFiles = DiscoverFiles(baseDir, root, files);
             var patches = DiscoverPatches(baseDir, root, gaps);
 
+            var stdPatches = patches.Where(x => x.Bank != null).ToList();
+            var nullPatches = patches.Where(x => x.Bank == null).ToList();
+
             //Process sfx files the same as others
-            var allFiles = sfxFiles.Concat(chunkFiles).Concat(patches.Where(x => x.Bank != null)).ToArray();
+            var allFiles = sfxFiles.Concat(chunkFiles).Concat(stdPatches).ToArray();
+            var asmFiles = chunkFiles.Where(x => x.Blocks != null).Concat(patches).ToArray();
 
             //Assign locations
             MatchChunks(gaps, allFiles);
@@ -87,8 +92,8 @@ namespace GaiaLib
 
             //Rebase assemblies
             //var hasBlocks = allFiles.Where(x => x.Blocks != null).ToArray();
-            foreach (var file in allFiles)
-                file.Rebase();
+            //foreach (var file in allFiles)
+            //    file.Rebase();
 
             //foreach (var file in hasBlocks.Concat(patches))
             //{
@@ -102,6 +107,9 @@ namespace GaiaLib
             //    }
             //}
 
+            foreach (var file in asmFiles)
+                file.Rebase();
+
             //Add other files to lookup
             foreach (var f in root.Files.Except(allFiles.Select(x => x.File)))
                 blockLookup[f.Name.ToUpper()] = f.Start;
@@ -110,26 +118,59 @@ namespace GaiaLib
             foreach (var f in allFiles)//.Except(patches))
                 blockLookup[f.File.Name.ToUpper()] = f.Location;
 
-            //Process transforms
-            foreach (var tr in root.Transforms)
+            //Process includes
+            foreach (var f in asmFiles.Where(x => x.Includes?.Any() == true))
             {
-                var name = tr.Value.Name;
+                f.IncludeLookup = asmFiles.Where(x => f.Includes.Contains(x.File.Name.ToUpper()))
+                    .SelectMany(x => x.Blocks.Where(x => x.Label != null))
+                    .ToDictionary(x => x.Label.ToUpper(), x => x.Location);
+            }
+
+
+            //Process transforms
+            foreach (var tr in root.Transforms.Where(x => x.Value != ""))
+            {
+                var name = tr.Value;
+                char cmd = '&', op = (char)0;
+                uint offset = 0;
+
+                if (_addressspace.Contains(name[0]))
+                {
+                    cmd = name[0];
+                    name = name[1..];
+                }
+
+                var ix = name.IndexOfAny(_operators);
+                if (ix >= 0)
+                {
+                    op = name[ix];
+                    offset = uint.Parse(name[(ix + 1)..], NumberStyles.HexNumber);
+                    name = name[..ix];
+                }
+
                 if (!blockLookup.TryGetValue(name.ToUpper(), out var loc))
                 {
-                    var matchingBlock = allFiles.Where(x => x.File.Type == BinType.Assembly)
-                        .SelectMany(x => x.Blocks)
+                    var matchingBlock = asmFiles.SelectMany(x => x.Blocks)
                         .SingleOrDefault(x => name.Equals(x.Label, StringComparison.CurrentCultureIgnoreCase));
                     if (matchingBlock == null)
                         continue;
                     loc = matchingBlock.Location;
                 }
 
-                onTransform(tr.Key.Offset, tr.Value.Type switch
+                switch (op)
                 {
-                    "%" => (loc.Offset | 0x800000),
-                    "*" => (byte)(loc.Bank | 0xC0),
-                    "^" => (byte)(loc.Bank | 0x80),
-                    _ => (object)(ushort)loc.Offset
+                    case '-': loc -= offset; break;
+                    case '+': loc += offset; break;
+                }
+
+
+                onTransform(tr.Key.Offset, cmd switch
+                {
+                    '%' => (loc.Offset | 0x800000),
+                    '*' => (byte)(loc.Bank | 0xC0),
+                    '^' => (byte)(loc.Bank | 0x80),
+                    '&' => (object)(ushort)loc.Offset,
+                    _ => throw new($"Unsupported transform type '{cmd}'")
                 });
             }
 
@@ -145,7 +186,7 @@ namespace GaiaLib
             foreach (var file in allFiles)
                 onProcess(file, root, blockLookup);
 
-            foreach (var file in patches.Where(x => x.Bank == null))
+            foreach (var file in nullPatches)
                 onProcess(file, root, blockLookup);
 
             //Write patch contents
@@ -256,10 +297,10 @@ namespace GaiaLib
 
         private static List<ChunkFile> DiscoverSfx(string baseDir, DbRoot root)
         {
-            string folder = "sfx", extension = "bin";
+            var res = root.GetPath(BinType.Sound);
             return root.Sfx.Names.Select(name =>
             {
-                var path = Path.Combine(baseDir, folder, $"{name}.{extension}");
+                var path = Path.Combine(baseDir, res.Folder ?? "", $"{name}.{res.Extension}");
                 return new ChunkFile(path, new() { Type = BinType.Sound, Name = name })
                 {
                     Size = (int)(new FileInfo(path).Length + 2)
@@ -277,21 +318,22 @@ namespace GaiaLib
         private static List<ChunkFile> DiscoverFiles(string baseDir, DbRoot root, IEnumerable<DbFile> files)
             => files.Select(file =>
             {
-                string folder = "misc", extension = "bin";
-                switch (file.Type)
-                {
-                    case BinType.Bitmap: folder = "graphics"; break;
-                    case BinType.Palette: folder = "palettes"; extension = "pal"; break;
-                    case BinType.Music: folder = "music"; extension = "bgm"; break;
-                    case BinType.Tileset: folder = "tilesets"; extension = "set"; break;
-                    case BinType.Tilemap: folder = "tilemaps"; extension = "map"; break;
-                    case BinType.Meta17: break;
-                    case BinType.Spritemap: folder = "spritemaps"; break;
-                    case BinType.Assembly: folder = "asm"; extension = "asm"; break;
-                        //case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
-                };
+                var res = root.GetPath(file.Type);
+                //string folder = "misc", extension = "bin";
+                //switch (file.Type)
+                //{
+                //    case BinType.Bitmap: folder = "graphics"; break;
+                //    case BinType.Palette: folder = "palettes"; extension = "pal"; break;
+                //    case BinType.Music: folder = "music"; extension = "bgm"; break;
+                //    case BinType.Tileset: folder = "tilesets"; extension = "set"; break;
+                //    case BinType.Tilemap: folder = "tilemaps"; extension = "map"; break;
+                //    case BinType.Meta17: break;
+                //    case BinType.Spritemap: folder = "spritemaps"; break;
+                //    case BinType.Assembly: folder = "asm"; extension = "asm"; break;
+                //        //case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
+                //};
 
-                var path = Path.Combine(baseDir, folder ?? "", $"{file.Name}.{extension}");// File.Exists(path) ? path : Path.Combine(baseDir, path);
+                var path = Path.Combine(baseDir, res.Folder ?? "", $"{file.Name}.{res.Extension}");// File.Exists(path) ? path : Path.Combine(baseDir, path);
                 int size;
                 List<AsmBlock>? blocks = null;
                 List<string>? includes = null;
@@ -315,37 +357,18 @@ namespace GaiaLib
 
         private static List<ChunkFile> DiscoverPatches(string baseDir, DbRoot root, List<DbGap> gaps)
         {
-            string folder = "patches", extension = "asm";
+            var res = root.GetPath(BinType.Patch);
+            //string folder = "patches", extension = "asm";
             var patchList = new List<ChunkFile>();
 
-            //var patchReserves = new Dictionary<byte, uint>();
-
-            //uint getOrReserve(byte bank)
-            //{
-            //    bank &= 0x3F;
-            //    if (patchReserves.TryGetValue(bank, out uint location))
-            //        return location;
-
-            //    location = ((uint)bank << 16) | 0x8000u;
-            //    var gap = gaps.Where(x => x.Start.Bank == bank && x.Start >= location)
-            //        .OrderByDescending(x => x.Size)
-            //        .FirstOrDefault()
-            //        ?? throw new($"Unable to reserve patch space for bank {bank:X2}");
-
-            //    Console.WriteLine($"Reserving space {gap.Start} - {gap.End} for patches");
-
-            //    gaps.Remove(gap);
-            //    return patchReserves[bank] = gap.Start;
-            //}
-
-            foreach (var file in Directory.GetFiles(Path.Combine(baseDir, folder), $"*.{extension}"))
+            foreach (var file in Directory.GetFiles(Path.Combine(baseDir, res.Folder ?? ""), $"*.{res.Extension}"))
             {
                 byte? bank = null;
 
                 var chunkFile = new ChunkFile(file, new()
                 {
                     Type = BinType.Assembly,
-                    Name = new FileInfo(file).Name[..^(extension.Length + 1)]
+                    Name = new FileInfo(file).Name[..^(res.Extension.Length + 1)]
                 });
 
                 using (var fileStream = File.OpenRead(file))
@@ -354,92 +377,7 @@ namespace GaiaLib
                 chunkFile.CalculateSize();
                 patchList.Add(chunkFile);
 
-                //using (var fileStream = File.OpenRead(file))
-                //using (var reader = new StreamReader(fileStream))
-                //{
-                //    var line = (reader.ReadLine() ?? "").Trim().ToUpper();
-                //    if (line.StartsWith("?BANK"))
-                //        bank = byte.Parse(line[5..].Trim(), NumberStyles.HexNumber);
-                //}
-
-                //patchList.Add(new ChunkFile(file, new()
-                //{
-                //    Type = BinType.Assembly,
-                //    Name = new FileInfo(file).Name[..^(extension.Length + 1)]
-                //})
-                //{
-                //    Bank = bank != null ? (byte)(bank.Value & 0x3F) : null
-                //});
             }
-
-            //foreach (var group in patchList.GroupBy(x => x.Bank))
-            //{
-            //    var bank = group.Key;
-            //    int currentRemaining = 0;
-            //    Location currentLoc = 0u;
-            //    DbGap? currentGap = null;
-
-            //    void reserveSpace()
-            //    {
-            //        //Gap is full, take it out of processing
-            //        if (currentGap != null)
-            //        {
-            //            gaps.Remove(currentGap);
-            //            Console.WriteLine($"Gap full, finding another");
-            //        }
-
-            //        currentGap = gaps.Where(x => x.Start.Bank == bank && (x.Start.Offset & 0x8000u) != 0u)
-            //            .OrderByDescending(x => x.Size)
-            //            .FirstOrDefault()
-            //            ?? throw new($"Unable to reserve patch space for bank {bank:X2}");
-
-            //        Console.WriteLine($"Processing space {currentGap.Start} - {currentGap.End} for patches");
-            //        //gaps.Remove(gap);
-
-            //        currentRemaining = currentGap.Size;
-            //        currentLoc = currentGap.Start;
-            //    }
-
-            //    foreach (var file in group)
-            //    {
-            //        if (bank != null && currentRemaining == 0)
-            //            reserveSpace();
-
-            //        using (var fileStream = File.OpenRead(file.Path))
-            //            (file.Blocks, file.Includes, file.Bank) = ParseAssembly(root, fileStream, currentLoc);
-
-            //        if (bank != null)
-            //        {
-            //            var size = file.CalculateSize();
-            //            if (size > currentRemaining)
-            //            {
-            //                reserveSpace();
-            //                if (size > currentRemaining)
-            //                    throw new($"Not enough available space for patch bank {bank}");
-            //                file.Rebase(currentLoc);
-            //            }
-            //            else
-            //                file.Location = currentLoc;
-
-            //            currentLoc += (uint)size;
-            //            currentRemaining -= size;
-            //        }
-            //    }
-
-            //    //Adjust space of used gap
-            //    if (currentGap != null)
-            //        if (currentRemaining == 0)
-            //        {
-            //            Console.WriteLine($"Gap full");
-            //            gaps.Remove(currentGap);
-            //        }
-            //        else
-            //        {
-            //            Console.WriteLine($"Adjusting new gap start {currentLoc}");
-            //            currentGap.Start = currentLoc;
-            //        }
-
-            //}
 
             return patchList;
         }
@@ -606,14 +544,15 @@ namespace GaiaLib
             throw new($"Unable to get size for operand '{obj}'");
         }
 
-        private static char[]
+        public static char[]
             _whitespace = [' ', '\t'],
             _operators = ['-', '+'],
             _commaspace = [',', ' ', '\t'],
-            _addressspace = ['@', '&', '^', '#', '$', '%'],
+            _addressspace = ['@', '&', '^', '#', '$', '%', '*'],
             _symbolSpace = [',', ' ', '\t', '<', '>', '(', ')', ':', '[', ']', '{', '}', '`', '~', '|'],
             _labelSpace = ['[', '{', '#', '`', '~', '|', ':'],
-            _objectspace = ['<', '['];
+            _objectspace = ['<', '['],
+            _copSplitChars = [' ', '\t', ',', '(', ')', '[', ']', '$', '#'];
 
         private class StringSizeComparer : IComparer<string>
         {
@@ -702,7 +641,7 @@ namespace GaiaLib
 
                         case "INCLUDE":
                             if (value.Length > 0)
-                                includes.Add(value);
+                                includes.Add(value.ToUpper().Replace("'", ""));
                             break;
                     }
 
@@ -1035,16 +974,32 @@ namespace GaiaLib
                                 else
                                 {
                                     var data = Convert.FromHexString(hex);
-                                    if (reverse)
-                                        for (int x = 0, y = data.Length; --y > x;)
-                                        {
-                                            var sample = data[x];
-                                            data[x++] = data[y];
-                                            data[y] = sample;
-                                        }
+                                    if (data.Length == 1)
+                                    {
+                                        current.ObjList.Add(data[0]);
+                                        current.Size++;
+                                    }
+                                    else
+                                    {
+                                        if (reverse)
+                                            for (int x = 0, y = data.Length; --y > x;)
+                                            {
+                                                var sample = data[x];
+                                                data[x++] = data[y];
+                                                data[y] = sample;
+                                            }
 
-                                    current.ObjList.Add(data);
-                                    current.Size += data.Length;
+                                        if (data.Length == 2)
+                                        {
+                                            current.ObjList.Add((ushort)(data[0] | data[1] << 8));
+                                            current.Size += 2;
+                                        }
+                                        else
+                                        {
+                                            current.ObjList.Add(data);
+                                            current.Size += data.Length;
+                                        }
+                                    }
                                 }
                             }
 
@@ -1334,8 +1289,8 @@ namespace GaiaLib
                             if ((ix = operand.IndexOfAny(_addressspace)) >= 0)
                             {
                                 var eix = operand.IndexOfAny([' ', '\t', ',', ']', ')'], ix);
-                                if (eix < 0) eix = operand.Length;
-                                operand = operand[ix..eix];
+                                if (eix >= 0)
+                                    operand = operand[ix..eix];
                             }
 
                             opCode = codes.SingleOrDefault(x => x.Mode == AddressingMode.Immediate)
@@ -1393,131 +1348,5 @@ namespace GaiaLib
             return (blocks, includes, bank);
         }
 
-
-
-        //class FileDef
-        //{
-        //    public Location Loc;
-        //    public BinType Type;
-        //    public List<Location> Refs = new();
-        //}
-
-        //public static unsafe void ReadMetaXrefs(byte* basePtr)
-        //{
-        //    var fileMap = new Dictionary<Location, FileDef>();
-
-        //    ushort id;
-        //    var ptr = basePtr + 0xD8000;
-        //    do
-        //    {
-        //        id = *(ushort*)ptr;
-        //        ptr += 2;
-        //        while (true)
-        //        {
-        //            var cmd = *ptr++;
-        //            if (cmd == 0) break;
-
-        //            Location loc, xref;
-        //            BinType type;
-
-        //            switch (cmd)
-        //            {
-        //                case 2: ptr += sizeof(Meta2); continue;
-        //                case 0x13: ptr += sizeof(Meta13); continue;
-        //                case 0x14: ptr += sizeof(Meta14); continue;
-        //                case 0x15: ptr += sizeof(Meta15); continue;
-
-        //                case 4:
-        //                    var m4 = (Meta4*)ptr;
-        //                    loc = (Location)m4->Address;
-        //                    type = BinType.Palette;
-        //                    xref = (uint)((byte*)(&m4->Address) - basePtr);
-        //                    ptr += sizeof(Meta4);
-        //                    break;
-
-        //                case 0x11:
-        //                    var m11 = (Meta11*)ptr;
-        //                    loc = (Location)m11->Address;
-        //                    type = BinType.Music;
-        //                    xref = (uint)((byte*)(&m11->Address) - basePtr);
-        //                    ptr += sizeof(Meta11);
-        //                    break;
-
-        //                case 3:
-        //                    var m3 = (Meta3*)ptr;
-        //                    loc = (Location)m3->Address;
-        //                    type = BinType.Bitmap;
-        //                    xref = (uint)((byte*)(&m3->Address) - basePtr);
-        //                    ptr += sizeof(Meta3);
-        //                    break;
-
-        //                case 5:
-        //                    var m5 = (Meta5*)ptr;
-        //                    loc = (Location)m5->Address;
-        //                    type = BinType.Tileset;
-        //                    xref = (uint)((byte*)(&m5->Address) - basePtr);
-        //                    ptr += sizeof(Meta5);
-        //                    break;
-
-        //                case 6:
-        //                    var m6 = (Meta6*)ptr;
-        //                    loc = (Location)m6->Address;
-        //                    type = BinType.Tilemap;
-        //                    xref = (uint)((byte*)(&m6->Address) - basePtr);
-        //                    ptr += sizeof(Meta6);
-        //                    break;
-
-        //                case 0x10:
-        //                    var m10 = (Meta10*)ptr;
-        //                    loc = (Location)m10->Address;
-        //                    type = BinType.Spritemap;
-        //                    xref = (uint)((byte*)(&m10->Address) - basePtr);
-        //                    ptr += sizeof(Meta10);
-        //                    break;
-
-        //                case 0x17:
-        //                    var m17 = (Meta17*)ptr;
-        //                    loc = (Location)m17->Address;
-        //                    type = BinType.Meta17;
-        //                    xref = (uint)((byte*)(&m17->Address) - basePtr);
-        //                    ptr += sizeof(Meta17);
-        //                    break;
-
-        //                default: throw new Exception("Unknown meta type");
-        //            }
-
-
-        //            if (!fileMap.TryGetValue(loc, out FileDef def))
-        //                fileMap[loc] = def = new FileDef() { Loc = loc, Type = type };
-
-        //            def.Refs.Add(xref);
-        //        }
-        //    } while (id < 0xFF);
-
-        //    var stringBuilder = new StringBuilder();
-
-        //    foreach (var entry in fileMap.Values.OrderBy(x => x.Loc))
-        //    {
-        //        string folder = null, prefix = "", extension = "bin";
-        //        switch (entry.Type)
-        //        {
-        //            case BinType.Bitmap: folder = "graphics"; prefix = "bmp"; break;
-        //            case BinType.Palette: folder = "palettes"; prefix = "palette"; extension = "pal"; break;
-        //            case BinType.Music: folder = "music"; prefix = "bgm"; extension = "bgm"; break;
-        //            case BinType.Tileset: folder = "tilesets"; prefix = "set"; extension = "set"; break;
-        //            case BinType.Tilemap: folder = "tilemaps"; prefix = "map"; extension = "map"; break;
-        //            //case BinType.Meta17: break;
-        //            case BinType.Spritemap: folder = "spritemaps"; prefix = "sprite"; break;
-        //                //case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
-        //        };
-        //        stringBuilder.AppendLine(
-        //            $@"{{ ""path"": ""{prefix}_{entry.Loc}.{extension}"", ""type"": ""{entry.Type}"", ""xref"": [ ""{string.Join("\", \"", entry.Refs)}"" ] }},"
-        //        );
-        //    }
-
-        //    using (var file = File.Create("C:\\project.json"))
-        //    using (var writer = new StreamWriter(file))
-        //        writer.Write(stringBuilder.ToString());
-        //}
     }
 }

@@ -1,5 +1,7 @@
 using GaiaLabs;
 using GaiaLib;
+using GaiaLib.Database;
+using GaiaLib.Rom;
 using Godot;
 using System;
 
@@ -12,6 +14,11 @@ public partial class ControlTest : Control
     public unsafe override void _EnterTree()
     {
         base._EnterTree();
+
+        var baseDir = "C:\\Games\\GaiaLabs\\GaiaPacker\\bin\\Debug\\net8.0";
+        var databasePath = baseDir + "\\database.json";
+        var dbRoot = DbRoot.FromFile(databasePath);
+        var state = RomState.FromScene(baseDir, dbRoot, "scene_meta", 1);
 
         //byte[] compData;
         //using(var file = File.OpenRead("C:\\Games\\Dump\\graphics\\bmp_002F3A.bin"))

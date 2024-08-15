@@ -14,6 +14,8 @@ namespace GaiaLib.Database
         Unknown,
         Meta17,
         Spritemap,
-        Assembly
+        Assembly,
+        Patch,
+        Transform
     }
 }

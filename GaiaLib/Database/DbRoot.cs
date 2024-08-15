@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using GaiaLib.Rom;
+using System.Text.Json;
 
 namespace GaiaLib.Database
 {
@@ -10,6 +11,7 @@ namespace GaiaLib.Database
         public IDictionary<HexString, DbStringCommand> WideCommands { get; set; }
         public IDictionary<HexString, DbStringCommand> StringCommands { get; set; }
         public IDictionary<HexString, string> Mnemonics { get; set; }
+        public IDictionary<BinType, DbPath> Paths { get; set; }
         public IDictionary<string, DbStruct> Structs { get; set; }
 
         public IEnumerable<DbFile> Files { get; set; }
@@ -24,8 +26,8 @@ namespace GaiaLib.Database
         //public DbMisc Misc { get; set; }
         public IEnumerable<DbOverride> Overrides { get; set; }
         public IDictionary<Location, DbOverride> Returns { get; set; }
-        public IDictionary<Location, DbTransform> Transforms { get; set; }
-        public IDictionary<Location, string> Rewrites { get; set; }
+        public IDictionary<Location, string> Transforms { get; set; }
+        public IDictionary<Location, Location> Rewrites { get; set; }
 
 
         internal static readonly JsonSerializerOptions _jsonOptions = new()
@@ -38,6 +40,19 @@ namespace GaiaLib.Database
         {
             using var file = File.OpenRead(dbFile);
             return JsonSerializer.Deserialize<DbRoot>(file, _jsonOptions);
+        }
+
+        public DbPath GetPath(BinType type)
+        {
+            if (!Paths.TryGetValue(type, out var path))
+                path = Paths[BinType.Unknown];
+            return path;
+        }
+
+        public string GetResource(string baseDir, string name, BinType type)
+        {
+            var res = GetPath(type);
+            return Path.Combine(baseDir, res.Folder, $"{name}.{res.Extension}");
         }
     }
 }

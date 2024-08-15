@@ -1,6 +1,7 @@
 ﻿using GaiaLib.Asm;
 using GaiaLib.Database;
 using System.Collections;
+using System.Globalization;
 using System.IO.MemoryMappedFiles;
 using System.Text;
 using System.Text.Json;
@@ -8,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace GaiaLib.Rom
 {
-    public unsafe class RomReader : IDisposable
+    public unsafe partial class RomReader : IDisposable
     {
         public static readonly char[] RefChar = ['~', '^'];
         public const float Sample5to8 = 255.3f / 31f;
@@ -113,8 +114,28 @@ namespace GaiaLib.Rom
         {
             HexString hexString = (addr.Bank == 0x7E || addr.Bank == 0x7F) ? new((uint)addr) : new(addr.Offset);
 
-            if (DbRoot.Mnemonics.TryGetValue(hexString, out var label) && label.IndexOfAny(['-', '+']) < 0)
+            if (DbRoot.Mnemonics.TryGetValue(hexString, out var label))
+            {
+                uint opnd = 0;
+                char op = (char)0;
+                var ix = label.IndexOfAny(Process._operators);
+
+                if (ix >= 0)
+                {
+                    op = label[ix];
+                    opnd = uint.Parse(label[(ix + 1)..], NumberStyles.HexNumber);
+                    label = label[..ix];
+
+                    switch (op)
+                    {
+                        case '-': hexString.Value += opnd; break;
+                        case '+': hexString.Value -= opnd; break;
+                        default: throw new ArgumentException();
+                    }
+                }
+
                 _part.Block.Mnemonics.Add((hexString, label));
+            }
         }
 
         private static string[] strictAsm = ["scene_events", "table_0CE5E5"];
@@ -122,14 +143,27 @@ namespace GaiaLib.Rom
         {
             var prefix = Address.CodeFromType(type);
 
-            string? name;
+            string? name, label = null;
 
-            if (DbRoot.Rewrites.TryGetValue(loc, out var label))
+            if (DbRoot.Rewrites.TryGetValue(loc, out var refLoc))
             {
-                var offIx = label.IndexOfAny(['-', '+']);
-                if (offIx < 0) offIx = label.Length;
-                loc = Location.Parse(label[..offIx]);
-                label = label[offIx..];
+                //var offIx = label.IndexOfAny(['-', '+']);
+                //if (offIx < 0) offIx = label.Length;
+                //loc = Location.Parse(label[..offIx]);
+                //label = label[offIx..];
+                var offset = (int)loc.Offset - (int)refLoc.Offset;
+                char cmd;
+
+                if (offset < 0)
+                {
+                    offset = -offset;
+                    cmd = '-';
+                }
+                else
+                    cmd = '+';
+
+                label = $"{cmd}{offset:X}";
+                loc = refLoc;
             }
 
 
@@ -203,41 +237,54 @@ namespace GaiaLib.Rom
             {
                 var start = file.Start;
                 RefList[start] = file.Name;
-                string folder = "misc", extension = "bin";
+                //string folder = "misc", extension = "bin";
                 ushort mapSample = 0;
                 uint metaSample = 0;
 
-                switch (file.Type)
+                var res = DbRoot.GetPath(file.Type);
+
+                if (file.Type == BinType.Tilemap)
                 {
-                    case BinType.Bitmap: folder = "graphics"; break;
-                    case BinType.Palette: folder = "palettes"; extension = "pal"; break;
-                    case BinType.Music: folder = "music"; extension = "bgm"; break;
-                    case BinType.Tileset: folder = "tilesets"; extension = "set"; break;
-                    case BinType.Tilemap:
-                        folder = "tilemaps";
-                        extension = "map";
-                        mapSample = *(ushort*)(_basePtr + start);
-                        start += 2;
-                        break;
-                    case BinType.Meta17:
-                        metaSample = *(uint*)(_basePtr + start);
-                        start += 4;
-                        break;
-                    case BinType.Spritemap: folder = "spritemaps"; break;
-                    case BinType.Assembly:
-                        folder = "asm"; extension = "asm";
-                        continue;
-                        //case BinType.Sound: folder = "sfx"; extension = "bin"; break;
-                };
+                    mapSample = *(ushort*)(_basePtr + start);
+                    start += 2;
+                }
+                else if (file.Type == BinType.Meta17)
+                {
+                    metaSample = *(uint*)(_basePtr + start);
+                    start += 4;
+                }
+
+                //switch (file.Type)
+                //{
+                //    case BinType.Bitmap: folder = "graphics"; break;
+                //    case BinType.Palette: folder = "palettes"; extension = "pal"; break;
+                //    case BinType.Music: folder = "music"; extension = "bgm"; break;
+                //    case BinType.Tileset: folder = "tilesets"; extension = "set"; break;
+                //    case BinType.Tilemap:
+                //        folder = "tilemaps";
+                //        extension = "map";
+                //        mapSample = *(ushort*)(_basePtr + start);
+                //        start += 2;
+                //        break;
+                //    case BinType.Meta17:
+                //        metaSample = *(uint*)(_basePtr + start);
+                //        start += 4;
+                //        break;
+                //    case BinType.Spritemap: folder = "spritemaps"; break;
+                //    case BinType.Assembly:
+                //        folder = "asm"; extension = "asm";
+                //        continue;
+                //        //case BinType.Sound: folder = "sfx"; extension = "bin"; break;
+                //};
 
                 var filePath = outPath;
-                if (folder != null)
+                if (!string.IsNullOrWhiteSpace(res.Folder))
                 {
-                    filePath = Path.Combine(outPath, folder);
+                    filePath = Path.Combine(outPath, res.Folder);
                     Directory.CreateDirectory(filePath);
                 }
 
-                using var fileStream = File.Create(Path.Combine(filePath, $"{file.Name}.{extension}"));
+                using var fileStream = File.Create(Path.Combine(filePath, $"{file.Name}.{res.Extension}"));
 
                 var pStart = _basePtr + start;
                 var len = (int)(file.End - start);
@@ -292,8 +339,9 @@ namespace GaiaLib.Rom
 
         private void ExtractSfx(string outPath)
         {
-            string folder = "sfx", extension = "bin";
-            string folderPath = Path.Combine(outPath, folder);
+            var res = DbRoot.GetPath(BinType.Sound);
+            //string folder = "sfx", extension = "bin";
+            string folderPath = Path.Combine(outPath, res.Folder);
             Directory.CreateDirectory(folderPath);
 
             var sfx = DbRoot.Sfx;
@@ -314,7 +362,7 @@ namespace GaiaLib.Rom
             {
                 int size = readByte() | (readByte() << 8);
 
-                string filePath = Path.Combine(folderPath, $"{sfxName}.{extension}");
+                string filePath = Path.Combine(folderPath, $"{sfxName}.{res.Extension}");
                 using (var file = File.Create(filePath))
                     for (int x = 0; x < size; x++)
                         file.WriteByte(readByte());
@@ -532,18 +580,24 @@ namespace GaiaLib.Rom
                 return loc;
             }
 
-            Location noteType(Location loc, string type, bool silent = false)
+            string noteType(Location loc, string type, bool silent = false)
             {
                 _chunkTable.TryAdd(loc, type);
 
-                var name = type.ToLower();
-                while (_adrSpace.Contains(name[0]))
-                    name = name[1..] + "_list";
+                if (!RefList.TryGetValue(loc, out var name))
+                {
+                    name = type.ToLower();
+                    while (_adrSpace.Contains(name[0]))
+                        name = name[1..] + "_list";
 
-                RefList.TryAdd(loc, $"{name}_{loc}");
+                    name = $"{name}_{loc}";
+                    RefList[loc] = name;
+                }
+
                 if (!silent && type == "Code")
-                    return xferRegs(loc);
-                return loc;
+                    xferRegs(loc);
+
+                return name;
             }
 
             if (code.Mnem == "LDA") reg.Accumulator = null;
@@ -551,7 +605,18 @@ namespace GaiaLib.Rom
             else if (code.Mnem == "LDY") reg.YIndex = null;
 
             byte bank;
-            DbRoot.Transforms.TryGetValue(_lCur, out var xform);
+            byte? xformBank = null;
+            if (DbRoot.Transforms.TryGetValue(_lCur, out var xform) && xform != "")
+            {
+                var match = BankRegex().Match(xform);
+                if (match.Success)
+                    xformBank = byte.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.HexNumber);
+                else
+                {
+                    var str = xform.TrimStart(Process._addressspace);
+                    xformBank = RefList.First(x => x.Value == str).Key.Bank;
+                }
+            }
 
             switch (code.Mode)
             {
@@ -656,22 +721,30 @@ namespace GaiaLib.Rom
                 case AddressingMode.AbsoluteIndexedX:
                 case AddressingMode.AbsoluteIndexedY:
                     var refLoc = *(ushort*)Advance(2);
-                    if (code.Mnem[0] == 'P')
-                        operands.Add(refLoc);
-                    else
+                    //    operands.Add(refLoc);
+                    //else
                     {
-                        var isJump = code.Mnem[0] == 'J';
-                        bank = xform?.Bank != null ? (byte)xform.Bank.Value
-                            : (isJump ? (byte)(next >> 16) : (reg.DataBank ?? 0x81));
-                        var addr = new Address(bank, refLoc); //Add Data bank
+                        var isPush = code.Mnem[0] == 'P';
+                        if (isPush)
+                            refLoc++;
+                        var isJump = isPush || code.Mnem[0] == 'J';
+                        bank = xformBank ?? // xform?.Bank != null ? (byte)xform.Bank.Value :
+                            (isJump ? (byte)(next >> 16) : (reg.DataBank ?? 0x81));
 
-
+                        var addr = new Address(bank, refLoc);
                         if (addr.Space == AddressSpace.ROM)
                         {
                             var wrapper = new LocationWrapper((Location)addr, AddressType.Offset);
                             if (isJump)
-                                noteType(wrapper.Location, "Code"); //Add PC bank
+                            {
+                                var name = noteType(wrapper.Location, "Code", isPush); //Add PC bank
 
+                                if (isPush)
+                                {
+                                    operands.Add($"&{name}-1");
+                                    break;
+                                }
+                            }
                             operands.Add(wrapper);
                         }
                         else
@@ -724,7 +797,8 @@ namespace GaiaLib.Rom
                 case AddressingMode.PCRelativeLong:
                     relative = (uint)((int)next.Offset + *(short*)Advance(2));
                 noteRelative:
-                    operands.Add(xferRegs(noteType(relative, "Code")));
+                    noteType(relative, "Code");
+                    operands.Add(relative);
                     break;
 
                 case AddressingMode.StackRelative:
@@ -789,20 +863,42 @@ namespace GaiaLib.Rom
                     break;
             }
 
-            if (xform != null && (xform.Type == null || xform.Type == "*" || xform.Type == "^"))
+            if (xform != null)// && (xform.Type == null || xform.Type == "*" || xform.Type == "^"))
             {
-                if (xform.Type == null)
+                if (xform == "")
                 {
-                    var value = (ushort)operands[0];
-                    var addr = new Address((byte)(xform.Bank?.Value ?? reg.DataBank ?? 0x81u), value);
-                    operands[0] = new LocationWrapper((Location)addr, AddressType.Offset);
+                    Location value = (next.Offset & 0xFF0000) | ((ushort)operands[0] + 1u);
+                    if (!RefList.TryGetValue(value, out xform))
+                        RefList[value] = xform = $"loc_{value}";
+                    operands[0] = $"&{xform}-1";
                 }
                 else
                 {
-                    //Ignore operand
-                    var entry = RefList.First(x => xform.Name.Equals(x.Value, StringComparison.CurrentCultureIgnoreCase));
-                    operands[0] = new LocationWrapper(entry.Key, xform.Type == "^" ? AddressType.Bank : AddressType.DBank);
+                    var op = operands[0];
+
+                    if (op is ushort us)
+                        op = (Location)((uint)xformBank.Value << 16 | us);
+                    else if (op is LocationWrapper lw)
+                        op = lw.Location;
+
+                    if (op is Location l)
+                        ResolveInclude(l, false);
+
+                    operands[0] = xform;
                 }
+                ////if(code.Mnem == "PEA")
+                //if (xform.Type == null)
+                //{
+                //    var value = (ushort)operands[0];
+                //    var addr = new Address((byte)(xform.Bank?.Value ?? reg.DataBank ?? 0x81u), value);
+                //    operands[0] = new LocationWrapper((Location)addr, AddressType.Offset);
+                //}
+                //else
+                //{
+                //    //Ignore operand
+                //    var entry = RefList.First(x => xform.Name.Equals(x.Value, StringComparison.CurrentCultureIgnoreCase));
+                //    operands[0] = new LocationWrapper(entry.Key, xform.Type == "^" ? AddressType.Bank : AddressType.DBank);
+                //}
             }
 
             return new Op { Location = loc, Code = code, Size = (byte)(_lCur - loc), Operands = [.. operands], CopDef = copDef };
@@ -860,7 +956,7 @@ namespace GaiaLib.Rom
 
         private static char[] _adrSpace = ['&', '@', '%'];
 
-        private object ParseType(string str, Registers reg, int depth)
+        private object ParseType(string str, Registers reg, int depth, byte? bank = null)
         {
             var isPtr = _adrSpace.Contains(str[0]);
             string otherStr;
@@ -885,7 +981,7 @@ namespace GaiaLib.Rom
                 {
                     MemberType.Byte => *Advance(),
                     MemberType.Word => _chunkTable.ContainsKey(_lCur + 1) ? (object)*Advance() : *(ushort*)Advance(2),
-                    MemberType.Offset => ParseLocation(*(ushort*)Advance(2), null, otherStr, cmd),
+                    MemberType.Offset => ParseLocation(*(ushort*)Advance(2), bank, otherStr, cmd),
                     MemberType.Address => ParseLocation(*(ushort*)Advance(2), *Advance(), otherStr, cmd),
                     MemberType.Binary => ParseBinary(),
                     MemberType.String => ParseASCIIString(),
@@ -990,6 +1086,7 @@ namespace GaiaLib.Rom
                     //var locations = new List<Location>();
                     var chunks = new List<TableEntry>();
                     var reg = new Registers();
+                    byte? bank = part.Bank != null ? (byte)part.Bank.Value.Value : null;
                     TableEntry? last = null;
                     while (_pCur < _pEnd)
                     {
@@ -1005,13 +1102,13 @@ namespace GaiaLib.Rom
                         {
                             if (last.Object is not List<object> list)
                                 last.Object = list = [last.Object];
-                            list.Add(ParseType(current, reg, 0));
+                            list.Add(ParseType(current, reg, 0, bank));
                             continue;
                         }
 
                         object wrapType()
                         {
-                            var res = ParseType(current, reg, 0);
+                            var res = ParseType(current, reg, 0, bank);
                             if (_adrSpace.Contains(current[0]) && res is not List<object>)
                                 res = new List<object>() { res };
                             return res;
@@ -1037,19 +1134,8 @@ namespace GaiaLib.Rom
 
         private void ResolveObject(object obj, bool isBranch)
         {
-            if (obj is string str)
+            if (obj is string strn)
             {
-                for (var ix = str.IndexOfAny(RefChar); ix >= 0; ix = str.IndexOfAny(RefChar, ix + 7))
-                {
-                    var sloc = uint.Parse(str.Substring(ix + 1, 6), System.Globalization.NumberStyles.HexNumber);
-                    var addr = new Address((byte)(sloc >> 16), (ushort)sloc);
-                    if (addr.Space == AddressSpace.ROM)
-                    {
-                        ResolveInclude(sloc, false);
-                    }
-                    //var sLoc = Location.Parse(str.Substring(ix + 1, 6));
-                    //str = str.Replace(str.Substring(ix, 7), ResolveName(part, sLoc));
-                }
             }
             else if (obj is IEnumerable arr)
                 foreach (var o in arr)
@@ -1061,7 +1147,21 @@ namespace GaiaLib.Rom
             else if (obj is LocationWrapper lw)
                 ResolveInclude(lw.Location, isBranch);
             else if (obj is StringWrapper sw)
-                ResolveObject(sw.String, isBranch);
+            {
+                var str = sw.String;
+                for (var ix = str.IndexOfAny(RefChar); ix >= 0; ix = str.IndexOfAny(RefChar, ix + 7))
+                {
+                    var sloc = uint.Parse(str.Substring(ix + 1, 6), System.Globalization.NumberStyles.HexNumber);
+                    var addrs = new Address((byte)(sloc >> 16), (ushort)sloc);
+                    if (addrs.Space == AddressSpace.ROM)
+                    {
+                        ResolveInclude(sloc, false);
+                    }
+                    //var sLoc = Location.Parse(str.Substring(ix + 1, 6));
+                    //str = str.Replace(str.Substring(ix, 7), ResolveName(part, sLoc));
+                }
+                //ResolveObject(sw.String, isBranch);
+            }
             else if (obj is StructDef sdef)
                 ResolveObject(sdef.Parts, isBranch);
             else if (obj is TableEntry tab)
@@ -1086,14 +1186,16 @@ namespace GaiaLib.Rom
 
         public void WriteBlocks(string outPath)
         {
-            string folder = "asm", extension = "asm";
-            string folderPath = Path.Combine(outPath, folder);
-            string transformPath = Path.Combine(outPath, "transforms");
+            var res = DbRoot.GetPath(BinType.Assembly);
+            var xRes = DbRoot.GetPath(BinType.Transform);
+            //string folder = "asm", extension = "asm";
+            string folderPath = Path.Combine(outPath, res.Folder);
+            string transformPath = Path.Combine(outPath, xRes.Folder);
             Directory.CreateDirectory(folderPath);
 
             foreach (var block in DbRoot.Blocks)
             {
-                var outFile = Path.Combine(folderPath, $"{block.Name}.{extension}");
+                var outFile = Path.Combine(folderPath, $"{block.Name}.{res.Extension}");
                 using var outStream = File.Create(outFile);
                 using var writer = new StreamWriter(outStream);
 
@@ -1110,7 +1212,7 @@ namespace GaiaLib.Rom
                 writer.WriteLine(); //Empty line
 
                 IEnumerable<XformDef>? xforms = null;
-                var xformFile = Path.Combine(transformPath, $"{block.Name}.json");
+                var xformFile = Path.Combine(transformPath, $"{block.Name}.{xRes.Extension}");
                 if (File.Exists(xformFile))
                     using (var xformStream = File.OpenRead(xformFile))
                         xforms = JsonSerializer.Deserialize<IEnumerable<XformDef>>(xformStream, DbRoot._jsonOptions);
@@ -1405,6 +1507,9 @@ namespace GaiaLib.Rom
             if (depth == 0) writer.WriteLine();
 
         }
+
+        [GeneratedRegex("_([0-9]{2})")]
+        private static partial Regex BankRegex();
     }
 
     //public class TableGroup
