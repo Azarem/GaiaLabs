@@ -15,7 +15,7 @@ namespace GaiaLib
             public int Size;
             public Location Location;
             public List<AsmBlock>? Blocks;
-            public List<string>? Includes;
+            public HashSet<string>? Includes;
             public Dictionary<string, Location> IncludeLookup;
             public byte? Bank;
 
@@ -85,6 +85,55 @@ namespace GaiaLib
             var allFiles = sfxFiles.Concat(chunkFiles).Concat(stdPatches).ToArray();
             var asmFiles = chunkFiles.Where(x => x.Blocks != null).Concat(patches).ToArray();
 
+            //Replace chunks from patches that matches (what?)
+            foreach (var patch in patches.Where(x => x.Includes?.Any() == true))
+            {
+                ChunkFile? file = null;
+                int dstIx = -1;
+                var inc = asmFiles.Where(x => patch.Includes.Contains(x.File.Name.ToUpper())).ToList();
+                for (int ix = 0, count = patch.Blocks.Count; ix < count;)
+                {
+                    var block = patch.Blocks[ix];
+                    AsmBlock? match = null;
+
+                    if (block.Label == null)
+                        goto Next;
+
+                    foreach (var i in inc)
+                        for (int y = 0, yc = i.Blocks.Count; y < yc; y++)
+                        {
+                            match = i.Blocks[y];
+                            if (match.Label == block.Label)
+                            {
+                                file = i;
+                                dstIx = y;
+                                goto Next;
+                            }
+                        }
+
+                    match = null;
+
+                Next:
+
+                    if (match != null)
+                        file.Blocks[dstIx++] = block;
+                    else if (dstIx >= 0)
+                        file.Blocks.Insert(dstIx++, block);
+                    else
+                    {
+                        ix++;
+                        continue;
+                    }
+
+                    file.Includes.Add(patch.File.Name.ToUpper());
+                    patch.Blocks.RemoveAt(ix);
+                    count--;
+                }
+            }
+
+            foreach (var asm in asmFiles)
+                asm.CalculateSize();
+
             //Assign locations
             MatchChunks(gaps, allFiles);
 
@@ -127,52 +176,52 @@ namespace GaiaLib
             }
 
 
-            //Process transforms
-            foreach (var tr in root.Transforms.Where(x => x.Value != ""))
-            {
-                var name = tr.Value;
-                char cmd = '&', op = (char)0;
-                uint offset = 0;
+            ////Process transforms
+            //foreach (var tr in root.Transforms.Where(x => x.Value != ""))
+            //{
+            //    var name = tr.Value;
+            //    char cmd = '&', op = (char)0;
+            //    uint offset = 0;
 
-                if (_addressspace.Contains(name[0]))
-                {
-                    cmd = name[0];
-                    name = name[1..];
-                }
+            //    if (_addressspace.Contains(name[0]))
+            //    {
+            //        cmd = name[0];
+            //        name = name[1..];
+            //    }
 
-                var ix = name.IndexOfAny(_operators);
-                if (ix >= 0)
-                {
-                    op = name[ix];
-                    offset = uint.Parse(name[(ix + 1)..], NumberStyles.HexNumber);
-                    name = name[..ix];
-                }
+            //    var ix = name.IndexOfAny(_operators);
+            //    if (ix >= 0)
+            //    {
+            //        op = name[ix];
+            //        offset = uint.Parse(name[(ix + 1)..], NumberStyles.HexNumber);
+            //        name = name[..ix];
+            //    }
 
-                if (!blockLookup.TryGetValue(name.ToUpper(), out var loc))
-                {
-                    var matchingBlock = asmFiles.SelectMany(x => x.Blocks)
-                        .SingleOrDefault(x => name.Equals(x.Label, StringComparison.CurrentCultureIgnoreCase));
-                    if (matchingBlock == null)
-                        continue;
-                    loc = matchingBlock.Location;
-                }
+            //    if (!blockLookup.TryGetValue(name.ToUpper(), out var loc))
+            //    {
+            //        var matchingBlock = asmFiles.SelectMany(x => x.Blocks)
+            //            .SingleOrDefault(x => name.Equals(x.Label, StringComparison.CurrentCultureIgnoreCase));
+            //        if (matchingBlock == null)
+            //            continue;
+            //        loc = matchingBlock.Location;
+            //    }
 
-                switch (op)
-                {
-                    case '-': loc -= offset; break;
-                    case '+': loc += offset; break;
-                }
+            //    switch (op)
+            //    {
+            //        case '-': loc -= offset; break;
+            //        case '+': loc += offset; break;
+            //    }
 
 
-                onTransform(tr.Key.Offset, cmd switch
-                {
-                    '%' => (loc.Offset | 0x800000),
-                    '*' => (byte)(loc.Bank | 0xC0),
-                    '^' => (byte)(loc.Bank | 0x80),
-                    '&' => (object)(ushort)loc.Offset,
-                    _ => throw new($"Unsupported transform type '{cmd}'")
-                });
-            }
+            //    onTransform(tr.Key.Offset, cmd switch
+            //    {
+            //        '%' => (loc.Offset | 0x800000),
+            //        '*' => (byte)(loc.Bank | 0xC0),
+            //        '^' => (byte)(loc.Bank | 0x80),
+            //        '&' => (object)(ushort)loc.Offset,
+            //        _ => throw new($"Unsupported transform type '{cmd}'")
+            //    });
+            //}
 
             //Generate lookup table
             //var chunkLookup = allFiles.ToDictionary(x => x.File.Name.ToUpper(), x => x.Location);
@@ -336,14 +385,14 @@ namespace GaiaLib
                 var path = Path.Combine(baseDir, res.Folder ?? "", $"{file.Name}.{res.Extension}");// File.Exists(path) ? path : Path.Combine(baseDir, path);
                 int size;
                 List<AsmBlock>? blocks = null;
-                List<string>? includes = null;
+                HashSet<string>? includes = null;
                 byte? bank = null;
                 if (file.Type == BinType.Assembly)
                 {
                     using (var inFile = File.OpenRead(path))
                         (blocks, includes, bank) = ParseAssembly(root, inFile, file.Start);
 
-                    size = ChunkFile.CalculateSize(blocks);
+                    size = 0;// ChunkFile.CalculateSize(blocks);
                 }
                 else
                 {
@@ -374,9 +423,8 @@ namespace GaiaLib
                 using (var fileStream = File.OpenRead(file))
                     (chunkFile.Blocks, chunkFile.Includes, chunkFile.Bank) = ParseAssembly(root, fileStream, 0);
 
-                chunkFile.CalculateSize();
+                //chunkFile.CalculateSize();
                 patchList.Add(chunkFile);
-
             }
 
             return patchList;
@@ -384,7 +432,7 @@ namespace GaiaLib
 
         private static void MatchChunks(IEnumerable<DbGap> gaps, IEnumerable<ChunkFile> files)
         {
-            var allFiles = files.OrderByDescending(x => x.Size).ToList();
+            var allFiles = files.Where(x => x.Size > 0).OrderByDescending(x => x.Size).ToList();
             var bestResult = new int[0x100];
             var bestSample = new int[0x100];
 
@@ -569,11 +617,11 @@ namespace GaiaLib
 
         private static StringSizeComparer _staticComparer = new StringSizeComparer();
 
-        public static (List<AsmBlock>, List<string>, byte?) ParseAssembly(DbRoot root, Stream inStream, uint startLoc)//, out IDictionary<string, Location> includes) //, IDictionary<string, Location> chunkLookup)
+        public static (List<AsmBlock>, HashSet<string>, byte?) ParseAssembly(DbRoot root, Stream inStream, uint startLoc)//, out IDictionary<string, Location> includes) //, IDictionary<string, Location> chunkLookup)
         {
             using var reader = new StreamReader(inStream);
 
-            var includes = new List<string>();
+            var includes = new HashSet<string>();
             var blocks = new List<AsmBlock>();
             AsmBlock current;
             //AsmBlock? target;
@@ -777,7 +825,7 @@ namespace GaiaLib
                     }
 
 
-                    string? mnem = null, operand = null;
+                    string? mnem = null, operand = null, operand2 = null;
                     while (line.Length > 0)
                     {
                         if (line[0] == ';')
@@ -1167,18 +1215,18 @@ namespace GaiaLib
                                 if (mnem.StartsWith('$'))
                                     mnem = mnem[1..];
 
-                                if (mnem.Length == 6
-                                    && uint.TryParse(mnem, NumberStyles.HexNumber, null, out var addr)
-                                    && Location.MaxValue >= addr)
-                                {
-                                    blocks.Add(current = new() { Location = addr });
-                                    bix++;
-                                }
-                                else if (mnem.Length > 0)
-                                {
-                                    blocks.Add(current = new() { Location = current.Location + (uint)current.Size, Label = mnem });
-                                    bix++;
-                                }
+                                //if (mnem.Length == 6
+                                //    && uint.TryParse(mnem, NumberStyles.HexNumber, null, out var addr)
+                                //    && Location.MaxValue >= addr)
+                                //{
+                                //    blocks.Add(current = new() { Location = addr });
+                                //    bix++;
+                                //}
+                                //else if (mnem.Length > 0)
+                                //{
+                                blocks.Add(current = new() { Location = current.Location + (uint)current.Size, Label = mnem });
+                                bix++;
+                                //}
 
                                 switch (operand[0])
                                 {
@@ -1267,16 +1315,23 @@ namespace GaiaLib
 
                             if (OpCode.AddressingRegex.TryGetValue(code.Mode, out var regex))
                             {
+                                if(operand == "#$7F, #$^radar_layout_001E00")
+                                {
+
+                                }
                                 var match = regex.Match(operand);
                                 if (match.Success)
                                 {
-                                    operand = match.Groups[1].Value;
                                     opCode = code;
+                                    operand = match.Groups[1].Value;
+                                    if (match.Groups.Count > 2)
+                                        operand2 = match.Groups[2].Value;
                                     //size = opCode.Size == -2 ? (operand.Length > 2 ? 3 : 2) : opCode.Size;
                                     break;
                                 }
                             }
                         }
+
 
                         if (operand[0] == '#')
                             operand = operand[1..];
@@ -1331,11 +1386,25 @@ namespace GaiaLib
                                 throw new($"Unable to determine mode/code line {lineCount}: '{line}'");
                         }
 
-                        int size = opCode.Size;
-                        if (opCode.Size == -2)
-                            size = (operand[0] == '^' || operand.Length == 2) ? 2 : 3;
+                        object parseOpnd(string opnd) => opnd.Length switch
+                        {
+                            2 when byte.TryParse(opnd, NumberStyles.HexNumber, null, out var b) => b,
+                            4 when ushort.TryParse(opnd, NumberStyles.HexNumber, null, out var s) => s,
+                            6 when uint.TryParse(opnd, NumberStyles.HexNumber, null, out var i) => i,
+                            _ => opnd
+                        };
 
-                        current.ObjList.Add(new Op() { Code = opCode, Operands = [operand], Size = (byte)size });
+                        object opnd1 = parseOpnd(operand);
+
+                        int size = opCode.Size;
+                        if (size == -2)
+                            size = (operand[0] == '^' || opnd1 is byte) ? 2 : 3;
+                        
+                        object[] opnds = (operand2 != null)
+                            ? [opnd1, parseOpnd(operand2)]
+                            : [opnd1];
+
+                        current.ObjList.Add(new Op() { Code = opCode, Operands = opnds, Size = (byte)size });
                         current.Size += size;
                     //}
                     Next:;

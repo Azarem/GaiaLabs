@@ -1,5 +1,7 @@
 ﻿?BANK 02
 
+?INCLUDE 'chunk_028000'
+
 -- Patch for bitmap loading which adds support for no compression
 
 !LSAMPLE	$10
@@ -10,30 +12,38 @@
 !TPTR2		$75
 !DCMP_SIZE	$78
 
+
 --------------------------------------------------
 
-main1:
-  LDA  [SPTR]
-  INC  SPTR
-  INC  SPTR
-  CMP  #$0000
-  BEQ  mode7check
-  BMI  mode7check
-  STA  DCMP_SIZE
-  JMP  $8510
+code_028503 {
+    LDA [$3E]
+    INC $3E
+    INC $3E
+    STA $78
+    CMP #$0000
+    BEQ mode7check
+    BMI mode7check
+  
+    CPX #$066C
+    BNE jmp_8520
+    LDA $06EE
+    BIT #$0800
+    BEQ jmp_8520
+    JMP func_0285DB
 
-mode7check:
-  CPX  #$066C
-  BNE  jmpdma
-  LDA  $06EE
-  BIT  #$0800
-  BEQ  jmpdma
-  BRA  mode7
+jmp_8520:
+    JMP code_028520
 
-jmpdma:
-  JMP  $8560
+jmp_8560:
+    JMP func_028560
 
-mode7:
+  mode7check:
+    CPX #$066C
+    BNE jmp_8560
+    LDA $06EE
+    BIT #$0800
+    BEQ jmp_8560
+
   PHY				-- Y will be our read offset
   PHB				-- data bank will be changed
 
@@ -58,7 +68,7 @@ mode7:
   LDX  #$A000		-- init DPTR with WRAM offset
   STX  DPTR
 
-  JSR  $868C		-- this call changes SPTR to reference WRAM
+  JSR  sub_02868C	-- this call changes SPTR to reference WRAM
 
   LDY  #$0000		-- init read offset to 0
 
@@ -125,29 +135,25 @@ donext:
   STZ  $0680
   STZ  $0683
 
-  JMP  $865D		-- finish remaining process
+  JMP  code_028645+18  -- finish remaining process
   
---------------------------------------------------
-
-main2:
-  LDA  [SPTR]
-  INC  SPTR
-  INC  SPTR
-  CMP  #$0000		-- what to use for comments
-  BEQ  return2		-- this kinda works
-  BMI  return2		-- this also works
-  STA  DCMP_SIZE
-  JMP  $859F
-
-return2: 
-  JMP  $85B2
-  
---------------------------------------------------
-
-028503:
-  JMP  main1
+}
 
 --------------------------------------------------
 
-028592:
-  JMP  main2
+func_028592 {
+    LDA [$3E]
+    STA $78
+    INC $3E
+    INC $3E
+    CMP #$0000
+    BEQ code_0285B2
+    BMI code_0285B2
+    LDX #$7000
+    STX $7A
+    JSL $%func_028270
+    LDX #$7000
+    STX $3E
+    LDA #$007E
+    STA $40
+}

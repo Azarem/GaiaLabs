@@ -133,6 +133,7 @@ outRom.WriteByte((byte)(sum >> 8));
 
 void WriteTransform(uint location, object value)
 {
+    return;
     outRom.Position = location;
     if (value is ushort us)
     {
@@ -212,69 +213,69 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
     //Write reference fixups
     var nextPos = outRom.Position;
 
-    if (file.File.XRef != null)
-    {
-        foreach (var str in file.File.XRef)
-        {
-            char c = str[0];
-            var hex = _addressspace.Contains(c) ? str[1..] : str;
-            var targetPos = filePos;
+    //if (file.File.XRef != null)
+    //{
+    //    foreach (var str in file.File.XRef)
+    //    {
+    //        char c = str[0];
+    //        var hex = _addressspace.Contains(c) ? str[1..] : str;
+    //        var targetPos = filePos;
 
-            var opIx = hex.IndexOfAny(['-', '+']);
-            if (opIx > 0)
-            {
-                var num = uint.Parse(hex[(opIx + 1)..], NumberStyles.HexNumber);
-                if (hex[opIx] == '-')
-                    targetPos -= num;
-                else
-                    targetPos += num;
-                hex = hex[..opIx];
-            }
+    //        var opIx = hex.IndexOfAny(['-', '+']);
+    //        if (opIx > 0)
+    //        {
+    //            var num = uint.Parse(hex[(opIx + 1)..], NumberStyles.HexNumber);
+    //            if (hex[opIx] == '-')
+    //                targetPos -= num;
+    //            else
+    //                targetPos += num;
+    //            hex = hex[..opIx];
+    //        }
 
-            var value = uint.Parse(hex, NumberStyles.HexNumber);
-            Location loc = value;
+    //        var value = uint.Parse(hex, NumberStyles.HexNumber);
+    //        Location loc = value;
 
-            outRom.Position = loc;
-            switch (c)
-            {
-                case '@':
-                    value = targetPos | 0xC00000u;
-                    goto writeValue;
+    //        outRom.Position = loc;
+    //        switch (c)
+    //        {
+    //            case '@':
+    //                value = targetPos | 0xC00000u;
+    //                goto writeValue;
 
-                case '%':
-                    value = targetPos | 0x800000u;
-                    goto writeValue;
+    //            case '%':
+    //                value = targetPos | 0x800000u;
+    //                goto writeValue;
 
-                case '^':
-                    outRom.WriteByte((byte)((targetPos >> 16) | 0x80));
-                    break;
+    //            case '^':
+    //                outRom.WriteByte((byte)((targetPos >> 16) | 0x80));
+    //                break;
 
-                case '*':
-                    outRom.WriteByte((byte)((targetPos >> 16) | 0xC0));
-                    break;
+    //            case '*':
+    //                outRom.WriteByte((byte)((targetPos >> 16) | 0xC0));
+    //                break;
 
-                case '&':
-                    outRom.WriteByte((byte)targetPos);
-                    outRom.WriteByte((byte)(targetPos >> 8));
-                    break;
+    //            case '&':
+    //                outRom.WriteByte((byte)targetPos);
+    //                outRom.WriteByte((byte)(targetPos >> 8));
+    //                break;
 
-                default:
-                    value = (value & 0xC00000) | targetPos;
+    //            default:
+    //                value = (value & 0xC00000) | targetPos;
 
-                writeValue:
-                    outRom.WriteByte((byte)value);
-                    outRom.WriteByte((byte)(value >> 8));
-                    outRom.WriteByte((byte)(value >> 16));
-                    break;
-            }
-        }
-    }
+    //            writeValue:
+    //                outRom.WriteByte((byte)value);
+    //                outRom.WriteByte((byte)(value >> 8));
+    //                outRom.WriteByte((byte)(value >> 16));
+    //                break;
+    //        }
+    //    }
+    //}
 
     return size;
 }
 
 
-void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot root, IDictionary<string, Location> chunkLookup, IDictionary<string, Location> includeLookup)
+void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoot root, IDictionary<string, Location> chunkLookup, IDictionary<string, Location> includeLookup)
 {
     if (blocks == null)
         throw new("Assembly has not been parsed");
@@ -378,23 +379,35 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, List<string> includes, DbRoot r
                 if (offset != null)
                     loc = (uint)((int)loc.Offset + offset.Value);
 
-                if (str[0] == '&' || parentOp?.Size == 3)
-                    obj = (ushort)loc.Offset;
-                else if (str[0] == '^')
-                    obj = (byte)((loc.Offset >> 16) | 0x80);
-                else if (str[0] == '%')
-                    if ((loc.Offset & 0xFFFFu) < 0x8000u)
-                        obj = loc.Offset | 0xC00000u; //Pull up address for rare cases
-                    else
-                        obj = loc.Offset | 0x800000u;
-                else if (str[0] == '@')
-                    obj = loc.Offset | 0xC00000u;
-                else if (parentOp?.Size == 4)
-                    obj = loc.Offset | ((ushort)loc.Offset >= 0x8000 ? 0x800000u : 0xC00000u);
-                else if (parentOp?.Size == 2)
-                    obj = (byte)loc.Offset;
-                else
-                    throw new("Unable to determine operand transform");
+                var type = Address.TypeFromCode(str[0]);
+                if (type == AddressType.Unknown)
+                    type = parentOp?.Size == 4 ? AddressType.Address
+                        : parentOp?.Size == 2 ? AddressType.Unknown : AddressType.Offset;
+
+                obj = type switch
+                {
+                    AddressType.Offset => (ushort)loc.Offset,
+                    AddressType.Bank => (byte)((loc.Offset >> 16) | ((ushort)loc.Offset >= 0x8000 ? 0x80u : 0xC0u)),
+                    AddressType.WBank => (ushort)((loc.Offset >> 16) | ((ushort)loc.Offset >= 0x8000 ? 0x80u : 0xC0u)),
+                    AddressType.Address => loc.Offset | ((ushort)loc.Offset >= 0x8000 ? 0x800000u : 0xC00000u),
+                    _ => (object)(byte)loc.Offset
+                };
+
+                //if (str[0] == '&' || parentOp?.Size == 3)
+                //    obj = (ushort)loc.Offset;
+                //else if (str[0] == '^')
+                //    obj = (byte)((loc.Offset >> 16) | ((ushort)loc.Offset >= 0x8000 ? 0x80u : 0xC0u));
+                //else if (str[0] == '*')
+                //    obj = (ushort)((loc.Offset >> 16) | ((ushort)loc.Offset >= 0x8000 ? 0x80u : 0xC0u));
+                ////obj = (byte)((loc.Offset >> 16) | 0xC0);
+                //else if (str[0] == '@')
+                //    obj = loc.Offset | 0xC00000u;
+                //else if (str[0] == '%' || parentOp?.Size == 4)
+                //    obj = loc.Offset | ((ushort)loc.Offset >= 0x8000 ? 0x800000u : 0xC00000u);
+                //else if (parentOp?.Size == 2)
+                //    obj = (byte)loc.Offset;
+                //else
+                //    throw new("Unable to determine operand transform");
 
                 goto Top;
             }

@@ -79,9 +79,9 @@ namespace GaiaLib
         {
             '^' => AddressType.Bank,
             '&' => AddressType.Offset,
-            '%' => AddressType.Code,
-            '@' => AddressType.Data,
-            '*' => AddressType.DBank,
+            //'%' => AddressType.Code,
+            '@' => AddressType.Address,
+            '*' => AddressType.WBank,
             _ => AddressType.Unknown
         };
 
@@ -89,9 +89,9 @@ namespace GaiaLib
         {
             AddressType.Bank => '^',
             AddressType.Offset => '&',
-            AddressType.Code => '%',
-            AddressType.Data => '@',
-            AddressType.DBank => '*',
+            //AddressType.Code => '%',
+            AddressType.Address => '@',
+            AddressType.WBank => '*',
             _ => null
         };
     }

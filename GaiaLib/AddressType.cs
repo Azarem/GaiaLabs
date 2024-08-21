@@ -11,8 +11,8 @@ namespace GaiaLib
         Unknown,
         Bank,
         Offset,
-        Code,
-        Data,
-        DBank
+        Address,
+        //Data,
+        WBank
     }
 }

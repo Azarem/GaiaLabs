@@ -1,5 +1,7 @@
 ﻿?BANK 02
 
+?INCLUDE 'chunk_028000'
+
 !SAMPLE_NUM		$2A
 !SAMPLE_SIZE	$2C
 !SPC_CMD		$30
@@ -17,13 +19,25 @@ sfx_table:
 	#@sfx30  #@sfx31  #@sfx32  #@sfx33  #@sfx34  #@sfx35  #@sfx36  #@sfx37
 	#@sfx38  #@sfx39  #@sfx3A  #@sfx3B
 
-0290CB:
-	LDX  #&sfx_table
-
-0290D2:
-	LDA  #^sfx_table
-
-0290F1:
+	
+  code_0290C9:
+    REP #$20
+    LDX #&sfx_table
+    STX $4A
+    SEP #$20
+    LDA #^sfx_table
+    STA $4C
+    LDY $32
+    LDA [$46], Y
+    INY 
+    STY $32
+    STA $2A
+    STZ $2B
+    BIT #$80
+    BEQ code_0290E8
+    JMP $&code_029153
+	
+  code_0290F1:
 	LDA  SAMPLE_NUM
 	ASL
 	CLC
@@ -46,19 +60,14 @@ sfx_table:
 	INY
 	SEP  #$20
 	LDA  SPC_CMD
-	BRA  #$029160
+	BRA  code_029160
 
-02911D:
+code_02911D:
 	LDA  [SAMPLE_PTR], Y
 	INY
-	XBA
-	LDA  #$00
-	BRA  #$02913E
 
-029133:
+code_02912C:
 	XBA
 	LDA  [SAMPLE_PTR], Y
 	INY
 
-029146:
-	BNE  #$029133

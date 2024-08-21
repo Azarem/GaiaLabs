@@ -42,13 +42,17 @@ namespace GaiaLib
             };
         }
 
+        public static implicit operator HexString(byte hex) => new(hex);
+        public static implicit operator HexString(ushort hex) => new(hex);
+
         public static implicit operator uint(HexString hex) => hex.Value;
         public static implicit operator HexString(uint hex) => new(hex);
 
         public static implicit operator string(HexString hex) => hex.ToString();
         public static implicit operator HexString(string hex) => new(hex);
-        public static bool operator ==(HexString left, HexString right) => left.Value == right.Value;
-        public static bool operator !=(HexString left, HexString right) => left.Value != right.Value;
+        public static bool operator ==(HexString left, HexString right) 
+            => left.Value == right.Value;
+        public static bool operator !=(HexString left, HexString right) => !(left == right);
 
         public static bool operator ==(HexString left, uint right) => left.Value == right;
         public static bool operator !=(HexString left, uint right) => left.Value != right;
@@ -85,7 +89,7 @@ namespace GaiaLib
         //}
 
         public override readonly string ToString() => string.Format(GetTypeFormat(), Value);
-        public override readonly int GetHashCode() => Value.GetHashCode();
+        public override readonly int GetHashCode() => Value.GetHashCode() ^ TypeCode.GetHashCode();
         public override readonly bool Equals([NotNullWhen(true)] object obj)
         {
             if (obj is string str)
@@ -93,9 +97,11 @@ namespace GaiaLib
             else if (obj is uint ui)
                 return ui == Value;
             else if (obj is HexString hex)
-                return hex.Value == Value;
+                return this == hex;
             return false;
         }
+
+        
 
         //public static HexString Parse(string s, IFormatProvider provider) => Parse(s);
 

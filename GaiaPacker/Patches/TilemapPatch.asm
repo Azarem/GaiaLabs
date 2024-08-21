@@ -1,67 +1,95 @@
 ﻿?BANK 02
 
+?INCLUDE 'chunk_028000'
+
 -- Patch for tilemap loading which adds support for no compression
 
-!SPTR		$3E
-!DCMP_SIZE	$78
-!META_SIZE  $0666
-!DST_OFF    $0668
-
-----------------------------------------
-
-main1:
-  LDA  [SPTR]
-  INC  SPTR
-  INC  SPTR
-  CMP  #$0000
-  BEQ  jmpno1
-  BMI  jmpno1
-  STA  DCMP_SIZE
-  STA  META_SIZE
-  JMP  $884F
-
-jmpno1:
-  JMP  $88B5
+!sptr		                    3E
+!DCMP_SIZE	                    78
+!META_SIZE                      0666
+!DST_OFF                        0668
+!map_bounds_x                   0692
+!map_bounds_y                   0696
+!A1T0L                          4302
+!A1B0                           4304
 
 ---------------------------------------------
 
-main2:
-  LDA  [SPTR]
-  INC  SPTR
-  INC  SPTR
-  CMP  #$0000
-  BEQ  jmpno2
-  BMI  jmpno2
-  STA  DCMP_SIZE
-  JMP  $8943
+code_02883D {
+    REP #$20
+    
+    LDA [$sptr]
+    INC $sptr
+    INC $sptr
+    CMP #$0000
+    BEQ func_0288B5
+    BMI func_0288B5
+    STA $DCMP_SIZE
+    STA $META_SIZE
 
-jmpno2:
-  JMP  $8935
+    SEP #$20
+    LDA $066A
+    BIT #$01
+    BEQ code_02888E
+    LDX #$0000
+    JSR $&sub_028895
+    LDA $066A
+    BIT #$02
+    BEQ code_028894
+    LDX #$A000
+    STX $3E
+    LDA #$7E
+    STA $40
+    LDX #$C000
+    STX $42
+    LDA #$7E
+    STA $44
+    JSR $&sub_028DEA
+    LDA $01
+    STA $0695
+    XBA 
+    LDA $03
+    STA $0699
+    JSL $%func_0281D1
+    STA $069D
+    BRA code_028894
+}
 
--------------------------------------------------
+---------------------------------------------
 
-main3:
-  LDA  $01
-  STA  $0693, X		-- copy stored width
-  LDA  $03
-  STA  $0697, X		-- copy stored height
-  LDA  $0667
-  STA  $069B, X		-- copy stored multiply result (used by 0 index)
-  REP  #$20
-  STZ  DST_OFF		-- zero dest offset
-  JMP  $8920
+sub_028914 {
+    REP #$20
+    LDA $00
+    STA $map_bounds_x, X    -- copy stored width
+    LDA $02
+    STA $map_bounds_y, X    -- copy stored height
+    LDA $META_SIZE
+    STA $069A, X            -- copy stored multiply result (used by 0 index)
+    STZ $DST_OFF             -- zero dest offset
 
--------------------------------------------------
-  
-02883F:
-  JMP  main1
+    JSR $&sub_028DEA
+    SEP #$20
+    RTS
+}
 
--------------------------------------------------
-  
-028928:
-  JMP  main2
+---------------------------------------------
 
--------------------------------------------------
-
-028914:
-  JMP  main3
+func_028926 {
+    REP #$20
+    LDA [$sptr]
+    INC $sptr
+    INC $sptr
+    CMP #$0000
+    BMI do_copy
+    BNE do_copy
+    STA $78
+    BRA code_028943
+    
+  do_copy:
+    SEP #$20
+    LDX $sptr
+    STX $A1T0L
+    LDA $40
+    STA $A1B0
+    BRA code_028959
+}

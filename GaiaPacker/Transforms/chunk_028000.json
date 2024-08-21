@@ -1,0 +1,12 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "const < #\\$003A, #\\$8000 >",
+    "value": "const < #$$003A, #$$&scene_meta >"
+  },
+  {
+    "type": "Replace",
+    "key": "const < #\\$003C, #\\$008D >",
+    "value": "const < #$$003C, #$$^scene_meta, #00 >"
+  }
+]

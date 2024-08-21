@@ -1,22 +1,27 @@
 ﻿?BANK 02
 
+?INCLUDE 'chunk_028000'
+
 !SPTR		$3E
 !DCMP_SIZE	$78
 
 -----------------------------------------------------
 
-main:
-  LDA  [SPTR]
-  INC  SPTR
-  INC  SPTR
-  CMP  #$0000
-  BEQ  jmpno
-  BMI  jmpno
-  STA  DCMP_SIZE
-  JMP  $8777
-
-jmpno:
-  JMP  $878A
-
-02876D:
-  JMP  main
+code_028768 {
+    LDA $066A
+    BEQ code_0287BA
+    LDA [$3E]
+    STA $78
+    INC $3E
+    INC $3E
+    CMP #$0000
+    BEQ code_02878A
+    BMI code_02878A
+    LDX #$7000
+    STX $7A
+    JSL $%func_028270
+    LDX #$7000
+    STX $3E
+    LDA #$007E
+    STA $40
+}

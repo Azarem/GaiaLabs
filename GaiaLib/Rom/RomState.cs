@@ -24,7 +24,7 @@ namespace GaiaLib.Rom
             var filePath = Path.Combine(baseDir, res.Folder, $"{metaFile}.{res.Extension}");
 
             List<Asm.AsmBlock> blocks;
-            List<string> includes;
+            HashSet<string> includes;
             byte? bank;
             using (var file = File.OpenRead(filePath))
                 (blocks, includes, bank) = Process.ParseAssembly(root, file, 0);
