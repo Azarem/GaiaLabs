@@ -622,7 +622,7 @@ namespace GaiaLib.Rom
                     else
                     {
                         var str = xf.TrimStart(Process._addressspace);
-                        b = RefList.First(x => x.Value == str).Key.Bank;
+                        b = RefList.FirstOrDefault(x => x.Value == str).Key.Bank;
                     }
                 }
 
@@ -1350,7 +1350,7 @@ namespace GaiaLib.Rom
             }
         }
 
-        private void WriteObject(StreamWriter writer, object obj, int depth)
+        private void WriteObject(StreamWriter writer, object obj, int depth, bool isBranch = false)
         {
             void Indent()
             { for (int i = 0; i < depth; i++) writer.Write("  "); }
@@ -1456,27 +1456,27 @@ namespace GaiaLib.Rom
                         return obj;
                     }
 
+                    var ops = op.Operands;
                     if (op.CopDef != null)
                     {
                         writer.Write($"[{op.CopDef.Mnem}]");
-                        var len = op.Operands.Length;
+                        var len = ops.Length;
                         if (len > 1)
                         {
                             for (int i = 1; i < len; i++)
                             {
                                 writer.Write(i == 1 ? " ( " : ", ");
-                                WriteObject(writer, op.Operands[i], depth + 1);
+                                WriteObject(writer, ops[i], depth + 1, false);
                             }
                             writer.Write(" )");
                         }
                     }
-                    else if (op.Operands?.Length > 0)
+                    else if (ops?.Length > 0)
                     {
-                        var ops = op.Operands;
-                        bool isBranch() => op.Code.Mnem[0] == 'J' || op.Code.Mode == AddressingMode.PCRelative
+                        bool isBr = op.Code.Mnem[0] == 'J' || op.Code.Mode == AddressingMode.PCRelative
                             || op.Code.Mode == AddressingMode.PCRelativeLong;
 
-                        ops[0] = resolveOperand(ops[0], isBranch());
+                        ops[0] = resolveOperand(ops[0], isBr);
                         if (DbRoot.CopLib.Formats.TryGetValue(op.Code.Mode, out var format))
                         {
                             if (op.Code.Mode == AddressingMode.Immediate && op.Size == 3)
@@ -1496,8 +1496,8 @@ namespace GaiaLib.Rom
                 _isInline = false;
                 writer.WriteLine("}");
             }
-            else if (obj is Location l) writer.Write(ResolveName(l, 0, true));
-            else if (obj is LocationWrapper lw) writer.Write(ResolveName(lw.Location, lw.Type, true));
+            else if (obj is Location l) writer.Write(ResolveName(l, 0, isBranch));
+            else if (obj is LocationWrapper lw) writer.Write(ResolveName(lw.Location, lw.Type, isBranch));
             else if (obj is Address addr) writer.Write("${0:X6}", (uint)addr);
             else if (obj is byte b) writer.Write("#{0:X2}", b);
             else if (obj is ushort s) writer.Write("#${0:X4}", s);

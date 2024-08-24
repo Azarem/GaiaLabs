@@ -28,6 +28,7 @@ namespace GaiaLib.Database
         public IDictionary<Location, DbOverride> Returns { get; set; }
         public IDictionary<Location, string> Transforms { get; set; }
         public IDictionary<Location, Location> Rewrites { get; set; }
+        public IDictionary<Location, string> EntryPoints { get; set; }
 
 
         internal static readonly JsonSerializerOptions _jsonOptions = new()

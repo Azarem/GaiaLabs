@@ -238,6 +238,20 @@ namespace GaiaLib
             foreach (var file in nullPatches)
                 onProcess(file, root, blockLookup);
 
+            //Write entry points
+            foreach (var e in root.EntryPoints)
+            {
+                foreach (var f in asmFiles)
+                    if (f.Bank == 0)
+                        foreach (var b in f.Blocks)
+                            if (b.Label == e.Value)
+                            {
+                                onTransform(e.Key.Offset, (ushort)b.Location.Offset);
+                                goto Next;
+                            }
+                        Next:;
+            }
+
             //Write patch contents
             //foreach (var grp in patches.GroupBy(x => x.Location))
             //{
@@ -600,7 +614,8 @@ namespace GaiaLib
             _symbolSpace = [',', ' ', '\t', '<', '>', '(', ')', ':', '[', ']', '{', '}', '`', '~', '|'],
             _labelSpace = ['[', '{', '#', '`', '~', '|', ':'],
             _objectspace = ['<', '['],
-            _copSplitChars = [' ', '\t', ',', '(', ')', '[', ']', '$', '#'];
+            _copSplitChars = [' ', '\t', ',', '(', ')', '[', ']', '$', '#'],
+            _stringSpace = ['~', '`', '|'];
 
         private class StringSizeComparer : IComparer<string>
         {
@@ -656,11 +671,19 @@ namespace GaiaLib
 
                 //Ignore comments
                 if ((ix = line.IndexOf("--")) >= 0)
-                    line = line[..ix];
+                {
+                    var cix = line.IndexOfAny(_stringSpace);
+                    if (cix < 0 || cix > ix || (cix = line.LastIndexOfAny(_stringSpace)) < ix)
+                        line = line[..ix];
+                }
 
                 //Ignore comments
                 if ((ix = line.IndexOf(';')) >= 0)
-                    line = line[..ix];
+                {
+                    var cix = line.IndexOfAny(_stringSpace);
+                    if (cix < 0 || cix > ix || (cix = line.LastIndexOfAny(_stringSpace)) < ix)
+                        line = line[..ix];
+                }
 
                 //Trim
                 line = line.Trim(_commaspace);
@@ -835,7 +858,7 @@ namespace GaiaLib
                         }
 
                         //Process strings
-                        if (line[0] == '`' || line[0] == '~' || line[0] == '|')
+                        if (_stringSpace.Contains(line[0]))
                         {
                             string? str = null;
                             var c = line[0];
@@ -1315,10 +1338,6 @@ namespace GaiaLib
 
                             if (OpCode.AddressingRegex.TryGetValue(code.Mode, out var regex))
                             {
-                                if(operand == "#$7F, #$^radar_layout_001E00")
-                                {
-
-                                }
                                 var match = regex.Match(operand);
                                 if (match.Success)
                                 {
@@ -1399,7 +1418,7 @@ namespace GaiaLib
                         int size = opCode.Size;
                         if (size == -2)
                             size = (operand[0] == '^' || opnd1 is byte) ? 2 : 3;
-                        
+
                         object[] opnds = (operand2 != null)
                             ? [opnd1, parseOpnd(operand2)]
                             : [opnd1];

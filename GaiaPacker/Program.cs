@@ -133,7 +133,6 @@ outRom.WriteByte((byte)(sum >> 8));
 
 void WriteTransform(uint location, object value)
 {
-    return;
     outRom.Position = location;
     if (value is ushort us)
     {

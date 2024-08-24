@@ -358,7 +358,7 @@ namespace GaiaLib.Asm
         [GeneratedRegex("^#(\\$[A-Fa-f0-9]{2,4}|[&^][A-Za-z0-9-+_]+)$", RegexOptions.Compiled)]
         private static partial Regex ImmediateRegex();
 
-        [GeneratedRegex("^\\$([A-Fa-f0-9]{4})$", RegexOptions.Compiled)]
+        [GeneratedRegex("^\\$([A-Fa-f0-9]{4}|&[A-Za-z0-9-+_]+)$", RegexOptions.Compiled)]
         private static partial Regex AbsoluteRegex();
 
         [GeneratedRegex("^\\$([A-Fa-f0-9]{6}|\\@[A-Za-z0-9-+_]+)$", RegexOptions.Compiled)]

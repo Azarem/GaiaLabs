@@ -1,0 +1,7 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "(dma_data_00BC4C\\s\\[\\s*\\])[\\s]*(dma_data_00BC4D\\s\\[[^\\]]*\\])",
+    "value": "$2\r\n\r\n$1"
+  }
+]

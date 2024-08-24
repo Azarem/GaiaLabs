@@ -82,7 +82,7 @@ func_028926 {
     CMP #$0000
     BMI do_copy
     BNE do_copy
-    STA $78
+    STA $DCMP_SIZE
     BRA code_028943
     
   do_copy:
