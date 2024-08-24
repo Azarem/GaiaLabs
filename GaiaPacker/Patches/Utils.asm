@@ -1,5 +1,14 @@
 ﻿?BANK 03
 
+?INCLUDE 'chunk_028000'
+?INCLUDE 'chunk_03BAE1'
+?INCLUDE 'system_strings'
+
+!VMADDL                         2116
+!A1T0L                          4302
+!DAS0L                          4305
+
+------------------------------------------------
 
 ;Button flags
 ;8000 - (B) Attack/Talk
@@ -15,92 +24,94 @@
 ;0020 - (L) Spin
 ;0010 - (R) Spin
 
---------------------------------------------
-
-global_script_hook:
-  ;Add global scripts to run with actor code here
-  JSL %RunButton
-
-  LDA $56
-  BEQ $03
-  JMP $CB1E
-  JMP $CB90
-
-----------------------------------------
-
-bcd_hex_fix:
-  LDA $0000, Y
-  AND #$0F
-  CMP #$0A
-  BMI numeric1
-
-  CLC
-  ADC #$37
-  BRA store1
-
-numeric1:
-  ORA #$30
-
-store1:
-  REP #$20
-  DEX 
-  DEX 
-  STA $7F0200, X
-  SEP #$20
-  DEC $000E
-  BEQ bcd_end
-  LDA $0000, Y
-  INY 
-  ;AND #$F0
-  LSR 
-  LSR 
-  LSR 
-  LSR
-  CMP #$0A
-  BMI numeric2
-
-  CLC
-  ADC #$37
-  BRA store2
-
-numeric2:
-  ORA #$30
-
-store2:
-  REP #$20
-  DEX 
-  DEX 
-  STA $7F0200, X
-  SEP #$20
-  DEC $000E
-  BNE bcd_hex_fix
-
-bcd_end:
-  JMP $EDC1
-
---------------------------------------------
+----------------------------------------------------------
 
 ;Prevent drawing of HUD BG layers
-03DECD:
-  RTL
+func_03DECD {
+    RTL
+}
+
+----------------------------------------------------------
 
 ;Fix for string code 05 BCD processing to include hex chars
-03ED90:
-  JMP bcd_hex_fix
+code_03ED90 {
+    LDA $0000, Y
+    AND #$0F
+    CMP #$0A
+    BMI bcd_numeric1
 
-;DMA size (two lines)
-02B065:
-  LDX #$0080
+    CLC
+    ADC #$37
+    BRA bcd_store1
+
+  bcd_numeric1:
+    ORA #$30
+
+  bcd_store1:
+    REP #$20
+    DEX 
+    DEX 
+    STA $7F0200, X
+    SEP #$20
+    DEC $000E
+    BEQ code_03EDC1
+    LDA $0000, Y
+    INY 
+    ;AND #$F0
+    LSR 
+    LSR 
+    LSR 
+    LSR
+    CMP #$0A
+    BMI bcd_numeric2
+
+    CLC
+    ADC #$37
+    BRA bcd_store2
+
+  bcd_numeric2:
+    ORA #$30
+
+  bcd_store2:
+    REP #$20
+    DEX 
+    DEX 
+    STA $7F0200, X
+    SEP #$20
+    DEC $000E
+    BNE code_03ED90
+}
+
+------------------------------------------------
+
+;DMA size
+code_02B06D {
+    AND #$DF
+    STA $09EC
+    LDX #$0080  ;Two lines of tiles
+    STX $DAS0L
+}
+
+----------------------------------------------
 
 ;VRAM DMA arguments (when copying BG3 layer)
-02B078:
-  LDX #$7820
-  STX $2116
-  LDX #$0240
+code_02B078 {
+    LDX #$7820
+    STX $VMADDL
+    LDX #$0240
+    STX $A1T0L
+}
+
+string_01E7F6 |[CUR:46,0][NHM:8][HP][CUR:9C,0][NHM:14][BCD:1,AD8][CUR:A0,0][NUM:AD6][CUR:5E,0][BCD:2,644][CUR:7A,0][BCD:3,9A2][CUR:BA,0][BCD:3,9A4]|
+
+string_01E818 |[NHM:4][CUR:66,0][HE]|
+
+-------------------------------------------------
 
 ;Entry point for actor scripts
-03CB1A:
-  JMP global_script_hook
+code_03CB1A {
+    JSL @RunButton
+    LDA $56
+    BEQ code_03CB90
+}
 
-;|[CUR:46,0][NHM:8][HP][CUR:9C,0][NHM:14][BCD:1,AD8][CUR:A0,0][NUM:AD6][CUR:5E,0][BCD:2,644][CUR:7A,0][BCD:3,9A2][CUR:BA,0][BCD:3,9A4]|
-;|[NHM:4][CUR:66,0][HE]|

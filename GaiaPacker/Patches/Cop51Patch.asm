@@ -30,27 +30,27 @@ cop_handler_51_00997B:
   LDA #$0000
   TCD
 
-main:
+cop51_main:
   LDA [SPTR]
-  BMI minus
-  BEQ zero
+  BMI cop51_minus
+  BEQ cop51_zero
   STA DCMP_SIZE
   INC SPTR
   INC SPTR
-  JSL $%func_028270
-  JSL $%zero_bytes_03D86A
-  BRA end
+  JSL $@func_028270
+  JSL $@zero_bytes_03D86A
+  BRA cop51_end
 
-zero:
+cop51_zero:
   LDA #$2000
-  BRA domvn
+  BRA cop51_domvn
 
-minus:
+cop51_minus:
   LDA #$0000
   SEC
   SBC [SPTR]
 
-domvn:
+cop51_domvn:
   INC SPTR
   INC SPTR
 
@@ -71,7 +71,7 @@ domvn:
   PLA
   JSR $0402
 
-end:
+cop51_end:
   PLD 
   PLY 
   TYX

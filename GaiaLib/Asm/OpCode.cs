@@ -355,7 +355,7 @@ namespace GaiaLib.Asm
         [GeneratedRegex("^\\[\\$([A-Fa-f0-9]{2})\\]$", RegexOptions.Compiled)]
         private static partial Regex DirectPageIndirectLongRegex();
 
-        [GeneratedRegex("^#(\\$[A-Fa-f0-9]{2,4}|[&^][A-Za-z0-9-+_]+)$", RegexOptions.Compiled)]
+        [GeneratedRegex("^#(\\$[A-Fa-f0-9]{2,4}|\\$?[&^*][A-Za-z0-9-+_]+)$", RegexOptions.Compiled)]
         private static partial Regex ImmediateRegex();
 
         [GeneratedRegex("^\\$([A-Fa-f0-9]{4}|&[A-Za-z0-9-+_]+)$", RegexOptions.Compiled)]
@@ -385,7 +385,7 @@ namespace GaiaLib.Asm
         [GeneratedRegex("^(\\$[A-Fa-f0-9]{4}|\\$?&[A-Za-z0-9-+_]+),\\s?[Xx]$", RegexOptions.Compiled)]
         private static partial Regex AbsoluteIndexedXRegex();
 
-        [GeneratedRegex("^(\\$[A-Fa-f0-9]{6}|\\$?[@%][A-Za-z0-9-+_]+),\\s?[Xx]$", RegexOptions.Compiled)]
+        [GeneratedRegex("^(\\$[A-Fa-f0-9]{6}|\\$?@[A-Za-z0-9-+_]+),\\s?[Xx]$", RegexOptions.Compiled)]
         private static partial Regex AbsoluteLongIndexedXRegex();
 
         [GeneratedRegex("^\\((\\$[A-Fa-f0-9]{4}|\\$?&[A-Za-z0-9-+_]+),\\s*[Xx]\\)$", RegexOptions.Compiled)]
