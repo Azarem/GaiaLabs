@@ -1,6 +1,6 @@
 ﻿# BaseROM Toolkit
 
-This is a development toolkit for Illusion of Gaia (SNES). Using it will allow you to browse every asset and piece of code in the game. In addition, it will also allow you to rebuild all of these assets into new ROM files. All assets are decompressed so you can enjoy lightning fast screen transitions and load times. Any files changes you make, as well as any assembly patches you create, will be integrated in this process. Please note that only a handful of files in the `asm/` folder are rebuilt into the ROM (see below).
+This is a development toolkit for Illusion of Gaia (SNES). Using it will allow you to browse every asset and piece of code in the game. In addition, it will also allow you to rebuild all of these assets into new ROM files. All assets are decompressed so you can enjoy lightning fast screen transitions and load times. Any files changes you make, as well as any assembly patches you create, will be integrated in this process.
 
 ### Requirements
 
@@ -16,15 +16,6 @@ This is a development toolkit for Illusion of Gaia (SNES). Using it will allow y
 5. You can add or edit scene assets with `asm/scene_meta.asm`. Scene actors are located in `asm/scene_events.asm`. `asm/scene_warps.asm` contains all the screen transition triggers.
 6. There are example patches like `Teleporter.asm` and `ItemRewards.asm` included in the Patches folder. Feel free to experiment with these.
 7. Go back to your command prompt and run `GaiaPacker.exe`. This will re-build the ROM along with any changes you made.
-
-### ASM Files Currently Not Supported
-
-Some files in the `asm/` folder are not supported for rebuild, they are included for reference.
-
-* Files beginning with `chunk_`
-* binary_01ABDE
-* binary_01C384
-* binary_01D8BE
 
 
 ### Support the project on Patreon!
