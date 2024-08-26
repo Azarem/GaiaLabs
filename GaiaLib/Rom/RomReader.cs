@@ -182,7 +182,7 @@ namespace GaiaLib.Rom
                 }
                 else
                 {
-                    uint closest = 20;
+                    uint closest = 0x150;
                     string? bestMatch = null;
                     foreach (var entry in RefList)
                     {
@@ -394,8 +394,10 @@ namespace GaiaLib.Rom
 
         private bool CanContinue()
         {
-            if (_pCur >= _pEnd /*|| _lCur >= _lEnd*/) return false;
-            if (_chunkTable.ContainsKey(_lCur)) return false;
+            if (_pCur >= _pEnd /*|| _lCur >= _lEnd*/) 
+                return false;
+            if (_chunkTable.ContainsKey(_lCur)) 
+                return false;
             return true;
         }
 
@@ -858,8 +860,13 @@ namespace GaiaLib.Rom
                             if (!Enum.TryParse<MemberType>(str, true, out var mtype))
                                 throw new("Cannot use structs in cop def");
 
+                            DbRoot.Transforms.TryGetValue(_lCur, out var xform);
+
                             object copLoc(ushort offset, byte? bank)
                             {
+                                if (!string.IsNullOrEmpty(xform))
+                                    return xform;
+
                                 if (bank == null && offset == 0)
                                     return offset;
 
@@ -867,7 +874,7 @@ namespace GaiaLib.Rom
                                 if (addr.Space == AddressSpace.ROM)
                                 {
                                     var l = (Location)addr;
-                                    if (p != "Address" && isPtr)
+                                    if (p != "Address" && isPtr && !DbRoot.Rewrites.ContainsKey(l))
                                         noteType(l, otherStr, true);
                                     return new LocationWrapper(l, type != null ? Address.TypeFromCode(type.Value)
                                         : bank == null ? AddressType.Offset : AddressType.Address);
@@ -875,10 +882,17 @@ namespace GaiaLib.Rom
                                 return addr;
                             }
 
+                            object resolve(object obj)
+                            {
+                                if (!string.IsNullOrEmpty(xform))
+                                    return xform;
+                                return obj;
+                            }
+
                             switch (mtype)
                             {
-                                case MemberType.Byte: operands.Add(*Advance()); break;
-                                case MemberType.Word: operands.Add(*(ushort*)Advance(2)); break;
+                                case MemberType.Byte: operands.Add(resolve(*Advance())); break;
+                                case MemberType.Word: operands.Add(resolve(*(ushort*)Advance(2))); break;
                                 case MemberType.Offset: operands.Add(copLoc(*(ushort*)Advance(2), null)); break;
                                 case MemberType.Address: operands.Add(copLoc(*(ushort*)Advance(2), *Advance())); break;
                                 default: throw new("Unsuported COP member type");
@@ -1029,7 +1043,6 @@ namespace GaiaLib.Rom
             //char cmd = isPtr ? str[0] : (char)0;
             //if (isPtr)
             //    str = str[0] == '&' ? "Offset" : "Address";
-
 
             //Parse raw values
             if (Enum.TryParse<MemberType>(str, true, out var mType))

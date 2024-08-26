@@ -876,23 +876,21 @@ namespace GaiaLib
                             memStream.Position = 0;
                             memStream.SetLength(0);
 
+                            byte? lastCmd = null;
+
                             switch (c)
                             {
                                 case '`':
                                     ProcessString(root.WideCommands, root.WideMap, i => (byte)((i & 0x70) << 1 | (i & 0x0F)));
                                     goto Terminate;
+
                                 case '~':
                                     ProcessString(root.WideCommands, root.CharMap, i => (byte)((i & 0x38) << 1 | (i & 0x07)));
                                 Terminate:
-                                    int last = 0;
-                                    if (memStream.Position > 0)
-                                    {
-                                        memStream.Position--;
-                                        last = memStream.ReadByte();
-                                    }
-                                    if (last != 0xC0 && last != 0xCA)
+                                    if (lastCmd != 0xC0 && lastCmd != 0xCA && lastCmd != 0xD1)
                                         memStream.WriteByte(0xCA);
                                     break;
+
                                 case '|':
                                     ProcessString(root.StringCommands, null, null);
                                     memStream.WriteByte(0);
@@ -937,7 +935,8 @@ namespace GaiaLib
 
                                         if (cmd != null)
                                         {
-                                            memStream.WriteByte((byte)cmd.Code.Value);
+                                            lastCmd = (byte)cmd.Code.Value;
+                                            memStream.WriteByte(lastCmd.Value);
 
                                             if (cmd.Types != null)
                                                 for (int y = 0, pix = 1; y < cmd.Types.Length; y++, pix++)
@@ -982,6 +981,8 @@ namespace GaiaLib
                                             continue;
                                         }
                                     }
+
+                                    lastCmd = null;
                                     processChar(c);
                                 }
 
