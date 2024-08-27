@@ -27,7 +27,12 @@
 ----------------------------------------------------------
 
 ;Prevent drawing of HUD BG layers
-func_03DECD {
+code_03DED5 {
+    PHP
+    REP #$20
+    LDA #$0001
+    TSB $09EC
+    PLP
     RTL
 }
 
