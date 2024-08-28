@@ -4,6 +4,7 @@
 ?INCLUDE 'chunk_03BAE1'
 ?INCLUDE 'system_strings'
 
+!player_flags                   09AE
 !VMADDL                         2116
 !A1T0L                          4302
 !DAS0L                          4305
@@ -23,6 +24,13 @@
 ;0040 - (X) Nothing
 ;0020 - (L) Spin
 ;0010 - (R) Spin
+
+---------------------------------------------------------
+;Global scripts
+global_scripts {
+    JSL @RunButton
+    RTS
+}
 
 ----------------------------------------------------------
 
@@ -113,10 +121,15 @@ string_01E818 |[NHM:4][CUR:66,0][HE]|
 
 -------------------------------------------------
 
-;Entry point for actor scripts
-code_03CB1A {
-    JSL @RunButton
-    LDA $56
-    BEQ code_03CB90
+run_actors_03CAF5 {
+    PHP 
+    PHD 
+    REP #$20
+    JSR global_scripts
+    LDA $player_flags
+    BIT #$0008
+    BEQ code_03CB07
+    LDA #$8000
+    TRB $0656
 }
 
