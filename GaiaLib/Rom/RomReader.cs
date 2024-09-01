@@ -1011,7 +1011,7 @@ namespace GaiaLib.Rom
             {
                 var loc = (Location)adrs;
 
-                if (_part.IsInside(loc) && !DbRoot.Rewrites.ContainsKey(loc))
+                if (_part.Block.IsInside(loc, out var part) && !DbRoot.Rewrites.ContainsKey(loc))
                 {
                     _chunkTable.TryAdd(loc, otherStr);
                     RefList.TryAdd(loc, $"{otherStr.ToLower()}_{loc}");

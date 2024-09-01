@@ -1,5 +1,6 @@
 ﻿using GaiaLib.Database;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 
 namespace GaiaLib.Rom
 {
@@ -7,6 +8,11 @@ namespace GaiaLib.Rom
     {
         public readonly byte[] CGRAM = new byte[0x200];
         public readonly byte[] VRAM = new byte[0x10000];
+        public readonly byte[] WRAM = new byte[0x20000];
+        public readonly byte[] MainTileset = new byte[0x800];
+        public readonly byte[] EffectTileset = new byte[0x800];
+        public readonly byte[] MainTilemap = new byte[0x2000];
+        public readonly byte[] EffectTilemap = new byte[0x2000];
 
         public static string StripName(string name)
         {
@@ -89,18 +95,43 @@ namespace GaiaLib.Rom
 
                     case 0x05:
                         {
-                            var srcOffset = list[ix++];
-                            var sizeW = list[ix++];
-                            var dstOffset = list[ix++];
-                            var layers = list[ix++];
+                            var srcOffset = (byte)list[ix++] << 2;
+                            var sizeW = (byte)list[ix++] << 2;
+                            var dstOffset = (byte)list[ix++] << 2;
+                            var layers = (byte)list[ix++];
                             var resource = list[ix++];
+
+                            using var file = getResource(resource.ToString(), BinType.Tileset);
+
+                            void copy(byte[] buffer) {
+                                file.Position += srcOffset;
+                                var dix = dstOffset;
+                                for(int i = sizeW - srcOffset; i-- > 0;)
+                                    buffer[dix++] = (byte)file.ReadByte();
+                            };
+
+                            if ((layers & 1) != 0)
+                                copy(state.MainTileset);
+
+                            if((layers & 2) != 0)
+                                copy(state.EffectTileset);
                         }
                         break;
 
                     case 0x06:
                         {
-                            var layer = list[ix++];
+                            var layer = (byte)list[ix++];
                             var resource = list[ix++];
+
+                            using var file = getResource(resource.ToString(), BinType.Tilemap);
+
+                            int width = file.ReadByte();
+                            int height = file.ReadByte();
+                            int calcSize = (width * height) << 8;
+                            var buffer = (layer & 1) != 0 ? state.MainTilemap : state.EffectTilemap;
+
+                            for (int i = 0, size = Math.Max(0x2000, Math.Min((int)file.Length, calcSize)); i < size;)
+                                buffer[i++] = (byte)file.ReadByte();
                         }
                         break;
 
