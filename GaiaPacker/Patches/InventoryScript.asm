@@ -1,135 +1,31 @@
 ﻿?BANK 02
 
-!page_1        0AB4
-!page_2        0B34  ;16 items per page
-!state_1       0B54
+?INCLUDE 'chunk_02E396'
+
+!inventory_slots                0AB4
+!page_1                         0AB4
+!inventory_equipped_index       0AC4
+!inventory_equipped_type        0AC6
+!page_2                         0B34  ;16 items per page
+!state_1                        0B54
 
 ;ASM for enhancing the inventory script
 
-  
--------------------------------------------
+----------------------------------------------------
 
-main_handler:
-  COP [C2]
-  LDA $0AFA
-  CMP #$0003
-  BEQ main_finish                    ;Don't listen for LR press when info menu is up
-  COP [40] ( #$0030, &on_press_lr )
-  COP [40] ( #$0300, &main_press_lr )
-
-main_finish:
-  JSR $EC58
-  JMP $E428
-
-main_press_lr:
+ins_main_press_lr:
   LDA #$0300
   TSB $0658
-  JMP on_press_lr
+ ; JMP on_press_lr
   
--------------------------------------------
-
-item_handler:
-  COP [C2]
-  COP [40] ( #$0030, &on_item_lr )
-  COP [40] ( #$C040, #$E50B )
-  JMP $E49F
-  
-on_item_lr:
-  JSL on_press_lr
-  JMP $E47F
-  
--------------------------------------------
-
-arrange_handler:
-
-arrange_callback:
-  JSR $EA3D
-  COP [C2]
-  COP [40] ( #$0030, &on_press_lr )
-  JMP $E55A
-  
--------------------------------------------
-
-second_handler:
-  SEP #$20
-  LDA $state_1
-  BIT #$01
-  BEQ second_reset
-  LDA #$02
-  TSB $state_1
-  BRA second_next
-
-second_reset:
-  LDA #$02
-  TRB $state_1
-
-second_next:
-  REP #$20
-
-second_callback:
-  JSR $EA3D
-  COP [C2]
-  COP [40] ( #$0030, &on_press_lr )
-  JMP $E5B1
-
----------------------------------------------
-
-move_process:
-  LDA #$8000
-  TSB $0658
-  SEP #$20
-  LDA $state_1
-  BIT #$01
-  BNE move_process_odd
-  BIT #$02
-  BEQ move_same_page
-  BRA move_process_swap
-  
-move_process_odd:
-  BIT #$02
-  BNE move_same_page
-
-move_process_swap:
-  COP [06] ( #11 )
-  PHX
-
-  LDY $22
-  LDX $2E
-  LDA $page_1, Y
-  XBA
-  LDA $page_2, X
-  XBA
-  STA $page_2, X
-  LDA #$00
-  XBA
-  STA $page_1, Y
-
-  PLX
-  REP #$20
-  JMP $E61B
-
-move_same_page:
-  REP #$20
-  JMP $E5E0
-
--------------------------------------------
-
-discard_handler:
-  COP [C2]
-  COP [40] ( #$0030, &on_press_lr )
-  COP [40] ( #$4040, #$E70B )
-  JMP $E687
-
--------------------------------------------
-
-on_press_lr:
+ins_on_press_lr:
   LDA #$0030
   TSB $0658
   PHY
   LDA #$000F
   STA $24
 
-swap_top:
+ins_swap_top:
   LDY $24
 
   SEP #$20
@@ -145,14 +41,14 @@ swap_top:
 
   PHA
   TYA
-  JSR $E9ED
+  JSR sub_02E9ED
   PLA
   STA $0028, Y
   
   DEC $24
-  BPL swap_top
+  BPL ins_swap_top
 
-finish_swap:
+ins_finish_swap:
   SEP #$20
   LDA $state_1
   EOR #$01
@@ -169,28 +65,210 @@ finish_swap:
   PLY
   RTL
 
----------------------------------------Hooks
+-------------------------------------------
 
-02E423:
-  JMP main_handler
-
-02E497:
-  JMP item_handler
-
-02E555:
-  JMP arrange_handler
-
-02E566:
-  PEA arrange_callback-1
+ins_on_item_lr:
+  JSL ins_on_press_lr
+  JMP code_02E47F
   
-02E5AC:
-  JMP second_handler
+-------------------------------------------
+;Hook for listening for lr press on main
 
-02E5BD:
-  PEA second_callback-1
+code_02E40C {
+    COP [BD] ( @string_01E90B )
+    COP [BD] ( @string_01E8E9 )
+    STZ $1C
+    LDA #$FFFF
+    STA $18
+    LDA #$8000
+    TSB $0658
+    COP [C2]
 
-02E5DA:
-  JMP move_process
+    LDA $0AFA
+    CMP #$0003
+    BEQ $0C                    ;Don't listen for LR press when info menu is up
+    COP [40] ( #$0030, &ins_on_press_lr )
+    COP [40] ( #$0300, &ins_main_press_lr )
 
-02E67F:
-  JMP discard_handler
+    JSR $&sub_02EC58
+    BCS func_02E445
+    LDA $0AFA
+    CMP $18
+    BNE code_02E432
+    RTL 
+}
+  
+-------------------------------------------
+;Equip handler
+
+code_02E47F {
+    JSR $&sub_02EA73
+    COP [BD] ( @string_01E912 )
+    LDY $1A
+    LDA $inventory_slots, Y
+    AND #$00FF
+    STA $0AE8
+    COP [BD] ( @string_01E9D0 )
+    COP [C2]
+    COP [40] ( #$0030, &ins_on_item_lr )           ;This
+    COP [40] ( #$C040, &code_02E50B )
+    COP [40] ( #$0800, &code_02E4B8 )
+    COP [40] ( #$0400, &code_02E4CE )
+    COP [40] ( #$0200, &code_02E4E4 )
+    COP [40] ( #$0100, &code_02E4F7 )
+    RTL 
+}
+  
+-------------------------------------------
+;Arrange handler
+
+code_02E555 {
+    JSR $&sub_02EA3D
+    COP [C2]
+    COP [40] ( #$0030, &ins_on_press_lr )       ;This
+    COP [40] ( #$4040, &code_02E64C )
+    COP [40] ( #$8000, &code_02E583 )
+    PEA $&code_02E555-1
+    COP [40] ( #$0800, &sub_02E981 )
+    COP [40] ( #$0400, &sub_02E996 )
+    COP [40] ( #$0200, &sub_02E9AB )
+    COP [40] ( #$0100, &sub_02E9BD )
+    PLA 
+    RTL 
+}
+
+-------------------------------------------
+;Second handler (flag state on entry)
+
+code_02E5AC {
+    SEP #$20
+    LDA $state_1
+    BIT #$01
+    BEQ ins_second_reset
+    LDA #$02
+    TSB $state_1
+    BRA ins_second_next
+
+  ins_second_reset:
+    LDA #$02
+    TRB $state_1
+
+  ins_second_next:
+    REP #$20
+
+  ins_second_callback:
+    JSR $&sub_02EA3D
+    COP [C2]
+    COP [40] ( #$0030, &ins_on_press_lr )         ;This
+    COP [40] ( #$4040, &code_02E64A )
+    COP [40] ( #$8000, &code_02E5DA )
+    PEA $&ins_second_callback-1
+    COP [40] ( #$0800, &sub_02E981 )
+    COP [40] ( #$0400, &sub_02E996 )
+    COP [40] ( #$0200, &sub_02E9AB )
+    COP [40] ( #$0100, &sub_02E9BD )
+    PLA 
+    RTL 
+}
+
+---------------------------------------------
+;Move handler
+
+code_02E5DA {
+    LDA #$8000
+    TSB $0658
+    
+    SEP #$20
+    LDA $state_1
+    BIT #$01
+    BNE ins_move_process_odd
+    BIT #$02
+    BEQ ins_move_same_page
+    BRA ins_move_process_swap
+  
+  ins_move_process_odd:
+    BIT #$02
+    BNE ins_move_same_page
+
+  ins_move_process_swap:
+    COP [06] ( #11 )
+    PHX
+
+    LDY $22
+    LDX $2E
+    LDA $page_1, Y
+    XBA
+    LDA $page_2, X
+    XBA
+    STA $page_2, X
+    LDA #$00
+    XBA
+    STA $page_1, Y
+
+    PLX
+    REP #$20
+    BRA ins_finish_move
+
+ins_move_same_page:
+    REP #$20
+
+    LDA $22
+    CMP $2E
+    BEQ code_02E5AC
+
+    COP [06] ( #11 )
+    
+    LDY $22
+    SEP #$20
+    LDA $page_1, Y
+    XBA 
+    LDY $2E
+    LDA $page_1, Y
+    XBA 
+    STA $page_1, Y
+    XBA 
+    LDY $22
+    STA $page_1, Y
+    REP #$20
+    LDY $2E
+    LDA $page_1, Y
+    AND #$00FF
+    PHA 
+    TYA 
+    JSR $&sub_02E9ED
+    PLA 
+    STA $0028, Y
+    LDY $22
+    LDA $inventory_slots, Y
+    AND #$00FF
+
+  ins_finish_move:
+    PHA 
+    TYA 
+    JSR $&sub_02E9ED
+    PLA 
+    STA $0028, Y
+    TYA 
+    CMP $inventory_equipped_index
+    BNE code_02E631
+    LDA $2E
+    STA $inventory_equipped_index
+    BRA code_02E63D
+}
+
+-------------------------------------------
+
+code_02E67C {
+    JSR $&sub_02EA3D
+    COP [C2]
+    COP [40] ( #$0030, &ins_on_press_lr )              ;This
+    COP [40] ( #$4040, &code_02E70B )
+    COP [40] ( #$8000, &code_02E6AA )
+    PEA $&code_02E67C-1
+    COP [40] ( #$0800, &sub_02E981 )
+    COP [40] ( #$0400, &sub_02E996 )
+    COP [40] ( #$0200, &sub_02E9AB )
+    COP [40] ( #$0100, &sub_02E9BD )
+    PLA 
+    RTL 
+}

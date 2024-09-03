@@ -25,7 +25,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="Patches\InventoryScript.asm">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Patches\iog_msu.asm_">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -55,7 +55,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Patches\InventoryManagement.asm">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Patches\SpritemapPatch.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

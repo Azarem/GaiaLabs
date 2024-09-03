@@ -1,6 +1,7 @@
 ﻿?BANK 03
 
 ?INCLUDE 'chunk_028000'
+?INCLUDE 'chunk_038000'
 ?INCLUDE 'chunk_03BAE1'
 ?INCLUDE 'system_strings'
 
@@ -120,7 +121,13 @@ string_01E7F6 |[CUR:46,0][NHM:8][HP][CUR:9C,0][NHM:14][BCD:1,AD8][CUR:A0,0][NUM:
 string_01E818 |[NHM:4][CUR:66,0][HE]|
 
 -------------------------------------------------
+;Prevent unequipped message
+func_0384BF {
+    RTS 
+}
 
+------------------------------------------------
+;Hook into global actor code
 run_actors_03CAF5 {
     PHP 
     PHD 

@@ -1,174 +1,286 @@
 ﻿?BANK 03
 
-!page_1        0AB4
-!page_2        0B34  ;16 items per page
+?INCLUDE 'chunk_038000'
+?INCLUDE 'chunk_03BAE1'
+?INCLUDE 'chunk_088000'
 
-!state_1       0B54
-!herb_count    0B55
-!jewel_count   0B56
-!crystal_count 0B57
+!player_actor                   09AA
+!jewels_collected               0AB0
+!inventory_slots                0AB4
+!page_2                         0B34  ;16 items per page
 
+!state_1                        0B54
+!herb_count                     0B55
+!jewel_count                    0B56
+!crystal_count                  0B57
 
---------------------------------
+--------------------------------------------------------
 
-give_item_handler:
-  CMP #$01
-  BEQ give_jewel
-  CMP #$06
-  BEQ give_herb
-  CMP #$0E
-  BEQ give_crystal
+inv_check_pages {
+    PHA
+    LDY #inventory_slots
 
-  JSR check_pages
-  BCS exit_fail
-  JMP $F074
+  inv_check_page_1:
+    LDA $0000, Y
+    BEQ inv_give_item
+    INY
+    CPY #$inventory_slots+10
+    BNE inv_check_page_1
 
-exit_fail:
-  JMP $F081
+    LDY #$page_2
 
-give_jewel:
-  LDA $jewel_count
-  BNE $05
-  LDA #01
-  JSR check_pages
-  INC $jewel_count
-  LDA #01
-  JMP $F074
+  inv_check_page_2:
+    LDA $0000, Y
+    BEQ inv_give_item
+    INY
+    CPY #$page_2+10
+    BNE inv_check_page_2
 
-give_herb:
-  LDA $herb_count
-  BNE $07
-  LDA #$06
-  JSR check_pages
-  BCS exit_fail
-  INC $herb_count
-  LDA #06
-  JMP $F074
+  inv_no_room:
+    PLA
+    SEC
+    RTS
+
+  inv_give_item:
+    PLA
+    STA $0000, Y
+    CLC
+    RTS
+}
+
+------------------------------------------------
+;Entry point for gem use (prevent increase, this is done elsewhere)
+func_0384D5 {
+    COP [BF] ( &widestring_038517 )
+    JSR $&sub_039FB2
+
+;    SED 
+;    LDA $jewels_collected
+;    CLC 
+;    ADC #$0001
+;    STA $jewels_collected
+;    CLD 
+
+    PHX 
+    PHD 
+    LDA $player_actor
+    TCD 
+    TAX 
+    COP [A5] ( @code_038566, #00, #00, #$2000 )
+    TYX 
+    LDA #$0000
+    STA $0012, X
+    LDA #$3000
+    STA $000E, X
+    LDY $player_actor
+    LDA $0014, Y
+    STA $0014, X
+    LDA $0016, Y
+    STA $0016, X
+    PLD 
+    PLX 
+    RTS 
+}
+
+---------------------------------------------
+;Entry point for removing an item from the inventory upon use
+
+sub_039FB2 {
+    PHX
+    LDX $0AC4
+    SEP #$20
+    LDA $inventory_slots, X
+    CMP #$01
+    BEQ inv_remove_jewel
+    CMP #$06
+    BEQ inv_remove_herb
+    CMP #$0E
+    BEQ inv_remove_crystal
+    BRA inv_remove_item
+
+  inv_remove_jewel:
+    SED
+    REP #$20
+    LDA $jewels_collected
+
+  inv_add_jewel_count:
+    CLC
+    ADC #$0001 
+
+    SEP #$20
+    DEC $jewel_count
+    BMI inv_remove_jewel_minus
+    REP #$20
+    BEQ inv_finish_jewel_item
+    BRA inv_add_jewel_count
+
+  inv_remove_jewel_minus:
+    STZ $jewel_count
+    REP #$20
+   
+  inv_finish_jewel_item:
+    STA $jewels_collected
+    CLD
+    SEP #$20
+    BRA inv_remove_item
+
+  inv_remove_herb:
+    DEC $herb_count
+    BMI inv_remove_herb_minus
+    BEQ inv_remove_item
+    PLX
+    RTS
+
+  inv_remove_herb_minus:
+    STZ $herb_count
+    BRA inv_remove_item
   
-give_crystal:
-  LDA $crystal_count
-  BNE $07
-  LDA #$0E
-  JSR check_pages
-  BCS exit_fail
-  INC $crystal_count
-  LDA #0E
-  JMP $F074
+  inv_remove_crystal:
+    DEC $crystal_count
+    BMI inv_remove_crystal_minus
+    BEQ inv_remove_item
+    PLX
+    RTS
 
---------------------------------
+  inv_remove_crystal_minus:
+    STZ $crystal_count
 
-check_pages:
-  PHA
-  LDY #$page_1
+  inv_remove_item:
+    STZ $inventory_slots, X
+    REP #$20
+    LDA #$0000
+    STA $0AC6
+    DEC
+    STA $0AC4
+    PLX
+    RTS
+}
 
-check_page_1:
-  LDA $0000, Y
-  BEQ give_item
-  INY
-  CPY #$page_1+10
-  BNE check_page_1
-
-  LDY #$page_2
-
-check_page_2:
-  LDA $0000, Y
-  BEQ give_item
-  INY
-  CPY #$page_2+10
-  BNE check_page_2
-
-no_room:
-  PLA
-  SEC
-  RTS
-
-give_item:
-  PLA
-  STA $0000, Y
-  CLC
-  RTS
-
---------------------------------
-
-remove_item_handler:
-  PHX
-  LDX $0AC4
-  SEP #$20
-  LDA $page_1, X
-  CMP #$01
-  BEQ remove_jewel
-  CMP #$06
-  BEQ remove_herb
-  CMP #$0E
-  BEQ remove_crystal
-  BRA remove_item
-
-remove_jewel:
-  SED
-  REP #$20
-  LDA $0AB0
-
-add_jewel_count:
-  CLC
-  ADC #$0001
-
-  SEP #$20
-  DEC $jewel_count
-  BMI remove_jewel_minus
-  REP #$20
-  BEQ finish_jewel_item
-  BRA add_jewel_count
-
-remove_jewel_minus:
-  STZ $jewel_count
-  REP #$20
-  
-finish_jewel_item:
-  STA $0AB0
-  CLD
-  SEP #$20
-  BRA remove_item
-
-remove_herb:
-  DEC $herb_count
-  BMI remove_herb_minus
-  BEQ remove_item
-  PLX
-  RTS
-
-remove_herb_minus:
-  STZ $herb_count
-  BRA remove_item
-  
-remove_crystal:
-  DEC $crystal_count
-  BMI remove_crystal_minus
-  BEQ remove_item
-  PLX
-  RTS
-
-remove_crystal_minus:
-  STZ $crystal_count
-
-remove_item:
-  STZ $page_1, X
-  REP #$20
-  LDA #$0000
-  STA $0AC6
-  DEC
-  STA $0AC4
-  PLX
-  RTS
-
---------------------------------
-
-;Prevent gem count increase on use handler
-0384DC:
-  BRA $0A
-
-039FB2:
-  JMP remove_item_handler
-
+--------------------------------------------------
 ;Entry point for adding an item to the inventory
-03EF9E:
-  JMP give_item_handler
+
+func_03EF97 {
+    PHP 
+    SEP #$20
+    BIT #$80
+    BNE code_03EFB3
+
+  inv_give_item_handler:
+    CMP #$01
+    BEQ inv_give_jewel
+    CMP #$06
+    BEQ inv_give_herb
+    CMP #$0E
+    BEQ inv_give_crystal
+
+    JSR inv_check_pages
+    BCS inv_exit_fail
+    JMP code_03F070+4
+
+  inv_exit_fail:
+    JMP code_03F080+1
+
+  inv_give_jewel:
+    LDA $jewel_count
+    BNE $05
+    LDA #01
+    JSR inv_check_pages
+    INC $jewel_count
+    LDA #01
+    JMP code_03F070+4 
+
+  inv_give_herb:
+    LDA $herb_count
+    BNE $07
+    LDA #$06
+    JSR inv_check_pages
+    BCS inv_exit_fail
+    INC $herb_count
+    LDA #06
+    JMP code_03F070+4
+  
+  inv_give_crystal:
+    LDA $crystal_count
+    BNE $07
+    LDA #$0E
+    JSR inv_check_pages
+    BCS inv_exit_fail
+    INC $crystal_count
+    LDA #0E
+    JMP code_03F070+4
+
+}
+
+-----------------------------------------
+;Entry point for giving Jewels to Gem
+
+code_08CF5E {
+    ;COP [D6] ( #01, &code_08CF68 )
+    ;COP [BF] ( &widestring_08D1E0 )
+    ;RTL 
+;}
+
+;code_08CF68 {
+    SEP #$20
+    LDA #$00
+    XBA
+    LDA $jewel_count
+    BEQ search_inventory
+    STZ $jewel_count
+    REP #$20
+    STA $26
+    SED
+    LDA $0AB0
+
+  search_add_top:
+    CLC
+    ADC #$0001
+    DEC $26
+    BEQ search_store_gems
+    BRA search_add_top
+  
+  search_store_gems:
+    STA $0AB0
+    CLD
+    SEP #$20
+
+  search_inventory:
+    LDA #$01
+    LDY #$000F
+
+  search_top_1:
+    CMP $inventory_slots, Y
+    BNE search_next_1
+    PHA
+    LDA #$00
+    STA $inventory_slots, Y		
+    PLA
+
+  search_next_1:
+    DEY
+    BPL search_top_1
+    LDY #$000F
+
+  search_top_2:
+    CMP $page_2, Y
+    BNE search_next_2
+    PHA
+    LDA #$00
+    STA $page_2, Y		
+    PLA 
+
+  search_next_2:
+    DEY
+    BPL search_top_2
+
+    REP #$20
+}
+
+code_08CF68 {
+}
+
+code_08CF74 {
+}
+
+code_08CF84 {
+}
