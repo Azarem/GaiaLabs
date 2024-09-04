@@ -211,16 +211,33 @@ func_03EF97 {
 
 }
 
+---------------------------------------------
+;Entry point for checking inventory for item
+
+code_03F0B9 {
+    CMP $inventory_slots, Y
+    BEQ code_03F0C7
+    INY 
+    CPY #$0010
+    BNE code_03F0B9
+    LDY #$0000
+
+  inv_search_page2:
+    CMP $page_2, Y
+    BEQ code_03F0C7
+    INY 
+    CPY #$0010
+    BNE inv_search_page2
+
+    PLP 
+    SEC 
+    RTL 
+}
+
 -----------------------------------------
 ;Entry point for giving Jewels to Gem
 
-code_08CF5E {
-    ;COP [D6] ( #01, &code_08CF68 )
-    ;COP [BF] ( &widestring_08D1E0 )
-    ;RTL 
-;}
-
-;code_08CF68 {
+code_08CF68 {
     SEP #$20
     LDA #$00
     XBA
@@ -274,9 +291,6 @@ code_08CF5E {
     BPL search_top_2
 
     REP #$20
-}
-
-code_08CF68 {
 }
 
 code_08CF74 {
