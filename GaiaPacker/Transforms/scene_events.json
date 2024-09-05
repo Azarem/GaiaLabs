@@ -1,12 +1,12 @@
 ﻿[
   {
     "type": "Replace",
-    "key": "actor < #1A, #40, #05, \\$87C402 >",
-    "value": "actor < #1A, #40, #05, %DpShop >"
+    "key": "actor < #08, #0C, #03, @head_00C66F >",
+    "value": "$&\r\n    actor < #0C, #2F, #00, @SkyDeliveryman >"
   },
   {
     "type": "Replace",
-    "key": "actor < #00, #01, #00, \\$88D7A8 >",
-    "value": "$&\r\n    actor < #00, #01, #00, %Teleporter >"
+    "key": "actor < #12, #38, #11, @head_00C66F >",
+    "value": "$&\r\n    actor < #14, #23, #07, @head_078501 >"
   }
 ]
