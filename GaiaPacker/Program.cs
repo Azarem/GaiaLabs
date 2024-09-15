@@ -317,6 +317,11 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoo
                 outRom.Write(arr);
                 opos += arr.Length;
             }
+            else if (obj is Process.StringEntry sw)
+            {
+                obj = sw.Data;
+                goto Top;
+            }
             else if (obj is string str)
             {
                 var label = str;
@@ -334,11 +339,17 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoo
 
                 var mathIx = label.IndexOfAny(_operators);
                 int? offset = null;
+                bool useMarker = false;
                 if (mathIx > 0)
                 {
-                    offset = int.Parse(label[(mathIx + 1)..], NumberStyles.HexNumber);
-                    if (label[mathIx] == '-')
-                        offset = -offset;
+                    if (label[mathIx + 1] == 'M')
+                        useMarker = true;
+                    else
+                    {
+                        offset = int.Parse(label[(mathIx + 1)..], NumberStyles.HexNumber);
+                        if (label[mathIx] == '-')
+                            offset = -offset;
+                    }
                     label = label[..mathIx];
                 }
 
@@ -377,6 +388,20 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoo
 
                 if (offset != null)
                     loc = (uint)((int)loc.Offset + offset.Value);
+                else if (useMarker) //block.IsString && target?.IsString == true)
+                {
+                    int markerOffset = 0;
+                    foreach (var part in target.ObjList)
+                    {
+                        if (part is Process.StringMarker sm)
+                        {
+                            loc += (uint)markerOffset;
+                            break;
+                        }
+                        else
+                            markerOffset += Process.GetSize(part);
+                    }
+                }
 
                 var type = Address.TypeFromCode(str[0]);
                 if (type == AddressType.Unknown)
@@ -428,6 +453,8 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoo
                 outRom.WriteByte(b);
                 //opos += 1;
             }
+            else if (obj is Process.StringMarker sm)
+            { }
             else
                 throw new($"Unable to process '{obj}'");
         }

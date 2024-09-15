@@ -1,6 +1,9 @@
 ﻿using GaiaLib.Asm;
 using GaiaLib.Database;
+using GaiaLib.Rom;
+using System.Collections;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace GaiaLib
 {
@@ -69,6 +72,29 @@ namespace GaiaLib
 
         }
 
+        public class StringEntry
+        {
+            public AsmBlock Block;
+            public int Index;
+            public int Size;
+            public byte[] Data;
+        }
+
+        public class StringMarker
+        {
+            public int Offset;
+        }
+
+        public class CompressionEntry
+        {
+            public HashSet<StringEntry> Strings = new();
+            public byte[] Data;
+            public int Checksum;
+            public int Impact { get => (Data.Length - 2) * Strings.Count; }
+        }
+
+        public static readonly byte[] _endChars = [0xC0, 0xCA, 0xD1];
+
         public static void Repack(string baseDir, string dbFile, Func<ChunkFile, DbRoot, IDictionary<string, Location>, uint> onProcess, Action<uint, object> onTransform)
         {
             var root = DbRoot.FromFile(dbFile);
@@ -130,6 +156,8 @@ namespace GaiaLib
                     count--;
                 }
             }
+
+            RebuildDictionary(asmFiles);
 
             foreach (var asm in asmFiles)
                 asm.CalculateSize();
@@ -265,6 +293,316 @@ namespace GaiaLib
             //}
         }
 
+        private static void RebuildDictionary(IEnumerable<ChunkFile> asmFiles)
+        {
+
+            var stringEntries = new List<StringEntry>();
+
+            var dictionary1 = asmFiles.SingleOrDefault(x => x.File.Name == _dict1Name);
+            var dictionary2 = asmFiles.SingleOrDefault(x => x.File.Name == _dict2Name);
+
+            void fillDictionary(ChunkFile file)
+            {
+                var listBlock = file.Blocks[1];
+                while (listBlock.ObjList.Count < 0x100)
+                {
+                    string label = $"{listBlock.Label}_entry_{listBlock.ObjList.Count:X2}";
+                    listBlock.ObjList.Add($"&{label}");
+                    listBlock.Size += 2;
+
+                    var newBlock = new AsmBlock { Label = label, Size = 1 };
+                    newBlock.ObjList.Add(new StringEntry { Data = [0xCA], Size = 1, Block = newBlock });
+                    file.Blocks.Add(newBlock);
+                }
+            }
+
+            fillDictionary(dictionary1);
+            fillDictionary(dictionary2);
+
+
+            var stringLookup1 = dictionary1.Blocks[1].ObjList
+                .Select(x => (StringEntry)dictionary1.Blocks.First(y => y.Label == ((string)x)[1..]).ObjList.First())
+                .ToList();
+
+            var stringLookup2 = dictionary2.Blocks[1].ObjList
+                .Select(x => (StringEntry)dictionary2.Blocks.First(y => y.Label == ((string)x)[1..]).ObjList.First())
+                .ToList();
+
+            var stringMatches = new List<CompressionEntry>();
+
+
+            CompressionEntry addMatch(byte[] data, int index, int len)
+            {
+                //int checksum = data.Sum(x => x);
+
+                foreach (var m in stringMatches)
+                    if (m.Data.Length == len)// && checksum == m.Checksum)
+                    {
+                        int ix = 0;
+                        while (ix < len)
+                            if (m.Data[ix] != data[index + ix]) break;
+                            else ix++;
+
+                        if (ix == len)
+                            return m;
+                    }
+
+                var newSample = new byte[len];
+                Array.Copy(data, index, newSample, 0, len);
+
+                var newMatch = new CompressionEntry { Data = newSample };//, Checksum = checksum };
+                stringMatches.Add(newMatch);
+                return newMatch;
+            }
+
+            //Rebuild dictionary
+            foreach (var asm in asmFiles.Except([dictionary1, dictionary2]))
+                foreach (var block in asm.Blocks)
+                    foreach (var part in block.ObjList)
+                        if (part is StringEntry se)
+                        {
+                            var data = se.Data;
+                            for (int i = 0; i >= 0 && i < data.Length;)
+                            {
+                                var c = data[i];
+
+                                if (c != 0xD6 && c != 0xD7)
+                                {
+                                    i = getNext(data, i);
+                                    continue;
+                                }
+
+                                var lookup = c == 0xD6 ? stringLookup1 : stringLookup2;
+
+                                var ix = data[i + 1];
+                                var str = lookup[ix];
+                                int len = str.Data.Length - 1;
+                                int newSize = data.Length + len - 2;
+                                byte[] newData = new byte[newSize];
+                                Array.Copy(data, newData, i);
+                                Array.Copy(str.Data, 0, newData, i, len);
+                                Array.Copy(data, i + 2, newData, i + len, data.Length - (i + 2));
+
+                                se.Block.Size += len - 2;
+                                se.Size += len - 2;
+                                se.Data = data = newData;
+
+                                if (se.Block.Size != newData.Length)
+                                {
+
+                                }
+
+                                i += len;
+                            }
+                            stringEntries.Add(se);
+                        }
+
+
+            static int getNext(byte[] buffer, int index)
+            {
+                if (index >= buffer.Length)
+                    return -1;
+
+                return buffer[index] switch
+                {
+                    0xC0 or 0xCA or 0xD1 => -1,
+                    0xC5 or 0xC6 => index + 5,
+                    0xCD or 0xD4 => index + 4,
+                    0xC1 or 0xC7 => index + 3,
+                    0xC2 or 0xC3 or 0xC9 or 0xCC or 0xD2 or 0xD5 or 0xD6 or 0xD7 => index + 2,
+                    0xD8 => advanceEscape(),
+                    _ => index + 1
+                };
+                int advanceEscape() { while (buffer[++index] != 0x00) ; return index + 1; }
+            }
+
+            var stringCount = stringEntries.Count;
+            var minMatchLength = 5;
+            void walkEntry(int ix)
+            {
+                var se = stringEntries[ix];
+                var srcData = se.Data;
+                var srcLen = srcData.Length;
+                while (++ix < stringCount)
+                {
+                    var other = stringEntries[ix];
+                    var dstData = other.Data;
+                    var dstLen = dstData.Length;
+                    int eix = 0;
+                    for (int six = 0; six >= 0 && six < srcLen; six = getNext(srcData, six))
+                    {
+                        //Minimum of 3 bytes
+                        eix = getNext(srcData, six);
+                        while (eix < srcData.Length && eix >= 0 && eix - six < minMatchLength)// && !_endChars.Contains(srcData[eix]))
+                            eix = getNext(srcData, eix);
+
+                        if (eix < 0 || eix - six < minMatchLength)
+                            break;
+
+                        for (int dix = 0; dix >= 0 && dix < dstLen; dix = getNext(dstData, dix))
+                        {
+                            int fix = six;
+                            int nix = dix;
+
+                            bool compare()
+                            {
+                                if (fix >= srcLen || nix >= dstLen)
+                                    return false;
+
+                                var c = srcData[fix];
+                                if (c == 0xC0 || c == 0xCA || c == 0xD1)
+                                    //if (_endChars.Contains(srcData[fix]))
+                                    return false;
+
+                                while (fix < eix)
+                                {
+                                    if (fix >= srcLen || nix >= dstLen || srcData[fix] != dstData[nix])
+                                        return false;
+                                    fix++;
+                                    nix++;
+
+                                }
+                                return true;
+                            }
+
+                            int bestEnd = -1;
+                            while (compare())
+                                eix = getNext(srcData, bestEnd = eix);
+
+                            if (bestEnd - six >= minMatchLength)
+                            {
+                                var entry = addMatch(srcData, six, bestEnd - six);
+                                entry.Strings.Add(se);
+                                entry.Strings.Add(other);
+                                six = bestEnd;
+
+                                //Minimum of 3 bytes
+                                eix = getNext(srcData, six);
+                                while (eix < srcData.Length && eix >= 0 && eix - six < minMatchLength)// && !_endChars.Contains(srcData[eix]))
+                                    eix = getNext(srcData, eix);
+
+                                if (eix < 0 || eix - six < minMatchLength)
+                                    break;
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < stringCount; i++)
+                walkEntry(i);
+
+            ////Combine similar matches
+            //for (int i = 0; i < stringCount; i++)
+            //{
+            //    Top:
+            //    var match = stringMatches[i];
+            //    var mData = match.Data;
+            //    for (int x = i + 1; x < stringCount;)
+            //    {
+            //        var other = stringMatches[x];
+            //        var oData = other.Data;
+
+            //        int z = 1;
+
+            //        if (mData[0] == oData[0])
+            //        {
+            //            while (z < mData.Length && z < oData.Length)
+            //            {
+            //                if (mData[z] != oData[z])
+            //                    break;
+            //                z++;
+            //            }
+            //        }
+            //        else if (mData[^1] == oData[^1])
+            //        {
+            //            z++;
+            //            while (z <= mData.Length && z <= oData.Length)
+            //            {
+            //                if (mData[^z] != oData[^z])
+            //                    break;
+            //                z++;
+            //            }
+            //            z--;
+            //        }
+
+            //        if (z >= 3)
+            //        {
+            //            var (six, dix, src, dst) = mData.Length >= oData.Length
+            //                ? (x, i, match, other)
+            //                : (i, x, other, match);
+
+            //            var newEntry = new CompressionEntry() { Data = dst.Data, Strings = new(dst.Strings) };
+            //            foreach (var e in src.Strings)
+            //                newEntry.Strings.Add(e);
+
+            //            if (newEntry.Impact > src.Impact + dst.Impact)
+            //            {
+            //                stringMatches[i] = newEntry;
+            //                stringMatches.RemoveAt(x);
+            //                stringCount--;
+            //                goto Top;
+            //            }
+            //        }
+
+            //        x++;
+            //    }
+            //}
+
+            var dictionary = (from match in stringMatches
+                                  //let impact = (match.Data.Length - 2) * match.Strings.Count
+                              orderby match.Impact descending
+                              select match).Take(0x200).ToArray();
+
+
+            int matchIx = 0;
+            foreach (var match in dictionary)
+            {
+                var data = match.Data;
+                var oldEntry = matchIx < 0x100 ? stringLookup1[matchIx] : stringLookup2[matchIx - 0x100];
+                var newData = new byte[data.Length + 1];
+                Array.Copy(data, newData, data.Length);
+                newData[^1] = 0xCA;
+                oldEntry.Data = newData;
+                oldEntry.Block.Size += newData.Length - oldEntry.Size;
+                oldEntry.Size = newData.Length;
+
+                foreach (var str in match.Strings)
+                {
+                    var strData = str.Data;
+                    for (int ix = 0; ix >= 0 && ix < strData.Length;)
+                    {
+                        int mix = 0, six = ix;
+                        while (mix < data.Length && six < strData.Length)
+                            if (data[mix] != strData[six++]) break;
+                            else mix++;
+
+                        if (mix == data.Length)
+                        {
+                            var moreData = new byte[strData.Length - mix + 2];
+                            Array.Copy(strData, moreData, ix);
+                            moreData[ix] = matchIx < 0x100 ? (byte)0xD6 : (byte)0xD7;
+                            moreData[ix + 1] = (byte)matchIx;
+                            Array.Copy(strData, ix + mix, moreData, ix + 2, strData.Length - (ix + mix));
+
+                            str.Data = moreData;
+                            str.Block.Size -= mix - 2;
+                            str.Size = moreData.Length;
+
+                            strData = moreData;
+                            ix += 2;
+                        }
+                        else
+                            ix = getNext(strData, ix);
+                    }
+                }
+
+                matchIx++;
+            }
+
+        }
+
         private static List<DbGap> DiscoverAvailableSpace(DbRoot root, out IEnumerable<DbFile> files)
         {
             var sfxStart = root.Sfx.Location.Offset;
@@ -377,6 +715,9 @@ namespace GaiaLib
 
             //return chunkFiles;
         }
+
+        private const string _dict1Name = "dictionary_01EBA8";
+        private const string _dict2Name = "dictionary_01F54D";
 
         private static List<ChunkFile> DiscoverFiles(string baseDir, DbRoot root, IEnumerable<DbFile> files)
             => files.Select(file =>
@@ -574,6 +915,8 @@ namespace GaiaLib
                 return op.Size;
             else if (obj is byte[] arr)
                 return arr.Length;
+            else if (obj is StringEntry se)
+                return se.Data.Length;
             else if (obj is byte)
                 return 1;
             else if (obj is ushort)
@@ -877,24 +1220,30 @@ namespace GaiaLib
                             memStream.SetLength(0);
 
                             byte? lastCmd = null;
+                            Rom.StringType stringType;
 
                             switch (c)
                             {
                                 case '`':
+                                    stringType = Rom.StringType.Wide;
                                     ProcessString(root.WideCommands, root.WideMap, i => (byte)((i & 0x70) << 1 | (i & 0x0F)));
                                     goto Terminate;
 
                                 case '~':
+                                    stringType = Rom.StringType.Char;
                                     ProcessString(root.WideCommands, root.CharMap, i => (byte)((i & 0x38) << 1 | (i & 0x07)));
                                 Terminate:
-                                    if (lastCmd != 0xC0 && lastCmd != 0xCA && lastCmd != 0xD1)
+                                    if (lastCmd == null || !_endChars.Contains(lastCmd.Value))
                                         memStream.WriteByte(0xCA);
                                     break;
 
                                 case '|':
+                                    stringType = Rom.StringType.ASCII;
                                     ProcessString(root.StringCommands, null, null);
                                     memStream.WriteByte(0);
                                     break;
+
+                                default: throw new("Unsupported string type");
                             }
 
                             void ProcessString(IDictionary<HexString, DbStringCommand> dict, string[]? charMap, Func<byte, byte>? shift)
@@ -931,14 +1280,29 @@ namespace GaiaLib
                                         ix = str.IndexOf(']', x + 1);
                                         var splitChars = new char[] { ':', ',', ' ' };
                                         var parts = str[(x + 1)..ix].Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
-                                        var cmd = dict.Values.SingleOrDefault(x => x.Value == parts[0]);
 
+                                        x = ix;
+
+                                        //Marker
+                                        if (parts.Length == 0)
+                                        {
+                                            flushBuffer(true);
+                                            current.ObjList.Add(new StringMarker { Offset = current.Size });
+                                            continue;
+                                        }
+
+                                        var cmd = dict.Values.SingleOrDefault(x => x.Value == parts[0]);
                                         if (cmd != null)
                                         {
                                             lastCmd = (byte)cmd.Code.Value;
                                             memStream.WriteByte(lastCmd.Value);
 
                                             if (cmd.Types != null)
+                                            {
+                                                var hasPointer = cmd.Types.Contains(MemberType.Address) || cmd.Types.Contains(MemberType.Offset);
+                                                if (hasPointer)
+                                                    flushBuffer(true);
+
                                                 for (int y = 0, pix = 1; y < cmd.Types.Length; y++, pix++)
                                                 {
                                                     switch (cmd.Types[y])
@@ -966,18 +1330,22 @@ namespace GaiaLib
                                                         case MemberType.Offset:
                                                         case MemberType.Address:
                                                             //Have to keep these for later since we don't have lookups yet
-                                                            flushBuffer();
+                                                            flushBuffer(false);
                                                             current.ObjList.Add(parts[pix]);
                                                             current.Size += cmd.Types[y] == MemberType.Offset ? 2 : 3;
                                                             break;
                                                     }
                                                 }
+
+                                                if (hasPointer)
+                                                    flushBuffer(false);
+                                            }
                                             else
                                             {
 
                                             }
 
-                                            x = ix;
+
                                             continue;
                                         }
                                     }
@@ -988,7 +1356,7 @@ namespace GaiaLib
 
                             }
 
-                            void flushBuffer()
+                            void flushBuffer(bool wrap = false)
                             {
                                 var buffer = memStream.GetBuffer();
                                 var size = (int)memStream.Length;
@@ -996,14 +1364,16 @@ namespace GaiaLib
                                 {
                                     var newBuffer = new byte[size];
                                     Array.Copy(buffer, newBuffer, size);
-                                    current.ObjList.Add(newBuffer);
+                                    current.ObjList.Add(wrap && stringType == StringType.Wide
+                                        ? new StringEntry { Data = newBuffer, Block = current, Index = current.ObjList.Count, Size = newBuffer.Length }
+                                        : newBuffer);
                                     current.Size += size;
                                     memStream.Position = 0;
                                     memStream.SetLength(0);
                                 }
                             }
 
-                            flushBuffer();
+                            flushBuffer(true);
                             AdvancePart();
                             continue;
                         }
@@ -1248,7 +1618,12 @@ namespace GaiaLib
                                 //}
                                 //else if (mnem.Length > 0)
                                 //{
-                                blocks.Add(current = new() { Location = current.Location + (uint)current.Size, Label = mnem });
+                                blocks.Add(current = new()
+                                {
+                                    Location = current.Location + (uint)current.Size,
+                                    Label = mnem,
+                                    IsString = _stringSpace.Contains(operand[0])
+                                });
                                 bix++;
                                 //}
 

@@ -7,16 +7,9 @@ This is a development toolkit for Illusion of Gaia (SNES). Using it will allow y
 * .Net Framework 8 (https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 * An unheadered Illusion of Gaia (USA) ROM
 
-### Getting Started
+### Note
 
-1. Get the latest release from GitHub and extract the package contents to a folder on your PC. You will be using this as a project folder so make sure it is empty beforehand.
-2. Open the 'project.json' file in a text editor and change the `romPath` property to reflect the full path of an unheadered Illusion of Gaia (USA) ROM file on your PC.
-3. Open a command prompt in your new project directory and run `GaiaPacker.exe --unpack`; this will dump all of the game files into your project folder.
-4. Make modifications to game files or patches. Included is an MSU-1 patch (credits to Conn), if you would like to use it to add MSU support simply remove the underscore `_` from the file name to be `iog_msu.asm`
-5. You can add or edit scene assets with `asm/scene_meta.asm`. Scene actors are located in `asm/scene_events.asm`. `asm/scene_warps.asm` contains all the screen transition triggers.
-6. There are example patches included in the Patches folder. Feel free to experiment with these.
-7. Go back to your command prompt and run `GaiaPacker.exe`. This will re-build the ROM along with any changes you made.
-
+This version of the toolset will rebuild the text dictionaries which is very slow. Please keep this in mind while we try to improve this process.
 
 ### Support the project on Patreon!
 https://www.patreon.com/GaiaLabs

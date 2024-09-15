@@ -15,7 +15,7 @@ namespace GaiaLib.Database
             set { _parts = value; foreach (var p in _parts) p.Block = this; }
         }
 
-        public bool IsOutside(Location loc, out DbPart part)
+        public bool IsOutside(Location loc, out DbPart? part)
         {
             if (Parts.All(x => x.IsOutside(loc)))
                 foreach (var b in Root.Blocks) //Find chunk this reference belongs to
@@ -26,10 +26,10 @@ namespace GaiaLib.Database
             return false;
         }
 
-        public bool IsInside(Location loc, out DbPart part)
+        public bool IsInside(Location loc, out DbPart? part)
         {
             foreach (var p in Parts)
-                if (!p.IsOutside(loc))
+                if (p.IsInside(loc))
                 { part = p; return true; }
 
             part = null;

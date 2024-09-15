@@ -26,6 +26,7 @@ namespace GaiaLib.Rom
         private DbPart? _part;
         private bool _isInline;
         private Dictionary<Location, string> _chunkTable = new();
+        private Dictionary<Location, int> _markerTable = new();
 
         private MemoryMappedFile? _mappedFile;
         private MemoryMappedViewAccessor? _viewAccessor;
@@ -162,7 +163,15 @@ namespace GaiaLib.Rom
                 else
                     cmd = '+';
 
-                label = $"{cmd}{offset:X}";
+                if (_chunkTable.TryGetValue(refLoc, out var ctype) && ctype == "WideString")
+                {
+                    _markerTable[refLoc] = offset;
+                    _markerTable[loc] = offset;
+                    label = $"{cmd}M";
+                }
+                else
+                    label = $"{cmd}{offset:X}";
+
                 loc = refLoc;
             }
 
@@ -184,6 +193,7 @@ namespace GaiaLib.Rom
                 {
                     uint closest = 0x150;
                     string? bestMatch = null;
+                    Location? bestLoc = null;
                     foreach (var entry in RefList)
                     {
                         if (entry.Key > loc)
@@ -195,6 +205,7 @@ namespace GaiaLib.Rom
 
                         closest = range;
                         bestMatch = entry.Value;
+                        bestLoc = entry.Key;
 
                         if (closest == 1)
                             break;
@@ -202,7 +213,14 @@ namespace GaiaLib.Rom
 
                     if (bestMatch != null)
                     {
-                        name = $"{bestMatch}+{closest:X}";
+                        if (_chunkTable.TryGetValue(bestLoc.Value, out var ctype) && ctype == "WideString")
+                        {
+                            _markerTable[bestLoc.Value] = (int)closest;
+                            _markerTable[loc] = (int)closest;
+                            name = $"{bestMatch}+M";
+                        }
+                        else
+                            name = $"{bestMatch}+{closest:X}";
                         goto Next;
                     }
 
@@ -394,9 +412,9 @@ namespace GaiaLib.Rom
 
         private bool CanContinue()
         {
-            if (_pCur >= _pEnd /*|| _lCur >= _lEnd*/) 
+            if (_pCur >= _pEnd /*|| _lCur >= _lEnd*/)
                 return false;
-            if (_chunkTable.ContainsKey(_lCur)) 
+            if (_chunkTable.ContainsKey(_lCur))
                 return false;
             return true;
         }
@@ -469,6 +487,7 @@ namespace GaiaLib.Rom
         {
             var dict = DbRoot.StringCommands;
             var builder = new StringBuilder();
+            var strLoc = _lCur;
 
             do
             {
@@ -483,13 +502,14 @@ namespace GaiaLib.Rom
 
             //var chars = new char[builder.Length];
             //builder.CopyTo(0, chars, 0, builder.Length);
-            return new(builder.ToString(), StringType.ASCII);
+            return new(builder.ToString(), StringType.ASCII, strLoc);
         }
 
         private StringWrapper ParseCharString()
         {
             var builder = new StringBuilder();
             var dict = DbRoot.WideCommands;
+            var strLoc = _lCur;
 
             do
             {
@@ -506,13 +526,14 @@ namespace GaiaLib.Rom
                 }
             } while (CanContinue());
 
-            return new(builder.ToString(), StringType.Char);
+            return new(builder.ToString(), StringType.Char, strLoc);
         }
 
         private StringWrapper ParseWideString()
         {
             var builder = new StringBuilder();
             var dict = DbRoot.WideCommands;
+            var strLoc = _lCur;
 
             do
             {
@@ -536,7 +557,7 @@ namespace GaiaLib.Rom
                 }
             } while (CanContinue());
 
-            return new(builder.ToString(), StringType.Wide);
+            return new(builder.ToString(), StringType.Wide, strLoc);
         }
 
         private Op ParseAsm(Registers reg)
@@ -1225,6 +1246,32 @@ namespace GaiaLib.Rom
                     if (addrs.Space == AddressSpace.ROM)
                     {
                         ResolveInclude(sloc, false);
+                        var name = ResolveName(sloc, AddressType.Unknown, false);
+                        var opix = name.IndexOfAny(Process._operators);
+                        if (opix > 0)
+                        {
+                            var offset = name[opix + 1] == 'M'
+                                ? _markerTable[sloc]
+                                : int.Parse(name[(opix + 1)..], NumberStyles.HexNumber);
+
+                            if (name[opix] == '-')
+                                offset = -offset;
+
+                            name = name[..opix];
+                            var target = (uint)(sloc - offset);
+                            if (_part.Block.IsOutside(sloc, out var prt))
+                                throw new("Unsupported");
+                            else
+                            {
+                                _part.Block.IsInside(sloc, out prt);
+                                var root = prt.ObjectRoot as IEnumerable<TableEntry>;
+                                var entry = root.First(x => x.Location == target).Object as StringWrapper;
+                                entry.Marker = offset;
+
+                                //sw.String = str = str[..(ix + 1)] + target.ToString("X6") + str[(ix + 7)..];
+                            }
+
+                        }
                     }
                     //var sLoc = Location.Parse(str.Substring(ix + 1, 6));
                     //str = str.Replace(str.Substring(ix, 7), ResolveName(part, sLoc));
@@ -1527,7 +1574,7 @@ namespace GaiaLib.Rom
                 var str = sw.String;
                 for (var ix = str.IndexOfAny(RefChar); ix >= 0; ix = str.IndexOfAny(RefChar))
                 {
-                    var sloc = uint.Parse(str.Substring(ix + 1, 6), System.Globalization.NumberStyles.HexNumber);
+                    var sloc = uint.Parse(str.Substring(ix + 1, 6), NumberStyles.HexNumber);
                     var adrs = new Address((byte)(sloc >> 16), (ushort)sloc);
                     if (adrs.Space == AddressSpace.ROM)
                     {
@@ -1546,6 +1593,45 @@ namespace GaiaLib.Rom
                     StringType.Wide => '`',
                     _ => throw new("Unsupported string type")
                 };
+
+                if (sw.Marker <= 0)
+                    _markerTable.TryGetValue(sw.Location, out sw.Marker);
+
+                if (sw.Marker > 0)
+                {
+                    int six = 0, mix = 0;
+                    while (mix < sw.Marker)
+                    {
+                        if (str[six] == '[')
+                        {
+                            var eix = str.IndexOf(']', ++six);
+                            var parts = str[six..eix].Split(',', ':', ' ');
+
+                            var cmd = DbRoot.WideCommands.Values.First(x => x.Value == parts[0]);
+                            foreach (var t in cmd.Types)
+                            {
+                                mix += t switch
+                                {
+                                    MemberType.Byte => 1,
+                                    MemberType.Word or
+                                    MemberType.Offset => 2,
+                                    MemberType.Address => 3,
+                                    MemberType.Binary => parts.Length - 1,
+                                    _ => throw new("Unsupported")
+                                };
+                            }
+                            six = eix + 1;
+                            mix++;
+                        }
+                        else
+                        {
+                            six++;
+                            mix++;
+                        }
+                    }
+                    str = str[..six] + "[::]" + str[six..];
+                }
+
                 writer.Write(refChar);
                 writer.Write(str);
                 writer.Write(refChar);
@@ -1603,10 +1689,13 @@ namespace GaiaLib.Rom
     }
 
 
-    public class StringWrapper(string str, StringType type)
+    public class StringWrapper(string str, StringType type, Location loc)
     {
         public string String = str;
+        //public byte[] Data;
         public StringType Type = type;
+        public int Marker;
+        public Location Location = loc;
     }
 
     public enum StringType
