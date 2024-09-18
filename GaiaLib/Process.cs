@@ -1,9 +1,8 @@
 ﻿using GaiaLib.Asm;
 using GaiaLib.Database;
 using GaiaLib.Rom;
-using System.Collections;
 using System.Globalization;
-using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace GaiaLib
 {
@@ -11,21 +10,39 @@ namespace GaiaLib
     {
         const uint ChunkSize = 0x8000u;
 
+        private static readonly string[] _dictionaries = ["dictionary_01EBA8", "dictionary_01F54D"];//, "templates_01CA95"];
+        private static readonly byte[] _dictCommands = [0xD6, 0xD7];//, 0xC2];
+
+        //private const string _dict1Name = "dictionary_01EBA8";
+        //private const string _dict2Name = "dictionary_01F54D";
+        //private const string _dict3Name = "templates_01CA95";
         public class ChunkFile
         {
-            public DbFile File;
+            //public DbFile File;
             public string Path;
+            public string Name;
             public int Size;
             public Location Location;
             public List<AsmBlock>? Blocks;
             public HashSet<string>? Includes;
             public Dictionary<string, Location> IncludeLookup;
             public byte? Bank;
+            public BinType Type;
+            public bool? Compressed;
 
-            public ChunkFile(string path, DbFile file)
+            public ChunkFile(string path, BinType type)//, DbFile file)
             {
-                File = file;
+                //File = file;
                 Path = path;
+                Name = System.IO.Path.GetFileNameWithoutExtension(path);
+                Type = type;
+                Size = (int)new FileInfo(path).Length;
+
+                Compressed = type switch
+                {
+                    BinType.Bitmap or BinType.Tilemap or BinType.Tileset or BinType.Spritemap or BinType.Meta17 => false,
+                    _ => null
+                };
             }
 
             public void Rebase()
@@ -98,25 +115,27 @@ namespace GaiaLib
         public static void Repack(string baseDir, string dbFile, Func<ChunkFile, DbRoot, IDictionary<string, Location>, uint> onProcess, Action<uint, object> onTransform)
         {
             var root = DbRoot.FromFile(dbFile);
+            //var files = root.Files;
 
-            var gaps = DiscoverAvailableSpace(root, out var files);
-            var sfxFiles = DiscoverSfx(baseDir, root);
-            var chunkFiles = DiscoverFiles(baseDir, root, files);
-            var patches = DiscoverPatches(baseDir, root, gaps);
+            //var gaps = DiscoverAvailableSpace(root, out var files);
+            //var sfxFiles = DiscoverSfx(baseDir, root);
+            var chunkFiles = DiscoverFiles(baseDir, root);
+            //var patches = DiscoverPatches(baseDir, root, gaps);
+            var patches = chunkFiles.Where(x => x.Type == BinType.Patch).ToList();
 
             var stdPatches = patches.Where(x => x.Bank != null).ToList();
             var nullPatches = patches.Where(x => x.Bank == null).ToList();
 
             //Process sfx files the same as others
-            var allFiles = sfxFiles.Concat(chunkFiles).Concat(stdPatches).ToArray();
-            var asmFiles = chunkFiles.Where(x => x.Blocks != null).Concat(patches).ToArray();
+            var allFiles = chunkFiles;// sfxFiles.Concat(chunkFiles).Concat(stdPatches).ToArray();
+            var asmFiles = chunkFiles.Where(x => x.Blocks != null).ToArray();
 
             //Replace chunks from patches that matches (what?)
             foreach (var patch in patches.Where(x => x.Includes?.Any() == true))
             {
                 ChunkFile? file = null;
                 int dstIx = -1;
-                var inc = asmFiles.Where(x => patch.Includes.Contains(x.File.Name.ToUpper())).ToList();
+                var inc = asmFiles.Where(x => patch.Includes.Contains(x.Name.ToUpper())).ToList();
                 for (int ix = 0, count = patch.Blocks.Count; ix < count;)
                 {
                     var block = patch.Blocks[ix];
@@ -151,11 +170,29 @@ namespace GaiaLib
                         continue;
                     }
 
-                    file.Includes.Add(patch.File.Name.ToUpper());
+                    file.Includes.Add(patch.Name.ToUpper());
                     patch.Blocks.RemoveAt(ix);
                     count--;
                 }
             }
+
+            var sceneMeta = allFiles.Single(x => x.Name == "scene_meta" && x.Type == BinType.Assembly);
+
+            var metaList = sceneMeta.Blocks[1].ObjList.OfType<string>()
+                .Select(x => x.TrimStart(_addressspace).ToUpper()).Distinct().ToList();
+
+            foreach (var b in allFiles.Where(x => x.Type == BinType.Bitmap && !metaList.Contains(x.Name.ToUpper())))
+                b.Compressed = null;
+
+            //foreach (var str in sceneMeta.Blocks[1].ObjList.OfType<string>())
+            //{
+            //    var cf = chunkFiles.SingleOrDefault(x => x.Name.Equals(str.TrimStart(_addressspace)));
+            //    if (cf != null && cf.Type == BinType.Bitmap)
+            //        cf.Compressed = false;
+            //}
+
+            foreach (var f in allFiles.Where(x => x.Compressed != null))
+                f.Size += 2;
 
             RebuildDictionary(asmFiles);
 
@@ -163,7 +200,7 @@ namespace GaiaLib
                 asm.CalculateSize();
 
             //Assign locations
-            MatchChunks(gaps, allFiles);
+            MatchChunks(allFiles);
 
             var blockLookup = new Dictionary<string, Location>();
 
@@ -188,17 +225,17 @@ namespace GaiaLib
                 file.Rebase();
 
             //Add other files to lookup
-            foreach (var f in root.Files.Except(allFiles.Select(x => x.File)))
-                blockLookup[f.Name.ToUpper()] = f.Start;
+            //foreach (var f in root.Files.Except(allFiles.Select(x => x.File)))
+            //    blockLookup[f.Name.ToUpper()] = f.Start;
 
             //Add files to lookup
             foreach (var f in allFiles)//.Except(patches))
-                blockLookup[f.File.Name.ToUpper()] = f.Location;
+                blockLookup[f.Name.ToUpper()] = f.Location;
 
             //Process includes
             foreach (var f in asmFiles.Where(x => x.Includes?.Any() == true))
             {
-                f.IncludeLookup = asmFiles.Where(x => f.Includes.Contains(x.File.Name.ToUpper()))
+                f.IncludeLookup = asmFiles.Where(x => f.Includes.Contains(x.Name.ToUpper()))
                     .SelectMany(x => x.Blocks.Where(x => x.Label != null))
                     .ToDictionary(x => x.Label.ToUpper(), x => x.Location);
             }
@@ -298,10 +335,10 @@ namespace GaiaLib
 
             var stringEntries = new List<StringEntry>();
 
-            var dictionary1 = asmFiles.SingleOrDefault(x => x.File.Name == _dict1Name);
-            var dictionary2 = asmFiles.SingleOrDefault(x => x.File.Name == _dict2Name);
+            var dictList = _dictionaries.Select(x => asmFiles.SingleOrDefault(y => y.Name == x)).ToArray();
 
-            void fillDictionary(ChunkFile file)
+            foreach (var file in dictList)
+            //void fillDictionary(ChunkFile file)
             {
                 var listBlock = file.Blocks[1];
                 while (listBlock.ObjList.Count < 0x100)
@@ -316,17 +353,20 @@ namespace GaiaLib
                 }
             }
 
-            fillDictionary(dictionary1);
-            fillDictionary(dictionary2);
+            //fillDictionary(dictionary1);
+            //fillDictionary(dictionary2);
+            //fillDictionary(dictionary3);
+
+            var lookupList = dictList.Select(dict => dict.Blocks[1].ObjList
+                .Select(x => (StringEntry)dict.Blocks.First(y => y.Label == ((string)x)[1..]).ObjList.First())
+                .ToList()).ToList();
 
 
-            var stringLookup1 = dictionary1.Blocks[1].ObjList
-                .Select(x => (StringEntry)dictionary1.Blocks.First(y => y.Label == ((string)x)[1..]).ObjList.First())
-                .ToList();
+            //List<StringEntry> createLookup(ChunkFile dict) => dict.Blocks[1].ObjList
+            //    .Select(x => (StringEntry)dict.Blocks.First(y => y.Label == ((string)x)[1..]).ObjList.First())
+            //    .ToList();
 
-            var stringLookup2 = dictionary2.Blocks[1].ObjList
-                .Select(x => (StringEntry)dictionary2.Blocks.First(y => y.Label == ((string)x)[1..]).ObjList.First())
-                .ToList();
+            //var lookupList = new[] { createLookup, stringLookup2, stringLookup3 };
 
             var stringMatches = new List<CompressionEntry>();
 
@@ -355,8 +395,8 @@ namespace GaiaLib
                 return newMatch;
             }
 
-            //Rebuild dictionary
-            foreach (var asm in asmFiles.Except([dictionary1, dictionary2]))
+            //Expand strings
+            foreach (var asm in asmFiles.Except(dictList))
                 foreach (var block in asm.Blocks)
                     foreach (var part in block.ObjList)
                         if (part is StringEntry se)
@@ -366,13 +406,15 @@ namespace GaiaLib
                             {
                                 var c = data[i];
 
-                                if (c != 0xD6 && c != 0xD7)
+                                var lookupIx = Array.IndexOf(_dictCommands, c);
+
+                                if (lookupIx < 0)
                                 {
                                     i = getNext(data, i);
                                     continue;
                                 }
 
-                                var lookup = c == 0xD6 ? stringLookup1 : stringLookup2;
+                                var lookup = lookupList[lookupIx];
 
                                 var ix = data[i + 1];
                                 var str = lookup[ix];
@@ -387,10 +429,10 @@ namespace GaiaLib
                                 se.Size += len - 2;
                                 se.Data = data = newData;
 
-                                if (se.Block.Size != newData.Length)
-                                {
+                                //if (se.Block.Size != newData.Length)
+                                //{
 
-                                }
+                                //}
 
                                 i += len;
                             }
@@ -418,6 +460,7 @@ namespace GaiaLib
 
             var stringCount = stringEntries.Count;
             var minMatchLength = 5;
+
             void walkEntry(int ix)
             {
                 var se = stringEntries[ix];
@@ -550,17 +593,16 @@ namespace GaiaLib
             //    }
             //}
 
-            var dictionary = (from match in stringMatches
-                                  //let impact = (match.Data.Length - 2) * match.Strings.Count
-                              orderby match.Impact descending
-                              select match).Take(0x200).ToArray();
-
+            var dictionary = stringMatches.OrderByDescending(x => x.Impact)
+                .Take(_dictionaries.Length << 8).ToArray();
 
             int matchIx = 0;
             foreach (var match in dictionary)
             {
                 var data = match.Data;
-                var oldEntry = matchIx < 0x100 ? stringLookup1[matchIx] : stringLookup2[matchIx - 0x100];
+                var lookupIx = matchIx >> 8;
+                var oldEntry = lookupList[lookupIx][(byte)matchIx];
+
                 var newData = new byte[data.Length + 1];
                 Array.Copy(data, newData, data.Length);
                 newData[^1] = 0xCA;
@@ -582,7 +624,7 @@ namespace GaiaLib
                         {
                             var moreData = new byte[strData.Length - mix + 2];
                             Array.Copy(strData, moreData, ix);
-                            moreData[ix] = matchIx < 0x100 ? (byte)0xD6 : (byte)0xD7;
+                            moreData[ix] = _dictCommands[lookupIx];
                             moreData[ix + 1] = (byte)matchIx;
                             Array.Copy(strData, ix + mix, moreData, ix + 2, strData.Length - (ix + mix));
 
@@ -601,100 +643,101 @@ namespace GaiaLib
                 matchIx++;
             }
 
+
         }
 
-        private static List<DbGap> DiscoverAvailableSpace(DbRoot root, out IEnumerable<DbFile> files)
-        {
-            var sfxStart = root.Sfx.Location.Offset;
-            List<DbGap> gaps = new([new DbGap { Start = 0x200000u, End = Location.MaxValue }]);
-            files = root.Files.Where(x => x.XRef != null).ToList();
-            //var sfxNearest = Location.MaxValue;
+        //private static List<DbGap> DiscoverAvailableSpace(DbRoot root, out IEnumerable<DbFile> files)
+        //{
+        //    var sfxStart = root.Sfx.Location.Offset;
+        //    List<DbGap> gaps = new([new DbGap { Start = 0x200000u, End = Location.MaxValue }]);
+        //    files = root.Files.ToList();
+        //    //var sfxNearest = Location.MaxValue;
 
-            void mergeGap(Location start, Location end)
-            {
-                //if (sfxStart < end && sfxEnd > start)
-                //{
-                //    if (start >= sfxStart && (start.Offset & 0x8000u) == 0)
-                //        start = sfxEnd;
-                //    else if (((end.Offset - 1) & 0x8000u) == 0)
-                //        end = sfxStart;
-                //}
+        //    void mergeGap(Location start, Location end)
+        //    {
+        //        //if (sfxStart < end && sfxEnd > start)
+        //        //{
+        //        //    if (start >= sfxStart && (start.Offset & 0x8000u) == 0)
+        //        //        start = sfxEnd;
+        //        //    else if (((end.Offset - 1) & 0x8000u) == 0)
+        //        //        end = sfxStart;
+        //        //}
 
-                //if (start >= sfxEnd && start < sfxNearest)
-                //    sfxNearest = start;
+        //        //if (start >= sfxEnd && start < sfxNearest)
+        //        //    sfxNearest = start;
 
-                if (end <= start)
-                    return;
+        //        if (end <= start)
+        //            return;
 
-                for (int i = 0; i < gaps.Count; i++)
-                {
-                    var g = gaps[i];
-                    Location s = g.Start, e = g.End;
-                    if (s <= end && e >= start)
-                    {
-                        gaps.RemoveAt(i);
-                        mergeGap(start < s ? start : s, end > e ? end : e);
-                        return;
-                    }
-                }
+        //        for (int i = 0; i < gaps.Count; i++)
+        //        {
+        //            var g = gaps[i];
+        //            Location s = g.Start, e = g.End;
+        //            if (s <= end && e >= start)
+        //            {
+        //                gaps.RemoveAt(i);
+        //                mergeGap(start < s ? start : s, end > e ? end : e);
+        //                return;
+        //            }
+        //        }
 
-                gaps.Add(new DbGap { Start = start, End = end });
-            }
+        //        gaps.Add(new DbGap { Start = start, End = end });
+        //    }
 
-            //Merge SFX ranges
-            var sfxLoc = root.Sfx.Location.Offset;
-            var sfxSize = root.Sfx.Size.Value;
-            while (sfxSize > 0)
-            {
-                var s = Math.Min(sfxSize, 0x8000u);
-                mergeGap(sfxLoc, sfxLoc + s);
-                sfxLoc += 0x10000;
-                sfxSize -= s;
-            }
+        //    //Merge SFX ranges
+        //    var sfxLoc = root.Sfx.Location.Offset;
+        //    var sfxSize = root.Sfx.Size.Value;
+        //    while (sfxSize > 0)
+        //    {
+        //        var s = Math.Min(sfxSize, 0x8000u);
+        //        mergeGap(sfxLoc, sfxLoc + s);
+        //        sfxLoc += 0x10000;
+        //        sfxSize -= s;
+        //    }
 
-            //Merge the file ranges
-            foreach (var file in files)
-                mergeGap(file.Start, file.End);
+        //    //Merge the file ranges
+        //    foreach (var file in files)
+        //        mergeGap(file.Start, file.End);
 
-            //Gerge gap ranges
-            foreach (var space in root.FreeSpace)
-                mergeGap(space.Start, space.End);
+        //    //Gerge gap ranges
+        //    foreach (var space in root.FreeSpace)
+        //        mergeGap(space.Start, space.End);
 
-            //while (sfxEnd < sfxNearest)
-            //{
-            //    var gapStart = sfxNearest & 0x3F0000u;
+        //    //while (sfxEnd < sfxNearest)
+        //    //{
+        //    //    var gapStart = sfxNearest & 0x3F0000u;
 
-            //    if (gapStart <= sfxEnd)
-            //    {
-            //        mergeGap(sfxEnd, sfxNearest);
-            //        break;
-            //    }
-            //    else
-            //    {
-            //        mergeGap(gapStart, sfxNearest);
-            //        sfxNearest = gapStart - 0x8000u;
-            //    }
-            //}
+        //    //    if (gapStart <= sfxEnd)
+        //    //    {
+        //    //        mergeGap(sfxEnd, sfxNearest);
+        //    //        break;
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        mergeGap(gapStart, sfxNearest);
+        //    //        sfxNearest = gapStart - 0x8000u;
+        //    //    }
+        //    //}
 
-            //Split gaps across chunk boundaries
-            for (int i = 0; i < gaps.Count; i++)
-            {
-                var g = gaps[i];
-                Location start = g.Start, end = g.End;
-                var next = start + (ChunkSize - (start.Offset % ChunkSize));
-                if (next == 0u) next--;
-                if (end > next)
-                {
-                    g.End = next;
-                    gaps.Add(new DbGap { Start = next, End = end });
-                }
-            }
+        //    //Split gaps across chunk boundaries
+        //    for (int i = 0; i < gaps.Count; i++)
+        //    {
+        //        var g = gaps[i];
+        //        Location start = g.Start, end = g.End;
+        //        var next = start + (ChunkSize - (start.Offset % ChunkSize));
+        //        if (next == 0u) next--;
+        //        if (end > next)
+        //        {
+        //            g.End = next;
+        //            gaps.Add(new DbGap { Start = next, End = end });
+        //        }
+        //    }
 
-            //How much space do we have?
-            //var newSize = gaps.Sum(x => x.End.Offset - x.Start.Offset);
+        //    //How much space do we have?
+        //    //var newSize = gaps.Sum(x => x.End.Offset - x.Start.Offset);
 
-            return gaps;
-        }
+        //    return gaps;
+        //}
 
         private static List<ChunkFile> DiscoverSfx(string baseDir, DbRoot root)
         {
@@ -702,7 +745,7 @@ namespace GaiaLib
             return root.Sfx.Names.Select(name =>
             {
                 var path = Path.Combine(baseDir, res.Folder ?? "", $"{name}.{res.Extension}");
-                return new ChunkFile(path, new() { Type = BinType.Sound, Name = name })
+                return new ChunkFile(path, BinType.Sound)
                 {
                     Size = (int)(new FileInfo(path).Length + 2)
                 };
@@ -716,8 +759,41 @@ namespace GaiaLib
             //return chunkFiles;
         }
 
-        private const string _dict1Name = "dictionary_01EBA8";
-        private const string _dict2Name = "dictionary_01F54D";
+
+        private static List<ChunkFile> DiscoverFiles(string baseDir, DbRoot root)
+        {
+            var chunkFiles = new List<ChunkFile>();
+            foreach (BinType type in typeof(BinType).GetFields(BindingFlags.Public | BindingFlags.Static).Select(x => x.GetValue(null)))
+            {
+                if (type == BinType.Transform || type == BinType.Meta17)
+                    continue;
+
+                var res = root.GetPath(type);
+
+                foreach (var file in Directory.GetFiles(Path.Combine(baseDir, res.Folder), $"*.{res.Extension}"))
+                {
+                    var chunkFile = new ChunkFile(file, type);
+
+                    if (type == BinType.Unknown && chunkFile.Name.StartsWith("meta17"))
+                    {
+                        chunkFile.Type = BinType.Meta17;
+                        chunkFile.Compressed = false;
+                    }
+
+                    if (type == BinType.Assembly || type == BinType.Patch)
+                        using (var inFile = File.OpenRead(file))
+                            (chunkFile.Blocks, chunkFile.Includes, chunkFile.Bank) = ParseAssembly(root, inFile, 0);
+                    else if (type == BinType.Sound)
+                        chunkFile.Size += 2;
+
+                    chunkFiles.Add(chunkFile);
+                }
+
+            }
+
+            return chunkFiles;
+        }
+
 
         private static List<ChunkFile> DiscoverFiles(string baseDir, DbRoot root, IEnumerable<DbFile> files)
             => files.Select(file =>
@@ -756,51 +832,63 @@ namespace GaiaLib
                     if (file.Compressed != null)
                         size += 2;
                 }
-                return new ChunkFile(path, file) { Size = size, Blocks = blocks, Includes = includes, Bank = bank };
+                return new ChunkFile(path, file.Type) { Size = size, Blocks = blocks, Includes = includes, Bank = bank };
             }).ToList();
 
-        private static List<ChunkFile> DiscoverPatches(string baseDir, DbRoot root, List<DbGap> gaps)
-        {
-            var res = root.GetPath(BinType.Patch);
-            //string folder = "patches", extension = "asm";
-            var patchList = new List<ChunkFile>();
+        //private static List<ChunkFile> DiscoverPatches(string baseDir, DbRoot root)
+        //{
+        //    var res = root.GetPath(BinType.Patch);
+        //    var patchList = new List<ChunkFile>();
 
-            foreach (var file in Directory.GetFiles(Path.Combine(baseDir, res.Folder ?? ""), $"*.{res.Extension}"))
-            {
-                byte? bank = null;
+        //    foreach (var file in Directory.GetFiles(Path.Combine(baseDir, res.Folder ?? ""), $"*.{res.Extension}"))
+        //    {
+        //        var chunkFile = new ChunkFile(file, BinType.Assembly);
 
-                var chunkFile = new ChunkFile(file, new()
-                {
-                    Type = BinType.Assembly,
-                    Name = new FileInfo(file).Name[..^(res.Extension.Length + 1)]
-                });
+        //        using (var fileStream = File.OpenRead(file))
+        //            (chunkFile.Blocks, chunkFile.Includes, chunkFile.Bank) = ParseAssembly(root, fileStream, 0);
 
-                using (var fileStream = File.OpenRead(file))
-                    (chunkFile.Blocks, chunkFile.Includes, chunkFile.Bank) = ParseAssembly(root, fileStream, 0);
+        //        patchList.Add(chunkFile);
+        //    }
 
-                //chunkFile.CalculateSize();
-                patchList.Add(chunkFile);
-            }
+        //    return patchList;
+        //}
 
-            return patchList;
-        }
-
-        private static void MatchChunks(IEnumerable<DbGap> gaps, IEnumerable<ChunkFile> files)
+        private static void MatchChunks(IEnumerable<ChunkFile> files)
         {
             var allFiles = files.Where(x => x.Size > 0).OrderByDescending(x => x.Size).ToList();
             var bestResult = new int[0x100];
             var bestSample = new int[0x100];
 
-            foreach (var gap in gaps.OrderBy(x => x.Size).ThenBy(x => x.Start.Offset))
+            for (int page = 0; page < 0x80; page++)
             {
-                var remain = gap.Size;
+                var remain = 0x8000;
+
+                //Account for SNES header
+                if (page == 1)
+                    remain -= 0x50;
+
+                //Stop when there are no more files
                 var count = allFiles.Count;
                 if (count == 0)
                     break;
+
                 var smallest = allFiles[^1].Size;
-                var isUpper = (gap.Start.Offset & 0x8000) != 0;
-                var bank = gap.Start.Bank;
+                var isUpper = (page & 1) != 0;
+                var bank = page >> 1;
                 int bestDepth = 0, bestRemain = remain, bestOffset = 0;
+                int start = page << 15;
+                //}
+
+                //foreach (var gap in gaps.OrderBy(x => x.Size).ThenBy(x => x.Start.Offset))
+                //{
+                //    var remain = gap.Size;
+                //    var count = allFiles.Count;
+                //    if (count == 0)
+                //        break;
+                //    var smallest = allFiles[^1].Size;
+                //    var isUpper = (gap.Start.Offset & 0x8000) != 0;
+                //    var bank = gap.Start.Bank;
+                //    int bestDepth = 0, bestRemain = remain, bestOffset = 0;
 
                 bool testDepth(int ix, int depth, int remain, bool asmMode)
                 {
@@ -813,21 +901,21 @@ namespace GaiaLib
                         if (file.Size > remain)
                             continue;
 
-                        if (file.File.Type == BinType.Assembly)
+                        if (file.Blocks != null)
                         {
                             if (!asmMode)
                             {
-                                if (!isUpper || file.File.Move != true)
+                                if (!isUpper || file.Bank != null)
                                     continue;
                             }
-                            else if (file.Bank != bank || file.File.Move == true)
+                            else if (file.Bank != bank)// || file.File.Move == true)
                                 continue;
 
                         }
                         else if (asmMode)
                             continue;
-                        else if (file.File.Upper == true && !isUpper)
-                            continue;
+                        //else if (file.File.Upper == true && !isUpper)
+                        //    continue;
 
                         var inList = false;
                         for (var y = bestOffset; --y >= 0;)
@@ -870,17 +958,17 @@ namespace GaiaLib
                     testDepth(0, bestDepth, bestRemain, false);
                 }
 
-                var position = gap.Start;
+                var position = start;
                 for (int i = 0; i < bestDepth;)
                 {
                     var file = allFiles[bestResult[i++]];
-                    file.Location = position;
+                    file.Location = (uint)position;
                     //onProcess?.Invoke(file);
-                    Console.WriteLine($"  {position}: {file.File.Name}");
-                    position += (uint)file.Size;
+                    Console.WriteLine($"  {position:X6}: {file.Name}");
+                    position += file.Size;
                 }
 
-                Console.WriteLine($"Chunk {gap.Start} - {gap.End} matched with {bestDepth} files {bestRemain:X} remaining");
+                Console.WriteLine($"Page {start:X6} matched with {bestDepth} files {bestRemain:X} remaining");
 
                 if (bestOffset > 0)
                     for (int i = bestDepth; --i >= 0;)
@@ -903,7 +991,7 @@ namespace GaiaLib
             }
 
             if (allFiles.Count > 0)
-                throw new($"Unable to match {allFiles.Count} files, perhaps there is no room\r\n! {string.Join("\r\n", allFiles.Select(x => x.File.Name))}");
+                throw new($"Unable to match {allFiles.Count} files, perhaps there is no room\r\n! {string.Join("\r\n", allFiles.Select(x => x.Name))}");
 
         }
 

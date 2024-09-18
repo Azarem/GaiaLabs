@@ -1315,7 +1315,8 @@ namespace GaiaLib.Rom
                 using var outStream = File.Create(outFile);
                 using var writer = new StreamWriter(outStream);
 
-                writer.WriteLine("?BANK {0:X2}", block.Parts.First().Start.Bank);
+                if (!block.Movable)
+                    writer.WriteLine("?BANK {0:X2}", block.Parts.First().Start.Bank);
 
                 foreach (var inc in block.GetIncludes())
                     writer.WriteLine("?INCLUDE '{0}'", inc.Name); //Write includes

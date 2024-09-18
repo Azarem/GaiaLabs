@@ -155,7 +155,7 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
     outRom.Position = filePos;
 
 
-    if (file.File.Type == BinType.Assembly)
+    if (file.Blocks != null)
     {
         //Rebase assembly
         if (file.Blocks?.Any() == true && file.Blocks[0].Location != file.Location && file.Location != 0u)
@@ -168,7 +168,7 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
         //Open source file
         using var inFile = File.OpenRead(file.Path);
 
-        switch (file.File.Type)
+        switch (file.Type)
         {
             case BinType.Tilemap:
                 outRom.WriteByte((byte)inFile.ReadByte());
@@ -191,7 +191,7 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
         }
 
         //Mark as not compressed
-        if (file.File.Compressed != null)
+        if (file.Compressed != null)
         {
             int inverse = 0 - (file.Size - 2);
             //outRom.WriteByte(0);

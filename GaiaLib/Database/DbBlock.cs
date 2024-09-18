@@ -7,6 +7,7 @@ namespace GaiaLib.Database
         internal HashSet<(HexString, string)> Mnemonics = new();
 
         public string Name { get; set; }
+        public bool Movable { get; set; }
 
         private IEnumerable<DbPart> _parts;
         public IEnumerable<DbPart> Parts

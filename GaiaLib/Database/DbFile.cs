@@ -7,7 +7,6 @@
         public Location Start { get; set; }
         public Location End { get; set; }
         public bool? Compressed { get; set; }
-        public IEnumerable<string>? XRef { get; set; }
         public bool? Move { get; set; }
         public bool? Upper { get; set; }
     }
