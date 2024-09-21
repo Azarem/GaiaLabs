@@ -191,7 +191,7 @@ namespace GaiaLib.Rom
                 }
                 else
                 {
-                    uint closest = 0x150;
+                    uint closest = 0x1A0;
                     string? bestMatch = null;
                     Location? bestLoc = null;
                     foreach (var entry in RefList)
@@ -1307,11 +1307,14 @@ namespace GaiaLib.Rom
             //string folder = "asm", extension = "asm";
             string folderPath = Path.Combine(outPath, res.Folder);
             string transformPath = Path.Combine(outPath, xRes.Folder);
-            Directory.CreateDirectory(folderPath);
+            //Directory.CreateDirectory(folderPath);
 
             foreach (var block in DbRoot.Blocks)
             {
-                var outFile = Path.Combine(folderPath, $"{block.Name}.{res.Extension}");
+                var folder = block.Group == null ? folderPath : Path.Combine(folderPath, block.Group);
+                Directory.CreateDirectory(folder);
+
+                var outFile = Path.Combine(folder, $"{block.Name}.{res.Extension}");
                 using var outStream = File.Create(outFile);
                 using var writer = new StreamWriter(outStream);
 

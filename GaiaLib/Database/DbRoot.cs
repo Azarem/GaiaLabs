@@ -16,7 +16,7 @@ namespace GaiaLib.Database
 
         public IEnumerable<DbFile> Files { get; set; }
         public DbSfx Sfx { get; set; }
-        public IEnumerable<DbGap> FreeSpace { get; set; }
+        //public IEnumerable<DbGap> FreeSpace { get; set; }
         private IEnumerable<DbBlock> _blocks;
         public IEnumerable<DbBlock> Blocks
         {

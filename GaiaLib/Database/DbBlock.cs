@@ -8,6 +8,7 @@ namespace GaiaLib.Database
 
         public string Name { get; set; }
         public bool Movable { get; set; }
+        public string Group { get; set; }
 
         private IEnumerable<DbPart> _parts;
         public IEnumerable<DbPart> Parts

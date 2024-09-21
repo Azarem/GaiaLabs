@@ -194,7 +194,7 @@ namespace GaiaLib
             foreach (var f in allFiles.Where(x => x.Compressed != null))
                 f.Size += 2;
 
-            RebuildDictionary(asmFiles);
+            //RebuildDictionary(asmFiles);
 
             foreach (var asm in asmFiles)
                 asm.CalculateSize();
@@ -770,7 +770,7 @@ namespace GaiaLib
 
                 var res = root.GetPath(type);
 
-                foreach (var file in Directory.GetFiles(Path.Combine(baseDir, res.Folder), $"*.{res.Extension}"))
+                foreach (var file in Directory.GetFiles(Path.Combine(baseDir, res.Folder), $"*.{res.Extension}", SearchOption.AllDirectories))
                 {
                     var chunkFile = new ChunkFile(file, type);
 
@@ -872,9 +872,10 @@ namespace GaiaLib
                 if (count == 0)
                     break;
 
-                var smallest = allFiles[^1].Size;
                 var isUpper = (page & 1) != 0;
                 var bank = page >> 1;
+                var smallest = allFiles.Last(x => (isUpper && (x.Bank == null || x.Bank.Value == bank)) 
+                    || (!isUpper && x.Blocks == null)).Size;
                 int bestDepth = 0, bestRemain = remain, bestOffset = 0;
                 int start = page << 15;
                 //}
@@ -936,7 +937,7 @@ namespace GaiaLib
                         }
 
                         //Stop when we have an "exact" match
-                        if (newRemain < 20)
+                        if (newRemain < 0x20)
                             return true;
 
                         //Stop processing if nothing else can fit
