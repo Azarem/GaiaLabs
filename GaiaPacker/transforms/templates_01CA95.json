@@ -1,0 +1,7 @@
+[
+  {
+    "type": "Replace",
+    "key": "\\[DLG:3,6]",
+    "value": "[DLG:3,4]"
+  }
+]

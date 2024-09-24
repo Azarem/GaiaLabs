@@ -12,70 +12,70 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Patches\BitmapPatch.asm">
+    <None Update="patches\BitmapPatch.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\Cop51Patch.asm">
+    <None Update="patches\Cop51Patch.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\DPShop.asm">
+    <None Update="patches\DPShop.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\GemShop.asm">
+    <None Update="patches\GemShop.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\InventoryScript.asm">
+    <None Update="patches\InventoryScript.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\iog_msu.asm_">
+    <None Update="patches\iog_msu.asm_">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\ItemDictionary.asm">
+    <None Update="patches\ItemDictionary.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\ItemRewards.asm_">
+    <None Update="patches\ItemRewards.asm_">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\MenuBGPatch.asm">
+    <None Update="patches\MenuBGPatch.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\MusicTransitions.asm">
+    <None Update="patches\MusicTransitions.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\QuickScripts.asm">
+    <None Update="patches\QuickScripts.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\RunButton.asm">
+    <None Update="patches\RunButton.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\SceneLoadPatch.asm">
+    <None Update="patches\SceneLoadPatch.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\SFXTable.asm">
+    <None Update="patches\SFXTable.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\InventoryManagement.asm">
+    <None Update="patches\InventoryManagement.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\SkyDeliveryman.asm">
+    <None Update="patches\SkyDeliveryman.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\SpritemapPatch.asm">
+    <None Update="patches\SpritemapPatch.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\Teleporter.asm">
+    <None Update="patches\Teleporter.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\TilemapPatch.asm">
+    <None Update="patches\TilemapPatch.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\TilesetPatch.asm">
+    <None Update="patches\TilesetPatch.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\DeathWarp.asm">
+    <None Update="patches\DeathWarp.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Patches\Utils.asm">
+    <None Update="patches\Utils.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="project.json">
@@ -84,20 +84,50 @@
     <None Update="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Transforms\chunk_00B520.json">
+    <None Update="transforms\angel_village\av69_rob.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Transforms\chunk_028000.json">
+    <None Update="transforms\angel_village\av69_neil.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Transforms\scene_events.json">
+    <None Update="transforms\angel_village\av69_lily.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Transforms\scene_meta.json">
+    <None Update="transforms\angel_village\av69_karen.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\angel_village\av69_erik.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\chunk_00B520.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\chunk_028000.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\euro\eu9A_friezer.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\euro\eu9A_max.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\mountain_temple\mtA0_skulker.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\native_village\nvAC_hand_man.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\scene_events.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\scene_meta.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Transforms\system_strings.json">
+    <None Update="transforms\system_strings.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\templates_01CA95.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

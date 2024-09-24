@@ -1332,7 +1332,9 @@ namespace GaiaLib.Rom
                 writer.WriteLine(); //Empty line
 
                 IEnumerable<XformDef>? xforms = null;
-                var xformFile = Path.Combine(transformPath, $"{block.Name}.{xRes.Extension}");
+                var xformFile = block.Group == null 
+                    ? Path.Combine(transformPath, $"{block.Name}.{xRes.Extension}")
+                    : Path.Combine(transformPath, block.Group, $"{block.Name}.{xRes.Extension}");
                 if (File.Exists(xformFile))
                     using (var xformStream = File.OpenRead(xformFile))
                         xforms = JsonSerializer.Deserialize<IEnumerable<XformDef>>(xformStream, DbRoot._jsonOptions);

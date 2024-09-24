@@ -1,0 +1,17 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "sub_0B9CE8",
+    "value": "sub2_0B9CE8"
+  },
+  {
+    "type": "Replace",
+    "key": "code_0B9CF9",
+    "value": "code2_0B9CF9"
+  },
+  {
+    "type": "Replace",
+    "key": "code_0B9D0E",
+    "value": "code2_0B9D0E"
+  }
+]

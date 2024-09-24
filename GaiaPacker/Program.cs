@@ -17,7 +17,7 @@ char[]
 //byte[] DebugmanActor = [0x20, 0xEE, 0x8B];
 
 string? path = "project.json";
-var isUnpack = false;
+var isUnpack = true;
 foreach (var a in args)
 {
     if (a.StartsWith("--"))

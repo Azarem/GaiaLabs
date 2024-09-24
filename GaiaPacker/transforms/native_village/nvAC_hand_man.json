@@ -1,0 +1,7 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "nvAC_staring_man2_destroy",
+    "value": "nvAC_hand_man1_destroy"
+  }
+]

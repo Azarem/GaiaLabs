@@ -1,12 +1,12 @@
 ﻿[
   {
     "type": "Replace",
-    "key": "actor < #08, #0C, #03, @head_00C66F >",
+    "key": "actor < #08, #0C, #03, @h_hidden_red_jewel >",
     "value": "$&\r\n    actor < #0C, #2F, #00, @SkyDeliveryman >"
   },
   {
     "type": "Replace",
-    "key": "actor < #12, #38, #11, @head_00C66F >",
-    "value": "$&\r\n    actor < #14, #23, #07, @head_078501 >"
+    "key": "actor < #12, #38, #11, @h_hidden_red_jewel >",
+    "value": "$&\r\n    actor < #14, #23, #07, @h_wa78_men >"
   }
 ]

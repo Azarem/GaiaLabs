@@ -29,6 +29,7 @@ namespace GaiaLib
             public byte? Bank;
             public BinType Type;
             public bool? Compressed;
+            public bool Upper;
 
             public ChunkFile(string path, BinType type)//, DbFile file)
             {
@@ -183,6 +184,10 @@ namespace GaiaLib
 
             foreach (var b in allFiles.Where(x => x.Type == BinType.Bitmap && !metaList.Contains(x.Name.ToUpper())))
                 b.Compressed = null;
+
+            foreach (var b in allFiles.Where(x => x.Blocks == null
+                && root.Files.Any(y => y.Type == x.Type && y.Name == x.Name && y.Upper == true)))
+                b.Upper = true;
 
             //foreach (var str in sceneMeta.Blocks[1].ObjList.OfType<string>())
             //{
@@ -874,8 +879,9 @@ namespace GaiaLib
 
                 var isUpper = (page & 1) != 0;
                 var bank = page >> 1;
-                var smallest = allFiles.Last(x => (isUpper && (x.Bank == null || x.Bank.Value == bank)) 
-                    || (!isUpper && x.Blocks == null)).Size;
+                var smallest = allFiles.LastOrDefault(x => (isUpper && x.Bank == bank) 
+                    || (!isUpper && x.Blocks == null));
+                var smallestIx = smallest == null ? -1 : allFiles.IndexOf(smallest);
                 int bestDepth = 0, bestRemain = remain, bestOffset = 0;
                 int start = page << 15;
                 //}
@@ -893,7 +899,7 @@ namespace GaiaLib
 
                 bool testDepth(int ix, int depth, int remain, bool asmMode)
                 {
-                    if (ix >= count)
+                    if (ix > smallestIx)
                         return true;
 
                     for (var i = ix; i < count; i++)
@@ -915,8 +921,8 @@ namespace GaiaLib
                         }
                         else if (asmMode)
                             continue;
-                        //else if (file.File.Upper == true && !isUpper)
-                        //    continue;
+                        else if (file.Upper && !isUpper)
+                            continue;
 
                         var inList = false;
                         for (var y = bestOffset; --y >= 0;)
@@ -941,7 +947,7 @@ namespace GaiaLib
                             return true;
 
                         //Stop processing if nothing else can fit
-                        if (newRemain < smallest)
+                        if (newRemain < smallest?.Size)
                             return false;
 
                         //Process next iteration and stop if exact
@@ -949,13 +955,15 @@ namespace GaiaLib
                             return true;
                     }
 
-                    return false;
+                    return true;
                 };
 
                 testDepth(0, 0, remain, isUpper);
-                if (isUpper && bestRemain >= smallest)
+                if (isUpper && bestRemain >= (smallest?.Size ?? 0))
                 {
                     bestOffset = bestDepth;
+                    smallest = allFiles.LastOrDefault(x => x.Blocks == null || x.Bank == null);
+                    smallestIx = smallest == null ? -1 : allFiles.IndexOf(smallest);
                     testDepth(0, bestDepth, bestRemain, false);
                 }
 
