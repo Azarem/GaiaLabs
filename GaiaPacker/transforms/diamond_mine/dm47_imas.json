@@ -1,0 +1,7 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "dm47_sam_destroy",
+    "value": "dm47_imas_destroy"
+  }
+]

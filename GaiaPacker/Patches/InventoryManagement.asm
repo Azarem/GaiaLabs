@@ -2,7 +2,7 @@
 
 ?INCLUDE 'chunk_038000'
 ?INCLUDE 'chunk_03BAE1'
-?INCLUDE 'chunk_088000'
+?INCLUDE 'jeweler_gem'
 
 !player_actor                   09AA
 !jewels_collected               0AB0

@@ -19,13 +19,15 @@ namespace GaiaLib.Database
 
         public bool IsOutside(Location loc, out DbPart? part)
         {
-            if (Parts.All(x => x.IsOutside(loc)))
-                foreach (var b in Root.Blocks) //Find chunk this reference belongs to
-                    if (b != this && b.IsInside(loc, out part))
-                        return true;
+            if (IsInside(loc, out part))
+                return false;
+
+            foreach (var b in Root.Blocks) //Find chunk this reference belongs to
+                if (b != this && b.IsInside(loc, out part))
+                    return true;
 
             part = null;
-            return false;
+            return true;
         }
 
         public bool IsInside(Location loc, out DbPart? part)

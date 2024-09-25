@@ -17,7 +17,7 @@ char[]
 //byte[] DebugmanActor = [0x20, 0xEE, 0x8B];
 
 string? path = "project.json";
-var isUnpack = true;
+var isUnpack = false;
 foreach (var a in args)
 {
     if (a.StartsWith("--"))
@@ -154,7 +154,6 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
     uint filePos = file.Location;
     outRom.Position = filePos;
 
-
     if (file.Blocks != null)
     {
         //Rebase assembly
@@ -274,7 +273,7 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
 }
 
 
-void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoot root, IDictionary<string, Location> chunkLookup, IDictionary<string, Location> includeLookup)
+void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoot root, IDictionary<string, Location> chunkLookup, Dictionary<string, AsmBlock> includeLookup)
 {
     if (blocks == null)
         throw new("Assembly has not been parsed");
@@ -354,11 +353,11 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoo
                 }
 
                 //Search local labels first
-                var target = blocks.FirstOrDefault(x => x.Label?.Equals(label, StringComparison.CurrentCultureIgnoreCase) == true);
-                if (target != null)
+                //var target = blocks.FirstOrDefault(x => label.Equals(x.Label, StringComparison.CurrentCultureIgnoreCase));
+                if (includeLookup.TryGetValue(label.ToUpper(), out var target))
                     loc = target.Location;
-                else if (!chunkLookup.TryGetValue(label.ToUpper(), out loc)
-                    && includeLookup?.TryGetValue(label.ToUpper(), out loc) != true)
+                else if (!chunkLookup.TryGetValue(label.ToUpper(), out loc))
+                //&& includeLookup?.TryGetValue(label.ToUpper(), out target) != true)
                 {
                     //These now don't happen
                     if (label[0] == '#')

@@ -1,0 +1,7 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "JSR \\$&func_09E8E4",
+    "value": "JSL $$@func_09E8E4"
+  }
+]

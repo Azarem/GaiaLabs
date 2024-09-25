@@ -1,0 +1,7 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "btE3_kara_destroy",
+    "value": "btDE_kara_missing_destroy"
+  }
+]

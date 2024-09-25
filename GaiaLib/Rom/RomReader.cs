@@ -105,8 +105,18 @@ namespace GaiaLib.Rom
 
         private void ResolveInclude(Location loc, bool isBranch)
         {
-            if (_part.Block.IsOutside(loc, out var p))
+            if(loc == 0x05D0BDu)
+            {
+
+            }
+            if (_part.Block.IsOutside(loc, out var p) && p != null)
+            {
+                if(p.Block.Name == "nvAC_hamlet")
+                {
+
+                }
                 _part.Includes.Add(p);
+            }
             else if (isBranch && !RefList.ContainsKey(loc))
                 RefList[loc] = $"loc_{loc}";
         }
@@ -1259,11 +1269,10 @@ namespace GaiaLib.Rom
 
                             name = name[..opix];
                             var target = (uint)(sloc - offset);
-                            if (_part.Block.IsOutside(sloc, out var prt))
-                                throw new("Unsupported");
-                            else
+                            _part.Block.IsOutside(sloc, out var prt);
+                            if (prt != null)
                             {
-                                _part.Block.IsInside(sloc, out prt);
+                                //_part.Block.IsInside(sloc, out prt);
                                 var root = prt.ObjectRoot as IEnumerable<TableEntry>;
                                 var entry = root.First(x => x.Location == target).Object as StringWrapper;
                                 entry.Marker = offset;
@@ -1332,7 +1341,7 @@ namespace GaiaLib.Rom
                 writer.WriteLine(); //Empty line
 
                 IEnumerable<XformDef>? xforms = null;
-                var xformFile = block.Group == null 
+                var xformFile = block.Group == null
                     ? Path.Combine(transformPath, $"{block.Name}.{xRes.Extension}")
                     : Path.Combine(transformPath, block.Group, $"{block.Name}.{xRes.Extension}");
                 if (File.Exists(xformFile))

@@ -25,7 +25,7 @@ namespace GaiaLib
             public Location Location;
             public List<AsmBlock>? Blocks;
             public HashSet<string>? Includes;
-            public Dictionary<string, Location> IncludeLookup;
+            public Dictionary<string, AsmBlock> IncludeLookup;
             public byte? Bank;
             public BinType Type;
             public bool? Compressed;
@@ -177,17 +177,18 @@ namespace GaiaLib
                 }
             }
 
-            var sceneMeta = allFiles.Single(x => x.Name == "scene_meta" && x.Type == BinType.Assembly);
+            //var sceneMeta = allFiles.Single(x => x.Name == "scene_meta" && x.Type == BinType.Assembly);
 
-            var metaList = sceneMeta.Blocks[1].ObjList.OfType<string>()
-                .Select(x => x.TrimStart(_addressspace).ToUpper()).Distinct().ToList();
+            //var metaList = sceneMeta.Blocks[1].ObjList.OfType<string>()
+            //    .Select(x => x.TrimStart(_addressspace).ToUpper()).Distinct().ToList();
 
-            foreach (var b in allFiles.Where(x => x.Type == BinType.Bitmap && !metaList.Contains(x.Name.ToUpper())))
-                b.Compressed = null;
 
-            foreach (var b in allFiles.Where(x => x.Blocks == null
-                && root.Files.Any(y => y.Type == x.Type && y.Name == x.Name && y.Upper == true)))
-                b.Upper = true;
+            //foreach (var b in allFiles.Where(x => x.Type == BinType.Bitmap && !metaList.Contains(x.Name.ToUpper())))
+            //    b.Compressed = null;
+
+            //foreach (var b in allFiles.Where(x => x.Blocks == null
+            //    && root.Files.Any(y => y.Type == x.Type && y.Name == x.Name && y.Upper == true)))
+            //    b.Upper = true;
 
             //foreach (var str in sceneMeta.Blocks[1].ObjList.OfType<string>())
             //{
@@ -238,11 +239,14 @@ namespace GaiaLib
                 blockLookup[f.Name.ToUpper()] = f.Location;
 
             //Process includes
-            foreach (var f in asmFiles.Where(x => x.Includes?.Any() == true))
+            foreach (var f in asmFiles)
             {
-                f.IncludeLookup = asmFiles.Where(x => f.Includes.Contains(x.Name.ToUpper()))
+                f.IncludeLookup = asmFiles.Where(x => f.Includes?.Contains(x.Name.ToUpper()) == true)
                     .SelectMany(x => x.Blocks.Where(x => x.Label != null))
-                    .ToDictionary(x => x.Label.ToUpper(), x => x.Location);
+                    .ToDictionary(x => x.Label.ToUpper());
+
+                foreach (var b in f.Blocks.Where(x => x.Label != null))
+                    f.IncludeLookup[b.Label.ToUpper()] = b;
             }
 
 
@@ -791,54 +795,69 @@ namespace GaiaLib
                     else if (type == BinType.Sound)
                         chunkFile.Size += 2;
 
+                    var oldFile = root.Files.FirstOrDefault(x => x.Type == type && x.Name == chunkFile.Name);
+                    if(oldFile != null)
+                    {
+                        chunkFile.Compressed = oldFile.Compressed;
+                        chunkFile.Upper = oldFile.Upper ?? false;
+                    }
+
                     chunkFiles.Add(chunkFile);
                 }
 
             }
 
+            foreach (var i in chunkFiles.Where(x => x.Blocks == null)
+                .Select(x => (x, root.Files.FirstOrDefault(y => x.Type == y.Type && x.Name == y.Name))))
+                if (i.Item2 != null)
+                {
+                    i.x.Compressed = i.Item2.Compressed;
+                    i.x.Upper = i.Item2.Upper ?? false;
+                }
+
             return chunkFiles;
         }
 
 
-        private static List<ChunkFile> DiscoverFiles(string baseDir, DbRoot root, IEnumerable<DbFile> files)
-            => files.Select(file =>
-            {
-                var res = root.GetPath(file.Type);
-                //string folder = "misc", extension = "bin";
-                //switch (file.Type)
-                //{
-                //    case BinType.Bitmap: folder = "graphics"; break;
-                //    case BinType.Palette: folder = "palettes"; extension = "pal"; break;
-                //    case BinType.Music: folder = "music"; extension = "bgm"; break;
-                //    case BinType.Tileset: folder = "tilesets"; extension = "set"; break;
-                //    case BinType.Tilemap: folder = "tilemaps"; extension = "map"; break;
-                //    case BinType.Meta17: break;
-                //    case BinType.Spritemap: folder = "spritemaps"; break;
-                //    case BinType.Assembly: folder = "asm"; extension = "asm"; break;
-                //        //case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
-                //};
+        //private static List<ChunkFile> DiscoverFiles(string baseDir, DbRoot root, IEnumerable<DbFile> files)
+        //    => files.Select(file =>
+        //    {
+        //        var res = root.GetPath(file.Type);
+        //        //string folder = "misc", extension = "bin";
+        //        //switch (file.Type)
+        //        //{
+        //        //    case BinType.Bitmap: folder = "graphics"; break;
+        //        //    case BinType.Palette: folder = "palettes"; extension = "pal"; break;
+        //        //    case BinType.Music: folder = "music"; extension = "bgm"; break;
+        //        //    case BinType.Tileset: folder = "tilesets"; extension = "set"; break;
+        //        //    case BinType.Tilemap: folder = "tilemaps"; extension = "map"; break;
+        //        //    case BinType.Meta17: break;
+        //        //    case BinType.Spritemap: folder = "spritemaps"; break;
+        //        //    case BinType.Assembly: folder = "asm"; extension = "asm"; break;
+        //        //        //case BinType.Sound: folder = "sounds"; extension = "sfx"; break;
+        //        //};
 
-                var path = Path.Combine(baseDir, res.Folder ?? "", $"{file.Name}.{res.Extension}");// File.Exists(path) ? path : Path.Combine(baseDir, path);
-                int size;
-                List<AsmBlock>? blocks = null;
-                HashSet<string>? includes = null;
-                byte? bank = null;
-                if (file.Type == BinType.Assembly)
-                {
-                    using (var inFile = File.OpenRead(path))
-                        (blocks, includes, bank) = ParseAssembly(root, inFile, file.Start);
+        //        var path = Path.Combine(baseDir, res.Folder ?? "", $"{file.Name}.{res.Extension}");// File.Exists(path) ? path : Path.Combine(baseDir, path);
+        //        int size;
+        //        List<AsmBlock>? blocks = null;
+        //        HashSet<string>? includes = null;
+        //        byte? bank = null;
+        //        if (file.Type == BinType.Assembly)
+        //        {
+        //            using (var inFile = File.OpenRead(path))
+        //                (blocks, includes, bank) = ParseAssembly(root, inFile, file.Start);
 
-                    size = 0;// ChunkFile.CalculateSize(blocks);
-                }
-                else
-                {
-                    size = (int)new FileInfo(path).Length;
+        //            size = 0;// ChunkFile.CalculateSize(blocks);
+        //        }
+        //        else
+        //        {
+        //            size = (int)new FileInfo(path).Length;
 
-                    if (file.Compressed != null)
-                        size += 2;
-                }
-                return new ChunkFile(path, file.Type) { Size = size, Blocks = blocks, Includes = includes, Bank = bank };
-            }).ToList();
+        //            if (file.Compressed != null)
+        //                size += 2;
+        //        }
+        //        return new ChunkFile(path, file.Type) { Size = size, Blocks = blocks, Includes = includes, Bank = bank };
+        //    }).ToList();
 
         //private static List<ChunkFile> DiscoverPatches(string baseDir, DbRoot root)
         //{
