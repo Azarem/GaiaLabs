@@ -12,6 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="patches\DemoPatch.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="patches\BitmapPatch.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

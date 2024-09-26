@@ -773,7 +773,7 @@
     { "start": "111233", "end": "112444", "name": "bgm_111233", "type": "Music" },
     { "start": "112444", "end": "113641", "name": "bmp_112444", "type": "Bitmap", "compressed": true },
     { "start": "113641", "end": "1146A8", "name": "sprite_113641", "type": "Spritemap", "compressed": true },
-    { "start": "1146A8", "end": "1156FE", "name": "bmp_1146A8", "type": "Bitmap", "compressed": true },
+    { "start": "1146A8", "end": "1156FE", "name": "fonts", "type": "Bitmap", "compressed": true },
     { "start": "1156FE", "end": "11670E", "name": "bmp_1156FE", "type": "Bitmap", "compressed": true },
     { "start": "11670E", "end": "117325", "name": "sprite_11670E", "type": "Spritemap", "compressed": true },
     { "start": "117325", "end": "117F04", "name": "bmp_117325", "type": "Bitmap", "compressed": true },
@@ -3148,11 +3148,11 @@
         { "start": "04F3CD", "end": "04F3D0", "name": "h_it19_actor_04F3CD", "struct": "h_event" },
         { "start": "04F3D0", "end": "04F441", "name": "e_it19_actor_04F3CD", "struct": "Code" }
       ] },
-    { "name": "s1A_lily", "movable": true, "parts": [
+    { "name": "it1A_lily", "movable": true, "group": "itory", "parts": [
         { "start": "04F441", "end": "04F444", "name": "h_s1A_lily", "struct": "h_event" },
         { "start": "04F444", "end": "04F895", "name": "e_s1A_lily", "struct": "Code" }
       ] },
-    { "name": "s1B_trial", "movable": true, "parts": [
+    { "name": "it1B_trial", "movable": true, "group": "itory", "parts": [
         { "start": "04F895", "end": "04F898", "name": "h_s1B_trial", "struct": "h_event" },
         { "start": "04F898", "end": "04FAB2", "name": "e_s1B_trial", "struct": "Code" },
         { "start": "04FAB2", "end": "04FAC5", "name": "s_s1B_04FAB2", "struct": "Code" },
