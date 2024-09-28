@@ -66,6 +66,9 @@
     <None Update="patches\SpritemapPatch.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="patches\StringProcessing.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="patches\Teleporter.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
@@ -105,7 +108,7 @@
     <None Update="transforms\babel_tower\btDE_kara_missing.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="transforms\chunk_00B520.json">
+    <None Update="transforms\thinkers\thinker_00BBAF.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="transforms\chunk_028000.json">
@@ -171,7 +174,7 @@
     <None Update="transforms\pyramid\pyDA_lithograph5.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="transforms\scene_events.json">
+    <None Update="transforms\scene_actors.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="transforms\scene_meta.json">

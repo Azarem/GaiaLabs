@@ -18,6 +18,7 @@ namespace GaiaLib.Rom
         public Dictionary<Location, string> RefList = new();
         public Dictionary<Location, bool?> AccumulatorFlags = new();
         public Dictionary<Location, bool?> IndexFlags = new();
+        public Dictionary<Location, byte?> BankNotes = new();
         public Dictionary<Location, byte> StackPosition = new();
 
         private byte* _basePtr;
@@ -70,6 +71,9 @@ namespace GaiaLib.Rom
                     case RegisterType.X:
                         IndexFlags[over.Location] = over.Value != 0u;
                         break;
+                    case RegisterType.B:
+                        BankNotes[over.Location] = (byte)over.Value.Value;
+                        break;
                 }
             }
 
@@ -105,18 +109,8 @@ namespace GaiaLib.Rom
 
         private void ResolveInclude(Location loc, bool isBranch)
         {
-            if(loc == 0x05D0BDu)
-            {
-
-            }
             if (_part.Block.IsOutside(loc, out var p) && p != null)
-            {
-                if(p.Block.Name == "nvAC_hamlet")
-                {
-
-                }
                 _part.Includes.Add(p);
-            }
             else if (isBranch && !RefList.ContainsKey(loc))
                 RefList[loc] = $"loc_{loc}";
         }
@@ -149,7 +143,6 @@ namespace GaiaLib.Rom
             }
         }
 
-        //private static string[] strictAsm = ["scene_events", "table_0CE5E5"];
         private string ResolveName(Location loc, AddressType type, bool isBranch)
         {
             var prefix = Address.CodeFromType(type);
@@ -272,16 +265,6 @@ namespace GaiaLib.Rom
 
                 var res = DbRoot.GetPath(file.Type);
 
-                if (file.Type == BinType.Tilemap)
-                {
-                    mapSample = *(ushort*)(_basePtr + start);
-                    start += 2;
-                }
-                else if (file.Type == BinType.Meta17)
-                {
-                    metaSample = *(uint*)(_basePtr + start);
-                    start += 4;
-                }
 
                 //switch (file.Type)
                 //{
@@ -311,6 +294,22 @@ namespace GaiaLib.Rom
                 {
                     filePath = Path.Combine(outPath, res.Folder);
                     Directory.CreateDirectory(filePath);
+                }
+
+                filePath = Path.Combine(filePath, $"{file.Name}.{res.Extension}");
+                if (File.Exists(filePath))
+                    continue;
+
+
+                if (file.Type == BinType.Tilemap)
+                {
+                    mapSample = *(ushort*)(_basePtr + start);
+                    start += 2;
+                }
+                else if (file.Type == BinType.Meta17)
+                {
+                    metaSample = *(uint*)(_basePtr + start);
+                    start += 4;
                 }
 
                 using var fileStream = File.Create(Path.Combine(filePath, $"{file.Name}.{res.Extension}"));
@@ -373,9 +372,8 @@ namespace GaiaLib.Rom
             string folderPath = Path.Combine(outPath, res.Folder);
             Directory.CreateDirectory(folderPath);
 
-            var sfx = DbRoot.Sfx;
-            var ptr = _basePtr + (sfx.Location.Offset & 0x3F0000u);
-            var offset = sfx.Location.Offset % 0x8000u;
+            var ptr = _basePtr + 0x50000u;
+            var offset = 0;
 
             byte readByte()
             {
@@ -387,14 +385,18 @@ namespace GaiaLib.Rom
                 return ptr[offset++];
             }
 
-            foreach (var sfxName in sfx.Names)
+            for (int i = 0; i < 0x3C; i++)
             {
                 int size = readByte() | (readByte() << 8);
 
-                string filePath = Path.Combine(folderPath, $"{sfxName}.{res.Extension}");
-                using (var file = File.Create(filePath))
+                string filePath = Path.Combine(folderPath, $"sfx{i:X2}.{res.Extension}");
+                if (File.Exists(filePath))
                     for (int x = 0; x < size; x++)
-                        file.WriteByte(readByte());
+                        readByte();
+                else
+                    using (var file = File.Create(filePath))
+                        for (int x = 0; x < size; x++)
+                            file.WriteByte(readByte());
             }
         }
 
@@ -1021,6 +1023,8 @@ namespace GaiaLib.Rom
                     reg.AccumulatorFlag = acc;
                 if (IndexFlags.TryGetValue(_lCur, out var ind))
                     reg.IndexFlag = ind;
+                if (BankNotes.TryGetValue(_lCur, out var bnk))
+                    reg.DataBank = bnk;
                 if (StackPosition.TryGetValue(_lCur, out var stack))
                     reg.Stack.Location = stack;
 
@@ -1324,6 +1328,9 @@ namespace GaiaLib.Rom
                 Directory.CreateDirectory(folder);
 
                 var outFile = Path.Combine(folder, $"{block.Name}.{res.Extension}");
+                if (File.Exists(outFile))
+                    continue;
+
                 using var outStream = File.Create(outFile);
                 using var writer = new StreamWriter(outStream);
 

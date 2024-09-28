@@ -12,7 +12,7 @@
 ;Example: actor < #00, #01, #00, %Teleporter >
 
 --------------------------------------------
-  h_event < #00, #00, #30 >
+  h_actor < #00, #00, #30 >
 
 main:
   COP [C4] ( %location_check )

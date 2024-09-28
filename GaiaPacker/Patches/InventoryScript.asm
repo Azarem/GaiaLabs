@@ -53,7 +53,24 @@ ins_finish_swap:
   LDA $state_1
   EOR #$01
   STA $state_1
+  AND #$01
   REP #$20
+  BEQ ins_indicator_l
+
+ins_indicator_r:
+  LDA #$3407
+  STA $7F06BA
+  LDA #$4406
+  STA $7F06BC
+  BRA ins_finish_final
+
+ins_indicator_l:
+  LDA #$3407
+  STA $7F06BC
+  LDA #$4406
+  STA $7F06BA
+
+ins_finish_final:
   COP [06] ( #10 )
 
   LDY $1A
@@ -71,6 +88,33 @@ ins_on_item_lr:
   JSL ins_on_press_lr
   JMP code_02E47F
   
+-------------------------------------------
+;Hook for setting up indicator
+
+func_02E399 {
+    COP [88] ( @table_108000 )
+    COP [BD] ( @string_01E869 )
+    STZ $0AFA
+    LDA #$000F
+    STA $24
+
+    LDA #$0001
+    AND $state_1
+    BEQ ins_init_l
+    
+    LDA #$3407
+    STA $7F06BA
+    LDA #$4406
+    STA $7F06BC
+    BRA code_02E3AB
+
+  ins_init_l:
+    LDA #$3407
+    STA $7F06BC
+    LDA #$4406
+    STA $7F06BA
+}
+
 -------------------------------------------
 ;Hook for listening for lr press on main
 

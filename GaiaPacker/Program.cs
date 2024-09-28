@@ -13,9 +13,6 @@ char[]
     _addressspace = ['@', '&', '^', '%', '*'],
     _objectspace = ['<', '['];
 
-//uint[] DebugmanEntries = [0x0C82FDu, 0x0CD410u, 0x0CBE7Du, 0x0C9655u];
-//byte[] DebugmanActor = [0x20, 0xEE, 0x8B];
-
 string? path = "project.json";
 var isUnpack = false;
 foreach (var a in args)
@@ -85,31 +82,6 @@ while (outRom.Position < 0x400000)
 //Update size in header
 outRom.Position = 0xFFD7;
 outRom.WriteByte(0x0C);
-
-////Sky Deliveryman!
-//outRom.Position = 0x0CB49Fu;
-//outRom.WriteByte(0x47);
-
-//Fix for Meta17 overflow (last byte is not used)
-//outRom.Position = 0x0DAFFEu;
-//outRom.WriteByte(0x00);
-
-//Fix for music load speed (bypass long code sequence)
-//outRom.Position = 0x0281C9u;
-//outRom.WriteByte(0x6B);
-
-//outRom.Position = 0x028B91u;
-//for (int i = 0; i < 6; i++)
-//    outRom.WriteByte(0xEA);
-
-//Modify SPC program (force command $F0 to always process regardless of data state)
-//outRom.Position = 0x02944Cu;
-//outRom.WriteByte(0x00);
-//outRom.WriteByte(0x00);
-
-//Debugman
-//foreach (var loc in DebugmanEntries)
-//    ApplyData(loc, DebugmanActor);
 
 Process.Repack(baseDir, databasePath, WriteFile, WriteTransform);
 
@@ -210,64 +182,6 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
 
     //Write reference fixups
     var nextPos = outRom.Position;
-
-    //if (file.File.XRef != null)
-    //{
-    //    foreach (var str in file.File.XRef)
-    //    {
-    //        char c = str[0];
-    //        var hex = _addressspace.Contains(c) ? str[1..] : str;
-    //        var targetPos = filePos;
-
-    //        var opIx = hex.IndexOfAny(['-', '+']);
-    //        if (opIx > 0)
-    //        {
-    //            var num = uint.Parse(hex[(opIx + 1)..], NumberStyles.HexNumber);
-    //            if (hex[opIx] == '-')
-    //                targetPos -= num;
-    //            else
-    //                targetPos += num;
-    //            hex = hex[..opIx];
-    //        }
-
-    //        var value = uint.Parse(hex, NumberStyles.HexNumber);
-    //        Location loc = value;
-
-    //        outRom.Position = loc;
-    //        switch (c)
-    //        {
-    //            case '@':
-    //                value = targetPos | 0xC00000u;
-    //                goto writeValue;
-
-    //            case '%':
-    //                value = targetPos | 0x800000u;
-    //                goto writeValue;
-
-    //            case '^':
-    //                outRom.WriteByte((byte)((targetPos >> 16) | 0x80));
-    //                break;
-
-    //            case '*':
-    //                outRom.WriteByte((byte)((targetPos >> 16) | 0xC0));
-    //                break;
-
-    //            case '&':
-    //                outRom.WriteByte((byte)targetPos);
-    //                outRom.WriteByte((byte)(targetPos >> 8));
-    //                break;
-
-    //            default:
-    //                value = (value & 0xC00000) | targetPos;
-
-    //            writeValue:
-    //                outRom.WriteByte((byte)value);
-    //                outRom.WriteByte((byte)(value >> 8));
-    //                outRom.WriteByte((byte)(value >> 16));
-    //                break;
-    //        }
-    //    }
-    //}
 
     return size;
 }

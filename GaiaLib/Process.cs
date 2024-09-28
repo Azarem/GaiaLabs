@@ -197,8 +197,8 @@ namespace GaiaLib
             //        cf.Compressed = false;
             //}
 
-            foreach (var f in allFiles.Where(x => x.Compressed != null))
-                f.Size += 2;
+            //foreach (var f in allFiles.Where(x => x.Compressed != null))
+            //    f.Size += 2;
 
             //RebuildDictionary(asmFiles);
 
@@ -748,25 +748,25 @@ namespace GaiaLib
         //    return gaps;
         //}
 
-        private static List<ChunkFile> DiscoverSfx(string baseDir, DbRoot root)
-        {
-            var res = root.GetPath(BinType.Sound);
-            return root.Sfx.Names.Select(name =>
-            {
-                var path = Path.Combine(baseDir, res.Folder ?? "", $"{name}.{res.Extension}");
-                return new ChunkFile(path, BinType.Sound)
-                {
-                    Size = (int)(new FileInfo(path).Length + 2)
-                };
-            }).ToList();
+        //private static List<ChunkFile> DiscoverSfx(string baseDir, DbRoot root)
+        //{
+        //    var res = root.GetPath(BinType.Sound);
+        //    return root.Sfx.Names.Select(name =>
+        //    {
+        //        var path = Path.Combine(baseDir, res.Folder ?? "", $"{name}.{res.Extension}");
+        //        return new ChunkFile(path, BinType.Sound)
+        //        {
+        //            Size = (int)(new FileInfo(path).Length + 2)
+        //        };
+        //    }).ToList();
 
-            //return func(sfx.Location, sfx.Names.Select(x => Path.Combine(baseDir, $"{x}.{extension}")));
-            //var chunkFiles = new List<ChunkFile>();
-            //foreach (var path in sfx.Names.Select(x => Path.Combine(baseDir, $"{x}.{extension}")))
-            //    chunkFiles.Add(new() { Path = path, Size = (int)(new FileInfo(path).Length + 2) });
+        //    //return func(sfx.Location, sfx.Names.Select(x => Path.Combine(baseDir, $"{x}.{extension}")));
+        //    //var chunkFiles = new List<ChunkFile>();
+        //    //foreach (var path in sfx.Names.Select(x => Path.Combine(baseDir, $"{x}.{extension}")))
+        //    //    chunkFiles.Add(new() { Path = path, Size = (int)(new FileInfo(path).Length + 2) });
 
-            //return chunkFiles;
-        }
+        //    //return chunkFiles;
+        //}
 
 
         private static List<ChunkFile> DiscoverFiles(string baseDir, DbRoot root)
@@ -792,15 +792,16 @@ namespace GaiaLib
                     if (type == BinType.Assembly || type == BinType.Patch)
                         using (var inFile = File.OpenRead(file))
                             (chunkFile.Blocks, chunkFile.Includes, chunkFile.Bank) = ParseAssembly(root, inFile, 0);
-                    else if (type == BinType.Sound)
-                        chunkFile.Size += 2;
 
                     var oldFile = root.Files.FirstOrDefault(x => x.Type == type && x.Name == chunkFile.Name);
-                    if(oldFile != null)
+                    if (oldFile != null)
                     {
                         chunkFile.Compressed = oldFile.Compressed;
                         chunkFile.Upper = oldFile.Upper ?? false;
                     }
+
+                    if (chunkFile.Compressed != null || type == BinType.Sound)
+                        chunkFile.Size += 2;
 
                     chunkFiles.Add(chunkFile);
                 }
@@ -879,9 +880,10 @@ namespace GaiaLib
 
         private static void MatchChunks(IEnumerable<ChunkFile> files)
         {
-            var allFiles = files.Where(x => x.Size > 0).OrderByDescending(x => x.Size).ToList();
-            var bestResult = new int[0x100];
-            var bestSample = new int[0x100];
+            var allFiles = files.Where(x => x.Size > 0)
+                .OrderBy(x => x.Blocks != null ? 0 : 1).ThenByDescending(x => x.Size).ToList();
+            var bestResult = new int[0x200];
+            var bestSample = new int[0x200];
 
             for (int page = 0; page < 0x80; page++)
             {
@@ -898,9 +900,9 @@ namespace GaiaLib
 
                 var isUpper = (page & 1) != 0;
                 var bank = page >> 1;
-                var smallest = allFiles.LastOrDefault(x => (isUpper && x.Bank == bank) 
-                    || (!isUpper && x.Blocks == null));
-                var smallestIx = smallest == null ? -1 : allFiles.IndexOf(smallest);
+                //var smallest = allFiles.LastOrDefault(x => (isUpper && x.Bank == bank)
+                //    || (!isUpper && x.Blocks == null));
+                //var smallestIx = smallest == null ? -1 : allFiles.IndexOf(smallest);
                 int bestDepth = 0, bestRemain = remain, bestOffset = 0;
                 int start = page << 15;
                 //}
@@ -918,8 +920,8 @@ namespace GaiaLib
 
                 bool testDepth(int ix, int depth, int remain, bool asmMode)
                 {
-                    if (ix > smallestIx)
-                        return true;
+                    //if (ix > smallestIx)
+                    //    return true;
 
                     for (var i = ix; i < count; i++)
                     {
@@ -966,8 +968,8 @@ namespace GaiaLib
                             return true;
 
                         //Stop processing if nothing else can fit
-                        if (newRemain < smallest?.Size)
-                            return false;
+                        //if (newRemain < smallest?.Size)
+                        //    return false;
 
                         //Process next iteration and stop if exact
                         if (testDepth(i + 1, depth + 1, newRemain, asmMode))
@@ -978,12 +980,13 @@ namespace GaiaLib
                 };
 
                 testDepth(0, 0, remain, isUpper);
-                if (isUpper && bestRemain >= (smallest?.Size ?? 0))
+                if (isUpper)
                 {
                     bestOffset = bestDepth;
-                    smallest = allFiles.LastOrDefault(x => x.Blocks == null || x.Bank == null);
-                    smallestIx = smallest == null ? -1 : allFiles.IndexOf(smallest);
-                    testDepth(0, bestDepth, bestRemain, false);
+                    //smallest = allFiles.LastOrDefault(x => x.Blocks == null || x.Bank == null);
+                    //smallestIx = smallest == null ? -1 : allFiles.IndexOf(smallest);
+                    //if (bestRemain >= smallest?.Size)
+                        testDepth(0, bestDepth, bestRemain, false);
                 }
 
                 var position = start;
