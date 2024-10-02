@@ -4,6 +4,7 @@
 
 !scene_current                  0644
 !advance_button_mask            C080
+!default_background             0000
 
 --------------------------------------------------------
 
@@ -17,6 +18,7 @@ border_lookup [
 border_index_1 #1320142013601520156013A014A013E0
 border_index_2 #1620172016601820186016A017A016E0
 border_index_3 #19201A2019601B201B6019A01AA019E0
+----------------------------------------------------
 
 cmd_d9 {
     LDA $0000, Y
@@ -86,6 +88,17 @@ code_03E453 {
     STA $099A
     STZ $0986
 
+    ;LDA #$1000
+    ;STA $0986
+    
+    ;LDA $@fx_palette_198040+22
+    ;STA $7F0A22
+    ;LDA $@fx_palette_198040+24
+    ;STA $7F0A24
+    ;LDA $@fx_palette_198040+26
+    ;STA $7F0A26
+    
+
     LDA $09F8
     AND #$0003
     ASL
@@ -137,7 +150,14 @@ code_03E453 {
 cmd_c8_03E579 {
     PHY 
     PHB 
-    STZ $09F8
+    STZ $09F8   --This
+    ;STZ $0986
+    ;LDA $@fx_palette_198040+2  --Also reset background colors
+    ;STA $7F0A02
+    ;LDA $@fx_palette_198040+4
+    ;STA $7F0A04
+    ;LDA $@fx_palette_198040+6
+    ;STA $7F0A06
     LDA $099A
     STA $0998
     LDA $0982

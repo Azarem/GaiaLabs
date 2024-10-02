@@ -312,7 +312,7 @@ namespace GaiaLib.Rom
                     start += 4;
                 }
 
-                using var fileStream = File.Create(Path.Combine(filePath, $"{file.Name}.{res.Extension}"));
+                using var fileStream = File.Create(filePath);
 
                 var pStart = _basePtr + start;
                 var len = (int)(file.End - start);
@@ -651,14 +651,30 @@ namespace GaiaLib.Rom
                 byte? b = null;
                 if (DbRoot.Transforms.TryGetValue(_lCur, out string? xf) && xf != "")
                 {
-                    var match = BankRegex().Match(xf);
-                    if (match.Success)
-                        b = byte.Parse(match.Groups[1].Value, NumberStyles.HexNumber);
-                    else
+                    var str = xf.TrimStart(Process._addressspace);
+                    var mathIx = str.IndexOfAny(Process._operators);
+                    if (mathIx > 0)
                     {
-                        var str = xf.TrimStart(Process._addressspace);
-                        b = RefList.FirstOrDefault(x => x.Value == str).Key.Bank;
+                        str = str[..mathIx];
                     }
+
+                    Location? rf = null;
+                    foreach (var entry in RefList)
+                        if (entry.Value == str)
+                        {
+                            rf = entry.Key;
+                            break;
+                        }
+
+                    if (rf == null)
+                    {
+                        var match = LocationRegex().Match(str);
+                        if (match.Success)
+                            rf = uint.Parse(match.Groups[1].Value, NumberStyles.HexNumber);
+                    }
+
+                    if (rf != null)
+                        ResolveInclude(rf.Value, false);
                 }
 
                 return (b, xf);
@@ -676,6 +692,7 @@ namespace GaiaLib.Rom
             //        xformBank = RefList.First(x => x.Value == str).Key.Bank;
             //    }
             //}
+
 
             switch (code.Mode)
             {
@@ -945,19 +962,23 @@ namespace GaiaLib.Rom
                     Location value = (next.Offset & 0xFF0000) | (ushort)operands[oix];
                     if (!RefList.TryGetValue(value, out xform))
                         RefList[value] = xform = $"loc_{value}";
+                    ResolveInclude(value, false);
                     operands[oix] = $"&{xform}";
                 }
                 else
                 {
-                    var op = operands[oix];
+                    //if (bank != null)
+                    //{
+                    //    var op = operands[oix];
 
-                    if (op is ushort us)
-                        op = (Location)((uint)bank.Value << 16 | us);
-                    else if (op is LocationWrapper lw)
-                        op = lw.Location;
+                    //    if (op is ushort us)
+                    //        op = (Location)(((uint)bank.Value << 16) | us);
+                    //    else if (op is LocationWrapper lw)
+                    //        op = lw.Location;
 
-                    if (op is Location l)
-                        ResolveInclude(l, false);
+                    //    if (op is Location l)
+                    //        ResolveInclude(l, false);
+                    //}
 
                     operands[oix] = xform;
                 }
@@ -1684,8 +1705,8 @@ namespace GaiaLib.Rom
 
         }
 
-        [GeneratedRegex("_([A-Fa-f0-9]{2})")]
-        private static partial Regex BankRegex();
+        [GeneratedRegex("_([A-Fa-f0-9]{6})")]
+        private static partial Regex LocationRegex();
     }
 
     //public class TableGroup

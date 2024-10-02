@@ -1,6 +1,7 @@
 ﻿?BANK 02
 
-?INCLUDE 'chunk_02E396'
+?INCLUDE 'inventory_menu'
+?INCLUDE 'system_strings'
 
 !inventory_slots                0AB4
 !page_1                         0AB4

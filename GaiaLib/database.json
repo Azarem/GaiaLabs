@@ -1945,34 +1945,37 @@
         { "start": "00C133", "end": "00C182", "name": "sub_00C133", "struct": "Code" },
         { "start": "00C182", "end": "00C1AA", "name": "sub_00C182", "struct": "Code" }
       ] },
-    { "name": "actor_00C1AA", "movable": true, "parts": [
+    { "name": "actor_00C1AA", "movable": true, "group": "actors", "parts": [
         { "start": "00C1AA", "end": "00C1AD", "name": "h_actor_00C1AA", "struct": "h_actor" },
         { "start": "00C1AD", "end": "00C1DF", "name": "e_actor_00C1AA", "struct": "Code" }
       ] },
-    { "name": "actor_00C1DF", "movable": true, "parts": [
+    { "name": "actor_00C1DF", "movable": true, "group": "actors", "parts": [
         { "start": "00C1DF", "end": "00C1E2", "name": "h_actor_00C1DF", "struct": "h_actor" },
         { "start": "00C1E2", "end": "00C218", "name": "e_actor_00C1DF", "struct": "Code" }
       ] },
-    { "name": "actor_00C218", "movable": true, "parts": [
+    { "name": "actor_00C218", "movable": true, "group": "actors", "parts": [
         { "start": "00C218", "end": "00C21B", "name": "h_actor_00C218", "struct": "h_actor" },
         { "start": "00C21B", "end": "00C251", "name": "e_actor_00C218", "struct": "Code" }
       ] },
-    { "name": "actor_00C251", "movable": true, "parts": [
+    { "name": "actor_00C251", "movable": true, "group": "actors", "parts": [
         { "start": "00C251", "end": "00C254", "name": "h_actor_00C251", "struct": "h_actor" },
         { "start": "00C254", "end": "00C286", "name": "e_actor_00C251", "struct": "Code" }
       ] },
-    { "name": "actor_00C286", "movable": true, "parts": [
+    { "name": "actor_00C286", "movable": true, "group": "actors", "parts": [
         { "start": "00C286", "end": "00C289", "name": "h_actor_00C286", "struct": "h_actor" },
         { "start": "00C289", "end": "00C2BB", "name": "e_actor_00C286", "struct": "Code" }
       ] },
-    { "name": "chunk_00B520", "movable": false, "parts": [
-        { "start": "00C2BB", "end": "00C2BE", "name": "head_00C2BB", "struct": "h_actor" },
-        { "start": "00C2BE", "end": "00C312", "name": "func_00C2BE", "struct": "Code" },
+    { "name": "actor_00C2BB", "movable": true, "group": "actors", "parts": [
+        { "start": "00C2BB", "end": "00C2BE", "name": "h_actor_00C2BB", "struct": "h_actor" },
+        { "start": "00C2BE", "end": "00C312", "name": "e_actor_00C2BB", "struct": "Code" },
         { "start": "00C312", "end": "00C33E", "name": "array_00C312", "struct": "unk5" },
-        { "start": "00C33E", "end": "00C397", "name": "sub_00C33E", "struct": "Code" },
-        { "start": "00C397", "end": "00C418", "name": "func_00C397", "struct": "Code" },
-        { "start": "00C418", "end": "00C423", "name": "func_00C418", "struct": "Code" },
-        { "start": "00C423", "end": "00C432", "name": "func_00C423", "struct": "Code" },
+        { "start": "00C33E", "end": "00C397", "name": "sub_00C33E", "struct": "Code" }
+      ] },
+    { "name": "func_00C397", "movable": true, "group": "functions", "parts": [
+        { "start": "00C397", "end": "00C418", "name": "func_00C397", "struct": "Code" }
+      ] },
+    { "name": "entry_points_00C418", "movable": true, "group": "actors", "parts": [
+        { "start": "00C418", "end": "00C432", "name": "func_00C418", "struct": "Code" },
         { "start": "00C432", "end": "00C43D", "name": "func_00C432", "struct": "Code" },
         { "start": "00C43D", "end": "00C446", "name": "func_00C43D", "struct": "Code" },
         { "start": "00C446", "end": "00C455", "name": "func_00C446", "struct": "Code" },
@@ -1982,40 +1985,65 @@
         { "start": "00C46D", "end": "00C479", "name": "func_00C46D", "struct": "Code" },
         { "start": "00C479", "end": "00C4D1", "name": "func_00C479", "struct": "Code" },
         { "start": "00C4D1", "end": "00C557", "name": "func_00C4D1", "struct": "Code" },
-        { "start": "00C557", "end": "00C5F3", "name": "func_00C557", "struct": "Code" },
-        //{ "start": "00C5F3", "end": "00C5F6", "name": "head_00C5F3", "struct": "h_actor" },
-        //{ "start": "00C5F6", "end": "00C62D", "name": "func_00C5F6", "struct": "Code" },
-        { "start": "00C62D", "end": "00C630", "name": "head_00C62D", "struct": "h_actor" },
-        { "start": "00C630", "end": "00C667", "name": "func_00C630", "struct": "Code" },
-        { "start": "00C667", "end": "00C66A", "name": "head_00C667", "struct": "h_actor" },
-        { "start": "00C66A", "end": "00C66F", "name": "func_00C66A", "struct": "Code" },
-        //{ "start": "00C66F", "end": "00C672", "name": "head_00C66F", "struct": "h_actor" },
-        //{ "start": "00C672", "end": "00C6E4", "name": "func_00C672", "struct": "Code" },
+        { "start": "00C557", "end": "00C5F3", "name": "func_00C557", "struct": "Code" }
+      ] },
+    { "name": "actor_00C62D", "movable": true, "group": "actors", "parts": [
+        { "start": "00C62D", "end": "00C630", "name": "h_actor_00C62D", "struct": "h_actor" },
+        { "start": "00C630", "end": "00C667", "name": "e_actor_00C62D", "struct": "Code" }
+      ] },
+    { "name": "actor_00C667", "movable": true, "group": "actors", "parts": [
+        { "start": "00C667", "end": "00C66A", "name": "h_actor_00C667", "struct": "h_actor" },
+        { "start": "00C66A", "end": "00C66F", "name": "e_actor_00C667", "struct": "Code" }
+      ] },
+    { "name": "func_00C6E4", "movable": true, "group": "functions", "parts": [
         { "start": "00C6E4", "end": "00C710", "name": "func_00C6E4", "struct": "Code" },
-        { "start": "00C710", "end": "00C718", "name": "table_00C710", "struct": "&Code", "bank": "02" },
-        { "start": "00C718", "end": "00C725", "name": "func_00C718", "struct": "Code" },
-        { "start": "00C725", "end": "00C7FA", "name": "func_00C725", "struct": "Code" },
-        { "start": "00C7FA", "end": "00C806", "name": "func_00C7FA", "struct": "Code" },
+        { "start": "00C710", "end": "00C718", "name": "table_00C710", "struct": "&Code", "bank": "02" }
+      ] },
+    { "name": "func_00C718", "movable": true, "group": "functions", "parts": [
+        { "start": "00C718", "end": "00C725", "name": "func_00C718", "struct": "Code" }
+      ] },
+    { "name": "func_00C725", "movable": true, "group": "functions", "parts": [
+        { "start": "00C725", "end": "00C7FA", "name": "func_00C725", "struct": "Code" }
+      ] },
+    { "name": "func_00C7FA", "movable": true, "group": "functions", "parts": [
+        { "start": "00C7FA", "end": "00C806", "name": "func_00C7FA", "struct": "Code" }
+      ] },
+    { "name": "func_00C806", "movable": true, "group": "functions", "parts": [
         { "start": "00C806", "end": "00C943", "name": "func_00C806", "struct": "Code" },
-        { "start": "00C943", "end": "00C963", "name": "array_00C943", "struct": "Word" },
-        //{ "start": "00C963", "end": "00C966", "name": "head_00C963", "struct": "h_actor" },
-        { "start": "00C98E", "end": "00C9B8", "name": "func_00C98E", "struct": "Code" },
-        { "start": "00C9B8", "end": "00C9FB", "name": "func_00C9B8", "struct": "Code" },
-        //{ "start": "00C9FB", "end": "00C9FE", "name": "head_00C9FB", "struct": "h_actor" },
-        //{ "start": "00C9FE", "end": "00CA42", "name": "func_00C9FE", "struct": "Code" },
-        { "start": "00CA42", "end": "00CA45", "name": "head_00CA42", "struct": "h_actor" },
-        { "start": "00CA45", "end": "00CD59", "name": "func_00CA45", "struct": "Code" },
-        { "start": "00CD59", "end": "00CD5C", "name": "head_00CD59", "struct": "h_actor" },
-        { "start": "00CD5C", "end": "00CE97", "name": "func_00CD5C", "struct": "Code" },
+        { "start": "00C943", "end": "00C963", "name": "array_00C943", "struct": "Word" }
+      ] },
+    { "name": "f_inventory_full", "movable": true, "group": "functions", "parts": [
+        { "start": "00C98E", "end": "00C9B8", "name": "f_inventory_full", "struct": "Code" }
+      ] },
+    { "name": "func_00C9B8", "movable": true, "group": "functions", "parts": [
+        { "start": "00C9B8", "end": "00C9FB", "name": "func_00C9B8", "struct": "Code" }
+      ] },
+    { "name": "actor_00CA42", "movable": true, "group": "actors", "parts": [
+        { "start": "00CA42", "end": "00CA45", "name": "h_actor_00CA42", "struct": "h_actor" },
+        { "start": "00CA45", "end": "00CD59", "name": "e_actor_00CA42", "struct": "Code" }
+      ] },
+    { "name": "actor_00CD59", "movable": true, "group": "actors", "parts": [
+        { "start": "00CD59", "end": "00CD5C", "name": "h_actor_00CD59", "struct": "h_actor" },
+        { "start": "00CD5C", "end": "00CE97", "name": "e_actor_00CD59", "struct": "Code" },
         { "start": "00CE97", "end": "00CEAF", "name": "binary_00CE97", "struct": "Binary" },
         { "start": "00CEAF", "end": "00CEFF", "name": "func_00CEAF", "struct": "Code" },
-        { "start": "00CEFF", "end": "00CF29", "name": "func_00CEFF", "struct": "Code" },
-        { "start": "00CF29", "end": "00CF2C", "name": "head_00CF29", "struct": "h_actor" },
-        { "start": "00CF2C", "end": "00CF8E", "name": "func_00CF2C", "struct": "Code" },
-        { "start": "00CF8E", "end": "00CFAE", "name": "func_00CF8E", "struct": "Code" },
-        { "start": "00CFAE", "end": "00CFEF", "name": "func_00CFAE", "struct": "Code" },
+        { "start": "00CEFF", "end": "00CF29", "name": "func_00CEFF", "struct": "Code" }
+      ] },
+    { "name": "actor_00CF29", "movable": true, "group": "actors", "parts": [
+        { "start": "00CF29", "end": "00CF2C", "name": "h_actor_00CF29", "struct": "h_actor" },
+        { "start": "00CF2C", "end": "00CF8E", "name": "e_actor_00CF29", "struct": "Code" }
+      ] },
+    { "name": "func_00CF8E", "movable": true, "group": "functions", "parts": [
+        { "start": "00CF8E", "end": "00CFAE", "name": "func_00CF8E", "struct": "Code" }
+      ] },
+    { "name": "func_00CFAE", "movable": true, "group": "functions", "parts": [
+        { "start": "00CFAE", "end": "00CFEF", "name": "func_00CFAE", "struct": "Code" }
+      ] },
+    { "name": "func_00CFEF", "movable": true, "group": "functions", "parts": [
         { "start": "00CFEF", "end": "00D068", "name": "func_00CFEF", "struct": "Code" },
-        { "start": "00D068", "end": "00D088", "name": "binary_00D068", "struct": "Binary" },
+        { "start": "00D068", "end": "00D088", "name": "binary_00D068", "struct": "Binary" }
+      ] },
+    { "name": "chunk_00D088", "movable": false, "parts": [
         { "start": "00D088", "end": "00D0AE", "name": "sub_00D088", "struct": "Code" },
         { "start": "00D0AE", "end": "00D0D1", "name": "sub_00D0AE", "struct": "Code" },
         { "start": "00D0D1", "end": "00D0D4", "name": "head_00D0D1", "struct": "h_actor" },
@@ -2033,27 +2061,23 @@
         { "start": "00D246", "end": "00D274", "name": "func_00D246", "struct": "Code" },
         { "start": "00D274", "end": "00D2A2", "name": "func_00D274", "struct": "Code" },
         { "start": "00D2A2", "end": "00D2D0", "name": "func_00D2A2", "struct": "Code" },
-        //{ "start": "00D2D0", "end": "00D2D3", "name": "head_00D2D0", "struct": "h_actor" },
-        //{ "start": "00D2D3", "end": "00D348", "name": "func_00D2D3", "struct": "Code" },
-        //{ "start": "00D348", "end": "00D34B", "name": "head_00D348", "struct": "h_actor" },
-        //{ "start": "00D34B", "end": "00D3BA", "name": "func_00D34B", "struct": "Code" },
-        //{ "start": "00D3BA", "end": "00D3BD", "name": "head_00D3BA", "struct": "h_actor" },
-        //{ "start": "00D3BD", "end": "00D428", "name": "func_00D3BD", "struct": "Code" },
-        //{ "start": "00D428", "end": "00D42B", "name": "head_00D428", "struct": "h_actor" },
-        //{ "start": "00D42B", "end": "00D496", "name": "func_00D42B", "struct": "Code" },
-        //{ "start": "00D496", "end": "00D4BB", "name": "sub_00D496", "struct": "Code" },
-        //{ "start": "00D4BB", "end": "00D4D2", "name": "sub_00D4BB", "struct": "Code" },
-        //{ "start": "00D4D2", "end": "00D4F5", "name": "func_00D4D2", "struct": "Code" },
-        //{ "start": "00D4F5", "end": "00D518", "name": "func_00D4F5", "struct": "Code" },
-        //{ "start": "00D518", "end": "00D550", "name": "func_00D518", "struct": "Code" },
-        //{ "start": "00D550", "end": "00D58A", "name": "func_00D550", "struct": "Code" },
         { "start": "00D58A", "end": "00D5C0", "name": "sub_00D58A", "struct": "Code" },
-        { "start": "00D5C0", "end": "00D62F", "name": "func_00D5C0", "struct": "Code" },
-        { "start": "00D62F", "end": "00D718", "name": "func_00D62F", "struct": "Code" },
-        { "start": "00B5B3", "end": "00B5C0", "name": "func_00B5B3", "struct": "Code" },
-        { "start": "00D718", "end": "00D796", "name": "func_00D718", "struct": "Code" },
-        { "start": "00D796", "end": "00D877", "name": "func_00D796", "struct": "Code" },
-        { "start": "00D877", "end": "00D904", "name": "func_00D877", "struct": "Code" },
+        { "start": "00D5C0", "end": "00D62F", "name": "func_00D5C0", "struct": "Code" }
+      ] },
+    { "name": "func_00D62F", "movable": true, "group": "functions", "parts": [
+        { "start": "00D62F", "end": "00D718", "name": "func_00D62F", "struct": "Code" }
+      ] },
+    { "name": "func_00B5B3", "movable": true, "group": "functions", "parts": [
+        { "start": "00B5B3", "end": "00B5C0", "name": "func_00B5B3", "struct": "Code" }
+      ] },
+    { "name": "func_00D718", "movable": true, "group": "functions", "parts": [
+        { "start": "00D718", "end": "00D796", "name": "func_00D718", "struct": "Code" }
+      ] },
+    { "name": "death_message", "movable": true, "group": "functions", "parts": [
+        { "start": "00D796", "end": "00D877", "name": "e_death_message", "struct": "Code" }
+      ] },
+    { "name": "actor_00D877", "movable": true, "group": "actors", "parts": [
+        { "start": "00D877", "end": "00D904", "name": "e_actor_00D877", "struct": "Code" },
         { "start": "00D904", "end": "00D9EB", "name": "func_00D904", "struct": "Code" },
         { "start": "00D9EB", "end": "00DA13", "name": "func_00D9EB", "struct": "Code" },
         { "start": "00DA13", "end": "00DA41", "name": "sub_00DA13", "struct": "Code" },
@@ -2085,20 +2109,36 @@
         { "start": "00D518", "end": "00D550", "name": "func_00D518", "struct": "Code" },
         { "start": "00D550", "end": "00D58A", "name": "func_00D550", "struct": "Code" }
       ] },
-    { "name": "chunk_00DA78", "parts": [
-        { "start": "00DA78", "end": "00DB21", "name": "func_00DA78", "struct": "Code" },
-        { "start": "00DB21", "end": "00DB8A", "name": "func_00DB21", "struct": "Code" },
+    { "name": "actor_00DA78", "movable": true, "group": "actors", "parts": [
+        { "start": "00DA78", "end": "00DB21", "name": "e_actor_00DA78", "struct": "Code" },
+        { "start": "00DB21", "end": "00DB8A", "name": "func_00DB21", "struct": "Code" }
+      ] },
+    { "name": "func_00DB8A", "movable": true, "group": "functions", "parts": [
         { "start": "00DB8A", "end": "00DC77", "name": "func_00DB8A", "struct": "Code" },
-        { "start": "00DC77", "end": "00DC79", "name": "func_00DC77", "struct": "Code" },
-        { "start": "00DC79", "end": "00DCB4", "name": "func_00DC79_noref", "struct": "Code" },
-        { "start": "00DCB4", "end": "00DD03", "name": "func_00DCB4", "struct": "Code" },
-        { "start": "00DD03", "end": "00DD1D", "name": "func_00DD03", "struct": "Code" },
-        { "start": "00DD1D", "end": "00DD5B", "name": "sub_00DD1D", "struct": "Code" },
         { "start": "00DD5B", "end": "00DD87", "name": "func_00DD5B", "struct": "Code" },
-        { "start": "00DD87", "end": "00DDF2", "name": "func_00DD87", "struct": "Code" },
+        { "start": "00DD87", "end": "00DDF2", "name": "func_00DD87", "struct": "Code" }
+      ] },
+    { "name": "stub_00DC77", "movable": true, "group": "functions", "parts": [
+        { "start": "00DC77", "end": "00DC79", "name": "stub_00DC77", "struct": "Code" }
+      ] },
+    { "name": "func_00DC79", "movable": true, "group": "unused", "parts": [
+        { "start": "00DC79", "end": "00DCB4", "name": "func_00DC79", "struct": "Code" }
+      ] },
+    { "name": "func_00DCB4", "movable": true, "group": "functions", "parts": [
+        { "start": "00DCB4", "end": "00DD03", "name": "func_00DCB4", "struct": "Code" }
+      ] },
+    { "name": "func_00DD03", "movable": true, "group": "functions", "parts": [
+        { "start": "00DD03", "end": "00DD1D", "name": "func_00DD03", "struct": "Code" },
+        { "start": "00DD1D", "end": "00DD5B", "name": "sub_00DD1D", "struct": "Code" }
+      ] },
+    { "name": "func_00DDF2", "movable": true, "group": "functions", "parts": [
         { "start": "00DDF2", "end": "00DEB8", "name": "func_00DDF2", "struct": "Code" },
-        { "start": "00DEB8", "end": "00DF15", "name": "func_00DEB8", "struct": "Code" },
-        { "start": "00DF15", "end": "00DF29", "name": "func_00DF15", "struct": "Code" },
+        { "start": "00DEB8", "end": "00DF15", "name": "func_00DEB8", "struct": "Code" }
+      ] },
+    { "name": "func_00DF15", "movable": true, "group": "functions", "parts": [
+        { "start": "00DF15", "end": "00DF29", "name": "func_00DF15", "struct": "Code" }
+      ] },
+    { "name": "func_00DF29", "movable": true, "group": "functions", "parts": [
         { "start": "00DF29", "end": "00DF38", "name": "func_00DF29", "struct": "Code" },
         { "start": "00DF38", "end": "00DF52", "name": "func_00DF38", "struct": "Code" },
         { "start": "00DF52", "end": "00DF61", "name": "func_00DF52", "struct": "Code" },
@@ -2106,36 +2146,63 @@
         { "start": "00DF7B", "end": "00DFC9", "name": "func_00DF7B", "struct": "Code" },
         { "start": "00DFC9", "end": "00DFE3", "name": "func_00DFC9", "struct": "Code" },
         { "start": "00DFE3", "end": "00DFFD", "name": "func_00DFE3", "struct": "Code" },
-        { "start": "00DFFD", "end": "00E02D", "name": "array_00DFFD", "struct": "unk1" },
-        { "start": "00E02D", "end": "00E07B", "name": "func_00E02D", "struct": "Code" },
-        { "start": "00E07B", "end": "00E0C6", "name": "func_00E07B", "struct": "Code" },
-        { "start": "00E0C6", "end": "00E110", "name": "func_00E0C6", "struct": "Code" },
-        { "start": "00E110", "end": "00E155", "name": "func_00E110", "struct": "Code" },
-        { "start": "00E155", "end": "00E256", "name": "func_00E155", "struct": "Code" },
-        { "start": "00E256", "end": "00E399", "name": "func_00E256", "struct": "Code" },
+        { "start": "00DFFD", "end": "00E02D", "name": "array_00DFFD", "struct": "unk1" }
+      ] },
+    { "name": "reward_actors", "movable": true, "group": "actors", "parts": [
+        { "start": "00E02D", "end": "00E07B", "name": "e_hp_increase", "struct": "Code" },
+        { "start": "00E07B", "end": "00E0C6", "name": "e_str_increase", "struct": "Code" },
+        { "start": "00E0C6", "end": "00E110", "name": "e_def_increase", "struct": "Code" },
+        { "start": "00E110", "end": "00E155", "name": "func_00E110", "struct": "Code" }
+      ] },
+    { "name": "actor_00E155", "movable": true, "group": "actors", "parts": [
+        { "start": "00E155", "end": "00E256", "name": "e_actor_00E155", "struct": "Code" }
+      ] },
+    { "name": "actor_00E256", "movable": true, "group": "actors", "parts": [
+        { "start": "00E256", "end": "00E399", "name": "e_actor_00E256", "struct": "Code" },
         { "start": "00E399", "end": "00E3AC", "name": "sub_00E399", "struct": "Code" },
-        { "start": "00E3AC", "end": "00E3BA", "name": "sub_00E3AC", "struct": "Code" },
-        { "start": "00E3BA", "end": "00E4DB", "name": "func_00E3BA", "struct": "Code" },
-        { "start": "00E4DB", "end": "00E655", "name": "code_00E4DB", "struct": "Code" },
-        { "start": "00E655", "end": "00E683", "name": "func_00E655", "struct": "Code" },
+        { "start": "00E3AC", "end": "00E3BA", "name": "sub_00E3AC", "struct": "Code" }
+      ] },
+    { "name": "actor_00E3BA", "movable": true, "group": "actors", "parts": [
+        { "start": "00E3BA", "end": "00E4DB", "name": "e_actor_00E3BA", "struct": "Code" }
+      ] },
+    { "name": "actor_00E4DB", "movable": false, "group": "actors", "parts": [
+        { "start": "00E4DB", "end": "00E655", "name": "e_actor_00E4DB", "struct": "Code" }
+      ] },
+    { "name": "func_00E655", "movable": true, "group": "unused", "parts": [
+        { "start": "00E655", "end": "00E683", "name": "func_00E655", "struct": "Code" }
+      ] },
+
+    { "name": "actor_00E8D7", "movable": true, "group": "actors", "parts": [
+        { "start": "00E8D7", "end": "00E8DA", "name": "h_actor_00E8D7", "struct": "h_actor" },
+        { "start": "00E8DA", "end": "00E94D", "name": "e_actor_00E8D7", "struct": "Code" }
+      ] },
+    { "name": "actor_00E98B", "movable": true, "group": "actors", "parts": [
+        { "start": "00E98B", "end": "00E9CA", "name": "e_actor_00E98B", "struct": "Code" },
+        { "start": "00E9CA", "end": "00E9EC", "name": "func_00E9CA", "struct": "Code" }
+      ] },
+    { "name": "actor_00E9EC", "movable": true, "group": "actors", "parts": [
+        { "start": "00E9EC", "end": "00E9EF", "name": "h_actor_00E9EC", "struct": "h_actor" },
+        { "start": "00E9EF", "end": "00EA96", "name": "e_actor_00E9EC", "struct": "Code" }
+      ] },
+    { "name": "actor_00EAED", "movable": true, "group": "actors", "parts": [
+        { "start": "00EAED", "end": "00EAF0", "name": "h_actor_00EAED", "struct": "h_actor" },
+        { "start": "00EAF0", "end": "00EB9B", "name": "e_actor_00EAED", "struct": "Code" }
+      ] },
+    { "name": "chunk_00E683", "parts": [
         { "start": "00E683", "end": "00E6A6", "name": "func_00E683", "struct": "Code" },
         { "start": "00E6A6", "end": "00E8D7", "name": "func_00E6A6", "struct": "Code" },
-        { "start": "00E8D7", "end": "00E8DA", "name": "head_00E8D7", "struct": "h_actor" },
-        { "start": "00E8DA", "end": "00E94D", "name": "func_00E8DA", "struct": "Code" },
+        //{ "start": "00E8D7", "end": "00E8DA", "name": "head_00E8D7", "struct": "h_actor" },
+        //{ "start": "00E8DA", "end": "00E94D", "name": "func_00E8DA", "struct": "Code" },
         { "start": "00E94D", "end": "00E950", "name": "head_00E94D", "struct": "h_actor" },
         { "start": "00E950", "end": "00E98B", "name": "func_00E950", "struct": "Code" },
-        { "start": "00E98B", "end": "00E9CA", "name": "func_00E98B", "struct": "Code" },
-        { "start": "00E9CA", "end": "00E9EC", "name": "func_00E9CA", "struct": "Code" },
-        { "start": "00E9EC", "end": "00E9EF", "name": "head_00E9EC", "struct": "h_actor" },
-        { "start": "00E9EF", "end": "00EA96", "name": "func_00E9EF", "struct": "Code" },
+        //{ "start": "00E98B", "end": "00E9CA", "name": "func_00E98B", "struct": "Code" },
+        //{ "start": "00E9CA", "end": "00E9EC", "name": "func_00E9CA", "struct": "Code" },
         { "start": "00EA96", "end": "00EA99", "name": "head_00EA96", "struct": "h_actor" },
         { "start": "00EA99", "end": "00EAA7", "name": "func_00EA99", "struct": "Code" },
         { "start": "00EAA7", "end": "00EAAA", "name": "head_00EAA7", "struct": "h_actor" },
         { "start": "00EAAA", "end": "00EAC3", "name": "func_00EAAA", "struct": "Code" },
         { "start": "00EAC3", "end": "00EAC6", "name": "head_00EAC3", "struct": "h_actor" },
         { "start": "00EAC6", "end": "00EAED", "name": "func_00EAC6", "struct": "Code" },
-        { "start": "00EAED", "end": "00EAF0", "name": "head_00EAED", "struct": "h_actor" },
-        { "start": "00EAF0", "end": "00EB9B", "name": "func_00EAF0", "struct": "Code" },
         { "start": "00EB9B", "end": "00EBEF", "name": "func_00EB9B", "struct": "Code" },
         { "start": "00EBEF", "end": "00EC43", "name": "func_00EBEF", "struct": "Code" },
         { "start": "00EC43", "end": "00EC97", "name": "func_00EC43", "struct": "Code" },
@@ -2151,9 +2218,18 @@
         { "start": "00EE1C", "end": "00EE7C", "name": "sub_00EE1C", "struct": "Code" },
         { "start": "00EE7C", "end": "00EF72", "name": "sub_00EE7C", "struct": "Code" },
         { "start": "00EF72", "end": "00F193", "name": "table_00EF72", "struct": "&Code" },
-        { "start": "00F193", "end": "00F3B3", "name": "binary_00F193", "struct": "Binary" },
-        { "start": "00F3B3", "end": "00F428", "name": "func_00F3B3", "struct": "Code" },
-        { "start": "00F428", "end": "00F432", "name": "code_00F428_noref", "struct": "Code" },
+        { "start": "00F193", "end": "00F3B3", "name": "binary_00F193", "struct": "Binary" }
+      ] },
+    { "name": "func_00F3B3", "movable": true, "group": "functions", "parts": [
+        { "start": "00F3B3", "end": "00F3C9", "name": "func_00F3B3", "struct": "Code" }
+      ] },
+    { "name": "func_00F3C9", "movable": true, "group": "unused", "parts": [
+        { "start": "00F3C9", "end": "00F428", "name": "func_00F3C9", "struct": "Code" }
+      ] },
+    { "name": "func_00F428", "movable": true, "group": "unused", "parts": [
+        { "start": "00F428", "end": "00F432", "name": "code_00F428_noref", "struct": "Code" }
+      ] },
+    { "name": "func_00F432", "movable": true, "group": "functions", "parts": [
         { "start": "00F432", "end": "00F48F", "name": "func_00F432", "struct": "Code" }
       ] },
     { "name": "table_018000", "parts": [
@@ -2279,9 +2355,7 @@
         { "start": "01FF36", "end": "01FF48", "name": "widestring_01FF36", "struct": "WideString" },
         { "start": "01FF48", "end": "01FF6C", "name": "widestring_01FF48", "struct": "WideString" }
       ]},
-    {
-      "name": "chunk_028000",
-      "parts": [
+    { "name": "chunk_028000", "parts": [
         { "start": "028000", "end": "02803B", "name": "func_028000", "struct": "Code" },
         { "start": "02803B", "end": "028043", "name": "func_02803B", "struct": "Code" },
         { "start": "028043", "end": "028191", "name": "func_028043", "struct": "Code" },
@@ -2398,18 +2472,25 @@
         { "start": "02B132", "end": "02B14E", "name": "func_02B132", "struct": "Code" },
         { "start": "02B14E", "end": "02B168", "name": "func_02B14E", "struct": "Code" },
         { "start": "02B168", "end": "02B1BB", "name": "sub_02B168", "struct": "Code" },
-        { "start": "02B1BB", "end": "02B20E", "name": "sub_02B1BB", "struct": "Code" },
-        { "start": "02B20E", "end": "02B264", "name": "func_02B20E", "struct": "Code" },
+        { "start": "02B1BB", "end": "02B20E", "name": "sub_02B1BB", "struct": "Code" }
+      ]
+    },
+    { "name": "actor_02B20E", "movable": true, "group": "actors", "parts": [
+        { "start": "02B20E", "end": "02B264", "name": "e_actor_02B20E", "struct": "Code" },
         { "start": "02B264", "end": "02B28D", "name": "sub_02B264", "struct": "Code" },
         { "start": "02B28D", "end": "02B294", "name": "func_02B28D", "struct": "Code" },
         { "start": "02B294", "end": "02B29B", "name": "func_02B294", "struct": "Code" },
-        { "start": "02B29B", "end": "02B29E", "name": "func_02B29B", "struct": "Code" },
-        { "start": "02B29E", "end": "02B3C6", "name": "func_02B29E", "struct": "Code" },
-        { "start": "02B3C6", "end": "02B42B", "name": "sub_02B3C6", "struct": "Code" },
-        { "start": "02B42B", "end": "02B538", "name": "func_02B42B", "struct": "Code" },
+        { "start": "02B29B", "end": "02B29E", "name": "func_02B29B", "struct": "Code" }
+      ] },
+    { "name": "actor_02B29E", "movable": true, "group": "actors", "parts": [
+        { "start": "02B29E", "end": "02B3C6", "name": "e_actor_02B29E", "struct": "Code" },
+        { "start": "02B3C6", "end": "02B42B", "name": "sub_02B3C6", "struct": "Code" }
+      ] },
+    { "name": "actor_02B42B", "movable": false, "group": "actors", "parts": [
+        { "start": "02B42B", "end": "02B538", "name": "e_actor_02B42B", "struct": "Code" },
         { "start": "02B538", "end": "02B547", "name": "func_02B538", "struct": "Code" },
         { "start": "02B547", "end": "02B550", "name": "code_02B547", "struct": "Code" },
-        { "start": "02B550", "end": "02B57C", "name": "func_02B550", "struct": "Code" },
+        { "start": "02B550", "end": "02B57C", "name": "code_02B550", "struct": "Code" },
         { "start": "02B57C", "end": "02B59C", "name": "table_02B57C", "struct": "&Code" },
         { "start": "02B59C", "end": "02B5E2", "name": "sub_02B59C", "struct": "Code" },
         { "start": "02B5E2", "end": "02B5FE", "name": "sub_02B5E2", "struct": "Code" },
@@ -2418,8 +2499,10 @@
         { "start": "02B675", "end": "02B701", "name": "sub_02B675", "struct": "Code" },
         { "start": "02B701", "end": "02B714", "name": "sub_02B701", "struct": "Code" },
         { "start": "02B714", "end": "02B7A0", "name": "sub_02B714", "struct": "Code" },
-        { "start": "02B7A0", "end": "02B7B3", "name": "sub_02B7A0", "struct": "Code" },
-        { "start": "02B7B3", "end": "02B86D", "name": "func_02B7B3", "struct": "Code" },
+        { "start": "02B7A0", "end": "02B7B3", "name": "sub_02B7A0", "struct": "Code" }
+      ] },
+    { "name": "actor_02B7B3", "movable": false, "group": "actors", "parts": [
+        { "start": "02B7B3", "end": "02B86D", "name": "e_actor_02B7B3", "struct": "Code" },
         { "start": "02B86D", "end": "02B926", "name": "func_02B86D", "struct": "Code" },
         { "start": "02B926", "end": "02B933", "name": "sub_02B926", "struct": "Code" },
         { "start": "02B933", "end": "02B946", "name": "sub_02B933", "struct": "Code" },
@@ -2433,10 +2516,6 @@
         { "start": "02BB3B", "end": "02BCC1", "name": "func_02BB3B", "struct": "Code" },
         { "start": "02BCC1", "end": "02BDC9", "name": "func_02BCC1", "struct": "Code" },
         { "start": "02BDC9", "end": "02BDF6", "name": "func_02BDC9", "struct": "Code" },
-        { "start": "02BDF6", "end": "02BDFB", "name": "func_02BDF6", "struct": "Code" },
-        { "start": "02BDFB", "end": "02BE1A", "name": "func_02BDFB", "struct": "Code" },
-        { "start": "02BE1A", "end": "02BE55", "name": "sub_02BE1A", "struct": "Code" },
-        { "start": "02BE55", "end": "02BE72", "name": "sub_02BE55", "struct": "Code" },
         { "start": "02BE72", "end": "02BE89", "name": "sub_02BE72", "struct": "Code" },
         { "start": "02BE89", "end": "02BEA0", "name": "sub_02BE89", "struct": "Code" },
         { "start": "02BEA0", "end": "02C0A9", "name": "func_02BEA0", "struct": "Code" },
@@ -2454,13 +2533,16 @@
         { "start": "02C329", "end": "02C33E", "name": "sub_02C329", "struct": "Code" },
         { "start": "02C33E", "end": "02C365", "name": "sub_02C33E", "struct": "Code" },
         { "start": "02C365", "end": "02C38C", "name": "sub_02C365", "struct": "Code" }
-      ]
-    },
-    {
-      "name":  "chunk_02C38C",
-      "parts": [
-        { "start": "02C38C", "end": "02C38F", "name": "head_02C38C", "struct": "h_actor" },
-        { "start": "02C38F", "end": "02C447", "name": "func_02C38F", "struct": "Code" },
+      ] },
+    { "name": "actor_02BDF6", "movable": true, "group": "actors", "parts": [
+        { "start": "02BDF6", "end": "02BDFB", "name": "e_actor_02BDF6", "struct": "Code" },
+        { "start": "02BDFB", "end": "02BE1A", "name": "e_actor_02BDFB", "struct": "Code" },
+        { "start": "02BE1A", "end": "02BE55", "name": "sub_02BE1A", "struct": "Code" },
+        { "start": "02BE55", "end": "02BE72", "name": "sub_02BE55", "struct": "Code" }
+      ] },
+    { "name": "player_character", "movable": false, "group": "actors", "parts": [
+        { "start": "02C38C", "end": "02C38F", "name": "h_player_character", "struct": "h_actor" },
+        { "start": "02C38F", "end": "02C447", "name": "e_player_character", "struct": "Code" },
         { "start": "02C447", "end": "02C47F", "name": "table_02C447", "struct": "&Code" },
         { "start": "02C47F", "end": "02C48A", "name": "func_02C47F", "struct": "Code" },
         { "start": "02C48A", "end": "02C48F", "name": "func_02C48A", "struct": "Code" },
@@ -2761,15 +2843,15 @@
         { "start": "03A0A0", "end": "03A0AA", "name": "sub_03A0A0", "struct": "Code" }
       ]
     },
-    { "name": "s59_actor_03A0AA", "movable": true, "parts": [
+    { "name": "s59_actor_03A0AA", "movable": true, "group": "actors", "parts": [
         { "start": "03A0AA", "end": "03A0AD", "name": "h_s59_actor_03A0AA", "struct": "h_actor" },
         { "start": "03A0AD", "end": "03A1FA", "name": "e_s59_actor_03A0AA", "struct": "Code" }
       ] },
-    { "name": "sC0_actor_03A1FA", "movable": true, "parts": [
+    { "name": "sC0_actor_03A1FA", "movable": true, "group": "actors", "parts": [
         { "start": "03A1FA", "end": "03A1FD", "name": "h_sC0_actor_03A1FA", "struct": "h_actor" },
         { "start": "03A1FD", "end": "03A2F1", "name": "e_sC0_actor_03A1FA", "struct": "Code" }
       ] },
-    { "name": "sFE_actor_03A2F1", "movable": false, "parts": [
+    { "name": "sFE_actor_03A2F1", "movable": false, "group": "actors", "parts": [
         { "start": "03A2F1", "end": "03A2F4", "name": "h_sFE_actor_03A2F1", "struct": "h_actor" },
         { "start": "03A2F4", "end": "03A503", "name": "e_sFE_actor_03A2F1", "struct": "Code" },
         { "start": "03A503", "end": "03A52F", "name": "table_03A503", "struct": "&Binary" },
@@ -2789,7 +2871,7 @@
         { "start": "03A932", "end": "03A939", "name": "binary_03A932", "struct": "Binary" },
         { "start": "03A939", "end": "03A940", "name": "binary_03A939", "struct": "Binary" }
       ] },
-    { "name": "sFE_proc_03A940", "parts": [
+    { "name": "sFE_proc_03A940", "group": "thinkers", "parts": [
         { "start": "03A940", "end": "03A942", "name": "h_sFE_proc_03A940", "struct": "h_thinker" },
         { "start": "03A942", "end": "03AB75", "name": "e_sFE_proc_03A940", "struct": "Code" },
         { "start": "03AB75", "end": "03AB88", "name": "sub_03AB75", "struct": "Code" }
@@ -3785,11 +3867,11 @@
         { "start": "05F8C3", "end": "05F8F7", "name": "e_sg51_monologue", "struct": "Code" },
         { "start": "05F8F7", "end": "05F99C", "name": "widestring_05F8F7", "struct": "WideString" }
       ] },
-    { "name": "chunk_058000", "parts": [
-        { "start": "05FB16", "end": "05FB18", "name": "head_05FB16", "struct": "h_thinker" },
+    { "name": "thinkers_05FB16", "movable": true, "group": "thinkers", "parts": [
+        { "start": "05FB16", "end": "05FB18", "name": "h_crF7_thinker_05FB16", "struct": "h_thinker" },
         { "start": "05FB18", "end": "05FB32", "name": "func_05FB18", "struct": "Code" },
-        { "start": "05FB32", "end": "05FB34", "name": "head_05FB32", "struct": "h_thinker" },
-        { "start": "05FB34", "end": "05FB59", "name": "func_05FB34", "struct": "Code" },
+        { "start": "05FB32", "end": "05FB34", "name": "h_thinker_05FB32", "struct": "h_thinker" },
+        { "start": "05FB34", "end": "05FB59", "name": "e_thinker_05FB32", "struct": "Code" },
         { "start": "05FB59", "end": "05FC92", "name": "sub_05FB59", "struct": "Code" },
         { "start": "05FC92", "end": "05FDD7", "name": "sub_05FC92", "struct": "Code" },
         { "start": "05FDD7", "end": "05FDFA", "name": "sub_05FDD7", "struct": "Code" },
@@ -4673,9 +4755,9 @@
         { "start": "08AC4F", "end": "08AC52", "name": "h_daC3_prisoner", "struct": "h_actor" },
         { "start": "08AC52", "end": "08ACC5", "name": "e_daC3_prisoner", "struct": "Code" }
       ] },
-    { "name": "daC3_jackal_man", "movable": true, "group": "dao", "parts": [
-        { "start": "08ACC5", "end": "08ACC8", "name": "h_daC3_jackal_man", "struct": "h_actor" },
-        { "start": "08ACC8", "end": "08AD8F", "name": "e_daC3_jackal_man", "struct": "Code" }
+    { "name": "daC3_jackal_girl", "movable": true, "group": "dao", "parts": [
+        { "start": "08ACC5", "end": "08ACC8", "name": "h_daC3_jackal_girl", "struct": "h_actor" },
+        { "start": "08ACC8", "end": "08AD8F", "name": "e_daC3_jackal_girl", "struct": "Code" }
       ] },
     { "name": "daC3_training_man", "movable": true, "group": "dao", "parts": [
         { "start": "08AD8F", "end": "08AD92", "name": "h_daC3_training_man", "struct": "h_actor" },
@@ -4705,7 +4787,7 @@
         { "start": "08B464", "end": "08B467", "name": "h_daC5_weaver", "struct": "h_actor" },
         { "start": "08B467", "end": "08B577", "name": "e_daC5_weaver", "struct": "Code" }
       ] },
-    { "name": "actor_08B577", "movable": true, "parts": [
+    { "name": "actor_08B577", "movable": true, "group": "actors", "parts": [
         { "start": "08B577", "end": "08B57A", "name": "h_actor_08B577", "struct": "h_actor" },
         { "start": "08B57A", "end": "08B592", "name": "e_actor_08B577", "struct": "Code" }
       ] },
@@ -4729,14 +4811,14 @@
         { "start": "08B74D", "end": "08B750", "name": "h_pyCD_flame_statue1", "struct": "h_actor" },
         { "start": "08B750", "end": "08B79D", "name": "e_pyCD_flame_statue1", "struct": "Code" },
         { "start": "08B79D", "end": "08B7A0", "name": "h_pyCD_flame_statue2", "struct": "h_actor" },
-        { "start": "08B7A0", "end": "08B7E8", "name": "e_pyCD_flame_statue2", "struct": "Code" },
-        { "start": "08B804", "end": "08B81E", "name": "func_08B804", "struct": "Code" }
+        { "start": "08B7A0", "end": "08B7E8", "name": "e_pyCD_flame_statue2", "struct": "Code" }
       ] },
     { "name": "pyCD_jackal", "movable": true, "group": "pyramid", "parts": [
         { "start": "08B81E", "end": "08B821", "name": "h_pyCD_jackal", "struct": "h_actor" },
         { "start": "08B821", "end": "08BC9F", "name": "e_pyCD_jackal", "struct": "Code" },
         { "start": "08BC9F", "end": "08BD30", "name": "widestring_08BC9F", "struct": "WideString" },
-        { "start": "08B7E8", "end": "08B804", "name": "func_08B7E8", "struct": "Code" }
+        { "start": "08B7E8", "end": "08B804", "name": "func_08B7E8", "struct": "Code" },
+        { "start": "08B804", "end": "08B81E", "name": "func_08B804", "struct": "Code" }
       ] },
     { "name": "pyCD_kara", "movable": true, "group": "pyramid", "parts": [
         { "start": "08BD30", "end": "08BD33", "name": "h_pyCD_kara", "struct": "h_actor" },
@@ -4861,7 +4943,7 @@
         { "start": "08FC6A", "end": "08FC6D", "name": "h_sE9_mansion_intro", "struct": "h_actor" },
         { "start": "08FC6D", "end": "08FCFF", "name": "e_sE9_mansion_intro", "struct": "Code" }
       ] },
-    { "name": "actor_08FCFF", "movable": true, "parts": [
+    { "name": "actor_08FCFF", "movable": true, "group": "actors", "parts": [
         { "start": "08FCFF", "end": "08FD02", "name": "h_actor_08FCFF", "struct": "h_actor" },
         { "start": "08FD02", "end": "08FD16", "name": "e_actor_08FCFF", "struct": "Code" }
       ] },
@@ -5569,9 +5651,11 @@
     { "name": "sg_actors_0ADA52", "movable": true, "group": "sky_garden", "parts": [
         { "start": "0ADA52", "end": "0ADB38", "name": "code_0ADA52", "struct": "Code" }
       ] },
-    { "name": "actor_0ADB38", "movable": true, "parts": [
+    { "name": "actor_0ADB38", "movable": true, "group": "actors", "parts": [
         { "start": "0ADB38", "end": "0ADB3B", "name": "h_actor_0ADB38", "struct": "h_actor" },
-        { "start": "0ADB3B", "end": "0ADB45", "name": "e_actor_0ADB38", "struct": "Code" },
+        { "start": "0ADB3B", "end": "0ADB45", "name": "e_actor_0ADB38", "struct": "Code" }
+      ] },
+    { "name": "func_0ADB45", "movable": true, "group": "unused", "parts": [
         { "start": "0ADB45", "end": "0ADB6B", "name": "func_0ADB45_noref", "struct": "Code" }
       ] },
     { "name": "btEA_actor_0ADC55", "movable": true, "group": "babel_tower", "parts": [
@@ -5935,18 +6019,18 @@
     { "name": "strings_0BF706", "parts": [
         { "start": "0BF706", "end": "0BFA57", "name": "strings_0BF706", "struct": "&unk16" }
       ] },
-    { "name": "sFB_actor_0BC8BA", "movable": true, "parts": [
+    { "name": "sFB_actor_0BC8BA", "movable": true, "group": "actors", "parts": [
         { "start": "0BC8BA", "end": "0BC8BD", "name": "h_sFB_actor_0BC8BA", "struct": "h_actor" },
         { "start": "0BC8BD", "end": "0BC924", "name": "e_sFB_actor_0BC8BA", "struct": "Code" },
         { "start": "0BC896", "end": "0BC8B8", "name": "func_0BC896", "struct": "Code" },
         { "start": "0BC8B8", "end": "0BC8BA", "name": "code_0BC8B8_noref", "struct": "Code" }
       ] },
-    { "name": "sFC_actor_0BC924", "movable": true, "parts": [
+    { "name": "sFC_actor_0BC924", "movable": true, "group": "actors", "parts": [
         { "start": "0BC924", "end": "0BC927", "name": "h_sFC_actor_0BC924", "struct": "h_actor" },
         { "start": "0BC927", "end": "0BC9A7", "name": "e_sFC_actor_0BC924", "struct": "Code" },
         { "start": "0BC9A7", "end": "0BC9AE", "name": "func_0BC9A7_noref", "struct": "Code" }
       ] },
-    { "name": "sFC_actor_0BC9AE", "movable": true, "parts": [
+    { "name": "sFC_actor_0BC9AE", "movable": true, "group": "actors", "parts": [
         { "start": "0BC9AE", "end": "0BC9B1", "name": "h_sFC_actor_0BC9AE", "struct": "h_actor" },
         { "start": "0BC9B1", "end": "0BC9BD", "name": "e_sFC_actor_0BC9AE", "struct": "Code" },
         { "start": "0BC9BD", "end": "0BC9C0", "name": "h_sFC_actor_0BC9BD", "struct": "h_actor" },
@@ -5991,11 +6075,11 @@
         { "start": "0BD031", "end": "0BD039", "name": "e_pr_thinker_0BD031", "struct": "Code" },
         { "start": "0BD039", "end": "0BD044", "name": "e_pr_thinker_0BD039", "struct": "Code" }
       ] },
-    { "name": "actor_0BD2AB", "movable": true, "parts": [
+    { "name": "actor_0BD2AB", "movable": true, "group": "actors", "parts": [
         { "start": "0BD2AB", "end": "0BD2AE", "name": "h_actor_0BD2AB", "struct": "h_actor" },
         { "start": "0BD2AE", "end": "0BD306", "name": "e_actor_0BD2AB", "struct": "Code" }
       ] },
-    { "name": "sE5_epilogue", "movable": true, "parts": [
+    { "name": "sE5_epilogue", "movable": true, "group": "ending", "parts": [
         { "start": "0BD306", "end": "0BD309", "name": "h_sE5_epilogue", "struct": "h_actor" },
         { "start": "0BD309", "end": "0BD494", "name": "e_sE5_epilogue", "struct": "Code" },
         { "start": "0BD494", "end": "0BD4B7", "name": "func_0BD494", "struct": "Code" },
@@ -6003,21 +6087,21 @@
         { "start": "0BD4DE", "end": "0BD558", "name": "func_0BD4DE", "struct": "Code" },
         { "start": "0BD558", "end": "0BDE40", "name": "widestring_0BD558", "struct": "WideString" }
       ] },
-    { "name": "s90_changed_world", "movable": true, "parts": [
+    { "name": "s90_changed_world", "movable": true, "group": "ending", "parts": [
         { "start": "0BDE40", "end": "0BDE43", "name": "h_s90_changed_world", "struct": "h_actor" },
         { "start": "0BDE43", "end": "0BE029", "name": "e_s90_changed_world", "struct": "Code" }
       ] },
-    { "name": "actor_0BE029", "movable": true, "parts": [
+    { "name": "actor_0BE029", "movable": true, "group": "actors", "parts": [
         { "start": "0BE029", "end": "0BE02C", "name": "h_actor_0BE029", "struct": "h_actor" },
         { "start": "0BE02C", "end": "0BE1C5", "name": "e_actor_0BE029", "struct": "Code" }
       ] },
-    { "name": "actor_0BE1C5", "movable": true, "parts": [
+    { "name": "actor_0BE1C5", "movable": true, "group": "actors", "parts": [
         { "start": "0BE1C5", "end": "0BE1C8", "name": "h_actor_0BE1C5", "struct": "h_actor" },
         { "start": "0BE1C8", "end": "0BE1DB", "name": "e_actor_0BE1C5", "struct": "Code" },
         { "start": "0BE1DB", "end": "0BE22E", "name": "func_0BE1DB", "struct": "Code" },
         { "start": "0BE22E", "end": "0BE237", "name": "sub_0BE22E", "struct": "Code" }
       ] },
-    { "name": "sFA_diary_menu", "movable": false, "parts": [
+    { "name": "sFA_diary_menu", "movable": false, "group": "actors", "parts": [
         { "start": "0BE237", "end": "0BE23A", "name": "h_sFA_diary_menu", "struct": "h_actor" },
         { "start": "0BE23A", "end": "0BE2CC", "name": "e_sFA_diary_menu", "struct": "Code" },
         { "start": "0BE2CC", "end": "0BE673", "name": "func_0BE2CC", "struct": "Code" },
@@ -6053,11 +6137,11 @@
         { "start": "0BF6B3", "end": "0BF6D9", "name": "widestring_0BF6B3", "struct": "WideString" },
         { "start": "0BF6D9", "end": "0BF706", "name": "table_0BF6D9", "struct": "&WideString" }
       ] },
-    { "name": "debug_man", "movable": true, "parts": [
+    { "name": "debug_man", "movable": true, "group": "actors", "parts": [
         { "start": "0BEE20", "end": "0BEE23", "name": "h_debug_man", "struct": "h_actor" },
         { "start": "0BEE23", "end": "0BF178", "name": "e_debug_man", "struct": "Code" }
       ] },
-    { "name": "actor_0BFA57", "movable": true, "parts": [
+    { "name": "actor_0BFA57", "movable": true, "group": "actors", "parts": [
         { "start": "0BFA57", "end": "0BFA5A", "name": "h_actor_0BFA57", "struct": "h_actor" },
         { "start": "0BFA5A", "end": "0BFA74", "name": "e_actor_0BFA57", "struct": "Code" }
       ] },
@@ -6067,43 +6151,38 @@
     { "name": "scene_thinkers", "parts": [
         { "start": "0CE5E5", "end": "0CEB5B", "name": "t_scene_thinkers", "struct": "&thinker" }
       ] },
-    { "name": "chunk_0CEB5B", "parts": [
-        { "start": "0CEB5B", "end": "0CEB5D", "name": "head_0CEB5B", "struct": "h_thinker" },
-        { "start": "0CEB5D", "end": "0CEB74", "name": "func_0CEB5D", "struct": "Code" },
-        { "start": "0CEB74", "end": "0CEB76", "name": "head_0CEB74", "struct": "h_thinker" },
-        { "start": "0CEB76", "end": "0CEBA1", "name": "func_0CEB76", "struct": "Code" },
-        { "start": "0CEBA1", "end": "0CEBCC", "name": "func_0CEBA1", "struct": "Code" },
-        { "start": "0CEBCC", "end": "0CEBF7", "name": "func_0CEBCC", "struct": "Code" },
-        { "start": "0CEBF7", "end": "0CEC35", "name": "func_0CEBF7", "struct": "Code" },
-        { "start": "0CEC35", "end": "0CEC65", "name": "func_0CEC35", "struct": "Code" },
-        { "start": "0CEC65", "end": "0CED37", "name": "func_0CEC65", "struct": "Code" },
-        { "start": "0CED37", "end": "0CED3E", "name": "func_0CED37", "struct": "Code" },
-        { "start": "0CED3E", "end": "0CED45", "name": "func_0CED3E", "struct": "Code" },
-        { "start": "0CED45", "end": "0CED4C", "name": "func_0CED45", "struct": "Code" },
-        //{ "start": "0CED4C", "end": "0CEDC5", "name": "func_0CED4C", "struct": "Code" },
-        //{ "start": "0CEDC5", "end": "0CEDC8", "name": "head_0CEDC5", "struct": "h_actor" },
-        //{ "start": "0CEDC8", "end": "0CEEAA", "name": "func_0CEDC8", "struct": "Code" },
-        //{ "start": "0CEEAA", "end": "0CEEAD", "name": "head_0CEEAA", "struct": "h_actor" },
-        //{ "start": "0CEEAD", "end": "0CF249", "name": "func_0CEEAD", "struct": "Code" },
-        //{ "start": "0CF249", "end": "0CF266", "name": "sub_0CF249", "struct": "Code" },
-        //{ "start": "0CF266", "end": "0CF51E", "name": "func_0CF266", "struct": "Code" },
-        //{ "start": "0CF51E", "end": "0CF5EF", "name": "func_0CF51E", "struct": "Code" },
-        //{ "start": "0CF5EF", "end": "0CF61F", "name": "func_0CF5EF", "struct": "Code" },
-        { "start": "0CF61F", "end": "0CF622", "name": "head_0CF61F", "struct": "h_actor" },
-        { "start": "0CF622", "end": "0CF623", "name": "func_0CF622", "struct": "Code" }
+    { "name": "sE7_thinker_0CEB5B", "movable": true, "group": "thinkers", "parts": [
+        { "start": "0CEB5B", "end": "0CEB5D", "name": "h_sE7_thinker_0CEB5B", "struct": "h_thinker" },
+        { "start": "0CEB5D", "end": "0CEB74", "name": "e_sE7_thinker_0CEB5B", "struct": "Code" }
       ] },
-    { "name": "sE7_actor_0CEDC5", "movable": true, "parts": [
+    { "name": "sE8_thinker_0CEB74", "movable": false, "group": "thinkers", "parts": [
+        { "start": "0CEB74", "end": "0CEB76", "name": "h_sE8_thinker_0CEB74", "struct": "h_thinker" },
+        { "start": "0CEB76", "end": "0CEBA1", "name": "e_sE8_thinker_0CEB74", "struct": "Code" },
+        { "start": "0CEBA1", "end": "0CEBCC", "name": "e_sE8_thinker_0CEBA1", "struct": "Code" },
+        { "start": "0CEBCC", "end": "0CEBF7", "name": "e_sE8_thinker_0CEBCC", "struct": "Code" },
+        { "start": "0CEBF7", "end": "0CEC35", "name": "e_sE8_thinker_0CEBF7", "struct": "Code" },
+        { "start": "0CEC35", "end": "0CEC65", "name": "e_sE8_thinker_0CEC35", "struct": "Code" }
+      ] },
+    { "name": "sE7_actor_0CEDC5", "movable": true, "group": "actors", "parts": [
         { "start": "0CEDC5", "end": "0CEDC8", "name": "h_sE7_actor_0CEDC5", "struct": "h_actor" },
         { "start": "0CEDC8", "end": "0CEEAA", "name": "e_sE7_actor_0CEDC5", "struct": "Code" },
         { "start": "0CED4C", "end": "0CEDC5", "name": "func_0CED4C", "struct": "Code" }
       ] },
-    { "name": "sE8_actor_0CEEAA", "movable": true, "parts": [
+    { "name": "sE8_actor_0CEEAA", "movable": false, "group": "actors", "parts": [
         { "start": "0CEEAA", "end": "0CEEAD", "name": "h_sE8_actor_0CEEAA", "struct": "h_actor" },
         { "start": "0CEEAD", "end": "0CF249", "name": "e_sE8_actor_0CEEAA", "struct": "Code" },
         { "start": "0CF249", "end": "0CF266", "name": "sub_0CF249", "struct": "Code" },
+        { "start": "0CEC65", "end": "0CED37", "name": "func_0CEC65", "struct": "Code" },
+        { "start": "0CED37", "end": "0CED3E", "name": "func_0CED37", "struct": "Code" },
+        { "start": "0CED3E", "end": "0CED45", "name": "func_0CED3E", "struct": "Code" },
+        { "start": "0CED45", "end": "0CED4C", "name": "func_0CED45", "struct": "Code" },
         { "start": "0CF266", "end": "0CF51E", "name": "func_0CF266", "struct": "Code" },
         { "start": "0CF51E", "end": "0CF5EF", "name": "func_0CF51E", "struct": "Code" },
         { "start": "0CF5EF", "end": "0CF61F", "name": "func_0CF5EF", "struct": "Code" }
+      ] },
+    { "name": "actor_0CF61F", "movable": true, "group": "unused", "parts": [
+        { "start": "0CF61F", "end": "0CF622", "name": "h_actor_0CF61F", "struct": "h_actor" },
+        { "start": "0CF622", "end": "0CF623", "name": "e_actor_0CF61F", "struct": "Code" }
       ] },
     { "name": "scene_meta", "movable": true, "parts": [
         { "start": "0D8000", "end": "0DAFFF", "name": "scene_meta", "struct": "mapdef" }
@@ -6324,8 +6403,8 @@
     "03C349": "*code_00E4FA",
     "03C34F": "&code_00E4FA",
     "03C4EF": "&widestring_01FF02",
-    "03C50B": "*func_00DC77",
-    "03C511": "&func_00DC77",
+    "03C50B": "*stub_00DC77",
+    "03C511": "&stub_00DC77",
     "03CEAB": "*scene_actors",
     "03CFFC": "&stats_01ABF0",
     "03DFE7": "^fx_palette_198000",
@@ -6490,8 +6569,8 @@
     "09EB2D": "&credits_09F2FA",
     "09EB42": "&credits_09F315",
     "09EC28": "^credits_09ECBF",
-    "0A846D": "^code_00E4DB",
-    "0A8472": "&code_00E4DB-1",
+    "0A846D": "^e_actor_00E4DB",
+    "0A8472": "&e_actor_00E4DB-1",
     "0A856F": "&stats_01ABF0+44",
     "0A889A": "&stats_01ABF0",
     "0A88E8": "&stats_01ABF0",
@@ -6531,8 +6610,8 @@
     "0AD137": "&func_08F3B1",
     "0AD18E": "*binary_0AD93D",
     "0AD197": "&binary_0AD93D",
-    "0ADB62": "^code_00E4DB",
-    "0ADB67": "&code_00E4DB-1",
+    "0ADB62": "^e_actor_00E4DB",
+    "0ADB67": "&e_actor_00E4DB-1",
     "0ADC7D": "sc_ix_0ADCFE",
     "0AE94B": "&stats_01ABF0",
     "0AF07A": "",
@@ -6574,16 +6653,16 @@
     "0BB5C5": "&stats_01ABF0+11C",
     "0BB6F9": "&stats_01ABF0+120",
     "0BB773": "&stats_01ABF0+120",
-    "0BBD3F": "^code_00E4DB",
-    "0BBD44": "&code_00E4DB-1",
+    "0BBD3F": "^e_actor_00E4DB",
+    "0BBD44": "&e_actor_00E4DB-1",
     "0BBEA2": "",
     "0BBEAD": "",
     "0BBF65": "",
     "0BC2E9": "&stats_01ABF0+134",
-    "0BC7FE": "^code_00E4DB",
-    "0BC803": "&code_00E4DB-1",
-    "0BC88D": "^code_00E4DB",
-    "0BC892": "&code_00E4DB-1",
+    "0BC7FE": "^e_actor_00E4DB",
+    "0BC803": "&e_actor_00E4DB-1",
+    "0BC88D": "^e_actor_00E4DB",
+    "0BC892": "&e_actor_00E4DB-1",
     "0BCA80": "&charstring_0BD044",
     "0BCAA2": "&charstring_0BD06D",
     "0BCB7E": "&charstring_0BD0B2",

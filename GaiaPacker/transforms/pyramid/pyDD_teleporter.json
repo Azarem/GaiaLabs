@@ -1,0 +1,12 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "LDA \\$00\\s+PHA",
+    "value": "$&\r\n    LDA $$02\r\n    PHA"
+  },
+  {
+    "type": "Replace",
+    "key": "PLA\\s+STA \\$00",
+    "value": "PLA\r\n    STA $$02\r\n    $&"
+  }
+]

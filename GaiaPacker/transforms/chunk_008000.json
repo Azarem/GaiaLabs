@@ -1,0 +1,7 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "(?<!STA \\$02\\s+)LDA \\$0A\\s+STA \\$00\\s+STA \\$02, S",
+    "value": "LDA $$0C\r\n    STA $$02\r\n    $&"
+  }
+]
