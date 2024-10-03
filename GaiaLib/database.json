@@ -2710,7 +2710,7 @@
         { "start": "02E389", "end": "02E396", "name": "sub_02E389", "struct": "Code" }
       ]
     },
-    { "name": "inventory_menu", "movable": false, "parts": [
+    { "name": "inventory_menu", "movable": false, "group": "actors", "parts": [
         { "start": "02E396", "end": "02E399", "name": "h_inventory_menu", "struct": "h_actor" },
         { "start": "02E399", "end": "02E404", "name": "e_inventory_menu", "struct": "Code" },
         { "start": "02E404", "end": "02E445", "name": "func_02E404", "struct": "Code" },
@@ -2763,14 +2763,14 @@
         { "start": "02ECE8", "end": "02ED02", "name": "sub_02ECE8", "struct": "Code" }
       ]
     },
-    { "name": "func_02F048", "movable": true, "parts": [
+    { "name": "func_02F048", "movable": true, "group": "functions", "parts": [
         { "start": "02F048", "end": "02F06A", "name": "func_02F048", "struct": "Code" }
       ] },
-    { "name": "func_02F06A", "movable": true, "parts": [
+    { "name": "func_02F06A", "movable": true, "group": "functions", "parts": [
         { "start": "02F06A", "end": "02F076", "name": "func_02F06A", "struct": "Code" },
         { "start": "02F076", "end": "02F08C", "name": "func_02F076", "struct": "Code" }
       ] },
-    { "name": "func_02ED02", "movable": true, "parts": [
+    { "name": "func_02ED02", "movable": true, "group": "functions", "parts": [
         { "start": "02ED02", "end": "02EECC", "name": "func_02ED02", "struct": "Code" },
         { "start": "02EECC", "end": "02EF0B", "name": "sub_02EECC", "struct": "Code" },
         { "start": "02EF0B", "end": "02EF1D", "name": "sub_02EF0B", "struct": "Code" },
@@ -4894,18 +4894,18 @@
         { "start": "08CE12", "end": "08CE15", "name": "h_pyDD_mystic_statue", "struct": "h_actor" },
         { "start": "08CE15", "end": "08CEA0", "name": "e_pyDD_mystic_statue", "struct": "Code" }
       ] },
-    { "name": "jeweler_gem", "movable": true, "parts": [
+    { "name": "jeweler_gem", "movable": true, "group": "actors", "parts": [
         { "start": "08CEA0", "end": "08CEA3", "name": "h_jeweler_gem", "struct": "h_actor" },
         { "start": "08CEA3", "end": "08D00D", "name": "e_jeweler_gem", "struct": "Code" },
         { "start": "08D00D", "end": "08D69B", "name": "func_08D00D", "struct": "Code" }
       ] },
-    { "name": "dark_space", "movable": true, "parts": [
+    { "name": "dark_space", "movable": true, "group": "actors", "parts": [
         { "start": "08D69B", "end": "08D69E", "name": "h_dark_space1", "struct": "h_actor" },
         { "start": "08D69E", "end": "08D6A9", "name": "e_dark_space1", "struct": "Code" },
         { "start": "08D6A9", "end": "08D6AC", "name": "h_dark_space2", "struct": "h_actor" },
         { "start": "08D6AC", "end": "08D7A8", "name": "e_dark_space2", "struct": "Code" }
       ] },
-    { "name": "sE6_gaia", "movable": true, "parts": [
+    { "name": "sE6_gaia", "movable": true, "group": "actors", "parts": [
         { "start": "08D7A8", "end": "08D7AB", "name": "h_sE6_gaia", "struct": "h_actor" },
         { "start": "08D7AB", "end": "08D7EA", "name": "e_sE6_gaia", "struct": "Code" },
         { "start": "08D7EA", "end": "08DD0B", "name": "func_08D7EA", "struct": "Code" },
@@ -4933,13 +4933,13 @@
         { "start": "08F6D3", "end": "08F709", "name": "sub_08F6D3", "struct": "Code" },
         { "start": "09A090", "end": "09A0D7", "name": "e_actor_09A090", "struct": "Code" }
       ] },
-    { "name": "sEA_solid_arm", "movable": true, "parts": [
+    { "name": "sEA_solid_arm", "movable": true, "group": "actors", "parts": [
         { "start": "08F709", "end": "08F70C", "name": "h_sEA_solid_arm", "struct": "h_actor" },
         { "start": "08F70C", "end": "08F9EA", "name": "e_sEA_solid_arm", "struct": "Code" },
         { "start": "08F9EA", "end": "08F9F2", "name": "binary_08F9EA", "struct": "Binary" },
         { "start": "08F9F2", "end": "08FC6A", "name": "func_08F9F2", "struct": "Code" }
       ] },
-    { "name": "sE9_mansion_intro", "movable": true, "parts": [
+    { "name": "sE9_mansion_intro", "movable": true, "group": "actors", "parts": [
         { "start": "08FC6A", "end": "08FC6D", "name": "h_sE9_mansion_intro", "struct": "h_actor" },
         { "start": "08FC6D", "end": "08FCFF", "name": "e_sE9_mansion_intro", "struct": "Code" }
       ] },

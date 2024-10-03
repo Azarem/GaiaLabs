@@ -9,6 +9,10 @@
 !VMADDL                         2116
 !A1T0L                          4302
 !DAS0L                          4305
+!convert1                       09FA
+!convert2                       09FD
+!dest_offset1                   0002
+!dest_offset2                   0004
 
 ------------------------------------------------
 
@@ -26,12 +30,118 @@
 ;0020 - (L) Spin
 ;0010 - (R) Spin
 
+convert_color {
+    CMP #80
+    BEQ $0A
+    BPL $05
+    CLC
+    ADC $01
+    BRA $03
+    SEC
+    SBC $01
+    LSR
+    LSR
+    LSR
+    RTS
+}
+
+convert_pixel {
+    SEP #$20
+    LDA #$00
+    XBA
+    LDA $0000, Y
+    JSR convert_color
+    PHA
+    LDA $0001, Y
+    JSR convert_color
+    PHA
+    LDA $0002, Y
+    JSR convert_color
+    REP #$20
+    STA $7F0A00, X
+    PLA
+    TAY
+    AND #$1F00
+    ASL
+    ASL
+    ORA $7F0A00, X
+    STA $7F0A00, X
+    TYA
+    AND #$001F
+    ASL
+    ASL
+    ASL
+    ASL
+    ASL
+    ORA $7F0A00, X
+    STA $7F0A00, X
+    RTS
+}
+
 ---------------------------------------------------------
 ;Global scripts
 global_scripts {
     JSL @RunButton
+
+
+
     RTS
 }
+
+-----------------------------------------------------------
+
+global_thinkers {
+    ;PHX
+    ;PHY
+
+    ;LDY #$convert1
+    ;LDX #$dest_offset1
+    ;JSR convert_pixel
+
+    ;LDY #$convert2
+    ;LDX #$dest_offset2
+    ;JSR convert_pixel
+
+    ;PLY
+    ;PLX
+    RTS
+}
+
+------------------------------------------------------------
+;Hook for RGB convert
+
+;func_028043 {
+
+;    PHP 
+;    PHX
+;    PHY
+
+;    LDY #$convert1
+;    LDX #$dest_offset1
+;    JSL convert_pixel
+
+;    LDY #$convert2
+;    LDX #$dest_offset2
+;    JSL convert_pixel
+
+;    PLY
+;    PLX
+
+;    REP #$20
+;    PHA 
+;    SEP #$20
+;    LDA $804210
+;}
+
+func_03D1C2 {
+    PHP 
+    PHD 
+    JSR global_thinkers
+    REP #$20
+    LDA $5A
+    BEQ code_03D1F2
+}
+
 
 ----------------------------------------------------------
 
