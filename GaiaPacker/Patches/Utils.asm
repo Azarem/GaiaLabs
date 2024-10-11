@@ -4,11 +4,14 @@
 ?INCLUDE 'chunk_038000'
 ?INCLUDE 'chunk_03BAE1'
 ?INCLUDE 'system_strings'
+?INCLUDE 'sE6_gaia'
+?INCLUDE 'sFB_actor_0BC8BA'
 
 !player_flags                   09AE
 !VMADDL                         2116
 !A1T0L                          4302
 !DAS0L                          4305
+!joypad_mask_std                065A
 !convert1                       09FA
 !convert2                       09FD
 !dest_offset1                   0002
@@ -46,33 +49,23 @@ convert_color {
 }
 
 convert_pixel {
-    SEP #$20
-    LDA #$00
-    XBA
     LDA $0000, Y
-    JSR convert_color
     PHA
     LDA $0001, Y
-    JSR convert_color
-    PHA
-    LDA $0002, Y
-    JSR convert_color
-    REP #$20
+    ASL
+    ASL
+    AND #$7C00
     STA $7F0A00, X
     PLA
     TAY
-    AND #$1F00
-    ASL
-    ASL
+    AND #$001F
     ORA $7F0A00, X
     STA $7F0A00, X
     TYA
-    AND #$001F
-    ASL
-    ASL
-    ASL
-    ASL
-    ASL
+    LSR
+    LSR
+    LSR
+    AND #$03E0
     ORA $7F0A00, X
     STA $7F0A00, X
     RTS
@@ -91,8 +84,10 @@ global_scripts {
 -----------------------------------------------------------
 
 global_thinkers {
-    ;PHX
-    ;PHY
+    PHX
+    PHY
+    PHP
+    REP #$20
 
     ;LDY #$convert1
     ;LDX #$dest_offset1
@@ -102,36 +97,15 @@ global_thinkers {
     ;LDX #$dest_offset2
     ;JSR convert_pixel
 
-    ;PLY
-    ;PLX
+    PLP
+    PLY
+    PLX
     RTS
 }
 
 ------------------------------------------------------------
 ;Hook for RGB convert
 
-;func_028043 {
-
-;    PHP 
-;    PHX
-;    PHY
-
-;    LDY #$convert1
-;    LDX #$dest_offset1
-;    JSL convert_pixel
-
-;    LDY #$convert2
-;    LDX #$dest_offset2
-;    JSL convert_pixel
-
-;    PLY
-;    PLX
-
-;    REP #$20
-;    PHA 
-;    SEP #$20
-;    LDA $804210
-;}
 
 func_03D1C2 {
     PHP 
@@ -250,3 +224,26 @@ run_actors_03CAF5 {
     TRB $0656
 }
 
+------------------------------------------------
+;Disable continue option when saving
+
+code_08DBB1 {
+    LDA $0D8C
+    JSL $@func_03D916
+    COP [07] ( #29 )
+    LDA #$FFF0
+    TSB $joypad_mask_std
+    COP [DA] ( #3B )
+    LDA #$FFF0
+    TRB $joypad_mask_std
+    ;COP [BF] ( &widestring_08DDFE )
+    ;COP [BE] ( #02, #01, &code_list_08DBD4 )
+    BRA code_08DBDA
+}
+
+-----------------------------------------------
+;Disable region protection
+
+func_0BC896 {
+    BRA code_0BC8EA
+}

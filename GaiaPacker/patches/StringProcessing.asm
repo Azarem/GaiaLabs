@@ -1,37 +1,57 @@
 ﻿?BANK 03
 
 ?INCLUDE 'chunk_03BAE1'
+?INCLUDE 'templates_01CA95'
 
+!scene_next                     0642
 !scene_current                  0644
 !advance_button_mask            C080
 !default_background             0000
 !border_state                   09F8
-!default_bg                     0000
-!default_fg                     7FFF
-!default_dt                     7A94
+!default_bg                     0C03
+!default_fg                     7FFB
+!default_dt                     762F
 
 --------------------------------------------------------
 
 border_lookup [
-    &border_index_3
+    &dlg_borders_03E4CE
     &border_index_1
     &border_index_2
-    &dlg_borders_03E4CE
+    &border_index_3
+    &border_index_4
+    &border_index_5
+    &border_index_6
+    &border_index_7
+    &border_index_8
+    &border_index_9
+    &border_index_A
+    &border_index_B
+    &border_index_C
 ]
 
 border_index_1 #1320142013601520156013A014A013E0
 border_index_2 #1620172016601820186016A017A016E0
 border_index_3 #19201A2019601B201B6019A01AA019E0
+border_index_4 #A320A420A360A520A560A3A0A4A0A3E0
+border_index_5 #A620A720A6601C201C60A6A0A7A0A6E0
+border_index_6 #A020A120A060A220A260A0A0A1A0A0E0
+border_index_7 #B020B120B060B220B260B0A0B1A0B0E0
+border_index_8 #B320B420B360B520B560B3A0B4A0B3E0
+border_index_9 #B620B720B660B820B860B6A0B7A0B6E0
+border_index_A #B920BA20B960BB20BB60B9A0BAA0B9E0
+border_index_B #A920AA20A960AB20AB60A9A0AAA0A9E0
+border_index_C #C920CA20C960CB20CB60C9A0CAA0C9E0
+
 ----------------------------------------------------
 
 cmd_d9 {
     LDA $0000, Y
-    AND #$0003
+    AND #$00FF
     STA $border_state
     INY
     RTS
 }
-
 
 ----------------------------------------------------
 
@@ -65,17 +85,16 @@ wide_cmd_table_03E2C3 [
 ]
 
 
-
 ----------------------------------------------------
 ;Entry point for command 7 (setting up dialog borders)
 
 code_03E453 {
     PHY 
     PHX 
-    LDA $0B04
-    STA $007E
-    LDA #$0010
-    STA $0996
+    ;LDA $0B04          --Don't reset print delay
+    ;STA $007E 
+    ;LDA #$0010         --Don't reset sfx
+    ;STA $0996
     STZ $00DC
     STZ $099C
     LDA $097A
@@ -90,24 +109,10 @@ code_03E453 {
     CLC 
     ADC $097A
     STA $099A
-    STZ $0986
-
-    ;LDA #$1000
-    ;STA $0986
-    
-    ;LDA $@fx_palette_198040+22
-    ;LDA #$default_fg
-    ;STA $7F0A22
-    ;LDA $@fx_palette_198040+24
-    ;LDA #$default_dt
-    ;STA $7F0A24
-    ;LDA $@fx_palette_198040+26
-    ;LDA #$default_bg
-    ;STA $7F0A26
-    
+    ;STZ $0986  --Don't reset palette offset
 
     LDA $border_state
-    AND #$0003
+    ;AND #$0003
     ASL
     TAX
     LDA @border_lookup, X
@@ -154,34 +159,63 @@ code_03E453 {
 ----------------------------------------------------
 ;Entry point for command 8 (clear dialog) to support border styles
 
-cmd_c8_03E579 {
-    PHY 
-    PHB 
-    STZ $border_state   --This
-    ;STZ $0986
-    ;LDA $@fx_palette_198040+2  --Also reset font colors
-    ;STA $7F0A02
-    ;LDA $@fx_palette_198040+4
-    ;STA $7F0A04
-    ;LDA $@fx_palette_198040+6
-    ;STA $7F0A06
-    LDA $099A
-    STA $0998
-    LDA $0982
-    ASL 
-    INC 
-    STA $00
+code_03E59F {
+    STA $7F0200, X
+    INX 
+    INX 
+    DEC $18
+    BPL code_03E59F
+    LDA $00
     STA $18
-    LDA $0984
-    INC 
-    ASL 
-    STA $1C
     LDA $099A
-    SEC 
-    SBC #$0042
+    CLC 
+    ADC #$0040
     STA $099A
     TAX 
+    DEC $1C
+    BPL code_03E59C
 
+    LDA #$0010
+    STA $0996
+    
+    LDA $0B04           --Reset print delay
+    STA $007E
+
+    STZ $border_state   --Reset border state
+    STZ $0986           --Reset font palette
+
+    LDA $@fx_palette_198040+2  --Also reset font colors
+    STA $7F0A02
+    LDA $@fx_palette_198040+4
+    STA $7F0A04
+    LDA $@fx_palette_198040+6
+    STA $7F0A06
+    LDA $@fx_palette_198040+22
+    STA $7F0A22
+    LDA $@fx_palette_198040+24
+    STA $7F0A24
+    LDA $@fx_palette_198040+26
+    STA $7F0A26
+
+    ;PHX 
+    ;LDX #$0022
+    ;LDA #$675D
+    ;STA $7F0A00, X
+    ;LDA #$10F2
+    ;STA $7F0A02, X
+    ;LDA #$0000
+    ;STA $7F0A04, X
+    ;PLX 
+
+    LDA #$0001
+    TSB $09EC
+    ;JSR $&sub_03E7B2  --This prevents a flicker due to forced redraw
+    LDX $0998
+    STX $099A
+    STZ $099C
+    PLB 
+    PLY 
+    RTS 
 }
 
 ------------------------------------

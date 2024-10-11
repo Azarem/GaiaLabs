@@ -253,8 +253,8 @@
     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", ",", "►", "\"", "ˮ", ":",
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "!",
     "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "/", "*", "-", "(", ")",
-    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "ǁ",
-    "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", ",", " ", "ǁ", "ǁ", "ǁ",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", ";",
+    "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "ǁ", " ", "ǁ", "♥", "|",
     "Ā", "ā", "Ē", "ē", "Ī", "ī", "Ō", "ō", "Ū", "ū", "Ŷ", "ŷ", "ǁ", "ǁ", "ǁ", "ǁ"
   ],
   "widecommands": {
@@ -3429,9 +3429,9 @@
         { "start": "05862C", "end": "05862F", "name": "h_gs2E_sleep", "struct": "h_actor" },
         { "start": "05862F", "end": "05878C", "name": "e_gs2E_sleep", "struct": "Code" }
       ] },
-    { "name": "gs2E_monologue", "movable": true, "group": "gold_ship", "parts": [
-        { "start": "05878C", "end": "05878F", "name": "h_gs2E_monologue", "struct": "h_actor" },
-        { "start": "05878F", "end": "05882D", "name": "e_gs2E_monologue", "struct": "Code" }
+    { "name": "gs2E_crew0", "movable": true, "group": "gold_ship", "parts": [
+        { "start": "05878C", "end": "05878F", "name": "h_gs2E_crew0", "struct": "h_actor" },
+        { "start": "05878F", "end": "05882D", "name": "e_gs2E_crew0", "struct": "Code" }
       ] },
     { "name": "gs2E_crew1", "movable": true, "group": "gold_ship", "parts": [
         { "start": "05882D", "end": "058830", "name": "h_gs2E_crew1", "struct": "h_actor" },
@@ -3445,9 +3445,9 @@
         { "start": "0589CA", "end": "0589CD", "name": "h_gs2E_crew3", "struct": "h_actor" },
         { "start": "0589CD", "end": "0589FF", "name": "e_gs2E_crew3", "struct": "Code" }
       ] },
-    { "name": "gs2E_crew4", "movable": true, "group": "gold_ship", "parts": [
-        { "start": "0589FF", "end": "058A02", "name": "h_gs2E_crew4", "struct": "h_actor" },
-        { "start": "058A02", "end": "058B1B", "name": "e_gs2E_crew4", "struct": "Code" }
+    { "name": "gs2E_queen", "movable": true, "group": "gold_ship", "parts": [
+        { "start": "0589FF", "end": "058A02", "name": "h_gs2E_queen", "struct": "h_actor" },
+        { "start": "058A02", "end": "058B1B", "name": "e_gs2E_queen", "struct": "Code" }
       ] },
     { "name": "gs2D_mummy", "movable": true, "group": "gold_ship", "parts": [
         { "start": "058B1B", "end": "058B1E", "name": "h_gs2D_mummy", "struct": "h_actor" },
@@ -5212,17 +5212,17 @@
         { "start": "09D02B", "end": "09D02E", "name": "h_ir1D_monologue", "struct": "h_actor" },
         { "start": "09D02E", "end": "09D0F5", "name": "e_ir1D_monologue", "struct": "Code" }
       ] },
-    { "name": "ir1A_moon_tribe", "movable": true, "group": "incan_ruins", "parts": [
-        { "start": "09D0F5", "end": "09D0F8", "name": "h_ir1A_moon_tribe1", "struct": "h_actor" },
-        { "start": "09D0F8", "end": "09D153", "name": "e_ir1A_moon_tribe1", "struct": "Code" },
-        { "start": "09D153", "end": "09D156", "name": "h_ir1A_moon_tribe2", "struct": "h_actor" },
-        { "start": "09D156", "end": "09D173", "name": "e_ir1A_moon_tribe2", "struct": "Code" },
-        { "start": "09D173", "end": "09D176", "name": "h_ir1A_moon_tribe3", "struct": "h_actor" },
-        { "start": "09D176", "end": "09D193", "name": "e_ir1A_moon_tribe3", "struct": "Code" },
-        { "start": "09D193", "end": "09D196", "name": "h_ir1A_moon_tribe4", "struct": "h_actor" },
-        { "start": "09D196", "end": "09D1B3", "name": "e_ir1A_moon_tribe4", "struct": "Code" },
-        { "start": "09D1B3", "end": "09D1B6", "name": "h_ir1A_moon_tribe5", "struct": "h_actor" },
-        { "start": "09D1B6", "end": "09D64D", "name": "e_ir1A_moon_tribe5", "struct": "Code" }
+    { "name": "it1A_moon_tribe", "movable": true, "group": "itory", "parts": [
+        { "start": "09D0F5", "end": "09D0F8", "name": "h_it1A_moon_tribe1", "struct": "h_actor" },
+        { "start": "09D0F8", "end": "09D153", "name": "e_it1A_moon_tribe1", "struct": "Code" },
+        { "start": "09D153", "end": "09D156", "name": "h_it1A_moon_tribe2", "struct": "h_actor" },
+        { "start": "09D156", "end": "09D173", "name": "e_it1A_moon_tribe2", "struct": "Code" },
+        { "start": "09D173", "end": "09D176", "name": "h_it1A_moon_tribe3", "struct": "h_actor" },
+        { "start": "09D176", "end": "09D193", "name": "e_it1A_moon_tribe3", "struct": "Code" },
+        { "start": "09D193", "end": "09D196", "name": "h_it1A_moon_tribe4", "struct": "h_actor" },
+        { "start": "09D196", "end": "09D1B3", "name": "e_it1A_moon_tribe4", "struct": "Code" },
+        { "start": "09D1B3", "end": "09D1B6", "name": "h_it1A_moon_tribe5", "struct": "h_actor" },
+        { "start": "09D1B6", "end": "09D64D", "name": "e_it1A_moon_tribe5", "struct": "Code" }
       ] },
     { "name": "sF7_credits", "movable": true, "group": "credits", "parts": [
         { "start": "09D64D", "end": "09D650", "name": "h_sF7_credits", "struct": "h_actor" },
