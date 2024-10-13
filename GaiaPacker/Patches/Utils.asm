@@ -6,16 +6,13 @@
 ?INCLUDE 'system_strings'
 ?INCLUDE 'sE6_gaia'
 ?INCLUDE 'sFB_actor_0BC8BA'
+?INCLUDE 'PixelConverter'
 
 !player_flags                   09AE
 !VMADDL                         2116
 !A1T0L                          4302
 !DAS0L                          4305
 !joypad_mask_std                065A
-!convert1                       09FA
-!convert2                       09FD
-!dest_offset1                   0002
-!dest_offset2                   0004
 
 ------------------------------------------------
 
@@ -33,50 +30,11 @@
 ;0020 - (L) Spin
 ;0010 - (R) Spin
 
-convert_color {
-    CMP #80
-    BEQ $0A
-    BPL $05
-    CLC
-    ADC $01
-    BRA $03
-    SEC
-    SBC $01
-    LSR
-    LSR
-    LSR
-    RTS
-}
-
-convert_pixel {
-    LDA $0000, Y
-    PHA
-    LDA $0001, Y
-    ASL
-    ASL
-    AND #$7C00
-    STA $7F0A00, X
-    PLA
-    TAY
-    AND #$001F
-    ORA $7F0A00, X
-    STA $7F0A00, X
-    TYA
-    LSR
-    LSR
-    LSR
-    AND #$03E0
-    ORA $7F0A00, X
-    STA $7F0A00, X
-    RTS
-}
 
 ---------------------------------------------------------
 ;Global scripts
 global_scripts {
     JSL @RunButton
-
-
 
     RTS
 }
@@ -86,36 +44,24 @@ global_scripts {
 global_thinkers {
     PHX
     PHY
-    PHP
-    REP #$20
+    ;JSL @PixelConverter
 
-    ;LDY #$convert1
-    ;LDX #$dest_offset1
-    ;JSR convert_pixel
-
-    ;LDY #$convert2
-    ;LDX #$dest_offset2
-    ;JSR convert_pixel
-
-    PLP
     PLY
     PLX
     RTS
 }
 
 ------------------------------------------------------------
-;Hook for RGB convert
-
+;Hook for global thinkers
 
 func_03D1C2 {
     PHP 
     PHD 
-    JSR global_thinkers
     REP #$20
+    JSR global_thinkers
     LDA $5A
     BEQ code_03D1F2
 }
-
 
 ----------------------------------------------------------
 

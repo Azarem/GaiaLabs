@@ -3540,9 +3540,9 @@
         { "start": "05B57C", "end": "05B57F", "name": "h_fr32_slap", "struct": "h_actor" },
         { "start": "05B57F", "end": "05B663", "name": "e_fr32_slap", "struct": "Code" }
       ] },
-    { "name": "fr32_hotel_man", "movable": true, "group": "freejia", "parts": [
-        { "start": "05B663", "end": "05B666", "name": "h_fr32_hotel_man", "struct": "h_actor" },
-        { "start": "05B666", "end": "05B6C0", "name": "e_fr32_hotel_man", "struct": "Code" }
+    { "name": "fr32_hotel_hint", "movable": true, "group": "freejia", "parts": [
+        { "start": "05B663", "end": "05B666", "name": "h_fr32_hotel_hint", "struct": "h_actor" },
+        { "start": "05B666", "end": "05B6C0", "name": "e_fr32_hotel_hint", "struct": "Code" }
       ] },
     { "name": "fr32_creep", "movable": true, "group": "freejia", "parts": [
         { "start": "05B6C0", "end": "05B6C3", "name": "h_fr32_creep", "struct": "h_actor" },
