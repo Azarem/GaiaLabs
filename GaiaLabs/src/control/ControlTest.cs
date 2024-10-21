@@ -1,14 +1,30 @@
 using GaiaLabs;
-using GaiaLib;
 using GaiaLib.Database;
 using GaiaLib.Rom;
 using Godot;
 using System;
+using System.IO;
 
 public partial class ControlTest : Control
 {
     //private ImageTexture _texture;
+    internal static byte[] PaletteData;
+    internal static RomState RomState;
+    internal static byte[] TilesetBitmap;
+    internal static Image TilesetImage;
+    internal static ImageTexture TilesetTexture;
+    internal static byte[] TilemapBitmap;
+    internal static Image TilemapImage;
+    internal static ImageTexture TilemapTexture;
+    internal static float TilemapRatio;
+    internal static int TilemapTileWidth, TilemapTileHeight;
+    internal static int SelectedIndex;
 
+    private int _hoverTileX, _hoverTileY;
+    private Vector2[] _hoverBox = new Vector2[5];
+    private Vector2 _drawSize;
+    private float _tileSize;
+    private int _mapWidth, _mapHeight;
 
 
     public unsafe override void _EnterTree()
@@ -18,123 +34,244 @@ public partial class ControlTest : Control
         var baseDir = "C:\\Games\\GaiaLabs\\GaiaPacker\\bin\\Debug\\net8.0";
         var databasePath = baseDir + "\\database.json";
         var dbRoot = DbRoot.FromFile(databasePath);
-        var state = RomState.FromScene(baseDir, dbRoot, "scene_meta", 1);
+        var state = RomState = RomState.FromScene(baseDir, dbRoot, "scene_meta", 0x61);
 
-        //byte[] compData;
-        //using(var file = File.OpenRead("C:\\Games\\Dump\\graphics\\bmp_002F3A.bin"))
-        //{
-        //    compData = new byte[file.Length];
-        //    file.Read(compData);
-        //}
 
-        //var compressed = Compression.Compact(compData);
 
-        ////using (var file = File.Create("C:\\Games\\Dump\\compressed.bin"))
+        var set = state.MainTileset;
+        var pal = state.CGRAM;
+        var vram = state.VRAM;
 
-        ////using (var file = File.OpenWrite("C:\\Games\\Illusion of Gaia.smc"))
-        ////{
-        ////    file.Position = 0x0F90E5;
-        ////    file.Write(compressed);
-        ////}
+        var fullPalette = PaletteData = new byte[256 * 4];
+        var fullTexture = TilesetBitmap = new byte[16 * 16 * 16 * 16 * 4];
 
-        //fixed (byte* ptr = compressed)
-        //{
-        //    var compare = Compression.Expand(ptr, compressed.Length);
+        byte convert(int color) => (byte)(int)(color * ImageConverter._sample5to8);
 
-        //    for (int i = 0; i < compare.Length; i++)
-        //    {
-        //        if (compare[i] != compData[i])
-        //        {
+        for (int i = 0, x = 0; i < pal.Length;)
+        {
+            int sample = pal[i++] | (pal[i++] << 8);
+            fullPalette[x++] = convert(sample & 0x1F);
+            fullPalette[x++] = convert((sample >> 5) & 0x1F);
+            fullPalette[x++] = convert((sample >> 10) & 0x1F);
+            fullPalette[x++] = 255;
+        }
 
-        //        }
-        //    }
-        //}
+        var tileIx = 0;
+        byte[] indexBuffer = new byte[8];
+        int[] offsetBuffer = new int[2];
 
-        //using (var rom = File.OpenRead("C:\\Games\\SNES\\Illusion Of Gaia.smc"))
-        //using (var outRom = File.Create("C:\\Games\\GaiaLabs.smc"))
-        //{
-        //    int sample;
-        //    while ((sample = rom.ReadByte()) >= 0)
-        //        outRom.WriteByte((byte)sample);
+        for (int ty = 0; ty < 16; ty++)
+            for (int tx = 0; tx < 16 && tileIx < set.Length; tx++)
+            {
+                for (int quad = 0; quad < 4; quad++)
+                {
+                    var tileData = set[tileIx++] | (set[tileIx++] << 8);
+                    var tile = tileData & 0x01FF;
+                    var priority = (tileData & 0x2000) != 0;
+                    var hMirror = (tileData & 0x4000) != 0;
+                    var vMirror = (tileData & 0x8000) != 0;
+                    var vOffset = (tile << 5) + 0x4000;
+                    var pOffset = (tileData & 0x1C00) >> 4;
 
-        //    while (outRom.Position < 0x400000)
-        //        outRom.WriteByte(0);
+                    offsetBuffer[0] = vOffset;
+                    offsetBuffer[1] = vOffset + 16;
 
-        //    outRom.Position = 0xFFD7;
-        //    outRom.WriteByte(0x0C);
+                    int row = vMirror ? 8 : -1;
+                    Func<bool> checkRow = vMirror ? (() => row-- > 0) : (() => ++row < 8);
+                    while (checkRow())
+                    {
+                        //Clear index buffer
+                        Array.Clear(indexBuffer);
 
-        //    outRom.Position = 0x200002;
-        //    using (var file = File.OpenRead("C:\\Games\\Dump\\graphics\\bmp_002F3A.bin"))
-        //    {
-        //        while ((sample = file.ReadByte()) >= 0)
-        //            outRom.WriteByte((byte)sample);
-        //    }
-        //}
+                        //Rotate bits from samples
+                        for (byte plane = 0, planeBit = 1; plane < 4; plane++, planeBit <<= 1)
+                            for (byte i = 0, testBit = 0x80, sample = vram[offsetBuffer[plane >> 1]++]; i < 8; i++, testBit >>= 1)
+                                if ((sample & testBit) != 0)
+                                    indexBuffer[i] |= planeBit;
 
-        ////return;
-        //var ldr = RomLoader.Load("C:\\Games\\SNES\\Illusion Of Gaia.smc");
+                        //Output data
+                        //var swap = height >= 256 && (ty & 1) == 1;
+                        var cOffset = (((ty << 4) + row + (quad > 1 ? 8 : 0)) << 8) + ((tx << 4) + ((quad & 1) == 1 ? 8 : 0));
 
-        ////Process.Repack("C:\\Games\\Dump");
-        ////Process.ReadMetaXrefs(ldr._baseAddress);
+                        cOffset <<= 2;
 
-        //try
-        //{
-        //    ldr.DumpDatabase("C:\\Games\\Dump");
-        //}
-        //catch (Exception ex)
-        //{
+                        int col = hMirror ? 8 : -1;
+                        Func<bool> checkCol = hMirror ? (() => col-- > 0) : (() => ++col < 8);
+                        byte cIndex;
+                        while (checkCol())
+                            //for (byte i = 0, sample; i < 8; i++)
+                            if ((cIndex = indexBuffer[col]) == 0) //Transparent pixel
+                            {
+                                fullTexture[cOffset++] = 0;
+                                fullTexture[cOffset++] = 0;
+                                fullTexture[cOffset++] = 0;
+                                fullTexture[cOffset++] = 0;
+                            }
+                            else
+                            {
+                                var zOffset = pOffset + (cIndex << 2);
+                                fullTexture[cOffset++] = fullPalette[zOffset++];
+                                fullTexture[cOffset++] = fullPalette[zOffset++];
+                                fullTexture[cOffset++] = fullPalette[zOffset++];
+                                fullTexture[cOffset++] = fullPalette[zOffset];
+                            }
+                    }
+                }
+            }
 
-        //}
+        TilesetImage = Image.CreateFromData(256, 256, false, Image.Format.Rgba8, fullTexture);
+        TilesetTexture = ImageTexture.CreateFromImage(TilesetImage);
 
-        //var data = LZ77.Expand(ldr._basePtr + 0x176191, 0x800);
-        //var data2 = LZ77.Expand(ldr._basePtr + 0x176852, 0x800);
-        //var data3 = LZ77.Expand(ldr._basePtr + 0x176EFF, 0x800);
+        var map = state.MainTilemap;
+        int tileWidth = state.MainTilemapW;
+        int tileHeight = state.MainTilemapH;
+        _mapWidth = tileWidth << 8;
+        _mapHeight = tileHeight << 8;
+        int mapOffset = 0;
 
-        //using (var f = new FileStream("C:\\Games\\SNES\\Tiledump1.bin", FileMode.Create, System.IO.FileAccess.Write))
-        //    f.Write(data);
+        var mapTextureBytes = TilemapBitmap = new byte[(_mapWidth * _mapHeight) << 2];
 
-        //using (var f = new FileStream("C:\\Games\\SNES\\Tiledump2.bin", FileMode.Create, System.IO.FileAccess.Write))
-        //    f.Write(data2);
+        for (int py = 0; py < tileHeight; py++)
+            for (int px = 0; px < tileWidth; px++)
+            {
+                for (int ty = 0; ty < 16; ty++)
+                    for (int tx = 0; tx < 16 && mapOffset < map.Length; tx++)
+                    {
+                        var index = map[mapOffset++];
+                        var srcOffset = ((index & 0xF0) << 8) | ((index & 0x0F) << 4);
+                        var dstOffset = (((py << 4) | ty) << 4) * _mapWidth + (((px << 4) | tx) << 4);
+                        srcOffset <<= 2;
+                        dstOffset <<= 2;
 
-        //using (var f = new FileStream("C:\\Games\\SNES\\Tiledump3.bin", FileMode.Create, System.IO.FileAccess.Write))
-        //    f.Write(data3);
+                        for (int y = 0; y < 16; y++)
+                        {
+                            for (int x = 0; x < 16 * 4; x++)
+                            {
+                                mapTextureBytes[dstOffset + x] = fullTexture[srcOffset + x];
+                            }
+                            srcOffset += 16 * 16 * 4;
+                            dstOffset += _mapWidth << 2;
+                        }
+                    }
+            }
 
-        //var data = LZ77.Expand(ldr._basePtr + 0x1753FD);
+        TilemapImage = Image.CreateFromData(_mapWidth, _mapHeight, false, Image.Format.Rgba8, mapTextureBytes);
+        TilemapTexture = ImageTexture.CreateFromImage(TilemapImage);
+        TilemapRatio = (float)_mapWidth / _mapHeight;
 
-        //var data = LZ77.Expand(ldr._basePtr + 0x14F199, 0x2000, 0xDA6);
-        //var data2 = LZ77.Expand(ldr._basePtr + 0x14FF3F, 0x2000, 0xC1);
-        //var data3 = LZ77.Expand(ldr._basePtr + 0x150000, 0x2000, 0x8E6);
-
-        //using (var f = new FileStream("C:\\Games\\SNES\\Mapdump1.bin", FileMode.Create, System.IO.FileAccess.Write))
-        //    f.Write(data);
-
-        //using (var f = new FileStream("C:\\Games\\SNES\\Mapdump2.bin", FileMode.Create, System.IO.FileAccess.Write))
-        //    f.Write(data2);
-
-        //using (var f = new FileStream("C:\\Games\\SNES\\Mapdump3.bin", FileMode.Create, System.IO.FileAccess.Write))
-        //    f.Write(data3);
     }
 
     public override void _Ready()
     {
         base._Ready();
-
-        //using (var loader = RomLoader.Load("C:\\Games\\SNES\\Illusion Of Gaia.smc"))
-        //{
-        //    //var image = ImageConverter.ReadImage(loader._basePtr, 128, 128, 4, 0);
-        //    Address addr = 0xC02F3C;
-        //    Location loc = 0x10002;
-
-        //    var data = LZ77.Expand(loader._basePtr + 0x1e1635, 0x1af7, 0x3000);
-        //    var image = ImageConverter.ReadImage(data, 128, 128, 4, 0);
-
-        //    _texture = ImageTexture.CreateFromImage(image);
-        //}
     }
 
+    private Vector2 GetDrawSize()
+    {
+        var ratio = Size.X / Size.Y;
+        return ratio > TilemapRatio
+            ? new(Size.Y * TilemapRatio, Size.Y)
+            : new(Size.X, Size.X / TilemapRatio);
+    }
 
     public override void _Draw()
     {
-        //DrawTextureRect(_texture, new(0, 0, 1024, 1024), false);
+        _drawSize = GetDrawSize();
+        _tileSize = _drawSize.X / (RomState.MainTilemapW << 4);
+        DrawTextureRect(TilemapTexture, new(0, 0, _drawSize), false);
+        DrawPolyline(_hoverBox, Color.Color8(0, 255, 255));
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        base._Input(@event);
+
+        if (@event is InputEventMouse motion)
+        {
+            var pos = motion.Position;
+            if (pos.X < 0 || pos.Y < 0 || pos.X > _drawSize.X || pos.Y > _drawSize.Y)
+            {
+                _hoverBox[0] = _hoverBox[1] = _hoverBox[2] = _hoverBox[3] = _hoverBox[4] = new(-1, -1);
+                _hoverTileX = -1;
+                _hoverTileY = -1;
+            }
+            else
+            {
+                _hoverTileX = (int)(pos.X / _tileSize);
+                _hoverTileY = (int)(pos.Y / _tileSize);
+
+                var posX = _hoverTileX * _tileSize;
+                var posY = _hoverTileY * _tileSize;
+
+                _hoverBox[0] = _hoverBox[4] = new(posX, posY);
+                _hoverBox[1] = new(posX + _tileSize, posY);
+                _hoverBox[2] = new(posX + _tileSize, posY + _tileSize);
+                _hoverBox[3] = new(posX, posY + _tileSize);
+            }
+
+            QueueRedraw();
+        }
+
+        if (@event is InputEventMouseButton mouse)
+        {
+            if (mouse.Pressed && mouse.ButtonIndex == MouseButton.Right)
+            {
+                if (_hoverTileX >= 0 && _hoverTileY >= 0)
+                {
+                    var mOffset = (_hoverTileY >> 4) * RomState.MainTilemapW + (_hoverTileX >> 4);
+
+                    SelectedIndex = RomState.MainTilemap[(mOffset << 8) | ((_hoverTileY & 0x0F) << 4) | (_hoverTileX & 0x0F)];
+                }
+            }
+            else if (mouse.Pressed && mouse.ButtonIndex == MouseButton.Left)
+            {
+                if (_hoverTileX >= 0 && _hoverTileY >= 0)
+                {
+                    //var srcOffset = ((SelectedIndex & 0xF0) << 8) | ((SelectedIndex & 0x0F) << 4);
+                    //var dstOffset = (_hoverTileY << 4) * _mapWidth + (_hoverTileX << 4);
+                    //srcOffset <<= 2;
+                    //dstOffset <<= 2;
+
+                    //for (int y = 0; y < 16; y++)
+                    //{
+                    //    for (int x = 0; x < 16 * 4; x++)
+                    //        TilemapBitmap[dstOffset + x] = TilesetBitmap[srcOffset + x];
+
+                    //    srcOffset += 16 * 16 * 4;
+                    //    dstOffset += _mapWidth << 2;
+                    //}
+                    var mOffset = (_hoverTileY >> 4) * RomState.MainTilemapW + (_hoverTileX >> 4);
+
+                    RomState.MainTilemap[(mOffset << 8) | ((_hoverTileY & 0x0F) << 4) | (_hoverTileX & 0x0F)] = (byte)SelectedIndex;
+
+                    //TilemapImage.Dispose();
+                    //TilemapImage = Image.CreateFromData(_mapWidth, _mapHeight, false, Image.Format.Rgb8, )
+                    TilemapImage.BlitRect(TilesetImage,
+                        new((SelectedIndex & 0x0F) << 4, SelectedIndex & 0xF0, 16, 16),
+                        new(_hoverTileX << 4, _hoverTileY << 4));
+
+                    //TilemapImage.SetData(_mapWidth, _mapHeight, false, Image.Format.Rgba8, TilemapBitmap);
+
+                    TilemapTexture.Update(TilemapImage);
+
+                    //TilemapImage = Image.from
+
+                    QueueRedraw();
+                }
+            }
+        }
+    }
+
+    public static void SaveMap()
+    {
+        var map = RomState.MainTilemap;
+        var outSize = (RomState.MainTilemapW * RomState.MainTilemapH) << 8;
+
+        using var file = File.Create(RomState.MainTilemapPath);
+
+        file.WriteByte(RomState.MainTilemapW);
+        file.WriteByte(RomState.MainTilemapH);
+        for (int x = 0; x < outSize; x++)
+            file.WriteByte(map[x]);
     }
 }

@@ -6,19 +6,36 @@ namespace GaiaLib.Rom
 {
     public class RomState
     {
+        // 0 0 0 0 0 0 0 1  0x01 = Tile Page
+        // 0 0 0 0 0 0 1 0  0x02 = ??
+        // 0 0 0 1 1 1 0 0  0x1C = Palette (Color) Offset
+        // 0 0 1 0 0 0 0 0  0x20 = High Priority
+        // 0 1 0 0 0 0 0 0  0x40 = Horizontal Mirror
+        // 1 0 0 0 0 0 0 0  0x80 = Vertical Mirror
+
+
+
+
         public readonly byte[] CGRAM = new byte[0x200];
         public readonly byte[] VRAM = new byte[0x10000];
-        public readonly byte[] WRAM = new byte[0x20000];
+        //public readonly byte[] WRAM = new byte[0x20000];
         public readonly byte[] MainTileset = new byte[0x800];
         public readonly byte[] EffectTileset = new byte[0x800];
         public readonly byte[] MainTilemap = new byte[0x2000];
+        public byte MainTilemapW, MainTilemapH;
+        public string MainTilemapPath;
         public readonly byte[] EffectTilemap = new byte[0x2000];
+        public byte EffectTilemapW, EffectTilemapH;
+        public string EffectTilemapPath;
 
         public static string StripName(string name)
         {
-            int ix;
-            while ((ix = name.IndexOfAny(Process._addressspace)) >= 0)
-                name = name[..ix] + name[(ix + 1)..];
+            while (Process._addressspace.Contains(name[0]))
+                name = name[1..];
+
+            //int ix;
+            //while ((ix = name.IndexOfAny(Process._addressspace)) >= 0)
+            //    name = name[..ix] + name[(ix + 1)..];
             return name;
         }
 
@@ -41,12 +58,13 @@ namespace GaiaLib.Rom
 
             var state = new RomState();
 
-            Stream getResource(string name, BinType type)
+            FileStream getResource(string name, BinType type)
                 => File.OpenRead(root.GetResource(baseDir, StripName(name), type));
 
 
             for (int ix = 0, count = list.Count; ix < count;)
             {
+                Top:
                 switch ((byte)list[ix++])
                 {
                     case 0x02:
@@ -96,24 +114,25 @@ namespace GaiaLib.Rom
                     case 0x05:
                         {
                             var srcOffset = (byte)list[ix++] << 2;
-                            var sizeW = (byte)list[ix++] << 2;
+                            var sizeW = (byte)list[ix++] << 6;
                             var dstOffset = (byte)list[ix++] << 2;
                             var layers = (byte)list[ix++];
                             var resource = list[ix++];
 
                             using var file = getResource(resource.ToString(), BinType.Tileset);
 
-                            void copy(byte[] buffer) {
+                            void copy(byte[] buffer)
+                            {
                                 file.Position += srcOffset;
                                 var dix = dstOffset;
-                                for(int i = sizeW - srcOffset; i-- > 0;)
+                                for (int i = sizeW - srcOffset; i-- > 0;)
                                     buffer[dix++] = (byte)file.ReadByte();
                             };
 
                             if ((layers & 1) != 0)
                                 copy(state.MainTileset);
 
-                            if((layers & 2) != 0)
+                            if ((layers & 2) != 0)
                                 copy(state.EffectTileset);
                         }
                         break;
@@ -125,12 +144,27 @@ namespace GaiaLib.Rom
 
                             using var file = getResource(resource.ToString(), BinType.Tilemap);
 
-                            int width = file.ReadByte();
-                            int height = file.ReadByte();
-                            int calcSize = (width * height) << 8;
-                            var buffer = (layer & 1) != 0 ? state.MainTilemap : state.EffectTilemap;
+                            var width = file.ReadByte();
+                            var height = file.ReadByte();
+                            var calcSize = (width * height) << 8;
+                            byte[] buffer;//= (layer & 1) != 0 ? state.MainTilemap : state.EffectTilemap;
 
-                            for (int i = 0, size = Math.Max(0x2000, Math.Min((int)file.Length, calcSize)); i < size;)
+                            if ((layer & 1) != 0)
+                            {
+                                buffer = state.MainTilemap;
+                                state.MainTilemapW = (byte)width;
+                                state.MainTilemapH = (byte)height;
+                                state.MainTilemapPath = file.Name;
+                            }
+                            else
+                            {
+                                buffer = state.EffectTilemap;
+                                state.EffectTilemapW = (byte)width;
+                                state.EffectTilemapH = (byte)height;
+                                state.EffectTilemapPath = file.Name;
+                            }
+
+                            for (int i = 0, size = Math.Min(0x2000, Math.Min((int)file.Length - 2, calcSize)); i < size;)
                                 buffer[i++] = (byte)file.ReadByte();
                         }
                         break;
@@ -167,7 +201,34 @@ namespace GaiaLib.Rom
 
                     case 0x15:
                         {
-                            var dstLabel = list[ix++];
+                            var dstLabel = (byte)list[ix++];
+
+                            for (int bix = 2; bix < blocks.Count; bix++)
+                            {
+                                var bList = blocks[bix].ObjList;
+                                for (int pix = 0; pix < bList.Count;)
+                                {
+                                    switch ((byte)bList[pix++])
+                                    {
+                                        case 0x02: pix++; break;
+                                        case 0x03: case 0x05: pix += 5; break;
+                                        case 0x04: case 0x10: pix += 4; break;
+                                        case 0x11: pix += 3; break;
+                                        case 0x06: case 0x13: case 0x17: pix += 2; break;
+                                        case 0x14:
+                                            if(dstLabel == (byte)bList[pix++])
+                                            {
+                                                block = blocks[bix];
+                                                list = block.ObjList;
+                                                count = list.Count;
+                                                ix = pix;
+                                                goto Top;
+                                            }
+                                            break;
+                                    }
+                                }
+                            }
+
                         }
                         break;
 

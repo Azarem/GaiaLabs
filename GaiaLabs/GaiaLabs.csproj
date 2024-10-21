@@ -7,9 +7,6 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Properties\launchSettings.json" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\GaiaLib\GaiaLib.csproj" />
   </ItemGroup>
 </Project>

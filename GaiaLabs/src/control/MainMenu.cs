@@ -10,37 +10,37 @@ namespace GaiaLabs.src.control
 
             var file = new PopupMenu();
 
-            file.AddItem("Open");
+            file.AddItem("Change Scene");
+            file.AddItem("Save");
             file.IndexPressed += File_IndexPressed;
 
             this.AddChild(file);
-            this.SetMenuTitle(0, "File");
+            this.SetMenuTitle(0, "-=-");
+
         }
 
         private void File_IndexPressed(long index)
         {
             switch (index)
             {
-                case 0:
-                    Dlg_FileSelected("C:\\Games\\SNES\\Illusion Of Gaia.smc");
-                    //var dlg = new FileDialog
-                    //{
-                    //    Filters = ["*.smc, *.sfc;SNES ROM"],
-                    //    FileMode = FileDialog.FileModeEnum.OpenFile,
-                    //    CurrentPath = "C:\\",
-                    //    CurrentDir = "C:\\",
-                    //    RootSubfolder = "Games"
-                    //};
-                    //AddChild(dlg);
-                    //dlg.FileSelected += Dlg_FileSelected;
-                    //dlg.Popup();
-                    break;
+                case 0: OnChangeScene(); break;
+                case 1: OnSave(); break;
             }
         }
 
         private void Dlg_FileSelected(string path)
         {
             RomLoader.Load(path);
+        }
+
+        private void OnChangeScene()
+        {
+
+        }
+
+        private void OnSave()
+        {
+            ControlTest.SaveMap();
         }
 
     }

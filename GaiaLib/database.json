@@ -254,7 +254,7 @@
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "!",
     "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "/", "*", "-", "(", ")",
     "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", ";",
-    "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "ǁ", " ", "ǁ", "♥", "|",
+    "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "ǁ", " ", "…", "♥", "|",
     "Ā", "ā", "Ē", "ē", "Ī", "ī", "Ō", "ō", "Ū", "ū", "Ŷ", "ŷ", "ǁ", "ǁ", "ǁ", "ǁ"
   ],
   "widecommands": {
@@ -3576,13 +3576,13 @@
         { "start": "05BA51", "end": "05BA54", "name": "h_fr38_ashamed", "struct": "h_actor" },
         { "start": "05BA54", "end": "05BA8D", "name": "e_fr38_ashamed", "struct": "Code" }
       ] },
-    { "name": "fr38_eye", "movable": true, "group": "freejia", "parts": [
-        { "start": "05BA8D", "end": "05BA90", "name": "h_fr38_eye", "struct": "h_actor" },
-        { "start": "05BA90", "end": "05BAE7", "name": "e_fr38_eye", "struct": "Code" }
+    { "name": "fr38_girlfriend", "movable": true, "group": "freejia", "parts": [
+        { "start": "05BA8D", "end": "05BA90", "name": "h_fr38_girlfriend", "struct": "h_actor" },
+        { "start": "05BA90", "end": "05BAE7", "name": "e_fr38_girlfriend", "struct": "Code" }
       ] },
-    { "name": "fr38_helper", "movable": true, "group": "freejia", "parts": [
-        { "start": "05BAE7", "end": "05BAEA", "name": "h_fr38_helper", "struct": "h_actor" },
-        { "start": "05BAEA", "end": "05BB47", "name": "e_fr38_helper", "struct": "Code" }
+    { "name": "fr38_boyfriend", "movable": true, "group": "freejia", "parts": [
+        { "start": "05BAE7", "end": "05BAEA", "name": "h_fr38_boyfriend", "struct": "h_actor" },
+        { "start": "05BAEA", "end": "05BB47", "name": "e_fr38_boyfriend", "struct": "Code" }
       ] },
     { "name": "fr36_mother", "movable": true, "group": "freejia", "parts": [
         { "start": "05BB47", "end": "05BB4A", "name": "h_fr36_mother", "struct": "h_actor" },
