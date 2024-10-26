@@ -7,9 +7,3 @@ This is a development toolkit for Illusion of Gaia (SNES). Using it will allow y
 * .Net Framework 8 (https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 * An unheadered Illusion of Gaia (USA) ROM
 
-### Note
-
-This version of the toolset will rebuild the text dictionaries which is very slow. Please keep this in mind while we try to improve this process.
-
-### Support the project on Patreon!
-https://www.patreon.com/GaiaLabs
