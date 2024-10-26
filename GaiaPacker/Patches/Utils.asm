@@ -52,6 +52,10 @@ global_thinkers {
 }
 
 ------------------------------------------------------------
+
+pause_debug_print |[NHM:14][CUR:C0,6]S:[BCD:2,644]█X:[BCD:3,9A2]█Y:[BCD:3,9A4]|
+
+------------------------------------------------------------
 ;Hook for global thinkers
 
 func_03D1C2 {
@@ -66,14 +70,74 @@ func_03D1C2 {
 ----------------------------------------------------------
 
 ;Prevent drawing of HUD BG layers
-code_03DED5 {
-    PHP
-    REP #$20
-    LDA #$0001
-    TSB $09EC
-    PLP
-    RTL
-}
+;code_03DED5 {
+;    PHP
+;    REP #$20
+;    LDA #$0001
+;    TSB $09EC
+;    PLP
+;    RTL
+;}
+
+
+word_03DF0A [
+  #$0000   ;00
+  #$0001   ;01
+  #$2CCE   ;06
+  #$2CCF   ;07
+  #$0000   ;08
+  #$0008   ;09
+  #$ECEF   ;0A
+  #$2CDA   ;0B
+  #$2CDB   ;0C
+  #$2CDC   ;0D
+  #$0000   ;0E
+  #$0002   ;0F
+  #$6CDC   ;10
+  #$6CDB   ;11
+  #$6CDA   ;12
+  #$ACEF   ;13
+  #$0000   ;14
+  #$0008   ;15
+  #$6CCF   ;16
+  #$6CCE   ;17
+  #$0000   ;18
+  #$0002   ;19
+  #$2CDE   ;1A
+  #$0000   ;1B
+  #$000A   ;1C
+  #$2CEA   ;1D
+  #$2CD9   ;1E
+  #$0000   ;1F
+  #$0001   ;20
+  #$2CED   ;21
+  #$6CED   ;22
+  #$0000   ;23
+  #$0002   ;24
+  #$6CEA   ;25
+  #$0000   ;26
+  #$000A   ;27
+  #$6CDE   ;28
+  #$0000   ;29
+  #$0002   ;2A
+  #$2CEE   ;2B
+  #$0000   ;2C
+  #$000A   ;2D
+  #$2CFA   ;2E
+  #$2CFB   ;2F
+  #$2CFC   ;30
+  #$2CFD   ;31
+  #$6CFD   ;32
+  #$2CE9   ;33
+  #$6CFB   ;34
+  #$6CFA   ;35
+  #$0000   ;36
+  #$000A   ;37
+  #$6CEE   ;38
+  #$0000   ;39
+  #$0000   ;3A
+]
+
 
 ----------------------------------------------------------
 
@@ -146,9 +210,21 @@ code_02B078 {
     STX $A1T0L
 }
 
-string_01E7F6 |[CUR:46,0][NHM:8][HP][CUR:9C,0][NHM:14][BCD:1,AD8][CUR:A0,0][NUM:AD6][CUR:5E,0][BCD:2,644][CUR:7A,0][BCD:3,9A2][CUR:BA,0][BCD:3,9A4]|
+;string_01E7F6 |[CUR:46,0][NHM:8][HP][CUR:9C,0][NHM:14][BCD:1,AD8][CUR:A0,0][NUM:AD6][CUR:5E,0][BCD:2,644][CUR:7A,0][BCD:3,9A2][CUR:BA,0][BCD:3,9A4]|
+string_01E7F6 |[CUR:44,0][NHM:8][HP][CUR:5C,0][NHM:14][BCD:1,AD8][CUR:62,0][NUM:AD6]|
 
-string_01E818 |[NHM:4][CUR:66,0][HE]|
+string_01E818 |[NHM:4][CUR:68,0][HE]|
+
+;string_01EAC6 |[NHM:14][CUR:1A,3]PAUSE[CUR:C0,6]S:[BCD:2,644] X:[BCD:3,9A2] Y:[BCD:3,9A4]|
+
+-------------------------------------------------
+;Print debug string on radar screen
+
+code_03808B {
+    LDX #$0000
+    COP [BD] ( @pause_debug_print )
+    PHX 
+}
 
 -------------------------------------------------
 ;Prevent unequipped message
