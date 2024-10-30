@@ -92,7 +92,7 @@ ins_on_item_lr:
 -------------------------------------------
 ;Hook for setting up indicator
 
-func_02E399 {
+e_inventory_menu {
     COP [88] ( @table_108000 )
     COP [BD] ( @string_01E869 )
     STZ $0AFA
