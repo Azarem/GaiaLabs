@@ -9,13 +9,13 @@
 ;Walk to either side of the screen to trigger a change in the dark space settings
 ;This will cause you to leave in a different place than you had entered
 ;To use this script, add a new entry to scene_events under ID E6
-;Example: actor < #00, #01, #00, %Teleporter >
+;Example: actor < #00, #01, #00, @Teleporter >
 
 --------------------------------------------
   h_actor < #00, #00, #30 >
 
 main:
-  COP [C4] ( %location_check )
+  COP [C4] ( @location_check )
 
 clear_check:
   LDA #$004A
@@ -31,7 +31,7 @@ location_check:
 
 clear_screen:
   COP [BF] ( &clear_str )
-  COP [C7] ( %location_check )
+  COP [C7] ( @location_check )
 
 is_standing_right:
   LDX $09AA
@@ -52,7 +52,7 @@ do_prev:
   ASL
   ASL
   TAX
-  LDA %space_table+A, X
+  LDA @space_table+A, X
   CMP $0B12
   BEQ take_next
   BMI take_next
@@ -77,7 +77,7 @@ do_next:
   ASL
   ASL
   TAX
-  LDA %space_table+A, X
+  LDA @space_table+A, X
   CMP $0B12
   BPL take_prev
   INY
@@ -106,19 +106,19 @@ do_change:
   ASL
   ASL
   TAX
-  LDA %space_table, X
+  LDA @space_table, X
   STA $0B08
-  LDA %space_table+2, X
+  LDA @space_table+2, X
   STA $0B0A
-  LDA %space_table+4, X
+  LDA @space_table+4, X
   STA $0B0C
-  LDA %space_table+6, X
+  LDA @space_table+6, X
   STA $0B0E
-  LDA %space_table+8, X
+  LDA @space_table+8, X
   STA $0B10
-  LDA %space_table+A, X
+  LDA @space_table+A, X
   STA $0B12
-  ;LDA %space_table+E, X
+  ;LDA @space_table+E, X
   STY $token1
   COP [BF] ( &display_str )
   JMP clear_check

@@ -1,5 +1,6 @@
 {
   "name": "GaiaLabs",
   "romPath": "C:\\Games\\SNES\\Illusion of Gaia.smc",
-  "baseDir": ""
+  "baseDir": "",
+  "database": "database"
 }

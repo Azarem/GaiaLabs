@@ -11,6 +11,7 @@ namespace GaiaPacker
         public string Name { get; set; }
         public string RomPath { get; set; }
         public string BaseDir { get; set; }
+        public string Database { get; set; }
         public IEnumerable<ProjectFile> Files { get; set; }
     }
 

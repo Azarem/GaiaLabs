@@ -55,7 +55,7 @@ using (var file = File.OpenRead(path))
 //#if DEBUG
 //var databasePath = "C:\\Games\\GaiaLabs\\GaiaLib\\database.json";// Path.Combine(baseDir, "database.json");
 //#else
-var databasePath = Path.Combine(baseDir, "database.json");
+var databasePath = Path.Combine(baseDir, $"{project.Database}.json");
 //#endif
 //var filePath = Path.Combine(baseDir, "files");
 
@@ -138,15 +138,18 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
     {
         //Open source file
         using var inFile = File.OpenRead(file.Path);
+        var remain = file.Size;
 
         switch (file.Type)
         {
             case BinType.Tilemap:
+                remain -= 2;
                 outRom.WriteByte((byte)inFile.ReadByte());
                 outRom.WriteByte((byte)inFile.ReadByte());
                 break;
 
             case BinType.Meta17:
+                remain -= 4;
                 outRom.WriteByte((byte)inFile.ReadByte());
                 outRom.WriteByte((byte)inFile.ReadByte());
                 outRom.WriteByte((byte)inFile.ReadByte());
@@ -154,9 +157,9 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
                 break;
 
             case BinType.Sound:
-                var s = file.Size - 2;
-                outRom.WriteByte((byte)s);
-                outRom.WriteByte((byte)(s >> 8));
+                remain -= 2;
+                outRom.WriteByte((byte)remain);
+                outRom.WriteByte((byte)(remain >> 8));
                 break;
 
         }
@@ -164,7 +167,8 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
         //Mark as not compressed
         if (file.Compressed != null)
         {
-            int inverse = 0 - (file.Size - 2);
+            remain -= 2;
+            int inverse = 0 - remain;
             //outRom.WriteByte(0);
             //outRom.WriteByte(0);
             outRom.WriteByte((byte)inverse);
@@ -172,9 +176,8 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
         }
 
         //Copy file to rom
-        int sample;
-        while ((sample = inFile.ReadByte()) >= 0)
-            outRom.WriteByte((byte)sample);
+        while (remain-- > 0)
+            outRom.WriteByte((byte)inFile.ReadByte());
     }
 
 
