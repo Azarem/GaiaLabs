@@ -319,18 +319,18 @@ namespace GaiaLib.Rom
 
                 void copyBytes(byte* ptr, int len)
                 {
-                    if (file.Type == BinType.Palette)
-                    {
-                        var remain = 0x200 - len;
+                    //if (file.Type == BinType.Palette)
+                    //{
+                    //    var remain = 0x200 - len;
 
-                        while(len-- > 0)
-                            fileStream.WriteByte(*ptr++);
+                    //    while(len-- > 0)
+                    //        fileStream.WriteByte(*ptr++);
 
-                        //Expand palette to 16 sets so it is compatible with yy chr
-                        while (remain-- > 0)
-                            fileStream.WriteByte(0);
-                    }
-                    else
+                    //    //Expand palette to 16 sets so it is compatible with yy chr
+                    //    while (remain-- > 0)
+                    //        fileStream.WriteByte(0);
+                    //}
+                    //else
                     {
                         if (file.Type == BinType.Tilemap)
                         {

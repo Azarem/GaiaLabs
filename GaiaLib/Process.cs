@@ -792,16 +792,16 @@ namespace GaiaLib
                     if (type == BinType.Assembly || type == BinType.Patch)
                         using (var inFile = File.OpenRead(file))
                             (chunkFile.Blocks, chunkFile.Includes, chunkFile.Bank) = ParseAssembly(root, inFile, 0);
-                    else if (type == BinType.Palette)
-                    {
-                        int lastNonzero = 0;
-                        using var fileStream = File.OpenRead(file);
-                        for (int i = 0, len = (int)fileStream.Length; i < len; i++)
-                            if (fileStream.ReadByte() != 0)
-                                lastNonzero = i;
+                    //else if (type == BinType.Palette)
+                    //{
+                    //    int lastNonzero = 0;
+                    //    using var fileStream = File.OpenRead(file);
+                    //    for (int i = 0, len = (int)fileStream.Length; i < len; i++)
+                    //        if (fileStream.ReadByte() != 0)
+                    //            lastNonzero = i;
 
-                        chunkFile.Size = (lastNonzero + (0x20 - lastNonzero % 0x20));
-                    }
+                    //    chunkFile.Size = (lastNonzero + (0x20 - lastNonzero % 0x20));
+                    //}
 
                     var oldFile = root.Files.FirstOrDefault(x => x.Type == type && x.Name == chunkFile.Name);
                     if (oldFile != null)
