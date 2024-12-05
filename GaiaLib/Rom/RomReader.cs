@@ -1377,7 +1377,7 @@ namespace GaiaLib.Rom
                     : Path.Combine(transformPath, block.Group, $"{block.Name}.{xRes.Extension}");
                 if (File.Exists(xformFile))
                     using (var xformStream = File.OpenRead(xformFile))
-                        xforms = JsonSerializer.Deserialize<IEnumerable<XformDef>>(xformStream, DbRoot._jsonOptions);
+                        xforms = JsonSerializer.Deserialize<IEnumerable<XformDef>>(xformStream, DbRoot.JsonOptions);
 
                 if (xforms != null)
                     foreach (var x in xforms.Where(x => x.Type == XformType.Lookup))

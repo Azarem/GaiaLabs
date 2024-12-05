@@ -1,3 +1,22 @@
 ﻿[
-  { "type": "Lookup", "keyIx": 0, "valueIx": 1 }
+  {
+    "type": "Lookup",
+    "keyIx": 0,
+    "valueIx": 1
+  },
+  {
+    "type": "Replace",
+    "key": "music < #06, #00, @bgm_ominous_whispers >",
+    "value": "music < #04, #00, @bgm_ominous_whispers >"
+  },
+  {
+    "type": "Replace",
+    "key": "music < #04, #00, @bgm_descent_into_darkness >",
+    "value": "music < #06, #00, @bgm_descent_into_darkness >"
+  },
+  {
+    "type": "Replace",
+    "key": "music < #1D, #00, @bgm_lively_city_by_the_sea >",
+    "value": "music < #1C, #00, @bgm_lively_city_by_the_sea >"
+  }
 ]

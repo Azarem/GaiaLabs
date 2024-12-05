@@ -1,4 +1,5 @@
 ﻿using Godot;
+using System.Linq;
 
 namespace GaiaLabs.src.control
 {
@@ -10,13 +11,21 @@ namespace GaiaLabs.src.control
 
             var file = new PopupMenu();
 
+            var sceneContainer = new HBoxContainer();
+            sceneContainer.AddChild(new Label { Text = "Scene" });
+            sceneContainer.AddChild(new TextEdit { Text = "01" });
+
+            file.AddChild(sceneContainer);
             file.AddItem("Change Scene");
             file.AddItem("Save");
             file.IndexPressed += File_IndexPressed;
 
+
             this.AddChild(file);
             this.SetMenuTitle(0, "-=-");
 
+            var c = file.GetChildren();
+            var d = c.First().GetChildren();
         }
 
         private void File_IndexPressed(long index)

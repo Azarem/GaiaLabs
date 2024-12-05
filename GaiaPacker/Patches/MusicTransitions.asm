@@ -3,9 +3,10 @@
 ?INCLUDE 'chunk_03BAE1'
 ?INCLUDE 'chunk_028000'
 
-!meta_next_id       $0642
-!meta_current_id    $0644
-!token              $00E6
+!meta_next_id                   $0642
+!meta_current_id                $0644
+!token                          $00E6
+!msu_flag                       $0D73
 !INIDISP                        2100
 !MOSAIC                         2106
 !APUIO0                         2140
@@ -13,41 +14,120 @@
 ---------------------------------------
 
 bgm_table [
-  #FF #1D #1D #1D #1D #1D #1D #1D #1D #FF #05 #1B #06 #06 #06 #06  ;0F
-  #06 #06 #06 #06 #FF #03 #03 #03 #03 #04 #04 #04 #04 #07 #07 #07  ;1F
+  #FF #1C #1C #1C #1C #1C #1C #1C #1C #FF #05 #1B #06 #06 #06 #06  ;0F
+  #06 #06 #06 #06 #FF #03 #03 #03 #03 #04 #04 #06 #04 #07 #07 #07  ;1F
   #07 #07 #07 #07 #07 #07 #07 #07 #07 #07 #11 #04 #04 #04 #04 #15  ;2F
-  #1B #1B #02 #02 #02 #02 #02 #02 #02 #02 #02 #02 #06 #06 #06 #06  ;3F
+  #1B #1B #02 #02 #02 #02 #02 #02 #02 #02 #02 #02 #04 #06 #06 #06  ;3F
   #06 #06 #06 #06 #06 #06 #06 #04 #FF #03 #FF #04 #08 #08 #08 #08  ;4F
   #08 #08 #08 #08 #08 #08 #08 #FF #FF #FF #04 #04 #04 #04 #04 #09  ;5F
   #09 #09 #09 #04 #09 #09 #04 #04 #04 #03 #03 #03 #03 #06 #06 #06  ;6F
   #06 #06 #06 #1D #04 #04 #FF #FF #02 #02 #02 #06 #02 #02 #02 #15  ;7F
-  #FF #FF #0A #0A #FF #0A #0A #0A #0A #FF #0A #0A #FF #FF #FF #FF  ;8F
+  #FF #FF #0A #0A #FF #0A #0A #0A #0A #FF #0A #0A #14 #FF #FF #FF  ;8F
   #FF #02 #02 #02 #02 #05 #05 #02 #02 #02 #02 #02 #02 #04 #FF #FF  ;9F
   #06 #06 #06 #06 #06 #06 #06 #06 #06 #06 $FF #FF #04 #FF #FF #FF  ;AF
   #04 #0B #0B #0B #0B #0B #0B #0B #0B #0B #0B #0B #0B #0B #0B #04  ;BF
   #11 #FF #FF #02 #02 #04 #02 #02 #02 #02 #FF #FF #04 #04 #0C #0C  ;CF
   #0C #0C #0C #0C #0C #0C #0C #0C #0C #0C #0C #0C #02 #0F #04 #04  ;DF
   #04 #04 #04 #04 #0E #0E #16 #FF #FF #06 #FF #FF #FF #FF #FF #FF  ;EF
-  #00 #FF #0F #0F #0F #0F #0F #1B #FF #13 #00 #1B #14 #1B #12 #FF  ;FF
+  #1B #FF #0F #0F #0F #0F #0F #1B #FF #13 #12 #1B #14 #1B #12 #FF  ;FF
 ]
 
-count_check:
-  CMP #06
-  BNE count_ret
-  PHA
-  LDA #F2
-  CMP token
-  BNE count_fix
-  STA $APUIO0
-  STZ token
+bgm_track_map [
+  #00 #00 #06 #07 #05 #09 #0A #0C #0F #10 #0B #08 #11 #00 #13 #12
+  #00 #0D #02 #00 #01 #0E #04 #00 #00 #00 #00 #00 #03 #00 #00 #00
+]
 
-count_fix:
-  PLA
+bgm_loop_map [
+  #00 #00 #01 #01 #01 #01 #01 #01 #01 #01 #01 #01 #01 #00 #01 #01
+  #00 #01 #01 #00 #01 #01 #01 #00 #00 #00 #00 #00 #01 #01 #00 #00
+]
 
-count_ret:
-  RTS
+
+---------------------------------------
+;Function that queues a music fade on a specific frame (from A)
+
+count_check {
+    PHA
+    LDA token
+    BEQ count_ret
+    BRK #$00
+    BMI no_msu_fade
+
+    ;LDA $0D72
+    ;BNE no_msu_fade
+
+    ;LDA msu_flag
+    ;BEQ no_msu_fade
+    
+    LDA $01, S
+    DEC
+    BEQ msu_reset
+
+    ASL
+    ASL
+    ASL
+    ASL
+    ORA #0F
+    STA $2006
+    BRA count_ret
+
+  msu_reset:
+    STZ $2006
+    STZ $2007
+    STZ token
+    BRA count_ret
+    
+  no_msu_fade:
+    LDA $01, S
+    CMP #06
+    BNE count_ret
+
+    LDA #F2
+    STA $APUIO0
+    STZ token
+
+  count_ret:
+    PLA
+    RTS
+}
 
 --------------------------------------
+;Hook for SPC init
+
+func_02908E {
+    ;BRK #$00
+    REP #$20
+
+    LDA $2002
+    CMP #$2D53
+    BNE msu_unavailable
+    LDA $2004
+    CMP #$534D
+    BNE msu_unavailable
+    LDA $2006
+    CMP #$3155
+    BNE msu_unavailable
+    
+    SEP #$20
+    LDA #01
+    STA msu_flag
+    BRA init_complete
+
+  msu_unavailable:
+    SEP #$20
+    STZ msu_flag
+    
+  init_complete:
+    LDX #$&binary_029210
+    STX $46
+    LDA #$^binary_029210
+    STA $48
+    JSR $&sub_02919B
+    RTL 
+}
+
+--------------------------------------
+;Hook for checking track changes before screen transition
 
 func_03D9F6 {
     LDA $0654
@@ -55,25 +135,38 @@ func_03D9F6 {
     BEQ code_03DA00
     
   do_check:
+    BRK #$00
     PHX
-    PHY
+    ;PHY
+    ;LDA $0D72     ;Is music playing?
+    ;BEQ return
     LDX meta_next_id
     LDA @bgm_table, X
-    BMI return
-    TAY
+    ;BMI return
+    ;TAY
     LDX meta_current_id
-    LDA @bgm_table, X
-    BMI return
-    TYA
+    ;LDA @bgm_table, X
+    ;BMI return
+    ;TYA
     CMP @bgm_table, X
     BEQ return
+
     LDA $0D72
+    CMP #1B
+    BNE do_f2
+
+    LDA msu_flag
     BEQ return
+
+    LDA #6B
+    BRA $02
+
+  do_f2:
     LDA #F2
-    STA token
+    STA token          ;Store value #F2 in token to flag a music fade
   
   return:
-    PLY
+    ;PLY
     PLX
     JSR $&sub_03DABB
 }
@@ -97,13 +190,27 @@ code_03DADC {
 ----------------------------------------------
 
 code_03DAF2 {
+    LDA token
+    BEQ immed_skip
+    BMI immed_bgm
+
+    STZ $2007
+    STZ token
+    BRA immed_skip
+    
+  immed_bgm:
+    LDA #F2
+    STA $APUIO0
+    STZ token
+
+  immed_skip:
     JSL $@func_00811E
-    JSR count_check+4
     STZ $INIDISP
     RTS 
 }
 
 -------------------------------------------
+;Mosaic mode 
 
 code_03DB05 {
     JSL $@func_00811E
@@ -122,7 +229,7 @@ code_03DB05 {
 
     JSR count_check
     DEC 
-    BPL code_03DAFC
+    BPL code_03DAFC    ;This loops through 0
     RTS 
 }
 
@@ -195,14 +302,131 @@ code_03DBBC {
 
 ---------------------------------------------
 
+func_03E21E {
+    LDX $06FA
+    BEQ code_03E254
+    BMI code_03E254
+    REP #$20
+    TXA 
+    ASL 
+    CLC 
+    ADC $06FA
+    TAX 
+    LDA $@music_array_01CBA6-3, X
+    STA $46
+    STA $0687
+    LDA $@music_array_01CBA6-2, X
+    STA $47
+    STA $0688
+    JSL $@func_028191
+    JSL $@func_02909B
+    JSL $@func_0281A2
+    LDA #$FFFF
+    STA $06FA
+    SEP #$20
+}
+
+
+code_03E254 {
+    RTL 
+}
+
+---------------------------------------------
+;Hook for music asset loading (from scene_meta)
+
 code_028B91 {
+    BRK #$00
+
+    LDA $06F2
+    BEQ bgm_halt           ;Always branch to halt when reset is loading
+
+    LDA msu_flag
+    BNE msu_begin_load
+
+  bgm_halt:
+    LDA $06F2
+    CMP $0D72
+    BNE $01
+    RTS
+
     LDA #$01
     JSL $@func_0281C9
     LDA #$F0
     STA $APUIO0
+    LDA #$03
+    JSL $@func_0281C9           ;For some reason this is required
+    LDA #$FF
+    STA $APUIO0
+    LDA #$02
+    JSL $@func_0281C9
+    
+  bgm_init:
+    LDA $06F2
+    CMP #1B
+    BEQ bgm_load_empty
+
+    LDX $3E
+    STX $46
+    LDX $40
+    STX $48
+    LDA $06F2
+    STA $0D72
+
+  bgm_load:
+    JSL $@func_02909B
+    LDA #$03
+    JSL $@func_0281C9
+    LDA $06F2
+    BEQ $02
     LDA #$01
-    JSL $@func_0281C9         ;For some reason this is required
-    BRA code_028BAC+5
+    STA $APUIO0
+    RTS
+
+  bgm_load_empty:
+    LDX #&bgm_no_music
+    STX $46
+    LDX #*bgm_no_music
+    STX $48
+    LDA #$1B
+    STA $0D72
+    BRA bgm_load
+
+  msu_begin_load:
+    LDX $06F2                   ;Set track number
+    LDA @bgm_track_map, X
+    STA $2004
+    STZ $2005
+
+  msu_busy_wait:
+    LDA $2000 
+    BMI msu_busy_wait           ;Wait for data busy to clear
+
+    LDA $2000
+    AND #08
+    BEQ msu_start_playback
+    JMP bgm_halt
+
+  msu_start_playback:
+    LDA #FF                     ;Max volume
+    STA $2006
+
+    LDA @bgm_loop_map, X
+    BEQ msu_start
+    LDA #03
+    BRA msu_write
+
+  msu_start:
+    LDA #01
+
+  msu_write:
+    STA $2007                   ;Start playback
+    LDA #1B
+    STA $06F2
+    JMP bgm_halt
+
+
+  msu_return:
+    RTS
 }
 
 ----------------------------------------------

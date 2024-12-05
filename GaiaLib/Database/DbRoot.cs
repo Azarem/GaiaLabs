@@ -31,7 +31,7 @@ namespace GaiaLib.Database
         public IDictionary<Location, string> EntryPoints { get; set; }
 
 
-        internal static readonly JsonSerializerOptions _jsonOptions = new()
+        public static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true,
             ReadCommentHandling = JsonCommentHandling.Skip
@@ -40,7 +40,7 @@ namespace GaiaLib.Database
         public static DbRoot FromFile(string dbFile)
         {
             using var file = File.OpenRead(dbFile);
-            return JsonSerializer.Deserialize<DbRoot>(file, _jsonOptions);
+            return JsonSerializer.Deserialize<DbRoot>(file, JsonOptions);
         }
 
         public DbPath GetPath(BinType type)

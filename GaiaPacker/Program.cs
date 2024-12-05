@@ -2,7 +2,6 @@
 using GaiaLib.Asm;
 using GaiaLib.Database;
 using GaiaLib.Rom;
-using GaiaPacker;
 using System.Globalization;
 using System.Text.Json;
 
@@ -33,16 +32,11 @@ foreach (var a in args)
 
 
 ProjectRoot project;
-var options = new JsonSerializerOptions()
-{
-    PropertyNameCaseInsensitive = true,
-    ReadCommentHandling = JsonCommentHandling.Skip
-};
 
 var baseDir = Environment.CurrentDirectory;
 using (var file = File.OpenRead(path))
 {
-    project = JsonSerializer.Deserialize<ProjectRoot>(file, options)
+    project = JsonSerializer.Deserialize<ProjectRoot>(file, DbRoot.JsonOptions)
         ?? throw new("Error deserializing project file");
 
     //#if DEBUG

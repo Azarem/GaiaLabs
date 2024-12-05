@@ -33,9 +33,6 @@
     <None Update="patches\InventoryScript.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="patches\iog_msu.asm_">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
     <None Update="patches\ItemDictionary.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
