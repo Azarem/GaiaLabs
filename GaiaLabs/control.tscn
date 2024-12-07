@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://do1c8o3xqbgxt"]
+[gd_scene load_steps=13 format=3 uid="uid://do1c8o3xqbgxt"]
 
 [ext_resource type="Script" path="res://src/control/ControlTest.cs" id="1_m5b74"]
 [ext_resource type="Script" path="res://src/control/SceneEdit.cs" id="2_fkjs4"]
@@ -6,8 +6,10 @@
 [ext_resource type="Script" path="res://src/control/ResourceTree.cs" id="2_xpknw"]
 [ext_resource type="Script" path="res://src/control/TilemapControl.cs" id="3_3gk7b"]
 [ext_resource type="Script" path="res://src/control/LayerSelector.cs" id="3_xq7rh"]
+[ext_resource type="Script" path="res://src/control/OffsetSelector.cs" id="4_1bcks"]
 [ext_resource type="Script" path="res://src/control/PropertyPanel.cs" id="4_7r147"]
 [ext_resource type="Script" path="res://src/control/PreviewPanel.cs" id="5_fvr7i"]
+[ext_resource type="Script" path="res://src/control/SaveButton.cs" id="5_xo0lo"]
 [ext_resource type="Script" path="res://src/control/TilesetWindow.cs" id="6_cprim"]
 [ext_resource type="Script" path="res://src/control/TilesetControl.cs" id="7_cquq4"]
 
@@ -52,11 +54,33 @@ text = "Effect"
 layout_mode = 2
 script = ExtResource("3_xq7rh")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+[node name="Label3" type="Label" parent="VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "Offset"
+
+[node name="CheckButton" type="CheckButton" parent="VBoxContainer/HFlowContainer"]
+layout_mode = 2
+script = ExtResource("4_1bcks")
+
+[node name="Button" type="Button" parent="VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "Save"
+script = ExtResource("5_xo0lo")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
+layout_direction = 3
 layout_mode = 2
 size_flags_vertical = 3
+split_offset = 300
 
-[node name="TilemapControl" type="Control" parent="VBoxContainer/ScrollContainer"]
+[node name="TilesetControl" type="Control" parent="VBoxContainer/HSplitContainer"]
+layout_mode = 2
+script = ExtResource("7_cquq4")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer"]
+layout_mode = 2
+
+[node name="TilemapControl" type="Control" parent="VBoxContainer/HSplitContainer/ScrollContainer"]
 layout_mode = 2
 script = ExtResource("3_3gk7b")
 
@@ -77,7 +101,6 @@ size_flags_horizontal = 3
 script = ExtResource("2_pr3ne")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="GridContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -109,14 +132,6 @@ script = ExtResource("5_fvr7i")
 title = "Tileset"
 position = Vector2i(454, 50)
 size = Vector2i(500, 500)
+visible = false
 keep_title_visible = true
 script = ExtResource("6_cprim")
-
-[node name="TilesetControl" type="Control" parent="TilesetWindow"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("7_cquq4")

@@ -10,6 +10,7 @@ public partial class LayerSelector : CheckBox
 
     private void LayerSelector_Pressed()
     {
-        ControlTest.LoadScene(ControlTest.CurrentScene, ButtonPressed);
+        ControlTest.IsEffect = ButtonPressed;
+        ControlTest.LoadScene(ControlTest.CurrentScene);
     }
 }

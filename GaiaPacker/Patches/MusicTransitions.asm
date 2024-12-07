@@ -33,8 +33,8 @@ bgm_table [
 ]
 
 bgm_track_map [
-  #00 #00 #06 #07 #05 #09 #0A #0C #0F #10 #0B #08 #11 #00 #13 #12
-  #00 #0D #02 #00 #01 #0E #04 #00 #00 #00 #00 #00 #03 #00 #00 #00
+  #00 #06 #06 #07 #05 #09 #0A #0C #0F #10 #0B #08 #11 #06 #13 #12
+  #14 #0D #02 #00 #01 #0E #04 #00 #18 #17 #19 #00 #03 #1B #1A #00
 ]
 
 bgm_loop_map [
@@ -301,17 +301,141 @@ code_03DBBC {
 }
 
 ---------------------------------------------
+;Hook for stopping music via COP 05
+
+func_03E1AA {
+    SEP #$20
+    LDA msu_flag
+    BEQ cop_fade_normal     ;Assume normal process when no MSU
+    
+    REP #$20
+    LDA #$00FF
+    STA $24
+    COP [C2]
+    LDA $24
+    BEQ func_03E1D6
+    SEP #$20
+    STA $2006
+    REP #$20
+    DEC
+    STA $24
+    RTL
+
+  cop_fade_normal:
+    LDA #$F1
+    STA $APUIO0
+    REP #$20
+    COP [C2]
+    LDA $APUIO0
+    AND #$00FF
+    CMP #$00F1
+    BEQ code_03E1C1
+    RTL 
+}
+
+
+code_03E1C1 {
+    SEP #$20
+    LDA #$01
+    STA $APUIO0
+    REP #$20
+    COP [C2]
+    SEP #$20
+    LDA $APUIO0
+    REP #$20
+    BEQ func_03E1D6
+    RTL 
+}
+
+---------------------------------------------
+;Hook for stopping music via COP 04/05
+
+func_03E1D6 {
+    SEP #$20
+    BRK #$00
+    LDA msu_flag
+    BEQ cop_stop_normal   ;Assume standard process when no MSU
+
+    LDA $0D72
+    CMP #$1B
+    BNE bgm_load_wait   ;Normal process when current track is not 1B
+
+    LDA #$00
+    STA $2007
+    BRA bgm_load_wait     ;Stop playback, then trigger music load
+
+  cop_stop_normal:
+    LDA #$F0
+    STA $APUIO0
+    REP #$20
+    COP [C2]
+    SEP #$20
+    LDA $APUIO0
+    REP #$20
+    BEQ code_03E1EB
+    RTL 
+}
+
+code_03E1EB {
+    COP [C2]
+    SEP #$20
+    LDA #$FF
+    STA $APUIO0
+
+  bgm_load_wait:
+    REP #$20
+    LDA $7F000A, X
+    STA $06FA
+    COP [C2]
+    LDA $06FA
+    CMP #$FFFF
+    BEQ code_03E208
+    RTL 
+}
+
+code_03E208 {
+    COP [DA] ( #01 )
+    SEP #$20
+    LDA #$01
+    STA $APUIO0
+    REP #$20
+    COP [C2]
+    STZ $06F8
+    STZ $06FA
+    COP [E0]
+}
+
+---------------------------------------------
 
 func_03E21E {
     LDX $06FA
     BEQ code_03E254
     BMI code_03E254
+
+  immed_load_normal:
     REP #$20
     TXA 
     ASL 
     CLC 
     ADC $06FA
     TAX 
+    
+    LDA msu_flag
+    AND #$00FF
+    BEQ immed_load_continue
+    
+    LDA $@music_array_01CBA6-3, X
+    STA $3E
+    LDA $@music_array_01CBA6-2, X
+    STA $3F
+
+    LDA $06FA
+    STA $06F2
+    PEA &bgm_load_exit-1
+    SEP #$20
+    JML @code_028B91
+
+  immed_load_continue:
     LDA $@music_array_01CBA6-3, X
     STA $46
     STA $0687
@@ -321,9 +445,13 @@ func_03E21E {
     JSL $@func_028191
     JSL $@func_02909B
     JSL $@func_0281A2
+    
     LDA #$FFFF
     STA $06FA
+
     SEP #$20
+    ;LDA #$01
+    ;STA $APUIO0
 }
 
 
@@ -342,6 +470,17 @@ code_028B91 {
 
     LDA msu_flag
     BNE msu_begin_load
+    BRA bgm_halt
+
+  bgm_load_external:
+    BRK #$00
+
+  bgm_load_exit:
+    REP #$20
+    LDA #$FFFF
+    STA $06FA
+    SEP #$20
+    RTL
 
   bgm_halt:
     LDA $06F2
@@ -351,6 +490,8 @@ code_028B91 {
 
     LDA #$01
     JSL $@func_0281C9
+    LDA $APUIO0
+    BRK #$00
     LDA #$F0
     STA $APUIO0
     LDA #$03
@@ -393,6 +534,15 @@ code_028B91 {
 
   msu_begin_load:
     LDX $06F2                   ;Set track number
+    CPX #$001B
+    BNE msu_begin_continue
+
+    LDA #00
+    STA $2007
+
+    BRA bgm_halt
+
+  msu_begin_continue:
     LDA @bgm_track_map, X
     STA $2004
     STZ $2005

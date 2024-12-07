@@ -26,6 +26,7 @@ public partial class ControlTest : Control
     internal static ProjectRoot Project;
     internal static DbRoot DbRoot;
     internal static bool IsEffect;
+    internal static bool UseOffset;
 
     internal static int _mapWidth, _mapHeight;
 
@@ -39,13 +40,13 @@ public partial class ControlTest : Control
         base._EnterTree();
     }
 
-    public static void LoadScene(int id, bool effect = false)
+    public static void LoadScene(int id)
     {
         var state = RomState = RomState.FromScene(Project.BaseDir, DbRoot, "scene_meta", id);
 
 
 
-        var set = effect ? state.EffectTileset : state.MainTileset;
+        var set = IsEffect ? state.EffectTileset : state.MainTileset;
         var pal = state.CGRAM;
         var vram = state.VRAM;
 
@@ -78,7 +79,7 @@ public partial class ControlTest : Control
                     var priority = (tileData & 0x2000) != 0;
                     var hMirror = (tileData & 0x4000) != 0;
                     var vMirror = (tileData & 0x8000) != 0;
-                    var vOffset = (tile << 5) + 0x4000;// + (effect ? 0x2000 : 0);
+                    var vOffset = (tile << 5) + 0x4000 + (UseOffset ? 0x2000 : 0);
                     var pOffset = (tileData & 0x1C00) >> 4;
 
                     offsetBuffer[0] = vOffset;
@@ -130,9 +131,9 @@ public partial class ControlTest : Control
         TilesetImage = Image.CreateFromData(128, 512, false, Image.Format.Rgba8, fullTexture);
         TilesetTexture = ImageTexture.CreateFromImage(TilesetImage);
 
-        var map = effect ? state.EffectTilemap : state.MainTilemap;
-        int tileWidth = TilemapTileWidth = effect ? state.EffectTilemapW : state.MainTilemapW;
-        int tileHeight = TilemapTileHeight = effect ? state.EffectTilemapH : state.MainTilemapH;
+        var map = IsEffect ? state.EffectTilemap : state.MainTilemap;
+        int tileWidth = TilemapTileWidth = IsEffect ? state.EffectTilemapW : state.MainTilemapW;
+        int tileHeight = TilemapTileHeight = IsEffect ? state.EffectTilemapH : state.MainTilemapH;
         _mapWidth = tileWidth << 8;
         _mapHeight = tileHeight << 8;
         int mapOffset = 0;
@@ -166,7 +167,7 @@ public partial class ControlTest : Control
         TilemapImage = Image.CreateFromData(_mapWidth, _mapHeight, false, Image.Format.Rgba8, mapTextureBytes);
         TilemapTexture = ImageTexture.CreateFromImage(TilemapImage);
         TilemapRatio = (float)_mapWidth / _mapHeight;
-        IsEffect = effect;
+        //IsEffect = effect;
         CurrentScene = id;
 
         TilemapControl.Instance?.Reset();
@@ -276,13 +277,15 @@ public partial class ControlTest : Control
 
     public static void SaveMap()
     {
-        var map = RomState.MainTilemap;
-        var outSize = (RomState.MainTilemapW * RomState.MainTilemapH) << 8;
+        int tileW = IsEffect ? RomState.EffectTilemapW : RomState.MainTilemapW;
+        int tileH = IsEffect ? RomState.EffectTilemapH : RomState.MainTilemapH;
+        var map = IsEffect ? RomState.EffectTilemap : RomState.MainTilemap;
+        var outSize = (tileW * tileH) << 8;
 
-        using var file = File.Create(RomState.MainTilemapPath);
+        using var file = File.Create(IsEffect ? RomState.EffectTilemapPath : RomState.MainTilemapPath);
 
-        file.WriteByte(RomState.MainTilemapW);
-        file.WriteByte(RomState.MainTilemapH);
+        file.WriteByte((byte)tileW);
+        file.WriteByte((byte)tileH);
         for (int x = 0; x < outSize; x++)
             file.WriteByte(map[x]);
     }

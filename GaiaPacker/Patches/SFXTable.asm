@@ -21,7 +21,7 @@ sfx_table:
 
 	
   code_0290C9:
-    REP #$20
+    ;REP #$20
     LDX #&sfx_table
     STX $4A
     SEP #$20

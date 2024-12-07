@@ -56,12 +56,16 @@ public partial class TilesetControl : Control
     {
         base._Input(@event);
 
-        if(@event is InputEventMouseButton mouse)
+        if (@event is InputEventMouseButton mouse)
         {
+            var pos = mouse.Position - GlobalPosition;
+            if (pos.X < 0 || pos.Y < 0 || pos.X > Size.X || pos.Y > Size.Y)
+                return;
+
             if (mouse.ButtonIndex == MouseButton.Left)
             {
-                var tileX = (int)(mouse.Position.X / _tileSize);
-                var tileY = (int)(mouse.Position.Y / _tileSize);
+                var tileX = (int)(pos.X / _tileSize);
+                var tileY = (int)(pos.Y / _tileSize);
 
                 ControlTest.SelectedIndex = (tileY << 3) + tileX;
                 QueueRedraw();

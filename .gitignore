@@ -13,3 +13,5 @@
 /GaiaPacker/bin/Release
 /GaiaLabs/.vs
 /GaiaLabs/GaiaLabs.sln
+/GaiaLib/bin/ExportDebug/net8.0
+/GaiaLabs/export
