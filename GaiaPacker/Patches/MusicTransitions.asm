@@ -50,7 +50,7 @@ count_check {
     PHA
     LDA token
     BEQ count_ret
-    BRK #$00
+    ;BRK #$00
     BMI no_msu_fade
 
     ;LDA $0D72
@@ -135,7 +135,7 @@ func_03D9F6 {
     BEQ code_03DA00
     
   do_check:
-    BRK #$00
+    ;BRK #$00
     PHX
     ;PHY
     ;LDA $0D72     ;Is music playing?
@@ -301,7 +301,7 @@ code_03DBBC {
 }
 
 ---------------------------------------------
-;Hook for stopping music via COP 05
+;Hook for fading music via COP 05
 
 func_03E1AA {
     SEP #$20
@@ -311,13 +311,13 @@ func_03E1AA {
     REP #$20
     LDA #$00FF
     STA $24
-    COP [C2]
+    COP [C1]
     LDA $24
     BEQ func_03E1D6
+    DEC
     SEP #$20
     STA $2006
     REP #$20
-    DEC
     STA $24
     RTL
 
@@ -352,14 +352,14 @@ code_03E1C1 {
 
 func_03E1D6 {
     SEP #$20
-    BRK #$00
+    ;BRK #$00
     LDA msu_flag
     BEQ cop_stop_normal   ;Assume standard process when no MSU
 
-    LDA $0D72
-    CMP #$1B
-    BNE bgm_load_wait   ;Normal process when current track is not 1B
-
+    ;LDA $0D72
+    ;CMP #$1B
+    ;BNE bgm_load_wait   ;Normal process when current track is not 1B
+    
     LDA #$00
     STA $2007
     BRA bgm_load_wait     ;Stop playback, then trigger music load
@@ -426,8 +426,10 @@ func_03E21E {
     
     LDA $@music_array_01CBA6-3, X
     STA $3E
+    STA $0687
     LDA $@music_array_01CBA6-2, X
     STA $3F
+    STA $0688
 
     LDA $06FA
     STA $06F2
@@ -466,11 +468,11 @@ code_028B91 {
     BRK #$00
 
     LDA $06F2
-    BEQ bgm_halt           ;Always branch to halt when reset is loading
+    BEQ bgm_check           ;Always branch to halt when reset is loading
 
     LDA msu_flag
     BNE msu_begin_load
-    BRA bgm_halt
+    BRA bgm_check
 
   bgm_load_external:
     BRK #$00
@@ -482,12 +484,15 @@ code_028B91 {
     SEP #$20
     RTL
 
-  bgm_halt:
+  bgm_check:
     LDA $06F2
     CMP $0D72
     BNE $01
-    RTS
+    RTS                         ;Check against current track, if no change then quit
 
+    STA $0D72
+
+  bgm_halt:
     LDA #$01
     JSL $@func_0281C9
     LDA $APUIO0
@@ -502,7 +507,7 @@ code_028B91 {
     JSL $@func_0281C9
     
   bgm_init:
-    LDA $06F2
+    LDA $0D72
     CMP #1B
     BEQ bgm_load_empty
 
@@ -510,8 +515,8 @@ code_028B91 {
     STX $46
     LDX $40
     STX $48
-    LDA $06F2
-    STA $0D72
+    ;LDA $06F2
+    ;STA $0D72
 
   bgm_load:
     JSL $@func_02909B
@@ -528,8 +533,8 @@ code_028B91 {
     STX $46
     LDX #*bgm_no_music
     STX $48
-    LDA #$1B
-    STA $0D72
+    ;LDA #$1B
+    ;STA $0D72
     BRA bgm_load
 
   msu_begin_load:
@@ -540,6 +545,13 @@ code_028B91 {
     LDA #00
     STA $2007
 
+    LDA $0D72
+    CMP #$1B
+    BNE $01
+    RTS
+
+    LDA #$1B
+    STA $0D72
     BRA bgm_halt
 
   msu_begin_continue:
@@ -554,7 +566,7 @@ code_028B91 {
     LDA $2000
     AND #08
     BEQ msu_start_playback
-    JMP bgm_halt
+    JMP bgm_halt                ;Track not found, revert to normal process
 
   msu_start_playback:
     LDA #FF                     ;Max volume
@@ -562,7 +574,7 @@ code_028B91 {
 
     LDA @bgm_loop_map, X
     BEQ msu_start
-    LDA #03
+    LDA #$03
     BRA msu_write
 
   msu_start:
@@ -570,10 +582,13 @@ code_028B91 {
 
   msu_write:
     STA $2007                   ;Start playback
-    LDA #1B
-    STA $06F2
-    JMP bgm_halt
+    LDA $0D72
+    CMP #$1B
+    BEQ msu_return
 
+    LDA #1B
+    STA $0D72
+    JMP bgm_halt
 
   msu_return:
     RTS
