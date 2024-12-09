@@ -395,10 +395,10 @@ code_03E1EB {
 
 code_03E208 {
     COP [DA] ( #01 )
-    SEP #$20
-    LDA #$01
-    STA $APUIO0
-    REP #$20
+    ;SEP #$20
+    ;LDA #$01
+    ;STA $APUIO0
+    ;REP #$20
     COP [C2]
     STZ $06F8
     STZ $06FA
@@ -412,7 +412,7 @@ func_03E21E {
     BEQ code_03E254
     BMI code_03E254
 
-  immed_load_normal:
+  ;immed_load_normal:
     REP #$20
     TXA 
     ASL 
@@ -420,9 +420,9 @@ func_03E21E {
     ADC $06FA
     TAX 
     
-    LDA msu_flag
-    AND #$00FF
-    BEQ immed_load_continue
+    ;LDA msu_flag
+    ;AND #$00FF
+    ;BEQ immed_load_continue
     
     LDA $@music_array_01CBA6-3, X
     STA $3E
@@ -437,23 +437,27 @@ func_03E21E {
     SEP #$20
     JML @code_028B91
 
-  immed_load_continue:
-    LDA $@music_array_01CBA6-3, X
-    STA $46
-    STA $0687
-    LDA $@music_array_01CBA6-2, X
-    STA $47
-    STA $0688
-    JSL $@func_028191
-    JSL $@func_02909B
-    JSL $@func_0281A2
+  ;immed_load_continue:
+    ;LDA $@music_array_01CBA6-3, X
+    ;STA $46
+    ;STA $0687
+    ;LDA $@music_array_01CBA6-2, X
+    ;STA $47
+    ;STA $0688
+    ;JSL $@func_028191
+    ;JSL $@func_02909B
+    ;JSL $@func_0281A2
     
-    LDA #$FFFF
-    STA $06FA
-
-    SEP #$20
+    ;LDA $06FA
+    ;STA $06F2
+    ;SEP #$20
+    ;STA $0D72
     ;LDA #$01
     ;STA $APUIO0
+    ;REP #$20
+    
+    ;LDA #$FFFF
+    ;STA $06FA
 }
 
 
@@ -465,24 +469,13 @@ code_03E254 {
 ;Hook for music asset loading (from scene_meta)
 
 code_028B91 {
-    BRK #$00
+    ;BRK #$00
 
     LDA $06F2
-    BEQ bgm_check           ;Always branch to halt when reset is loading
+    BEQ bgm_check             ;Always branch to halt when reset is loading
 
     LDA msu_flag
     BNE msu_begin_load
-    BRA bgm_check
-
-  bgm_load_external:
-    BRK #$00
-
-  bgm_load_exit:
-    REP #$20
-    LDA #$FFFF
-    STA $06FA
-    SEP #$20
-    RTL
 
   bgm_check:
     LDA $06F2
@@ -495,8 +488,6 @@ code_028B91 {
   bgm_halt:
     LDA #$01
     JSL $@func_0281C9
-    LDA $APUIO0
-    BRK #$00
     LDA #$F0
     STA $APUIO0
     LDA #$03
@@ -519,6 +510,10 @@ code_028B91 {
     ;STA $0D72
 
   bgm_load:
+    LDX $46
+    STX $0687
+    LDX $47
+    STX $0688
     JSL $@func_02909B
     LDA #$03
     JSL $@func_0281C9
@@ -566,6 +561,8 @@ code_028B91 {
     LDA $2000
     AND #08
     BEQ msu_start_playback
+    LDA $06F2
+    STA $0D72
     JMP bgm_halt                ;Track not found, revert to normal process
 
   msu_start_playback:
@@ -592,6 +589,15 @@ code_028B91 {
 
   msu_return:
     RTS
+
+}
+
+bgm_load_exit {
+    REP #$20
+    LDA #$FFFF
+    STA $06FA
+    SEP #$20
+    RTL
 }
 
 ----------------------------------------------
