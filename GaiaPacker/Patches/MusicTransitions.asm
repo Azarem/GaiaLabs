@@ -137,17 +137,17 @@ func_03D9F6 {
   do_check:
     ;BRK #$00
     PHX
-    ;PHY
-    ;LDA $0D72     ;Is music playing?
-    ;BEQ return
+    PHY
+    LDA $0D72           ;Is music playing?
+    BEQ return          ;Should only be on boot
     LDX meta_next_id
     LDA @bgm_table, X
-    ;BMI return
-    ;TAY
+    BMI return          ;This is important
+    TAY
     LDX meta_current_id
-    ;LDA @bgm_table, X
-    ;BMI return
-    ;TYA
+    LDA @bgm_table, X
+    BMI return
+    TYA
     CMP @bgm_table, X
     BEQ return
 
@@ -166,7 +166,7 @@ func_03D9F6 {
     STA token          ;Store value #F2 in token to flag a music fade
   
   return:
-    ;PLY
+    PLY
     PLX
     JSR $&sub_03DABB
 }
@@ -354,7 +354,7 @@ func_03E1D6 {
     SEP #$20
     ;BRK #$00
     LDA msu_flag
-    BEQ cop_stop_normal   ;Assume standard process when no MSU
+    BEQ bgm_load_wait   ;Always skip APU silent since we are always branching to the standard load process
 
     ;LDA $0D72
     ;CMP #$1B
@@ -364,23 +364,23 @@ func_03E1D6 {
     STA $2007
     BRA bgm_load_wait     ;Stop playback, then trigger music load
 
-  cop_stop_normal:
-    LDA #$F0
-    STA $APUIO0
-    REP #$20
-    COP [C2]
-    SEP #$20
-    LDA $APUIO0
-    REP #$20
-    BEQ code_03E1EB
-    RTL 
+  ;cop_stop_normal:
+    ;LDA #$F0
+    ;STA $APUIO0
+    ;REP #$20
+    ;COP [C2]
+    ;SEP #$20
+    ;LDA $APUIO0
+    ;REP #$20
+    ;BEQ code_03E1EB
+    ;RTL 
 }
 
 code_03E1EB {
-    COP [C2]
-    SEP #$20
-    LDA #$FF
-    STA $APUIO0
+    ;COP [C2]
+    ;SEP #$20
+    ;LDA #$FF
+    ;STA $APUIO0
 
   bgm_load_wait:
     REP #$20

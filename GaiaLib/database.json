@@ -4535,15 +4535,18 @@
       ] },
     { "name": "mtA2_actor_07E7F0", "movable": true, "group": "mountain_temple", "parts": [
         { "start": "07E7F0", "end": "07E7F3", "name": "h_mtA2_actor_07E7F0", "struct": "h_actor" },
-        { "start": "07E7F3", "end": "07E843", "name": "e_mtA2_actor_07E7F0", "struct": "Code" }
+        { "start": "07E7F3", "end": "07E841", "name": "e_mtA2_actor_07E7F0", "struct": "Code" },
+        { "start": "07E841", "end": "07E843", "name": "f_mtA2_actor_07E7F0_destroy", "struct": "Code" }
       ] },
     { "name": "mtA5_actor_07E843", "movable": true, "group": "mountain_temple", "parts": [
         { "start": "07E843", "end": "07E846", "name": "h_mtA5_actor_07E843", "struct": "h_actor" },
-        { "start": "07E846", "end": "07E896", "name": "e_mtA5_actor_07E843", "struct": "Code" }
+        { "start": "07E846", "end": "07E896", "name": "e_mtA5_actor_07E843", "struct": "Code" },
+        { "start": "07E841", "end": "07E843", "name": "f_mtA5_actor_07E843_destroy", "struct": "Code" }
       ] },
     { "name": "mtA5_actor_07E896", "movable": true, "group": "mountain_temple", "parts": [
         { "start": "07E896", "end": "07E899", "name": "h_mtA5_actor_07E896", "struct": "h_actor" },
-        { "start": "07E899", "end": "07E901", "name": "e_mtA5_actor_07E896", "struct": "Code" }
+        { "start": "07E899", "end": "07E901", "name": "e_mtA5_actor_07E896", "struct": "Code" },
+        { "start": "07E841", "end": "07E843", "name": "f_mtA5_actor_07E896_destroy", "struct": "Code" }
       ] },
     { "name": "gw85_actor_07E901", "movable": true, "group": "great_wall", "parts": [
         { "start": "07E901", "end": "07E904", "name": "h_gw85_actor_07E901", "struct": "h_actor" },

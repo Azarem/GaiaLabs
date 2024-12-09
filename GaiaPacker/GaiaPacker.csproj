@@ -114,6 +114,12 @@
     <None Update="transforms\chunk_008000.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="transforms\mountain_temple\mtA2_actor_07E7F0.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\mountain_temple\mtA5_actor_07E843.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="transforms\pyramid\pyDD_teleporter.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
