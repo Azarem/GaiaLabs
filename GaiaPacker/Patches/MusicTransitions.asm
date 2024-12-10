@@ -1,5 +1,6 @@
 ﻿?BANK 03
 
+?INCLUDE 'chunk_008000'
 ?INCLUDE 'chunk_03BAE1'
 ?INCLUDE 'chunk_028000'
 
@@ -91,6 +92,52 @@ count_check {
     RTS
 }
 
+---------------------------------------
+
+cop_handler_0A_0087C9 {
+    SEP #$20
+    LDA msu_flag
+    BEQ cop0A_normal           ;Normal process when no MSU
+
+    LDA $0D72
+    CMP #$1B
+    BNE cop0A_normal           ;Normal process when current track is not 1B
+    
+    LDA [$0A]
+    ;INC $0A
+    ;AND #$00FF
+    CMP #$7F
+    BEQ cop0A_msu_pause        ;Stop playback on 7F
+    
+    LDX $06F2
+    LDA @bgm_loop_map, X
+    BEQ $04
+
+    LDA #$03
+    BRA $02
+
+    LDA #$01
+
+    STA $2007                   ;Start playback on other commands (only 01)
+    BRA cop0A_exit
+
+  cop0A_msu_pause:
+    STZ $2007
+    BRA cop0A_exit
+
+  cop0A_normal:
+    LDA [$0A]
+    STA $APUIO0
+
+  cop0A_exit:
+    REP #$20
+    TYX
+    LDA $0A
+    INC
+    STA $02, S
+    RTI 
+}
+
 --------------------------------------
 ;Hook for SPC init
 
@@ -134,38 +181,38 @@ func_03D9F6 {
     BMI code_03DA03
     BEQ code_03DA00
     
-  do_check:
+  ;do_check:
     ;BRK #$00
     PHX
     PHY
     LDA $0D72           ;Is music playing?
-    BEQ return          ;Should only be on boot
+    BEQ change_return          ;Should only be on boot
     LDX meta_next_id
     LDA @bgm_table, X
-    BMI return          ;This is important
+    BMI change_return          ;This is important
     TAY
     LDX meta_current_id
     LDA @bgm_table, X
-    BMI return
+    BMI change_return
     TYA
     CMP @bgm_table, X
-    BEQ return
+    BEQ change_return
 
     LDA $0D72
     CMP #1B
     BNE do_f2
 
     LDA msu_flag
-    BEQ return
+    BEQ change_return
 
-    LDA #6B
+    LDA #6B             ;Flag an MSU fade with a positive value (any value works)
     BRA $02
 
   do_f2:
     LDA #F2
     STA token          ;Store value #F2 in token to flag a music fade
   
-  return:
+  change_return:
     PLY
     PLX
     JSR $&sub_03DABB
@@ -533,21 +580,20 @@ code_028B91 {
     BRA bgm_load
 
   msu_begin_load:
-    LDX $06F2                   ;Set track number
+    LDX $06F2                   
     CPX #$001B
-    BNE msu_begin_continue
+    BNE msu_begin_continue      ;If 1B is not requested, continue
 
-    LDA #00
-    STA $2007
+    STZ $2007                   ;Stop playback when 1B is requested
 
     LDA $0D72
     CMP #$1B
     BNE $01
-    RTS
+    RTS                         ;Exit if 1B is already playing
 
     LDA #$1B
     STA $0D72
-    BRA bgm_halt
+    BRA bgm_halt                ;Set loading track to 1B and begin halt
 
   msu_begin_continue:
     LDA @bgm_track_map, X
