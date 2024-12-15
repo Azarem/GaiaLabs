@@ -21,10 +21,10 @@ namespace GaiaLib.Rom
         //public readonly byte[] WRAM = new byte[0x20000];
         public readonly byte[] MainTileset = new byte[0x800];
         public readonly byte[] EffectTileset = new byte[0x800];
-        public readonly byte[] MainTilemap = new byte[0x2000];
+        public byte[] MainTilemap = new byte[0x2000];
         public byte MainTilemapW, MainTilemapH;
         public string MainTilemapPath;
-        public readonly byte[] EffectTilemap = new byte[0x2000];
+        public byte[] EffectTilemap = new byte[0x2000];
         public byte EffectTilemapW, EffectTilemapH;
         public string EffectTilemapPath;
 

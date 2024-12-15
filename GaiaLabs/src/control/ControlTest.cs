@@ -6,12 +6,15 @@ using Godot;
 using System;
 using System.IO;
 using System.Text.Json;
+using static Godot.WebSocketPeer;
 
 public partial class ControlTest : Control
 {
     //private ImageTexture _texture;
     internal static byte[] PaletteData;
     internal static RomState RomState;
+    internal static byte[] TilemapCurrent { get => IsEffect ? RomState.EffectTilemap : RomState.MainTilemap; }
+    internal static byte[] TilesetCurrent { get => IsEffect ? RomState.EffectTileset : RomState.MainTileset; }
     internal static byte[] TilesetBitmap;
     internal static Image TilesetImage;
     internal static ImageTexture TilesetTexture;
@@ -19,7 +22,8 @@ public partial class ControlTest : Control
     internal static Image TilemapImage;
     internal static ImageTexture TilemapTexture;
     internal static float TilemapRatio;
-    internal static int TilemapTileWidth, TilemapTileHeight;
+    internal static int TilemapTileWidth { get => IsEffect ? RomState.EffectTilemapW : RomState.MainTilemapW; }
+    internal static int TilemapTileHeight { get => IsEffect ? RomState.EffectTilemapH : RomState.MainTilemapH; }
     internal static int SelectedIndex;
     internal static int CurrentScene;
 
@@ -30,25 +34,27 @@ public partial class ControlTest : Control
 
     internal static int _mapWidth, _mapHeight;
 
-
     public unsafe override void _EnterTree()
     {
         Project = ProjectRoot.Load();
         DbRoot = DbRoot.FromFile(Project.DatabasePath);
-        LoadScene(0x01);
 
         base._EnterTree();
     }
 
     public static void LoadScene(int id)
     {
-        var state = RomState = RomState.FromScene(Project.BaseDir, DbRoot, "scene_meta", id);
+        RomState = RomState.FromScene(Project.BaseDir, DbRoot, "scene_meta", id);
+        CurrentScene = id;
+        ReloadTileset();
+        ReloadTilemap();
+    }
 
-
-
-        var set = IsEffect ? state.EffectTileset : state.MainTileset;
-        var pal = state.CGRAM;
-        var vram = state.VRAM;
+    public static void ReloadTileset()
+    {
+        var set = TilesetCurrent;// IsEffect ? state.EffectTileset : state.MainTileset;
+        var pal = RomState.CGRAM;
+        var vram = RomState.VRAM;
 
         var fullPalette = PaletteData = new byte[256 * 4];
         var fullTexture = TilesetBitmap = new byte[16 * 16 * 16 * 16 * 4];
@@ -131,9 +137,13 @@ public partial class ControlTest : Control
         TilesetImage = Image.CreateFromData(128, 512, false, Image.Format.Rgba8, fullTexture);
         TilesetTexture = ImageTexture.CreateFromImage(TilesetImage);
 
-        var map = IsEffect ? state.EffectTilemap : state.MainTilemap;
-        int tileWidth = TilemapTileWidth = IsEffect ? state.EffectTilemapW : state.MainTilemapW;
-        int tileHeight = TilemapTileHeight = IsEffect ? state.EffectTilemapH : state.MainTilemapH;
+    }
+
+    public static void ReloadTilemap()
+    {
+        var map = TilemapCurrent;// = IsEffect ? state.EffectTilemap : state.MainTilemap;
+        int tileWidth = TilemapTileWidth;// = IsEffect ? state.EffectTilemapW : state.MainTilemapW;
+        int tileHeight = TilemapTileHeight;// = IsEffect ? state.EffectTilemapH : state.MainTilemapH;
         _mapWidth = tileWidth << 8;
         _mapHeight = tileHeight << 8;
         int mapOffset = 0;
@@ -156,7 +166,7 @@ public partial class ControlTest : Control
                         {
                             for (int x = 0; x < 16 * 4; x++)
                             {
-                                mapTextureBytes[dstOffset + x] = fullTexture[srcOffset + x];
+                                mapTextureBytes[dstOffset + x] = TilesetBitmap[srcOffset + x];
                             }
                             srcOffset += 16 * 8 * 4;
                             dstOffset += _mapWidth << 2;
@@ -167,16 +177,16 @@ public partial class ControlTest : Control
         TilemapImage = Image.CreateFromData(_mapWidth, _mapHeight, false, Image.Format.Rgba8, mapTextureBytes);
         TilemapTexture = ImageTexture.CreateFromImage(TilemapImage);
         TilemapRatio = (float)_mapWidth / _mapHeight;
-        //IsEffect = effect;
-        CurrentScene = id;
 
         TilemapControl.Instance?.Reset();
-        TilesetControl.Instance?.QueueRedraw();
+        WidthEdit.Instance?.Reset();
+        HeightEdit.Instance?.Reset();
     }
 
     public override void _Ready()
     {
         base._Ready();
+        LoadScene(0x01);
     }
 
     //private Vector2 GetDrawSize()
@@ -277,16 +287,146 @@ public partial class ControlTest : Control
 
     public static void SaveMap()
     {
-        int tileW = IsEffect ? RomState.EffectTilemapW : RomState.MainTilemapW;
-        int tileH = IsEffect ? RomState.EffectTilemapH : RomState.MainTilemapH;
-        var map = IsEffect ? RomState.EffectTilemap : RomState.MainTilemap;
-        var outSize = (tileW * tileH) << 8;
+        //int tileW = IsEffect ? RomState.EffectTilemapW : RomState.MainTilemapW;
+        //int tileH = IsEffect ? RomState.EffectTilemapH : RomState.MainTilemapH;
+        //var map = IsEffect ? RomState.EffectTilemap : RomState.MainTilemap;
+        var outSize = (TilemapTileWidth * TilemapTileHeight) << 8;
 
         using var file = File.Create(IsEffect ? RomState.EffectTilemapPath : RomState.MainTilemapPath);
 
-        file.WriteByte((byte)tileW);
-        file.WriteByte((byte)tileH);
+        file.WriteByte((byte)TilemapTileWidth);
+        file.WriteByte((byte)TilemapTileHeight);
         for (int x = 0; x < outSize; x++)
-            file.WriteByte(map[x]);
+            file.WriteByte(TilemapCurrent[x]);
+    }
+
+    public static void ChangeHeight(int height)
+    {
+        var isReverse = height < 0;
+        if (isReverse)
+            height = -height;
+
+        var oldHeight = TilemapTileHeight;
+        if (oldHeight == height)
+            return;
+
+        if (isReverse)
+        {
+            var newMap = new byte[0x2000];
+            var oldMap = TilemapCurrent;
+            var srcOffset = 0;
+            var dstOffset = 0;
+            var srcPos = 0;
+            var dstPos = 0;
+            var copyHeight = height;
+
+            if (height > oldHeight)
+            {
+                dstOffset = height - oldHeight;
+                copyHeight = oldHeight;
+            }
+            else
+                srcOffset = oldHeight - height;
+
+            var width = TilemapTileWidth;
+            var stride = width << 8;
+
+            void writeLine()
+            {
+                for (int i = 0; i < stride; i++)
+                    newMap[dstPos++] = oldMap[srcPos++];
+            }
+
+            for (int s = 0; s < dstOffset; s++)
+                dstPos += stride;
+            for (int s = 0; s < srcOffset; s++)
+                srcPos += stride;
+
+            for (int s = 0; s < copyHeight; s++)
+                writeLine();
+
+            if (IsEffect)
+            {
+                RomState.EffectTilemapH = (byte)height;
+                RomState.EffectTilemap = newMap;
+            }
+            else
+            {
+                RomState.MainTilemapH = (byte)height;
+                RomState.MainTilemap = newMap;
+            }
+        }
+        else if (IsEffect)
+            RomState.EffectTilemapH = (byte)height;
+        else
+            RomState.MainTilemapH = (byte)height;
+
+        ReloadTilemap();
+    }
+
+    internal static void ChangeWidth(int width)
+    {
+        var isReverse = width < 0;
+        if (isReverse)
+            width = -width;
+
+        var oldWidth = TilemapTileWidth;
+        if (oldWidth == width)
+            return;
+
+        var newMap = new byte[0x2000];
+        var oldMap = TilemapCurrent;
+        var srcOffset = 0;
+        var dstOffset = 0;
+        var srcPos = 0;
+        var dstPos = 0;
+        var copyWidth = width;
+
+        if (width > oldWidth)
+        {
+            dstOffset = width - oldWidth;
+            copyWidth = oldWidth;
+        }
+        else
+            srcOffset = oldWidth - width;
+
+        var height = TilemapTileHeight;
+
+        void writeBlock()
+        {
+            for (int i = 0; i < 0x100; i++)
+                newMap[dstPos++] = oldMap[srcPos++];
+        }
+
+        for (int y = 0; y < height; y++)
+        {
+            if (isReverse)
+            {
+                for (int s = 0; s < dstOffset; s++) dstPos += 0x100;
+                for (int s = 0; s < srcOffset; s++) srcPos += 0x100;
+            }
+
+            for (int s = 0; s < copyWidth; s++)
+                writeBlock();
+
+            if (!isReverse)
+            {
+                for (int s = 0; s < dstOffset; s++) dstPos += 0x100;
+                for (int s = 0; s < srcOffset; s++) srcPos += 0x100;
+            }
+        }
+
+        if (IsEffect)
+        {
+            RomState.EffectTilemapW = (byte)width;
+            RomState.EffectTilemap = newMap;
+        }
+        else
+        {
+            RomState.MainTilemapW = (byte)width;
+            RomState.MainTilemap = newMap;
+        }
+
+        ReloadTilemap();
     }
 }

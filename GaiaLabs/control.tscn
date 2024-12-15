@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://do1c8o3xqbgxt"]
+[gd_scene load_steps=16 format=3 uid="uid://do1c8o3xqbgxt"]
 
 [ext_resource type="Script" path="res://src/control/ControlTest.cs" id="1_m5b74"]
 [ext_resource type="Script" path="res://src/control/SceneEdit.cs" id="2_fkjs4"]
@@ -9,9 +9,12 @@
 [ext_resource type="Script" path="res://src/control/OffsetSelector.cs" id="4_1bcks"]
 [ext_resource type="Script" path="res://src/control/PropertyPanel.cs" id="4_7r147"]
 [ext_resource type="Script" path="res://src/control/PreviewPanel.cs" id="5_fvr7i"]
+[ext_resource type="Script" path="res://src/control/WidthEdit.cs" id="5_u15pj"]
 [ext_resource type="Script" path="res://src/control/SaveButton.cs" id="5_xo0lo"]
 [ext_resource type="Script" path="res://src/control/TilesetWindow.cs" id="6_cprim"]
+[ext_resource type="Script" path="res://src/control/HeightEdit.cs" id="6_wectv"]
 [ext_resource type="Script" path="res://src/control/TilesetControl.cs" id="7_cquq4"]
+[ext_resource type="Script" path="res://src/control/TilemapContainer.cs" id="7_kdlna"]
 
 [node name="Control" type="Control"]
 texture_filter = 1
@@ -62,6 +65,24 @@ text = "Offset"
 layout_mode = 2
 script = ExtResource("4_1bcks")
 
+[node name="Label4" type="Label" parent="VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "W"
+
+[node name="LineEdit2" type="LineEdit" parent="VBoxContainer/HFlowContainer"]
+layout_mode = 2
+max_length = 2
+script = ExtResource("5_u15pj")
+
+[node name="Label5" type="Label" parent="VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "H"
+
+[node name="LineEdit3" type="LineEdit" parent="VBoxContainer/HFlowContainer"]
+layout_mode = 2
+max_length = 2
+script = ExtResource("6_wectv")
+
 [node name="Button" type="Button" parent="VBoxContainer/HFlowContainer"]
 layout_mode = 2
 text = "Save"
@@ -80,7 +101,11 @@ script = ExtResource("7_cquq4")
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer"]
 layout_mode = 2
 
-[node name="TilemapControl" type="Control" parent="VBoxContainer/HSplitContainer/ScrollContainer"]
+[node name="TilemapContainer" type="Container" parent="VBoxContainer/HSplitContainer/ScrollContainer"]
+layout_mode = 2
+script = ExtResource("7_kdlna")
+
+[node name="TilemapControl" type="Control" parent="VBoxContainer/HSplitContainer/ScrollContainer/TilemapContainer"]
 layout_mode = 2
 script = ExtResource("3_3gk7b")
 
