@@ -3,14 +3,13 @@ using GaiaLib.Asm;
 using GaiaLib.Database;
 using GaiaLib.Rom;
 using System.Globalization;
-using System.Text.Json;
 
-char[]
-    _whitespace = [' ', '\t'],
-    _operators = ['-', '+'],
-    _commaspace = [',', ' ', '\t'],
-    _addressspace = ['@', '&', '^', '%', '*'],
-    _objectspace = ['<', '['];
+//char[]
+//    _whitespace = [' ', '\t'],
+//    _operators = ['-', '+'],
+//    _commaspace = [',', ' ', '\t'],
+//    _addressspace = ['@', '&', '^', '%', '*'],
+//    _objectspace = ['<', '['];
 
 string? path = "project.json";
 var isUnpack = false;
@@ -31,36 +30,37 @@ foreach (var a in args)
 }
 
 
-ProjectRoot project;
+ProjectRoot project = ProjectRoot.Load();
 
-var baseDir = Environment.CurrentDirectory;
-using (var file = File.OpenRead(path))
-{
-    project = JsonSerializer.Deserialize<ProjectRoot>(file, DbRoot.JsonOptions)
-        ?? throw new("Error deserializing project file");
+//var baseDir = Environment.CurrentDirectory;
+//using (var file = File.OpenRead(path))
+//{
+//    project = JsonSerializer.Deserialize<ProjectRoot>(file, DbRoot.JsonOptions)
+//        ?? throw new("Error deserializing project file");
 
-    //#if DEBUG
-    //    baseDir = "C:\\Games\\Dump";
-    //#else
-    baseDir = string.IsNullOrWhiteSpace(project.BaseDir) ? Directory.GetParent(file.Name).FullName : project.BaseDir;
-    //#endif
-}
+//    //#if DEBUG
+//    //    baseDir = "C:\\Games\\Dump";
+//    //#else
+//    baseDir = string.IsNullOrWhiteSpace(project.BaseDir) ? Directory.GetParent(file.Name).FullName : project.BaseDir;
+//    //#endif
+//}
+
 
 //#if DEBUG
 //var databasePath = "C:\\Games\\GaiaLabs\\GaiaLib\\database.json";// Path.Combine(baseDir, "database.json");
 //#else
-var databasePath = Path.Combine(baseDir, $"{project.Database}.json");
+//var databasePath = Path.Combine(baseDir, $"{project.Database}.json");
 //#endif
 //var filePath = Path.Combine(baseDir, "files");
 
 if (isUnpack)
 {
-    using (var reader = new RomReader(project.RomPath, databasePath))
-        reader.DumpDatabase(baseDir);
+    using (var reader = new RomReader(project.RomPath, project.DatabasePath))
+        reader.DumpDatabase(project.BaseDir);
     return;
 }
 
-using var outRom = File.Create(Path.Combine(baseDir, $"{project.Name}.smc"));
+using var outRom = File.Create(Path.Combine(project.BaseDir, $"{project.Name}.smc"));
 
 using (var rom = File.OpenRead(project.RomPath))
 {
@@ -77,7 +77,7 @@ while (outRom.Position < 0x400000)
 outRom.Position = 0xFFD7;
 outRom.WriteByte(0x0C);
 
-Process.Repack(baseDir, databasePath, WriteFile, WriteTransform);
+Process.Repack(project.BaseDir, project.DatabasePath, WriteFile, WriteTransform);
 
 //Calculate checksum
 int sum = 0;
@@ -247,7 +247,7 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoo
                 bool isRelative = parentOp != null &&
                     (parentOp.Code.Mode == AddressingMode.PCRelative || parentOp.Code.Mode == AddressingMode.PCRelativeLong);
 
-                var mathIx = label.IndexOfAny(_operators);
+                var mathIx = label.IndexOfAny(Process._operators);
                 int? offset = null;
                 bool useMarker = false;
                 if (mathIx > 0)

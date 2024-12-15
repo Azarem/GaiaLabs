@@ -3651,10 +3651,6 @@
         { "start": "05C456", "end": "05C459", "name": "h_fr39_kara", "struct": "h_actor" },
         { "start": "05C459", "end": "05C5B3", "name": "e_fr39_kara", "struct": "Code" }
       ] },
-    //{ "name": "fr39_lily", "movable": true, "group": "freejia", "parts": [
-    //    { "start": "05C5B3", "end": "05C5B6", "name": "h_fr39_lily", "struct": "h_actor" },
-    //    { "start": "05C5B6", "end": "05C77E", "name": "e_fr39_lily", "struct": "Code" }
-    //  ] },
     { "name": "fr39_lance", "movable": true, "group": "freejia", "parts": [
         { "start": "05C77E", "end": "05C781", "name": "h_fr39_lance", "struct": "h_actor" },
         { "start": "05C781", "end": "05CB30", "name": "e_fr39_lance", "struct": "Code" },
@@ -4102,29 +4098,29 @@
         { "start": "06C4BC", "end": "06C6DA", "name": "e_av6A_erik", "struct": "Code" },
         { "start": "06C4B7", "end": "06C4B9", "name": "av6A_erik_destroy", "struct": "Code" }
       ] },
-    { "name": "av6B_actor_06C6DA", "movable": true, "group": "angel_village", "parts": [
-        { "start": "06C6DA", "end": "06C6DD", "name": "head_06C6DA", "struct": "h_actor" },
-        { "start": "06C6DD", "end": "06C755", "name": "func_06C6DD", "struct": "Code" }
+    { "name": "av6B_ocean_ache", "movable": true, "group": "angel_village", "parts": [
+        { "start": "06C6DA", "end": "06C6DD", "name": "h_av6B_ocean_ache", "struct": "h_actor" },
+        { "start": "06C6DD", "end": "06C755", "name": "e_av6B_ocean_ache", "struct": "Code" }
       ] },
-    { "name": "av6B_villagers", "movable": true, "group": "angel_village", "parts": [
-        { "start": "06C755", "end": "06C758", "name": "h_av6B_villagers", "struct": "h_actor" },
-        { "start": "06C758", "end": "06CA10", "name": "e_av6B_villagers", "struct": "Code" }
+    { "name": "av6B_villagers1", "movable": true, "group": "angel_village", "parts": [
+        { "start": "06C755", "end": "06C758", "name": "h_av6B_villagers1", "struct": "h_actor" },
+        { "start": "06C758", "end": "06CA10", "name": "e_av6B_villagers1", "struct": "Code" }
       ] },
-    { "name": "av6C_actor_06CA10", "movable": true, "group": "angel_village", "parts": [
-        { "start": "06CA10", "end": "06CA13", "name": "h_av6C_actor_06CA10", "struct": "h_actor" },
-        { "start": "06CA13", "end": "06CACA", "name": "e_av6C_actor_06CA10", "struct": "Code" }
+    { "name": "av6C_villagers4", "movable": true, "group": "angel_village", "parts": [
+        { "start": "06CA10", "end": "06CA13", "name": "h_av6C_villagers4", "struct": "h_actor" },
+        { "start": "06CA13", "end": "06CACA", "name": "e_av6C_villagers4", "struct": "Code" }
       ] },
-    { "name": "av6B_actor_06CACA", "movable": true, "group": "angel_village", "parts": [
-        { "start": "06CACA", "end": "06CACD", "name": "h_av6B_actor_06CACA", "struct": "h_actor" },
-        { "start": "06CACD", "end": "06CBAF", "name": "e_av6B_actor_06CACA", "struct": "Code" }
+    { "name": "av6B_villagers2", "movable": true, "group": "angel_village", "parts": [
+        { "start": "06CACA", "end": "06CACD", "name": "h_av6B_villagers2", "struct": "h_actor" },
+        { "start": "06CACD", "end": "06CBAF", "name": "e_av6B_villagers2", "struct": "Code" }
       ] },
-    { "name": "av6B_actor_06CBAF", "movable": true, "group": "angel_village", "parts": [
-        { "start": "06CBAF", "end": "06CBB2", "name": "h_av6B_actor_06CBAF", "struct": "h_actor" },
-        { "start": "06CBB2", "end": "06CD47", "name": "e_av6B_actor_06CBAF", "struct": "Code" }
+    { "name": "av6B_villagers3", "movable": true, "group": "angel_village", "parts": [
+        { "start": "06CBAF", "end": "06CBB2", "name": "h_av6B_villagers3", "struct": "h_actor" },
+        { "start": "06CBB2", "end": "06CD47", "name": "e_av6B_villagers3", "struct": "Code" }
       ] },
-    { "name": "av6C_actor_06CD47", "movable": true, "group": "angel_village", "parts": [
-        { "start": "06CD47", "end": "06CD4A", "name": "h_av6C_actor_06CD47", "struct": "h_actor" },
-        { "start": "06CD4A", "end": "06CE82", "name": "e_av6C_actor_06CD47", "struct": "Code" }
+    { "name": "av6C_villagers5", "movable": true, "group": "angel_village", "parts": [
+        { "start": "06CD47", "end": "06CD4A", "name": "h_av6C_villagers5", "struct": "h_actor" },
+        { "start": "06CD4A", "end": "06CE82", "name": "e_av6C_villagers5", "struct": "Code" }
       ] },
     { "name": "av74_ishtar", "movable": true, "group": "angel_village", "parts": [
         { "start": "06CE82", "end": "06CE85", "name": "h_av74_ishtar", "struct": "h_actor" },
@@ -4132,9 +4128,9 @@
         { "start": "06CEAD", "end": "06CEB0", "name": "h_av74_ishtar_unused", "struct": "h_actor" },
         { "start": "06CEB0", "end": "06D04D", "name": "e_av74_ishtar_unused", "struct": "Code" }
       ] },
-    { "name": "av6C_actor_06D04D", "movable": true, "group": "angel_village", "parts": [
-        { "start": "06D04D", "end": "06D050", "name": "h_av6C_actor_06D04D", "struct": "h_actor" },
-        { "start": "06D050", "end": "06D0AB", "name": "e_av6C_actor_06D04D", "struct": "Code" }
+    { "name": "av6C_only_sleeping", "movable": true, "group": "angel_village", "parts": [
+        { "start": "06D04D", "end": "06D050", "name": "h_av6C_only_sleeping", "struct": "h_actor" },
+        { "start": "06D050", "end": "06D0AB", "name": "e_av6C_only_sleeping", "struct": "Code" }
       ] },
     { "name": "av6B_musician", "movable": true, "group": "angel_village", "parts": [
         { "start": "06D0AB", "end": "06D0AE", "name": "h_av6B_musician", "struct": "h_actor" },
@@ -4449,9 +4445,9 @@
         { "start": "07D237", "end": "07D23A", "name": "h_eu9D_bones", "struct": "h_actor" },
         { "start": "07D23A", "end": "07D252", "name": "e_eu9D_bones", "struct": "Code" }
       ] },
-    { "name": "eu9D_shop_queue", "movable": true, "group": "euro", "parts": [
-        { "start": "07D252", "end": "07D255", "name": "h_eu9D_shop_queue", "struct": "h_actor" },
-        { "start": "07D255", "end": "07D28E", "name": "e_eu9D_shop_queue", "struct": "Code" },
+    { "name": "eu91_shop_queue", "movable": true, "group": "euro", "parts": [
+        { "start": "07D252", "end": "07D255", "name": "h_eu91_shop_queue", "struct": "h_actor" },
+        { "start": "07D255", "end": "07D28E", "name": "e_eu91_shop_queue", "struct": "Code" },
         { "start": "07D28E", "end": "07D2AF", "name": "func_07D28E", "struct": "Code" },
         { "start": "07D2AF", "end": "07D2EB", "name": "func_07D2AF", "struct": "Code" },
         { "start": "07D2EB", "end": "07D302", "name": "func_07D2EB", "struct": "Code" },
@@ -5272,7 +5268,7 @@
         { "start": "09F4AA", "end": "09F510", "name": "code_09F4AA", "struct": "Code" }, //<-
         { "start": "09F69F", "end": "09F6A6", "name": "func_09F69F", "struct": "Code" }
       ] },
-    { "name": "sF0_class_dismissed", "movable": true, "group": "credits", "parts": [
+    { "name": "sF0_class_dismissed", "movable": true, "group": "ending", "parts": [
         { "start": "09DB67", "end": "09DB6A", "name": "h_sF0_class_dismissed", "struct": "h_actor" },
         { "start": "09DB6A", "end": "09DDA7", "name": "e_sF0_class_dismissed", "struct": "Code" }
       ] },
@@ -6095,9 +6091,9 @@
         { "start": "0BDE40", "end": "0BDE43", "name": "h_s90_changed_world", "struct": "h_actor" },
         { "start": "0BDE43", "end": "0BE029", "name": "e_s90_changed_world", "struct": "Code" }
       ] },
-    { "name": "actor_0BE029", "movable": true, "group": "actors", "parts": [
-        { "start": "0BE029", "end": "0BE02C", "name": "h_actor_0BE029", "struct": "h_actor" },
-        { "start": "0BE02C", "end": "0BE1C5", "name": "e_actor_0BE029", "struct": "Code" }
+    { "name": "s89_new_babel", "movable": true, "group": "ending", "parts": [
+        { "start": "0BE029", "end": "0BE02C", "name": "h_s89_new_babel", "struct": "h_actor" },
+        { "start": "0BE02C", "end": "0BE1C5", "name": "e_s89_new_babel", "struct": "Code" }
       ] },
     { "name": "actor_0BE1C5", "movable": true, "group": "actors", "parts": [
         { "start": "0BE1C5", "end": "0BE1C8", "name": "h_actor_0BE1C5", "struct": "h_actor" },

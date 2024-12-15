@@ -30,6 +30,9 @@
     <None Update="patches\DPShop.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <None Update="patches\ExpandedHealthBars.asm">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Update="patches\GemShop.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
