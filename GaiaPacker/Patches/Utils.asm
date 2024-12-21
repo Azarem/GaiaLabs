@@ -6,13 +6,16 @@
 ?INCLUDE 'system_strings'
 ?INCLUDE 'sE6_gaia'
 ?INCLUDE 'sFB_actor_0BC8BA'
-?INCLUDE 'PixelConverter'
 
+!joypad_mask_std                065A
+!camera_offset_x                06D6
+!camera_offset_y                06D8
+!camera_bounds_x                06DA
+!camera_bounds_y                06DC
 !player_flags                   09AE
 !VMADDL                         2116
 !A1T0L                          4302
 !DAS0L                          4305
-!joypad_mask_std                065A
 
 ------------------------------------------------
 
@@ -53,7 +56,7 @@ global_thinkers {
 
 ------------------------------------------------------------
 
-pause_debug_print |[NHM:14][CUR:C0,6]S:[BCD:2,644]█X:[BCD:3,9A2]█Y:[BCD:3,9A4]|
+pause_debug_print |[NHM:14][CUR:C0,6]S:[BCD:2,644]█X:[BCD:3,9A2]█Y:[BCD:3,9A4]█C:[BCD:4,B10]|
 
 ------------------------------------------------------------
 ;Hook for global thinkers
@@ -221,8 +224,29 @@ string_01E818 |[NHM:4][CUR:68,0][HE]|
 ;Print debug string on radar screen
 
 code_03808B {
-    LDX #$0000
+    LDA $camera_offset_x+1
+    AND #$0F
+    STA $0B10
+    LDA $camera_offset_y+1
+    ASL 
+    ASL 
+    ASL 
+    ASL 
+    ORA $0B10
+    STA $0B10
+    LDA $camera_bounds_x+1
+    AND #$0F
+    STA $0B11
+    LDA $camera_bounds_y+1
+    ASL 
+    ASL 
+    ASL 
+    ASL 
+    ORA $0B11
+    STA $0B11
+
     COP [BD] ( @pause_debug_print )
+    LDX #$0000
     PHX 
 }
 
