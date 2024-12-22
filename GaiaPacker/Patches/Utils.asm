@@ -293,3 +293,8 @@ code_08DBB1 {
 func_0BC896 {
     BRA code_0BC8EA
 }
+
+-----------------------------------------------
+?INCLUDE 'sF7_credits'
+
+credits_09F2FA `[PAL:0][DLG:44,1]     Built With GaiaLabs[N][PAL:4]         By Kassiven[N][PAL:C]https://discord.gg/gyyqDHKgPe[END]`
