@@ -7,7 +7,7 @@
 !player_actor                   09AA
 !jewels_collected               0AB0
 !inventory_slots                0AB4
-!page_2                         0B34  ;16 items per page
+;!page_2                         0B34  ;16 items per page
 
 !state_1                        0B54
 !herb_count                     0B55
@@ -27,14 +27,14 @@ inv_check_pages {
     CPY #$inventory_slots+10
     BNE inv_check_page_1
 
-    LDY #$page_2
+    ;LDY #$page_2
 
-  inv_check_page_2:
-    LDA $0000, Y
-    BEQ inv_give_item
-    INY
-    CPY #$page_2+10
-    BNE inv_check_page_2
+  ;inv_check_page_2:
+    ;LDA $0000, Y
+    ;BEQ inv_give_item
+    ;INY
+    ;CPY #$page_2+10
+    ;BNE inv_check_page_2
 
   inv_no_room:
     PLA
@@ -220,14 +220,14 @@ code_03F0B9 {
     INY 
     CPY #$0010
     BNE code_03F0B9
-    LDY #$0000
+    ;LDY #$0000
 
-  inv_search_page2:
-    CMP $page_2, Y
-    BEQ code_03F0C7
-    INY 
-    CPY #$0010
-    BNE inv_search_page2
+  ;inv_search_page2:
+    ;CMP $page_2, Y
+    ;BEQ code_03F0C7
+    ;INY 
+    ;CPY #$0010
+    ;BNE inv_search_page2
 
     PLP 
     SEC 
@@ -276,19 +276,19 @@ code_08CF68 {
   search_next_1:
     DEY
     BPL search_top_1
-    LDY #$000F
+    ;LDY #$000F
 
-  search_top_2:
-    CMP $page_2, Y
-    BNE search_next_2
-    PHA
-    LDA #$00
-    STA $page_2, Y		
-    PLA 
+  ;search_top_2:
+    ;CMP $page_2, Y
+    ;BNE search_next_2
+    ;PHA
+    ;LDA #$00
+    ;STA $page_2, Y		
+    ;PLA 
 
-  search_next_2:
-    DEY
-    BPL search_top_2
+  ;search_next_2:
+  ;  DEY
+  ;  BPL search_top_2
 
     REP #$20
 }
