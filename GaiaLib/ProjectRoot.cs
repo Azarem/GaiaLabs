@@ -9,6 +9,7 @@ namespace GaiaLib
         public string RomPath { get; set; }
         public string BaseDir { get; set; }
         public string Database { get; set; }
+        public string FlipsPath { get; set; }
 
         public string ProjectPath { get; private set; }
         public string DatabasePath { get; private set; }

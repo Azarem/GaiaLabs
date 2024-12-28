@@ -4,13 +4,6 @@ using GaiaLib.Database;
 using GaiaLib.Rom;
 using System.Globalization;
 
-//char[]
-//    _whitespace = [' ', '\t'],
-//    _operators = ['-', '+'],
-//    _commaspace = [',', ' ', '\t'],
-//    _addressspace = ['@', '&', '^', '%', '*'],
-//    _objectspace = ['<', '['];
-
 string? path = "project.json";
 var isUnpack = false;
 foreach (var a in args)
@@ -29,29 +22,7 @@ foreach (var a in args)
         path = a;
 }
 
-
 ProjectRoot project = ProjectRoot.Load();
-
-//var baseDir = Environment.CurrentDirectory;
-//using (var file = File.OpenRead(path))
-//{
-//    project = JsonSerializer.Deserialize<ProjectRoot>(file, DbRoot.JsonOptions)
-//        ?? throw new("Error deserializing project file");
-
-//    //#if DEBUG
-//    //    baseDir = "C:\\Games\\Dump";
-//    //#else
-//    baseDir = string.IsNullOrWhiteSpace(project.BaseDir) ? Directory.GetParent(file.Name).FullName : project.BaseDir;
-//    //#endif
-//}
-
-
-//#if DEBUG
-//var databasePath = "C:\\Games\\GaiaLabs\\GaiaLib\\database.json";// Path.Combine(baseDir, "database.json");
-//#else
-//var databasePath = Path.Combine(baseDir, $"{project.Database}.json");
-//#endif
-//var filePath = Path.Combine(baseDir, "files");
 
 if (isUnpack)
 {
@@ -60,7 +31,8 @@ if (isUnpack)
     return;
 }
 
-using var outRom = File.Create(Path.Combine(project.BaseDir, $"{project.Name}.smc"));
+var outPath = Path.Combine(project.BaseDir, $"{project.Name}.smc");
+using var outRom = File.Create(outPath);
 
 using (var rom = File.OpenRead(project.RomPath))
 {
@@ -77,14 +49,14 @@ while (outRom.Position < 0x400000)
 outRom.Position = 0xFFD7;
 outRom.WriteByte(0x0C);
 
+//Repack
 Process.Repack(project.BaseDir, project.DatabasePath, WriteFile, WriteTransform);
 
 //Calculate checksum
 int sum = 0;
 outRom.Position = 0;
 for (uint x = 0, size = (uint)outRom.Length; x++ < size;)
-    //while (outRom.Position < outRom.Length)
-    sum += outRom.ReadByte();// | (outRom.ReadByte() << 8);
+    sum += outRom.ReadByte();
 
 //Write checksum
 outRom.Position = 0xFFDEu;
@@ -96,6 +68,31 @@ sum = ~sum;
 outRom.Position = 0xFFDCu;
 outRom.WriteByte((byte)sum);
 outRom.WriteByte((byte)(sum >> 8));
+
+outRom.Flush();
+outRom.Dispose();
+
+//Generate patch
+if (!string.IsNullOrWhiteSpace(project.FlipsPath) && File.Exists(project.FlipsPath))
+{
+    var bpsPath = Path.Combine(project.BaseDir, $"{project.Name}.bps");
+
+    using var process = new System.Diagnostics.Process()
+    {
+        StartInfo = new(project.FlipsPath, $"--create --bps \"{project.RomPath}\" \"{outPath}\" \"{bpsPath}\"")
+        {
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        }
+    };
+
+    process.Start();
+    process.WaitForExit();
+
+    var result = process.StandardOutput.ReadToEnd();
+    Console.WriteLine(result);
+}
 
 void WriteTransform(uint location, object value)
 {
@@ -182,7 +179,6 @@ uint WriteFile(Process.ChunkFile file, DbRoot root, IDictionary<string, Location
 
     return size;
 }
-
 
 void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoot root, IDictionary<string, Location> chunkLookup, Dictionary<string, AsmBlock> includeLookup)
 {
@@ -381,4 +377,3 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoo
         bix++;
     }
 }
-

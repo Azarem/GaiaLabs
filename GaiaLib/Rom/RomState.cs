@@ -123,7 +123,7 @@ namespace GaiaLib.Rom
 
                             void copy(byte[] buffer)
                             {
-                                file.Position += srcOffset;
+                                file.Position = srcOffset;
                                 var dix = dstOffset;
                                 for (int i = sizeW - srcOffset; i-- > 0;)
                                     buffer[dix++] = (byte)file.ReadByte();
