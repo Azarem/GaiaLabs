@@ -241,7 +241,7 @@ code_0691BE {
     LDA #$2000
     TRB $10
     JSL $@func_02A10A
-    BCS code_069297
+    BCS coffin_halt_jump
     COP [D4] ( #11, &code_069293 )
     COP [BF] ( &widestring_069377 )
     LDA #$0080
@@ -279,6 +279,9 @@ code_0691BE {
     CMP #$00FF
     BEQ code_06925B
     RTL 
+
+  coffin_halt_jump:
+    JMP code_069297
 }
 
 -----------------------------------------

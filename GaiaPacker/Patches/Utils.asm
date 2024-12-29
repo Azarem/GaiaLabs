@@ -213,12 +213,9 @@ code_02B078 {
     STX $A1T0L
 }
 
-;string_01E7F6 |[CUR:46,0][NHM:8][HP][CUR:9C,0][NHM:14][BCD:1,AD8][CUR:A0,0][NUM:AD6][CUR:5E,0][BCD:2,644][CUR:7A,0][BCD:3,9A2][CUR:BA,0][BCD:3,9A4]|
 string_01E7F6 |[CUR:44,0][NHM:8][HP][CUR:5C,0][NHM:14][BCD:1,AD8][CUR:62,0][NUM:AD6]|
 
 string_01E818 |[NHM:4][CUR:68,0][HE]|
-
-;string_01EAC6 |[NHM:14][CUR:1A,3]PAUSE[CUR:C0,6]S:[BCD:2,644] X:[BCD:3,9A2] Y:[BCD:3,9A4]|
 
 -------------------------------------------------
 ;Print debug string on radar screen
@@ -298,3 +295,56 @@ func_0BC896 {
 ?INCLUDE 'sF7_credits'
 
 credits_09F2FA `[PAL:0][DLG:44,1]     Built With GaiaLabs[N][PAL:4]         By Kassiven[N][PAL:C]https://discord.gg/gyyqDHKgPe[END]`
+
+-----------------------------------------------
+;Auto-size and center scene titles
+
+code_02A12C {
+    BRK #$72
+    PHP 
+    PHB 
+    
+    PEA #$CA01
+    INC
+    LSR
+    PHA
+    PEA #$C707
+
+    CLC
+    SBC #$10
+    EOR #$FF
+
+    PHA
+    LDA #$C1
+    PHA
+
+    TSC
+
+    LDY $3E
+    PHY 
+    TAY
+    INY
+
+    LDA $40
+    PHA
+    
+    LDA #$E0
+    STA $00B4
+    STZ $00B5
+    
+    REP #$20
+    JSL $@sub_03E255
+    PLB
+    PLY
+
+    PLA
+    PLA
+    PLA
+    JSL $@sub_03E255
+
+    PLB
+    PLB
+    PLP
+    RTL
+}
+

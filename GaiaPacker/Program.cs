@@ -289,8 +289,17 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoo
                     goto Top;
                 }
 
+                var type = Address.TypeFromCode(str[0]);
+                if (type == AddressType.Unknown)
+                    type = parentOp?.Size == 4 ? AddressType.Address
+                        : parentOp?.Size == 2 ? AddressType.Unknown : AddressType.Offset;
+
                 if (isRelative)
+                {
                     loc -= block.Location.Offset + (uint)opos;
+                    if (type == AddressType.Unknown && !(loc.Offset < 0x80 || loc.Offset >= 0x3FFF80))
+                        throw new("Relative out of range");
+                }
 
                 if (offset != null)
                     loc = (uint)((int)loc.Offset + offset.Value);
@@ -308,11 +317,6 @@ void ParseAssembly(IEnumerable<AsmBlock> blocks, HashSet<string> includes, DbRoo
                             markerOffset += Process.GetSize(part);
                     }
                 }
-
-                var type = Address.TypeFromCode(str[0]);
-                if (type == AddressType.Unknown)
-                    type = parentOp?.Size == 4 ? AddressType.Address
-                        : parentOp?.Size == 2 ? AddressType.Unknown : AddressType.Offset;
 
                 obj = type switch
                 {
