@@ -188,6 +188,7 @@ func_03D9F6 {
     LDA $0D72           ;Is music playing?
     BEQ change_return          ;Should only be on boot
     LDX meta_next_id
+    BEQ change_accept
     LDA @bgm_table, X
     BMI change_return          ;This is important
     TAY
@@ -198,6 +199,7 @@ func_03D9F6 {
     CMP @bgm_table, X
     BEQ change_return
 
+  change_accept:
     LDA $0D72
     CMP #1B
     BNE do_f2
@@ -514,6 +516,29 @@ code_03E254 {
 
 ---------------------------------------------
 ;Hook for music asset loading (from scene_meta)
+
+func_028B6D {
+    JSR $&sub_028CE7
+    PHA
+    JSR $&sub_028CE7
+    STA $06F4
+    LDX #$003E
+    JSR $&sub_028D8F
+    LDA $06F6
+    CMP $06F4
+    BEQ code_028B88
+    PLA
+    RTS 
+}
+
+code_028B88 {
+    PLA
+    STA $06F2
+    LDX #$0687
+    JSR $&sub_028DC1
+    BCS code_028B91
+    RTS 
+}
 
 code_028B91 {
     ;BRK #$00

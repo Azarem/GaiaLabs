@@ -300,7 +300,6 @@ credits_09F2FA `[PAL:0][DLG:44,1]     Built With GaiaLabs[N][PAL:4]         By K
 ;Auto-size and center scene titles
 
 code_02A12C {
-    BRK #$72
     PHP 
     PHB 
     
@@ -313,13 +312,12 @@ code_02A12C {
     CLC
     SBC #$10
     EOR #$FF
-
     PHA
+
     LDA #$C1
     PHA
 
     TSC
-
     LDY $3E
     PHY 
     TAY
