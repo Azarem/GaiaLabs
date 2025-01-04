@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://do1c8o3xqbgxt"]
+[gd_scene load_steps=25 format=3 uid="uid://do1c8o3xqbgxt"]
 
 [ext_resource type="Script" path="res://src/control/ControlTest.cs" id="1_m5b74"]
 [ext_resource type="Script" path="res://src/control/SceneEdit.cs" id="2_fkjs4"]
@@ -15,6 +15,15 @@
 [ext_resource type="Script" path="res://src/control/HeightEdit.cs" id="6_wectv"]
 [ext_resource type="Script" path="res://src/control/TilesetControl.cs" id="7_cquq4"]
 [ext_resource type="Script" path="res://src/control/TilemapContainer.cs" id="7_kdlna"]
+[ext_resource type="Script" path="res://src/control/VMirrorButton.cs" id="11_dddqn"]
+[ext_resource type="Script" path="res://src/control/TilesetEditor.cs" id="11_wxdjk"]
+[ext_resource type="Script" path="res://src/control/SpriteTree.cs" id="11_xgkcg"]
+[ext_resource type="Script" path="res://src/control/HMirrorButton.cs" id="12_3uki7"]
+[ext_resource type="Script" path="res://src/control/GfxSelector.cs" id="12_n6h8e"]
+[ext_resource type="Script" path="res://src/control/PriorityButton.cs" id="13_kp5f3"]
+[ext_resource type="Script" path="res://src/control/PaletteSelector.cs" id="13_yki1l"]
+[ext_resource type="Script" path="res://src/control/BlockButton.cs" id="14_h6vbb"]
+[ext_resource type="Script" path="res://src/control/SaveSetButton.cs" id="15_t77pe"]
 
 [node name="Control" type="Control"]
 texture_filter = 1
@@ -27,87 +36,212 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_m5b74")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+current_tab = 1
 
-[node name="HFlowContainer" type="HFlowContainer" parent="VBoxContainer"]
+[node name="Map" type="VBoxContainer" parent="TabContainer"]
+visible = false
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HFlowContainer"]
+[node name="HFlowContainer" type="HFlowContainer" parent="TabContainer/Map"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 text = "Scene"
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer/HFlowContainer"]
+[node name="LineEdit" type="LineEdit" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 text = "1"
 max_length = 2
 select_all_on_focus = true
 script = ExtResource("2_fkjs4")
 
-[node name="Label2" type="Label" parent="VBoxContainer/HFlowContainer"]
+[node name="Label2" type="Label" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 text = "Effect"
 
-[node name="CheckBox" type="CheckBox" parent="VBoxContainer/HFlowContainer"]
+[node name="CheckBox" type="CheckBox" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 script = ExtResource("3_xq7rh")
 
-[node name="Label3" type="Label" parent="VBoxContainer/HFlowContainer"]
+[node name="Label3" type="Label" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 text = "Offset"
 
-[node name="CheckButton" type="CheckButton" parent="VBoxContainer/HFlowContainer"]
+[node name="CheckButton" type="CheckButton" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 script = ExtResource("4_1bcks")
 
-[node name="Label4" type="Label" parent="VBoxContainer/HFlowContainer"]
+[node name="Label4" type="Label" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 text = "W"
 
-[node name="LineEdit2" type="LineEdit" parent="VBoxContainer/HFlowContainer"]
+[node name="LineEdit2" type="LineEdit" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 max_length = 2
 script = ExtResource("5_u15pj")
 
-[node name="Label5" type="Label" parent="VBoxContainer/HFlowContainer"]
+[node name="Label5" type="Label" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 text = "H"
 
-[node name="LineEdit3" type="LineEdit" parent="VBoxContainer/HFlowContainer"]
+[node name="LineEdit3" type="LineEdit" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 max_length = 2
 script = ExtResource("6_wectv")
 
-[node name="Button" type="Button" parent="VBoxContainer/HFlowContainer"]
+[node name="Button" type="Button" parent="TabContainer/Map/HFlowContainer"]
 layout_mode = 2
 text = "Save"
 script = ExtResource("5_xo0lo")
 
-[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
+[node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/Map"]
 layout_direction = 3
 layout_mode = 2
 size_flags_vertical = 3
 split_offset = 300
 
-[node name="TilesetControl" type="Control" parent="VBoxContainer/HSplitContainer"]
+[node name="TilesetControl" type="Control" parent="TabContainer/Map/HSplitContainer"]
 layout_mode = 2
 script = ExtResource("7_cquq4")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Map/HSplitContainer"]
 layout_mode = 2
 
-[node name="TilemapContainer" type="Container" parent="VBoxContainer/HSplitContainer/ScrollContainer"]
+[node name="TilemapContainer" type="Container" parent="TabContainer/Map/HSplitContainer/ScrollContainer"]
 layout_mode = 2
 script = ExtResource("7_kdlna")
 
-[node name="TilemapControl" type="Control" parent="VBoxContainer/HSplitContainer/ScrollContainer/TilemapContainer"]
+[node name="TilemapControl" type="Control" parent="TabContainer/Map/HSplitContainer/ScrollContainer/TilemapContainer"]
 layout_mode = 2
 script = ExtResource("3_3gk7b")
+
+[node name="Tileset" type="VBoxContainer" parent="TabContainer"]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/Tileset"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 600
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Tileset/HSplitContainer"]
+layout_mode = 2
+
+[node name="HFlowContainer" type="HFlowContainer" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "V"
+
+[node name="VMirror" type="CheckButton" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+script = ExtResource("11_dddqn")
+
+[node name="Label2" type="Label" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "H"
+
+[node name="HMirror" type="CheckButton" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+script = ExtResource("12_3uki7")
+
+[node name="Label3" type="Label" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "P"
+
+[node name="PButton" type="CheckButton" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+script = ExtResource("13_kp5f3")
+
+[node name="Label4" type="Label" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "B"
+
+[node name="BButton" type="CheckButton" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+script = ExtResource("14_h6vbb")
+
+[node name="SaveSet" type="Button" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "Save"
+script = ExtResource("15_t77pe")
+
+[node name="Control" type="Control" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TilesetEditor" type="Control" parent="TabContainer/Tileset/HSplitContainer/VBoxContainer/Control"]
+layout_mode = 2
+anchors_preset = 0
+offset_top = 4.0
+offset_right = 600.0
+offset_bottom = 4.0
+script = ExtResource("11_wxdjk")
+
+[node name="VSplitContainer" type="VSplitContainer" parent="TabContainer/Tileset/HSplitContainer"]
+layout_mode = 2
+split_offset = 700
+
+[node name="Control2" type="Control" parent="TabContainer/Tileset/HSplitContainer/VSplitContainer"]
+clip_contents = true
+layout_mode = 2
+
+[node name="GraphicsPalette" type="Control" parent="TabContainer/Tileset/HSplitContainer/VSplitContainer/Control2"]
+layout_mode = 2
+anchors_preset = 0
+offset_left = 612.0
+offset_right = 612.0
+script = ExtResource("12_n6h8e")
+
+[node name="PaletteSelector" type="Control" parent="TabContainer/Tileset/HSplitContainer/VSplitContainer"]
+layout_mode = 2
+script = ExtResource("13_yki1l")
+
+[node name="Sprites" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="HFlowContainer" type="HFlowContainer" parent="TabContainer/Sprites"]
+layout_mode = 2
+
+[node name="HSplitContainer2" type="HSplitContainer" parent="TabContainer/Sprites"]
+layout_direction = 3
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 400
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2"]
+layout_mode = 2
+columns = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/Sprites/HSplitContainer2"]
+layout_direction = 2
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 400
+
+[node name="VSplitContainer" type="VSplitContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer"]
+layout_mode = 2
+split_offset = 300
+
+[node name="SpriteTree" type="Tree" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer"]
+layout_mode = 2
+script = ExtResource("11_xgkcg")
+
+[node name="Tree" type="Tree" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="SpritePreview" type="Control" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer"]
+layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="."]
 visible = false

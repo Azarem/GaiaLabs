@@ -663,11 +663,85 @@
     "sc_data": { "name": "sc_data", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] }
   },
   "files": [
-    
     { "start": "0DEFD3", "end": "0DFFFF", "name": "spm_viper", "type": "Spritemap", "compressed": true },
-    { "start": "100000", "end": "10153B", "name": "gfx_viper", "type": "Bitmap", "compressed": true }
+
+    { "start": "0E0000", "end": "0E167F", "name": "gfx_it15_effect", "type": "Bitmap", "compressed": true },
+
+    { "start": "100000", "end": "10153B", "name": "gfx_viper", "type": "Bitmap", "compressed": true },
+
+    { "start": "114BCA", "end": "115DB5", "name": "bgm_illusion_of_gaia", "type": "Music" },
+
+    { "start": "13597E", "end": "136407", "name": "gfx_fonts", "type": "Bitmap", "compressed": true },
+
+    { "start": "1462F0", "end": "146C92", "name": "map_ec0A_main", "type": "Tilemap", "compressed": true },
+    { "start": "146C92", "end": "147633", "name": "bgm_blessing_of_nature", "type": "Music" },
+    { "start": "14C198", "end": "14F0E6", "name": "gfx_gw82_tiles", "type": "Bitmap", "compressed": true },
+
+    { "start": "150000", "end": "150948", "name": "bgm_golden_road", "type": "Music" },
+    { "start": "157CD5", "end": "1C7FFB", "name": "set_gw82_effect", "type": "Tileset", "compressed": true },
+    { "start": "15C421", "end": "15EEA2", "name": "gfx_ec0A_tiles", "type": "Bitmap", "compressed": true },
+    
+    { "start": "170780", "end": "170EFC", "name": "set_gw82_main", "type": "Tileset", "compressed": true },
+    { "start": "174A32", "end": "175177", "name": "map_it15_main", "type": "Tilemap", "compressed": true },
+    { "start": "17670A", "end": "176E23", "name": "set_ec0A_main", "type": "Tileset", "compressed": true },
+    { "start": "17A4F2", "end": "17B3A6", "name": "map_gw82_main", "type": "Tilemap", "compressed": true },
+
+    { "start": "183D2E", "end": "1843D3", "name": "set_it15_etx_main", "type": "Tileset", "compressed": true },
+
+    { "start": "1980A2", "end": "19A3CD", "name": "gfx_title", "type": "Bitmap", "compressed": true },
+
+    { "start": "1A67E0", "end": "1A6D56", "name": "set_it16_int_main", "type": "Tileset", "compressed": true },
+
+    { "start": "1B1A28", "end": "1B1F19", "name": "set_title", "type": "Tileset", "compressed": true },
+
+    { "start": "1C2DDB", "end": "1C3163", "name": "set_it15_ext_effect", "type": "Tileset", "compressed": true },
+
+    { "start": "1D8000", "end": "1D9D23", "name": "gfx_it15_ext_tiles", "type": "Bitmap", "compressed": true },
+
+    { "start": "1E01E8", "end": "1E03CA", "name": "set_ec0A_effect", "type": "Tileset", "compressed": true },
+    { "start": "1E595E", "end": "1E5A5E", "name": "pal_title", "type": "Palette" },
+    { "start": "1E6AE4", "end": "1E6BC4", "name": "pal_ec0A_tiles", "type": "Palette" },
+    { "start": "1E6E64", "end": "1E6F44", "name": "pal_it15_tiles", "type": "Palette" },
+    { "start": "1E6F44", "end": "1E7024", "name": "pal_it16_int", "type": "Palette" },
+    
+    { "start": "1F09A0", "end": "1F0A80", "name": "pal_gw82_tiles", "type": "Palette" },
+    { "start": "1F25A0", "end": "1F267F", "name": "map_it15_effect", "type": "Tilemap", "compressed": true },
+    { "start": "1F2D0D", "end": "1F2E99", "name": "map_gw82_effect", "type": "Tilemap", "compressed": true },
+    { "start": "1F4EDA", "end": "1F4F98", "name": "map_it16_main", "type": "Tilemap", "compressed": true },
+    { "start": "1F5572", "end": "1F5627", "name": "map_ec0A_effect", "type": "Tilemap", "compressed": true },
+    { "start": "1F5A54", "end": "1F5B03", "name": "map_it17_main", "type": "Tilemap", "compressed": true },
+    { "start": "1F5FB4", "end": "1F6055", "name": "map_it18_main", "type": "Tilemap", "compressed": true },
+    { "start": "1F6DF0", "end": "1F27C3", "name": "map_title_main", "type": "Tilemap", "compressed": true },
+    { "start": "1F7BF0", "end": "1F7C24", "name": "map_it18_effect", "type": "Tilemap", "compressed": true },
+    { "start": "1F7C24", "end": "1F7C54", "name": "map_it16_effect", "type": "Tilemap", "compressed": true },
+    { "start": "1FB618", "end": "1FD106", "name": "gfx_it16_int", "type": "Bitmap", "compressed": true }
   ],
-  "blocks": [],
+  "blocks": [
+    { "name": "parallax_thinker", "movable": true, "group": "thinkers", "parts": [
+        { "start": "00BAFB", "end": "00BAFD", "name": "h_parallax_thinker", "struct": "h_thinker" },
+        { "start": "00BAFD", "end": "00BDFE", "name": "e_parallax_thinker", "struct": "Code" }
+        //{ "start": "00B8C3", "end": "00B8D4", "name": "sub_00B8C3", "struct": "Code" },
+        //{ "start": "00B8D4", "end": "00BA1B", "name": "sub_00B8D4", "struct": "Code" },
+        //{ "start": "00BA1B", "end": "00BA60", "name": "sub_00BA1B", "struct": "Code" },
+        //{ "start": "00BA60", "end": "00BABA", "name": "sub_00BA60", "struct": "Code" },
+        //{ "start": "00BABA", "end": "00BACD", "name": "sub_00BABA", "struct": "Code" },
+        //{ "start": "00BACD", "end": "00BB1F", "name": "sub_00BACD", "struct": "Code" },
+        //{ "start": "00BB1F", "end": "00BB63", "name": "sub_00BB1F", "struct": "Code" },
+        //{ "start": "00BB63", "end": "00BB8E", "name": "sub_00BB63", "struct": "Code" }
+      ] },
+    { "name": "parallax_table", "parts": [
+        { "start": "01CBF1", "end": "01D3F7", "name": "parallax_table", "struct": "&Binary" }
+      ]},
+    //{ "name": "scene_actors", "movable": true, "parts": [
+    //    { "start": "0C8000", "end": "0CE5A2", "name": "scene_actors", "struct": "&event_def" }
+    //  ] },
+    { "name": "scene_thinkers", "parts": [
+        { "start": "0CE5A2", "end": "0CEB27", "name": "t_scene_thinkers", "struct": "&thinker" }
+      ] },
+    { "name": "scene_meta", "movable": true, "parts": [
+        { "start": "0D8000", "end": "0DAFD1", "name": "scene_meta", "struct": "mapdef" }
+      ] }
+  ],
   "overrides": [
   ],
   "returns": {

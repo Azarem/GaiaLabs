@@ -1,5 +1,6 @@
 ﻿using GaiaLib.Asm;
 using GaiaLib.Database;
+using GaiaLib.Sprites;
 using System.Collections;
 using System.Globalization;
 using System.IO.MemoryMappedFiles;

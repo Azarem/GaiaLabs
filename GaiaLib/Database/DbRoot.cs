@@ -34,7 +34,8 @@ namespace GaiaLib.Database
         public static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true,
-            ReadCommentHandling = JsonCommentHandling.Skip
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            WriteIndented = true
         };
 
         public static DbRoot FromFile(string dbFile)

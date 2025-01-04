@@ -59,7 +59,7 @@ public partial class TilesetControl : Control
         if (@event is InputEventMouseButton mouse)
         {
             var pos = mouse.Position - GlobalPosition;
-            if (pos.X < 0 || pos.Y < 0 || pos.X > Size.X || pos.Y > Size.Y)
+            if (pos.X < 0 || pos.Y < 0 || pos.X >= Size.X || pos.Y >= Size.Y)
                 return;
 
             if (mouse.ButtonIndex == MouseButton.Left)
@@ -72,5 +72,10 @@ public partial class TilesetControl : Control
             }
         }
 
+    }
+
+    public void Reset()
+    {
+        QueueRedraw();
     }
 }

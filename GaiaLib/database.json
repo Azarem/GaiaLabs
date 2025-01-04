@@ -643,7 +643,7 @@
     "tileset":  { "name": "tileset", "parent": "meta<>", "descriminator": "05", "types": [ "Byte", "Byte", "Byte", "Byte", "@Binary" ] },
     "tilemap":  { "name": "tilemap", "parent": "meta<>", "descriminator": "06", "types": [ "Byte", "@Binary" ] },
     "metaE":  { "name": "metaE", "parent": "meta<>", "descriminator": "0E", "types": [ "Byte", "Byte", "Byte" ] },
-    "spritemap":  { "name": "spritemap", "parent": "meta<>", "descriminator": "10", "types": [ "Byte", "Byte", "Byte", "@Binary" ] },
+    "spritemap":  { "name": "spritemap", "parent": "meta<>", "descriminator": "10", "types": [ "Word", "Byte", "@Binary" ] },
     "music":  { "name": "music", "parent": "meta<>", "descriminator": "11", "types": [ "Byte", "Byte", "@Binary" ] },
     "branch":  { "name": "branch", "parent": "meta<>", "descriminator": "13", "types": [ "Byte", "Byte" ] },
     "label":  { "name": "label", "parent": "meta<>", "descriminator": "14", "types": [ "Byte" ] },
@@ -797,7 +797,7 @@
     { "start": "1273AE", "end": "127EC0", "name": "bgm_guardians", "type": "Music" },
     { "start": "127EC0", "end": "127FFC", "name": "map_127EC0", "type": "Tilemap", "compressed": true },
     { "start": "128000", "end": "12B17A", "name": "bmp_128000", "type": "Bitmap", "compressed": true },
-    { "start": "12B17A", "end": "12E2D7", "name": "bmp_12B17A", "type": "Bitmap", "compressed": true },
+    { "start": "12B17A", "end": "12E2D7", "name": "gfx_gw82_tiles", "type": "Bitmap", "compressed": true },
     { "start": "12E2D7", "end": "12FFFA", "name": "gfx_it15_ext_tiles", "type": "Bitmap", "compressed": true },
     
     { "start": "130000", "end": "130B04", "name": "map_130000", "type": "Tilemap", "compressed": true },
@@ -865,7 +865,7 @@
     { "start": "162640", "end": "162DCB", "name": "set_162640", "type": "Tileset", "compressed": true },
     { "start": "162DCB", "end": "163553", "name": "map_162DCB", "type": "Tilemap", "compressed": true },
     { "start": "163553", "end": "163CD3", "name": "bgm_space_beyond_time", "type": "Music" },
-    { "start": "163CD3", "end": "16444F", "name": "set_163CD3", "type": "Tileset", "compressed": true },
+    { "start": "163CD3", "end": "16444F", "name": "set_gw82_main", "type": "Tileset", "compressed": true },
     { "start": "16444F", "end": "164BCB", "name": "set_16444F", "type": "Tileset", "compressed": true },
     { "start": "164BCB", "end": "165344", "name": "map_164BCB", "type": "Tilemap", "compressed": true },
     { "start": "165344", "end": "165ABC", "name": "set_165344", "type": "Tileset", "compressed": true },
@@ -900,7 +900,7 @@
     { "start": "17841D", "end": "179000", "name": "gfx_dsE6_gaia_sprites", "type": "Bitmap", "compressed": true },
     { "start": "1791AA", "end": "179F12", "name": "map_sp5A_main", "type": "Tilemap", "compressed": true },
     { "start": "179F12", "end": "179FFF", "name": "map_fr36_effect", "type": "Tilemap", "compressed": true },
-    { "start": "17A4F2", "end": "17AFF9", "name": "map_17A4F2", "type": "Tilemap", "compressed": true },
+    { "start": "17A4F2", "end": "17AFF9", "name": "map_gw82_main", "type": "Tilemap", "compressed": true },
     { "start": "17B3A6", "end": "17BFDA", "name": "spm_sc01_actors", "type": "Spritemap", "compressed": true },
     { "start": "17BFDA", "end": "17BFFA", "name": "palette_17BFDA", "type": "Palette" },
     { "start": "17C443", "end": "17CFFC", "name": "bgm_lively_city", "type": "Music" },
@@ -1045,7 +1045,7 @@
     { "start": "1C2BDE", "end": "1C2F0D", "name": "map_1C2BDE", "type": "Tilemap", "compressed": true },
     { "start": "1C2F0D", "end": "1C323C", "name": "set_1C2F0D", "type": "Tileset", "compressed": true },
     { "start": "1C323C", "end": "1C356A", "name": "map_1C323C", "type": "Tilemap", "compressed": true },
-    { "start": "1C356A", "end": "1C3890", "name": "set_1C356A", "type": "Tileset", "compressed": true },
+    { "start": "1C356A", "end": "1C3890", "name": "set_gw82_effect", "type": "Tileset", "compressed": true },
     { "start": "1C3890", "end": "1C3BAF", "name": "set_1C3890", "type": "Tileset", "compressed": true },
     { "start": "1C3BAF", "end": "1C3EC8", "name": "map_1C3BAF", "type": "Tilemap", "compressed": true },
     { "start": "1C3EC8", "end": "1C41D9", "name": "map_1C3EC8", "type": "Tilemap", "compressed": true },
@@ -1242,7 +1242,7 @@
     { "start": "1E4C93", "end": "1E4D73", "name": "palette_1E4C93", "type": "Palette" },
     { "start": "1E4D73", "end": "1E4E53", "name": "palette_1E4D73", "type": "Palette" },
     { "start": "1E4E53", "end": "1E4F33", "name": "palette_1E4E53", "type": "Palette" },
-    { "start": "1E4F33", "end": "1E5013", "name": "palette_1E4F33", "type": "Palette" },
+    { "start": "1E4F33", "end": "1E5013", "name": "pal_gw82_tiles", "type": "Palette" },
     { "start": "1E5013", "end": "1E50F3", "name": "palette_1E5013", "type": "Palette" },
     { "start": "1E50F3", "end": "1E51D3", "name": "palette_1E50F3", "type": "Palette" },
     { "start": "1E51D3", "end": "1E52B3", "name": "palette_1E51D3", "type": "Palette" },
@@ -1282,7 +1282,7 @@
     { "start": "1E6F61", "end": "1E702B", "name": "map_na49_main", "type": "Tilemap", "compressed": true },
     { "start": "1E702B", "end": "1E70F4", "name": "map_gs2B_ocean_effect", "type": "Tilemap", "compressed": true },
     { "start": "1E70F4", "end": "1E71BC", "name": "map_ec0F_effect", "type": "Tilemap", "compressed": true },
-    { "start": "1E71BC", "end": "1E7284", "name": "map_1E71BC", "type": "Tilemap", "compressed": true },
+    { "start": "1E71BC", "end": "1E7284", "name": "map_gw82_effect", "type": "Tilemap", "compressed": true },
     { "start": "1E7284", "end": "1E734C", "name": "map_1E7284", "type": "Tilemap", "compressed": true },
     { "start": "1E734C", "end": "1E740C", "name": "pal_sc06_castle_actors", "type": "Palette" },
     { "start": "1E740C", "end": "1E74CC", "name": "pal_ec0A_characters", "type": "Palette" },
@@ -1718,7 +1718,7 @@
       ] },
     { "name": "thinker_00B520", "movable": true, "group": "thinkers", "parts": [
         { "start": "00B520", "end": "00B522", "name": "h_thinker_00B520", "struct": "h_thinker" },
-        { "start": "00B522", "end": "00B528", "name": "func_00B522", "struct": "Code" }
+        { "start": "00B522", "end": "00B528", "name": "e_thinker_00B520", "struct": "Code" }
       ] },
     { "name": "func_00B528", "movable": true, "group": "unused", "parts": [
         { "start": "00B528", "end": "00B592", "name": "func_00B528", "struct": "Code" },
@@ -1843,9 +1843,9 @@
         { "start": "00B87B", "end": "00B87D", "name": "h_thinker_00B87B", "struct": "h_thinker" },
         { "start": "00B87D", "end": "00B88B", "name": "e_thinker_00B87B", "struct": "Code" }
       ] },
-    { "name": "thinker_00B88B", "movable": true, "group": "thinkers", "parts": [
-        { "start": "00B88B", "end": "00B88D", "name": "h_thinker_00B88B", "struct": "h_thinker" },
-        { "start": "00B88D", "end": "00B8C3", "name": "e_thinker_00B88B", "struct": "Code" },
+    { "name": "parallax_thinker", "movable": true, "group": "thinkers", "parts": [
+        { "start": "00B88B", "end": "00B88D", "name": "h_parallax_thinker", "struct": "h_thinker" },
+        { "start": "00B88D", "end": "00B8C3", "name": "e_parallax_thinker", "struct": "Code" },
         { "start": "00B8C3", "end": "00B8D4", "name": "sub_00B8C3", "struct": "Code" },
         { "start": "00B8D4", "end": "00BA1B", "name": "sub_00B8D4", "struct": "Code" },
         { "start": "00BA1B", "end": "00BA60", "name": "sub_00BA1B", "struct": "Code" },
@@ -2276,8 +2276,8 @@
     { "name": "music_array_01CBA6", "parts": [
         { "start": "01CBA6", "end": "01CC00", "name": "music_array_01CBA6", "struct": "@Binary" }
       ]},
-    { "name": "table_01CC00", "parts": [
-        { "start": "01CC00", "end": "01D3CE", "name": "table_01CC00", "struct": "&Binary" }
+    { "name": "parallax_table", "parts": [
+        { "start": "01CC00", "end": "01D3CE", "name": "parallax_table", "struct": "&Binary" }
       ]},
     { "name": "array_01D3CE", "parts": [
         { "start": "01D3CE", "end": "01D8BE", "name": "array_01D3CE", "struct": "unk15" }

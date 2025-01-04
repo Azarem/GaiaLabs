@@ -4,6 +4,8 @@ using System;
 
 public partial class TilemapControl : Control
 {
+    public static TilemapControl Instance;
+
     private int _hoverTileX, _hoverTileY;
     private Vector2[] _hoverBox = new Vector2[5];
     //private Vector2 _drawSize;
@@ -11,7 +13,6 @@ public partial class TilemapControl : Control
     private float _zoom = 2.0f;
     private bool _isDragging = false;
     private Vector2 _lastPos;
-    public static TilemapControl Instance;
 
     private Vector2 _drawPos, _drawSize;
     private bool _isPainting;
@@ -26,6 +27,7 @@ public partial class TilemapControl : Control
 
     public override void _EnterTree()
     {
+        FocusMode = FocusModeEnum.Click;
         Instance = this;
         base._EnterTree();
         Reset();
@@ -34,7 +36,7 @@ public partial class TilemapControl : Control
     public override void _Draw()
     {
         //_drawSize = GetDrawSize();
-        _tileSize = Size.X / (ControlTest.TilemapTileWidth << 4);
+        _tileSize = Size.X / (ControlTest.TilemapWidth << 4);
         DrawTextureRect(ControlTest.TilemapTexture, new(_drawPos, Size), false);
 
         var newBox = new[] {
@@ -52,7 +54,7 @@ public partial class TilemapControl : Control
         //var w = ControlTest.IsEffect ? ControlTest.RomState.EffectTilemapW : ControlTest.RomState.MainTilemapW;
         //var map = ControlTest.IsEffect ? ControlTest.RomState.EffectTilemap : ControlTest.RomState.MainTilemap;
 
-        var mOffset = (_hoverTileY >> 4) * ControlTest.TilemapTileWidth + (_hoverTileX >> 4);
+        var mOffset = (_hoverTileY >> 4) * ControlTest.TilemapWidth + (_hoverTileX >> 4);
         var ix = (mOffset << 8) | ((_hoverTileY & 0x0F) << 4) | (_hoverTileX & 0x0F);
 
         var old = ControlTest.TilemapCurrent[ix];
@@ -77,6 +79,8 @@ public partial class TilemapControl : Control
 
     public override void _Input(InputEvent @event)
     {
+        if (!HasFocus())
+            return;
 
         if (@event is InputEventMouse motion)
         {

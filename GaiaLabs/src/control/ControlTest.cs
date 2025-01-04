@@ -2,6 +2,7 @@ using GaiaLabs;
 using GaiaLib;
 using GaiaLib.Database;
 using GaiaLib.Rom;
+using GaiaLib.Sprites;
 using Godot;
 using System;
 using System.IO;
@@ -22,8 +23,8 @@ public partial class ControlTest : Control
     internal static Image TilemapImage;
     internal static ImageTexture TilemapTexture;
     internal static float TilemapRatio;
-    internal static int TilemapTileWidth { get => IsEffect ? RomState.EffectTilemapW : RomState.MainTilemapW; }
-    internal static int TilemapTileHeight { get => IsEffect ? RomState.EffectTilemapH : RomState.MainTilemapH; }
+    internal static int TilemapWidth { get => IsEffect ? RomState.EffectTilemapW : RomState.MainTilemapW; }
+    internal static int TilemapHeight { get => IsEffect ? RomState.EffectTilemapH : RomState.MainTilemapH; }
     internal static int SelectedIndex;
     internal static int CurrentScene;
 
@@ -31,6 +32,12 @@ public partial class ControlTest : Control
     internal static DbRoot DbRoot;
     internal static bool IsEffect;
     internal static bool UseOffset;
+
+    internal static byte[] GfxBitmap = new byte[0x4000];
+    internal static Image GfxImage;
+    internal static ImageTexture GfxTexture;
+
+    internal static SpriteMap SpriteMap { get => RomState.SpriteMap; }
 
     internal static int _mapWidth, _mapHeight;
 
@@ -46,8 +53,98 @@ public partial class ControlTest : Control
     {
         RomState = RomState.FromScene(Project.BaseDir, DbRoot, "scene_meta", id);
         CurrentScene = id;
+        ReloadGraphicSet();
         ReloadTileset();
         ReloadTilemap();
+        //SpriteTree.Instance?.Reset();
+    }
+
+    public static void ReloadGraphicSet(int? palette = null)
+    {
+        //var set = TilesetCurrent;// IsEffect ? state.EffectTileset : state.MainTileset;
+        //var pal = RomState.CGRAM;
+        var vram = RomState.VRAM;
+
+        //var fullPalette = PaletteData = new byte[256 * 4];
+        var fullTexture = GfxBitmap = new byte[8 * 8 * 16 * 16 * 2 * 4];
+
+        var pOffset = palette != null ? (palette.Value << 6) : 0;
+
+        //byte convert(int color) => (byte)(int)(color * ImageConverter._sample5to8);
+
+        //for (int i = 0, x = 0; i < pal.Length;)
+        //{
+        //    int sample = pal[i++] | (pal[i++] << 8);
+        //    fullPalette[x++] = convert(sample & 0x1F);
+        //    fullPalette[x++] = convert((sample >> 5) & 0x1F);
+        //    fullPalette[x++] = convert((sample >> 10) & 0x1F);
+        //    fullPalette[x++] = 255;
+        //}
+
+        //var tileIx = 0;
+        byte[] indexBuffer = new byte[8];
+        int[] offsetBuffer = new int[2];
+
+        var vOffset = 0x4000 + (UseOffset ? 0x2000 : 0);
+
+        for (int ty = 0; ty < 32; ty++)
+            for (int tx = 0; tx < 16; tx++)
+            {
+                //for (int quad = 0; quad < 4; quad++)
+                //{
+                offsetBuffer[0] = vOffset;
+                offsetBuffer[1] = vOffset + 16;
+                vOffset += 32;
+
+                for (int row = 0; row < 8; row++)
+                {
+                    //Clear index buffer
+                    Array.Clear(indexBuffer);
+
+                    //Rotate bits from samples
+                    for (byte plane = 0, planeBit = 1; plane < 4; plane++, planeBit <<= 1)
+                        for (byte i = 0, testBit = 0x80, sample = vram[offsetBuffer[plane >> 1]++]; i < 8; i++, testBit >>= 1)
+                            if ((sample & testBit) != 0)
+                                indexBuffer[i] |= planeBit;
+
+                    var cOffset = (((ty << 3) + row) << (4 + 3)) + (tx << 3);
+
+                    cOffset <<= 2;
+
+                    byte cIndex;
+                    for (int col = 0; col < 8; col++)
+                        //for (byte i = 0, sample; i < 8; i++)
+                        if ((cIndex = indexBuffer[col]) == 0) //Transparent pixel
+                        {
+                            fullTexture[cOffset++] = 0;
+                            fullTexture[cOffset++] = 0;
+                            fullTexture[cOffset++] = 0;
+                            fullTexture[cOffset++] = 0;
+                        }
+                        else if (palette != null)
+                        {
+                            var zOffset = pOffset + (cIndex << 2);
+                            fullTexture[cOffset++] = PaletteData[zOffset++];
+                            fullTexture[cOffset++] = PaletteData[zOffset++];
+                            fullTexture[cOffset++] = PaletteData[zOffset++];
+                            fullTexture[cOffset++] = PaletteData[zOffset];
+                        }
+                        else
+                        {
+                            var zOffset = (byte)(cIndex << 4);// pOffset + (cIndex << 2);
+                            fullTexture[cOffset++] = zOffset;
+                            fullTexture[cOffset++] = zOffset;
+                            fullTexture[cOffset++] = zOffset;
+                            fullTexture[cOffset++] = 0xFF;
+                        }
+                }
+                //}
+            }
+
+        GfxImage = Image.CreateFromData(128, 256, false, Image.Format.Rgba8, fullTexture);
+        GfxTexture = ImageTexture.CreateFromImage(GfxImage);
+
+        GfxSelector.Instance?.QueueRedraw();
     }
 
     public static void ReloadTileset()
@@ -67,7 +164,7 @@ public partial class ControlTest : Control
             fullPalette[x++] = convert(sample & 0x1F);
             fullPalette[x++] = convert((sample >> 5) & 0x1F);
             fullPalette[x++] = convert((sample >> 10) & 0x1F);
-            fullPalette[x++] = 255;
+            fullPalette[x++] = 0xFF;
         }
 
         var tileIx = 0;
@@ -137,13 +234,15 @@ public partial class ControlTest : Control
         TilesetImage = Image.CreateFromData(128, 512, false, Image.Format.Rgba8, fullTexture);
         TilesetTexture = ImageTexture.CreateFromImage(TilesetImage);
 
+        TilesetControl.Instance?.Reset();
+        TilesetEditor.Instance?.Reset();
     }
 
     public static void ReloadTilemap()
     {
         var map = TilemapCurrent;// = IsEffect ? state.EffectTilemap : state.MainTilemap;
-        int tileWidth = TilemapTileWidth;// = IsEffect ? state.EffectTilemapW : state.MainTilemapW;
-        int tileHeight = TilemapTileHeight;// = IsEffect ? state.EffectTilemapH : state.MainTilemapH;
+        int tileWidth = TilemapWidth;// = IsEffect ? state.EffectTilemapW : state.MainTilemapW;
+        int tileHeight = TilemapHeight;// = IsEffect ? state.EffectTilemapH : state.MainTilemapH;
         _mapWidth = tileWidth << 8;
         _mapHeight = tileHeight << 8;
         int mapOffset = 0;
@@ -287,17 +386,23 @@ public partial class ControlTest : Control
 
     public static void SaveMap()
     {
-        //int tileW = IsEffect ? RomState.EffectTilemapW : RomState.MainTilemapW;
-        //int tileH = IsEffect ? RomState.EffectTilemapH : RomState.MainTilemapH;
-        //var map = IsEffect ? RomState.EffectTilemap : RomState.MainTilemap;
-        var outSize = (TilemapTileWidth * TilemapTileHeight) << 8;
-
+        var map = TilemapCurrent;
+        var outSize = (TilemapWidth * TilemapHeight) << 8;
         using var file = File.Create(IsEffect ? RomState.EffectTilemapPath : RomState.MainTilemapPath);
 
-        file.WriteByte((byte)TilemapTileWidth);
-        file.WriteByte((byte)TilemapTileHeight);
+        file.WriteByte((byte)TilemapWidth);
+        file.WriteByte((byte)TilemapHeight);
         for (int x = 0; x < outSize; x++)
-            file.WriteByte(TilemapCurrent[x]);
+            file.WriteByte(map[x]);
+    }
+
+    public static void SaveSet()
+    {
+        var set = TilesetCurrent;
+        using var file = File.Create(IsEffect ? RomState.EffectTilesetPath : RomState.MainTilesetPath);
+
+        for (int x = 0; x < 0x800; x++)
+            file.WriteByte(set[x]);
     }
 
     public static void ChangeHeight(int height)
@@ -306,7 +411,7 @@ public partial class ControlTest : Control
         if (isReverse)
             height = -height;
 
-        var oldHeight = TilemapTileHeight;
+        var oldHeight = TilemapHeight;
         if (oldHeight == height)
             return;
 
@@ -328,7 +433,7 @@ public partial class ControlTest : Control
             else
                 srcOffset = oldHeight - height;
 
-            var width = TilemapTileWidth;
+            var width = TilemapWidth;
             var stride = width << 8;
 
             void writeLine()
@@ -370,7 +475,7 @@ public partial class ControlTest : Control
         if (isReverse)
             width = -width;
 
-        var oldWidth = TilemapTileWidth;
+        var oldWidth = TilemapWidth;
         if (oldWidth == width)
             return;
 
@@ -390,7 +495,7 @@ public partial class ControlTest : Control
         else
             srcOffset = oldWidth - width;
 
-        var height = TilemapTileHeight;
+        var height = TilemapHeight;
 
         void writeBlock()
         {

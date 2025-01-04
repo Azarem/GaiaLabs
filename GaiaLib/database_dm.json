@@ -664,16 +664,46 @@
     "sc_data": { "name": "sc_data", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] }
   },
   "files": [
+    { "start": "14C198", "end": "14F199", "name": "gfx_ec0A_tiles", "type": "Bitmap", "compressed": true },
     { "start": "150000", "end": "150820", "name": "gfx_title_actors", "type": "Bitmap", "compressed": true },
     { "start": "1A1AC7", "end": "1A1FD2", "name": "set_title", "type": "Tileset", "compressed": true },
     { "start": "1CDD80", "end": "1CFEF9", "name": "gfx_title", "type": "Bitmap", "compressed": true },
     { "start": "1D5651", "end": "1D5787", "name": "spm_title_actors", "type": "Spritemap", "compressed": true },
     { "start": "1D6F33", "end": "1D7033", "name": "pal_title", "type": "Palette" },
+    { "start": "1E0460", "end": "1E0540", "name": "pal_ec0A_tiles", "type": "Palette" },
     { "start": "1E65DE", "end": "1E669E", "name": "pal_title_actors", "type": "Palette" },
     { "start": "1F075A", "end": "1F07D9", "name": "map_title_effect", "type": "Tilemap", "compressed": true },
     { "start": "1F07D9", "end": "1F0857", "name": "map_title_main", "type": "Tilemap", "compressed": true }
   ],
   "blocks": [
+    { "name": "thinker_00B520", "movable": true, "group": "thinkers", "parts": [
+        { "start": "00B51A", "end": "00B51C", "name": "h_thinker_00B520", "struct": "h_thinker" },
+        { "start": "00B51C", "end": "00B5BA", "name": "e_thinker_00B520", "struct": "Code" }
+      ] },
+    { "name": "parallax_thinker", "movable": true, "group": "thinkers", "parts": [
+        { "start": "00B885", "end": "00B887", "name": "h_parallax_thinker", "struct": "h_thinker" },
+        { "start": "00B887", "end": "00BB88", "name": "e_parallax_thinker", "struct": "Code" }
+        //{ "start": "00B8C3", "end": "00B8D4", "name": "sub_00B8C3", "struct": "Code" },
+        //{ "start": "00B8D4", "end": "00BA1B", "name": "sub_00B8D4", "struct": "Code" },
+        //{ "start": "00BA1B", "end": "00BA60", "name": "sub_00BA1B", "struct": "Code" },
+        //{ "start": "00BA60", "end": "00BABA", "name": "sub_00BA60", "struct": "Code" },
+        //{ "start": "00BABA", "end": "00BACD", "name": "sub_00BABA", "struct": "Code" },
+        //{ "start": "00BACD", "end": "00BB1F", "name": "sub_00BACD", "struct": "Code" },
+        //{ "start": "00BB1F", "end": "00BB63", "name": "sub_00BB1F", "struct": "Code" },
+        //{ "start": "00BB63", "end": "00BB8E", "name": "sub_00BB63", "struct": "Code" }
+      ] },
+    { "name": "thinker_00BC91", "movable": true, "group": "thinkers", "parts": [
+        { "start": "00BC91", "end": "00BC93", "name": "h_thinker_00BC91", "struct": "h_thinker" },
+        { "start": "00BC93", "end": "00BCAD", "name": "e_thinker_00BC91", "struct": "Code" }
+      ] },
+    { "name": "thinker_00BCB3", "movable": true, "group": "thinkers", "parts": [
+        { "start": "00BCAD", "end": "00BCAF", "name": "h_thinker_00BCB3", "struct": "h_thinker" },
+        { "start": "00BCAF", "end": "00BCD9", "name": "e_thinker_00BCB3", "struct": "Code" }
+      ] },
+    { "name": "thinker_00BCDF", "movable": true, "group": "thinkers", "parts": [
+        { "start": "00BCD9", "end": "00BCDB", "name": "h_thinker_00BCDF", "struct": "h_thinker" },
+        { "start": "00BCDB", "end": "00BCEF", "name": "e_thinker_00BCDF", "struct": "Code" }
+      ] },
     { "name": "system_strings", "parts": [
         //{ "start": "01D9D8", "end": "01DA47", "name": "string_01D9D8", "struct": "String" },
         { "start": "01D9D8", "end": "01D9EF", "name": "string_01DA47", "struct": "String" },
@@ -730,6 +760,9 @@
       ] },
     { "name": "scene_actors", "movable": true, "parts": [
         { "start": "0C8000", "end": "0CE5FA", "name": "scene_actors", "struct": "&event_def" }
+      ] },
+    { "name": "scene_thinkers", "parts": [
+        { "start": "0CE5FA", "end": "0CEB84", "name": "t_scene_thinkers", "struct": "&thinker" }
       ] },
     { "name": "scene_meta", "movable": true, "parts": [
         { "start": "0D8000", "end": "0DAFFD", "name": "scene_meta", "struct": "mapdef" }

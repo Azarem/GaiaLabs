@@ -34,6 +34,6 @@ public partial class HeightEdit : LineEdit
 
     public void Reset()
     {
-        Text = ControlTest.TilemapTileHeight.ToString();
+        Text = ControlTest.TilemapHeight.ToString();
     }
 }

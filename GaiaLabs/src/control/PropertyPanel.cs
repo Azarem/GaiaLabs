@@ -37,7 +37,43 @@ namespace GaiaLabs
                 foreach (var prop in group)
                 {
                     AddChild(new Label { Text = prop.n });
-                    AddChild(new Label { Text = prop.p.GetValue(obj)?.ToString() });
+                    var p = prop.p;
+                    var val = p.GetValue(obj);
+
+                    //LineEdit ledit;
+
+                    //if(val is byte b)
+                    //{
+                    //    ledit = new();
+                    //    ledit.MaxLength = 2;
+                    //    ledit.Text = b.ToString("X");
+                    //}
+                    //else if(val is ushort s)
+                    //{
+                    //    ledit = new();
+                    //    ledit.MaxLength = 4;
+                    //    ledit.Text = s.ToString("X");
+                    //}
+                    //else if(val is bool bo)
+                    //{
+
+                    //}
+
+                    //if (p.PropertyType == typeof(byte))
+                    //{
+                    //}
+
+                    //var ledit = new LineEdit { Text = p.GetValue(obj)?.ToString() };
+
+                    //ledit.TextChanged += new LineEdit.TextChangedEventHandler(x => {
+
+                    //    var arg = p.PropertyType switch {
+                    //        typeof(int) => int.Parse()
+                    //    };
+                    //    p.SetValue(obj, arg);
+                    //});
+
+                    //AddChild(ledit);
                 }
             }
         }

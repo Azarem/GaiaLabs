@@ -34,7 +34,7 @@ public partial class WidthEdit : LineEdit
 
     public void Reset()
     {
-        Text = ControlTest.TilemapTileWidth.ToString();
+        Text = ControlTest.TilemapWidth.ToString();
     }
 
 }

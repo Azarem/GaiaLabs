@@ -1,6 +1,8 @@
 ﻿using GaiaLib.Database;
+using GaiaLib.Sprites;
 using System.Drawing;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace GaiaLib.Rom
 {
@@ -21,12 +23,15 @@ namespace GaiaLib.Rom
         //public readonly byte[] WRAM = new byte[0x20000];
         public readonly byte[] MainTileset = new byte[0x800];
         public readonly byte[] EffectTileset = new byte[0x800];
+        public string? MainTilesetPath, EffectTilesetPath;
         public byte[] MainTilemap = new byte[0x2000];
         public byte MainTilemapW, MainTilemapH;
-        public string MainTilemapPath;
+        public string? MainTilemapPath;
         public byte[] EffectTilemap = new byte[0x2000];
         public byte EffectTilemapW, EffectTilemapH;
-        public string EffectTilemapPath;
+        public string? EffectTilemapPath;
+
+        public static SpriteMap? SpriteMap = null;
 
         public static string StripName(string name)
         {
@@ -58,13 +63,15 @@ namespace GaiaLib.Rom
 
             var state = new RomState();
 
+            SpriteMap = null;
+
             FileStream getResource(string name, BinType type)
                 => File.OpenRead(root.GetResource(baseDir, StripName(name), type));
 
 
             for (int ix = 0, count = list.Count; ix < count;)
             {
-                Top:
+            Top:
                 switch ((byte)list[ix++])
                 {
                     case 0x02:
@@ -130,10 +137,16 @@ namespace GaiaLib.Rom
                             };
 
                             if ((layers & 1) != 0)
+                            {
                                 copy(state.MainTileset);
+                                state.MainTilesetPath = file.Name;
+                            }
 
                             if ((layers & 2) != 0)
+                            {
                                 copy(state.EffectTileset);
+                                state.EffectTilesetPath = file.Name;
+                            }
                         }
                         break;
 
@@ -171,10 +184,13 @@ namespace GaiaLib.Rom
 
                     case 0x10:
                         {
-                            var sizeB = list[ix++];
-                            var dummy1 = list[ix++];
-                            var dummy2 = list[ix++];
+                            var sizeW = list[ix++];
+                            var dummy = list[ix++];
                             var resource = list[ix++];
+
+                            using var file = getResource(resource.ToString(), BinType.Spritemap);
+
+                            //SpriteMap = SpriteMap.FromStream(file);
                         }
                         break;
 
@@ -216,7 +232,7 @@ namespace GaiaLib.Rom
                                         case 0x11: pix += 3; break;
                                         case 0x06: case 0x13: case 0x17: pix += 2; break;
                                         case 0x14:
-                                            if(dstLabel == (byte)bList[pix++])
+                                            if (dstLabel == (byte)bList[pix++])
                                             {
                                                 block = blocks[bix];
                                                 list = block.ObjList;
