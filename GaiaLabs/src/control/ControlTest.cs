@@ -127,7 +127,7 @@ public partial class ControlTest : Control
                             fullTexture[cOffset++] = PaletteData[zOffset++];
                             fullTexture[cOffset++] = PaletteData[zOffset++];
                             fullTexture[cOffset++] = PaletteData[zOffset++];
-                            fullTexture[cOffset++] = PaletteData[zOffset];
+                            fullTexture[cOffset++] = 0xFF;
                         }
                         else
                         {

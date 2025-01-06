@@ -631,7 +631,7 @@
     "unk10": { "name": "unk10", "types": [ "Word", "Word" ] },
     "unk11": { "name": "unk11", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte" ] },
     "unk12": { "name": "unk12", "delimiter": "FFFF", "types": [ "Word", "&Binary" ] },
-    "unk13": { "name": "unk13", "delimiter": "00", "types": [ "Byte", "&Word", "Byte", "Byte", "Byte" ] },
+    "bundle": { "name": "bundle", "delimiter": "00", "types": [ "Byte", "&Word", "Byte", "Byte", "Byte" ] },
     "unk14": { "name": "unk14", "types": [ "Address", "@Binary" ] },
     "unk15": { "name": "unk15", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] },
     "unk16": { "name": "unk16", "types": [ "WideString", "Binary" ] },
@@ -6220,8 +6220,8 @@
     { "name": "table_158000", "parts": [
         { "start": "158000", "end": "15C421", "name": "table_158000", "struct": "&unk12" }
       ] },
-    { "name": "table_168000", "parts": [
-        { "start": "168000", "end": "16D82C", "name": "table_168000", "struct": "&unk13" }
+    { "name": "palette_bundles", "parts": [
+        { "start": "168000", "end": "16D82C", "name": "palette_bundles", "struct": "&bundle" }
       ] },
     { "name": "table_178000", "parts": [
         { "start": "178000", "end": "17841D", "name": "table_178000", "struct": "&unk12" }
@@ -6415,7 +6415,7 @@
     "03E02B": "^misc_fx_1CD580",
     "03E043": "&misc_fx_1CCA80",
     "03E046": "^misc_fx_1CCA80",
-    "03E0B5": "^table_168000",
+    "03E0B5": "^palette_bundles",
     "03E22F": "@music_array_01CBA6-3",
     "03E238": "@music_array_01CBA6-2",
     "03E343": "^templates_01CA95",

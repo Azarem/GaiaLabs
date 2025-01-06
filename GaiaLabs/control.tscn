@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://do1c8o3xqbgxt"]
+[gd_scene load_steps=31 format=3 uid="uid://do1c8o3xqbgxt"]
 
 [ext_resource type="Script" path="res://src/control/ControlTest.cs" id="1_m5b74"]
 [ext_resource type="Script" path="res://src/control/SceneEdit.cs" id="2_fkjs4"]
@@ -24,6 +24,12 @@
 [ext_resource type="Script" path="res://src/control/PaletteSelector.cs" id="13_yki1l"]
 [ext_resource type="Script" path="res://src/control/BlockButton.cs" id="14_h6vbb"]
 [ext_resource type="Script" path="res://src/control/SaveSetButton.cs" id="15_t77pe"]
+[ext_resource type="Script" path="res://src/control/PAnim/PAnimSelector.cs" id="20_gcmhn"]
+[ext_resource type="Script" path="res://src/control/PAnim/PAnimMidpoint.cs" id="21_h6bhf"]
+[ext_resource type="Script" path="res://src/control/PAnim/PAnimWeight.cs" id="22_32p0l"]
+[ext_resource type="Script" path="res://src/control/PAnim/PAnimTime.cs" id="23_64rde"]
+[ext_resource type="Script" path="res://src/control/PAnim/PAnimGenerateButton.cs" id="24_6h7go"]
+[ext_resource type="Script" path="res://src/control/PAnim/PAnimOutput.cs" id="25_qfe8q"]
 
 [node name="Control" type="Control"]
 texture_filter = 1
@@ -43,7 +49,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 1
+current_tab = 3
 
 [node name="Map" type="VBoxContainer" parent="TabContainer"]
 visible = false
@@ -124,6 +130,7 @@ layout_mode = 2
 script = ExtResource("3_3gk7b")
 
 [node name="Tileset" type="VBoxContainer" parent="TabContainer"]
+visible = false
 layout_mode = 2
 
 [node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/Tileset"]
@@ -242,6 +249,60 @@ layout_mode = 2
 
 [node name="SpritePreview" type="Control" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer"]
 layout_mode = 2
+
+[node name="PAnim" type="VBoxContainer" parent="TabContainer"]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/PAnim"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 400
+collapsed = true
+dragger_visibility = 2
+
+[node name="VFlowContainer" type="VFlowContainer" parent="TabContainer/PAnim/HSplitContainer"]
+layout_mode = 2
+
+[node name="PAnimSelector" type="Control" parent="TabContainer/PAnim/HSplitContainer/VFlowContainer"]
+custom_minimum_size = Vector2(350, 250)
+layout_mode = 2
+script = ExtResource("20_gcmhn")
+
+[node name="HFlowContainer" type="HFlowContainer" parent="TabContainer/PAnim/HSplitContainer/VFlowContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/PAnim/HSplitContainer/VFlowContainer/HFlowContainer"]
+layout_mode = 2
+text = "M"
+
+[node name="PAnimMidpoint" type="LineEdit" parent="TabContainer/PAnim/HSplitContainer/VFlowContainer/HFlowContainer"]
+layout_mode = 2
+script = ExtResource("21_h6bhf")
+
+[node name="Label2" type="Label" parent="TabContainer/PAnim/HSplitContainer/VFlowContainer/HFlowContainer"]
+layout_mode = 2
+text = "W"
+
+[node name="PAnimWeight" type="LineEdit" parent="TabContainer/PAnim/HSplitContainer/VFlowContainer/HFlowContainer"]
+layout_mode = 2
+script = ExtResource("22_32p0l")
+
+[node name="Label3" type="Label" parent="TabContainer/PAnim/HSplitContainer/VFlowContainer/HFlowContainer"]
+layout_mode = 2
+text = "T"
+
+[node name="PAnimTime" type="LineEdit" parent="TabContainer/PAnim/HSplitContainer/VFlowContainer/HFlowContainer"]
+layout_mode = 2
+script = ExtResource("23_64rde")
+
+[node name="PAnimGenerate" type="Button" parent="TabContainer/PAnim/HSplitContainer/VFlowContainer/HFlowContainer"]
+layout_mode = 2
+text = "Generate"
+script = ExtResource("24_6h7go")
+
+[node name="PAnimOutput" type="TextEdit" parent="TabContainer/PAnim/HSplitContainer"]
+layout_mode = 2
+script = ExtResource("25_qfe8q")
 
 [node name="GridContainer" type="GridContainer" parent="."]
 visible = false

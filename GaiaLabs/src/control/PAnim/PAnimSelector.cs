@@ -1,9 +1,9 @@
 ﻿using Godot;
 using System;
 
-public partial class PaletteSelector : Control
+public partial class PAnimSelector : Control
 {
-    public static PaletteSelector Instance { get; private set; }
+    public static PAnimSelector Instance { get; private set; }
 
     float _colorSize = 20f;
 
@@ -14,7 +14,7 @@ public partial class PaletteSelector : Control
         set { _selectedIndex = value; QueueRedraw(); }
     }
 
-    public PaletteSelector()
+    public PAnimSelector()
     {
         FocusMode = FocusModeEnum.Click;
         CustomMinimumSize = new(_colorSize * 15, _colorSize * 8);
@@ -30,8 +30,8 @@ public partial class PaletteSelector : Control
     {
         base._Input(@event);
 
-        if (!HasFocus())
-            return;
+        //if (!HasFocus())
+        //    return;
 
         if (@event is InputEventMouseButton mouse)
         {
@@ -47,30 +47,7 @@ public partial class PaletteSelector : Control
                         break;
 
                     case MouseButton.Left:
-                        var value = SelectedIndex = (int)Math.Min(pos.Y / _colorSize, 7);
-                        ControlTest.ReloadGraphicSet(value);
-
-                        var set = ControlTest.TilesetCurrent;
-                        var ix = TilesetEditor.Instance.SelectedIndex;
-                        var gfxIx = GfxSelector.Instance.SelectedIndex;
-
-                        //Modify tileset
-                        var six = ix << 1;
-                        var sample = set[six] | (set[six + 1] << 8);
-                        sample &= 0xE3FF;
-                        sample |= value << 10;
-                        set[six] = (byte)sample;
-                        set[six + 1] = (byte)(sample >> 8);
-
-                        var dstX = ((ix >> 2 & 0x7) << 1) + (ix & 1);
-                        var dstY = (ix >> 5 << 1) + ((ix & 2) != 0 ? 1 : 0);
-
-                        ControlTest.TilesetImage.BlitRect(ControlTest.GfxImage,
-                            new((gfxIx & 0xF) << 3, (gfxIx & 0x1F0) >> 1, 8, 8),
-                            new(dstX << 3, dstY << 3));
-
-                        ControlTest.TilesetTexture.Update(ControlTest.TilesetImage);
-
+                        SelectedIndex = (int)Math.Min(pos.Y / _colorSize, 7);
                         break;
 
                     case MouseButton.Middle:
@@ -127,6 +104,5 @@ public partial class PaletteSelector : Control
             DrawDashedLine(new(0, y + h), new(0, y), new Color(1, 1, 1));
         }
     }
-
-
 }
+

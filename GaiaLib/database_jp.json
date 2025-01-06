@@ -630,7 +630,7 @@
     "unk10": { "name": "unk10", "types": [ "Word", "Word" ] },
     "unk11": { "name": "unk11", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte" ] },
     "unk12": { "name": "unk12", "delimiter": "FFFF", "types": [ "Word", "&Binary" ] },
-    "unk13": { "name": "unk13", "delimiter": "00", "types": [ "Byte", "&Word", "Byte", "Byte", "Byte" ] },
+    "bundle": { "name": "bundle", "delimiter": "00", "types": [ "Byte", "&Word", "Byte", "Byte", "Byte" ] },
     "unk14": { "name": "unk14", "types": [ "Address", "@Binary" ] },
     "unk15": { "name": "unk15", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] },
     "unk16": { "name": "unk16", "types": [ "WideString", "Binary" ] },
