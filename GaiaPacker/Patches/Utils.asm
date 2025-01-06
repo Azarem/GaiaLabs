@@ -7,6 +7,7 @@
 ?INCLUDE 'sE6_gaia'
 ?INCLUDE 'sFB_actor_0BC8BA'
 
+!token                          00E6
 !joypad_mask_std                065A
 !camera_offset_x                06D6
 !camera_offset_y                06D8
@@ -56,7 +57,7 @@ global_thinkers {
 
 ------------------------------------------------------------
 
-pause_debug_print |[NHM:14][CUR:C0,6]S:[BCD:2,644]█X:[BCD:3,9A2]█Y:[BCD:3,9A4]█C:[BCD:4,B10]|
+pause_debug_print |[NHM:14][CUR:C0,6]S:[BCD:2,644]█X:[BCD:3,9A2]█Y:[BCD:3,9A4]█C:[BCD:4,E6]|
 
 ------------------------------------------------------------
 ;Hook for global thinkers
@@ -223,24 +224,24 @@ string_01E818 |[NHM:4][CUR:68,0][HE]|
 code_03808B {
     LDA $camera_offset_x+1
     AND #$0F
-    STA $0B10
+    STA $token
     LDA $camera_offset_y+1
     ASL 
     ASL 
     ASL 
     ASL 
-    ORA $0B10
-    STA $0B10
+    ORA $token
+    STA $token
     LDA $camera_bounds_x+1
     AND #$0F
-    STA $0B11
+    STA $token+1
     LDA $camera_bounds_y+1
     ASL 
     ASL 
     ASL 
     ASL 
-    ORA $0B11
-    STA $0B11
+    ORA $token+1
+    STA $token+1
 
     COP [BD] ( @pause_debug_print )
     LDX #$0000
