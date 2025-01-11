@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://do1c8o3xqbgxt"]
+[gd_scene load_steps=44 format=3 uid="uid://do1c8o3xqbgxt"]
 
 [ext_resource type="Script" path="res://src/control/ControlTest.cs" id="1_m5b74"]
 [ext_resource type="Script" path="res://src/control/SceneEdit.cs" id="2_fkjs4"]
@@ -17,19 +17,32 @@
 [ext_resource type="Script" path="res://src/control/TilemapContainer.cs" id="7_kdlna"]
 [ext_resource type="Script" path="res://src/control/VMirrorButton.cs" id="11_dddqn"]
 [ext_resource type="Script" path="res://src/control/TilesetEditor.cs" id="11_wxdjk"]
-[ext_resource type="Script" path="res://src/control/SpriteTree.cs" id="11_xgkcg"]
 [ext_resource type="Script" path="res://src/control/HMirrorButton.cs" id="12_3uki7"]
 [ext_resource type="Script" path="res://src/control/GfxSelector.cs" id="12_n6h8e"]
 [ext_resource type="Script" path="res://src/control/PriorityButton.cs" id="13_kp5f3"]
 [ext_resource type="Script" path="res://src/control/PaletteSelector.cs" id="13_yki1l"]
 [ext_resource type="Script" path="res://src/control/BlockButton.cs" id="14_h6vbb"]
 [ext_resource type="Script" path="res://src/control/SaveSetButton.cs" id="15_t77pe"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpriteGroupList.cs" id="19_bnds0"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpriteSetList.cs" id="19_llphk"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpriteSaveButton.cs" id="19_nshi8"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpritePropertyPanel.cs" id="19_o162e"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpriteSetAddButton.cs" id="20_3lb2r"]
 [ext_resource type="Script" path="res://src/control/PAnim/PAnimSelector.cs" id="20_gcmhn"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpriteFrameList.cs" id="20_jatcv"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpriteSetRemoveButton.cs" id="21_cmhhh"]
 [ext_resource type="Script" path="res://src/control/PAnim/PAnimMidpoint.cs" id="21_h6bhf"]
 [ext_resource type="Script" path="res://src/control/PAnim/PAnimWeight.cs" id="22_32p0l"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpritePartList.cs" id="22_mtt6d"]
 [ext_resource type="Script" path="res://src/control/PAnim/PAnimTime.cs" id="23_64rde"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpriteFrameAddButton.cs" id="23_v15kj"]
 [ext_resource type="Script" path="res://src/control/PAnim/PAnimGenerateButton.cs" id="24_6h7go"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpriteFrameRemoveButton.cs" id="24_f0xpo"]
 [ext_resource type="Script" path="res://src/control/PAnim/PAnimOutput.cs" id="25_qfe8q"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpriteGroupAddButton.cs" id="26_sf6gj"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpritePartAddButton.cs" id="27_c4owx"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpriteGroupRemoveButton.cs" id="27_gyqey"]
+[ext_resource type="Script" path="res://src/control/Sprite/SpritePartRemoveButton.cs" id="28_kbf22"]
 
 [node name="Control" type="Control"]
 texture_filter = 1
@@ -49,7 +62,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 3
+current_tab = 2
 
 [node name="Map" type="VBoxContainer" parent="TabContainer"]
 visible = false
@@ -214,10 +227,6 @@ layout_mode = 2
 script = ExtResource("13_yki1l")
 
 [node name="Sprites" type="VBoxContainer" parent="TabContainer"]
-visible = false
-layout_mode = 2
-
-[node name="HFlowContainer" type="HFlowContainer" parent="TabContainer/Sprites"]
 layout_mode = 2
 
 [node name="HSplitContainer2" type="HSplitContainer" parent="TabContainer/Sprites"]
@@ -226,31 +235,183 @@ layout_mode = 2
 size_flags_vertical = 3
 split_offset = 400
 
-[node name="GridContainer" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2"]
+[node name="Control" type="Control" parent="TabContainer/Sprites/HSplitContainer2"]
 layout_mode = 2
+
+[node name="HFlowContainer" type="HFlowContainer" parent="TabContainer/Sprites/HSplitContainer2/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="SaveSpriteButton" type="Button" parent="TabContainer/Sprites/HSplitContainer2/Control/HFlowContainer"]
+layout_mode = 2
+text = "Save"
+script = ExtResource("19_nshi8")
+
+[node name="SpriteProperties" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2/Control"]
+layout_direction = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 columns = 2
+script = ExtResource("19_o162e")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/Sprites/HSplitContainer2"]
 layout_direction = 2
 layout_mode = 2
 size_flags_vertical = 3
-split_offset = 400
+split_offset = 200
 
 [node name="VSplitContainer" type="VSplitContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer"]
 layout_mode = 2
-split_offset = 300
+split_offset = 400
 
-[node name="SpriteTree" type="Tree" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer"]
+[node name="TabContainer" type="TabContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer"]
 layout_mode = 2
-script = ExtResource("11_xgkcg")
 
-[node name="Tree" type="Tree" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer"]
+[node name="Frames" type="VSplitContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer"]
 layout_mode = 2
+split_offset = 200
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames"]
+layout_mode = 2
+columns = 2
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SpriteSetAdd" type="Button" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames/GridContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "+"
+script = ExtResource("20_3lb2r")
+
+[node name="SpriteSetRemove" type="Button" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames/GridContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "-"
+script = ExtResource("21_cmhhh")
+
+[node name="SetScroll" type="ScrollContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SpriteSetList" type="VBoxContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames/GridContainer/SetScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("19_llphk")
+
+[node name="GridContainer2" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames"]
+layout_mode = 2
+columns = 2
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames/GridContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SpriteFrameAdd" type="Button" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames/GridContainer2/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "+"
+script = ExtResource("23_v15kj")
+
+[node name="SpriteFrameRemove" type="Button" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames/GridContainer2/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "-"
+script = ExtResource("24_f0xpo")
+
+[node name="FrameScroll" type="ScrollContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames/GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SpriteFrameList" type="VBoxContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Frames/GridContainer2/FrameScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("20_jatcv")
+
+[node name="Groups" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+columns = 2
+
+[node name="SpriteGroupCommands" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Groups"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SpriteGroupAdd" type="Button" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Groups/SpriteGroupCommands"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "+"
+script = ExtResource("26_sf6gj")
+
+[node name="SpriteGroupRemove" type="Button" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Groups/SpriteGroupCommands"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "-"
+script = ExtResource("27_gyqey")
+
+[node name="GroupScroll" type="ScrollContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Groups"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SpriteGroupList" type="VBoxContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/TabContainer/Groups/GroupScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("19_bnds0")
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SpritePartAdd" type="Button" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/GridContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "+"
+script = ExtResource("27_c4owx")
+
+[node name="SpritePartRemove" type="Button" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/GridContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "-"
+script = ExtResource("28_kbf22")
+
+[node name="SpritePartScroll" type="ScrollContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SpritePartList" type="VBoxContainer" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer/VSplitContainer/GridContainer/SpritePartScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("22_mtt6d")
 
 [node name="SpritePreview" type="Control" parent="TabContainer/Sprites/HSplitContainer2/HSplitContainer"]
 layout_mode = 2
 
 [node name="PAnim" type="VBoxContainer" parent="TabContainer"]
+visible = false
 layout_mode = 2
 
 [node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/PAnim"]

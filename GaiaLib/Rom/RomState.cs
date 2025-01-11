@@ -32,6 +32,7 @@ namespace GaiaLib.Rom
         public string? EffectTilemapPath;
 
         public static SpriteMap? SpriteMap = null;
+        public static string SpriteMapPath = null;
 
         public static string StripName(string name)
         {
@@ -190,7 +191,8 @@ namespace GaiaLib.Rom
 
                             using var file = getResource(resource.ToString(), BinType.Spritemap);
 
-                            //SpriteMap = SpriteMap.FromStream(file);
+                            SpriteMap = SpriteMap.FromStream(file);
+                            SpriteMapPath = file.Name;
                         }
                         break;
 

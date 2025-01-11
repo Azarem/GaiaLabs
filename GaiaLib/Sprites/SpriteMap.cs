@@ -95,5 +95,77 @@ namespace GaiaLib.Sprites
 
             return spriteMap;
         }
+
+        public void ToStream(Stream stream)
+        {
+            int pos = FrameSets.Count << 1;
+
+            void writeShort(int val)
+            {
+                stream.WriteByte((byte)val);
+                stream.WriteByte((byte)(val >> 8));
+            }
+
+            void writeLoc(int val) => writeShort(val + 0x4000);
+
+            var groupPos = new Dictionary<int, int>();
+
+            foreach (var set in FrameSets)
+            {
+                writeLoc(pos);
+                pos += (set.Count << 2) + 2;
+            }
+
+
+            foreach (var set in FrameSets)
+            {
+                foreach (var frm in set)
+                {
+                    writeShort(frm.Duration);
+                    var gix = frm.GroupIndex;
+                    if (!groupPos.TryGetValue(gix, out var grpPos))
+                    {
+                        groupPos[gix] = grpPos = pos;
+                        pos += (Groups[gix].Parts.Count * 7) + 13;
+                    }
+                    writeLoc(grpPos);
+                }
+                writeShort(0xFFFF);
+            }
+
+            foreach (var grp in Groups)
+            {
+                stream.WriteByte(grp.XOffset);
+                stream.WriteByte(grp.XOffsetMirror);
+                stream.WriteByte(grp.YOffset);
+                stream.WriteByte(grp.YOffsetMirror);
+                stream.WriteByte(grp.XRecoilHitboxOffset);
+                stream.WriteByte(grp.YRecoilHitboxOffset);
+                stream.WriteByte(grp.XRecoilHitboxTilesize);
+                stream.WriteByte(grp.YRecoilHitboxTilesize);
+                stream.WriteByte(grp.XHostileHitboxOffset);
+                stream.WriteByte(grp.XHostileHitboxSize);
+                stream.WriteByte(grp.YHostileHitboxOffset);
+                stream.WriteByte(grp.YHostileHitboxSize);
+                stream.WriteByte((byte)grp.Parts.Count);
+
+                foreach (var prt in grp.Parts)
+                {
+                    stream.WriteByte((byte)(prt.IsLarge ? 1 : 0));
+                    stream.WriteByte(prt.XOffset);
+                    stream.WriteByte(prt.XOffsetMirror);
+                    stream.WriteByte(prt.YOffset);
+                    stream.WriteByte(prt.YOffsetMirror);
+
+                    int accum = (prt.VMirror ? 0x8000 : 0)
+                        | (prt.HMirror ? 0x4000 : 0)
+                        | ((prt.SomeOffset & 0x3) << 12)
+                        | ((prt.PaletteIndex & 0x7) << 9)
+                        | prt.TileIndex;
+
+                    writeShort(accum);
+                }
+            }
+        }
     }
 }

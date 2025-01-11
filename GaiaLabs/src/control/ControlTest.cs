@@ -11,6 +11,8 @@ using static Godot.WebSocketPeer;
 
 public partial class ControlTest : Control
 {
+    public static ControlTest Instance { get; private set; }
+
     //private ImageTexture _texture;
     internal static byte[] PaletteData;
     internal static RomState RomState;
@@ -43,6 +45,7 @@ public partial class ControlTest : Control
 
     public unsafe override void _EnterTree()
     {
+        Instance = this;
         Project = ProjectRoot.Load();
         DbRoot = DbRoot.FromFile(Project.DatabasePath);
 
@@ -57,6 +60,9 @@ public partial class ControlTest : Control
         ReloadTileset();
         ReloadTilemap();
         //SpriteTree.Instance?.Reset();
+        SpriteSetList.Instance?.Reset();
+        SpriteFrameList.Instance?.Reset();
+        SpriteGroupList.Instance?.Reset();
     }
 
     public static void ReloadGraphicSet(int? palette = null)
@@ -403,6 +409,16 @@ public partial class ControlTest : Control
 
         for (int x = 0; x < 0x800; x++)
             file.WriteByte(set[x]);
+    }
+
+    public static void SaveSprites()
+    {
+        var spm = SpriteMap;
+        if (spm == null)
+            return;
+
+        using var file = File.Create(RomState.SpriteMapPath);
+        spm.ToStream(file);
     }
 
     public static void ChangeHeight(int height)

@@ -621,8 +621,8 @@
     "h_thinker": { "name": "h_thinker", "types": [ "Byte", "Byte" ] },
     "dma_data": { "name": "dma_data", "delimiter": "00", "types": [ "Byte", "Byte", "Byte" ] },
     "unk1": { "name": "unk1", "types": [ "Word", "&Code" ] },
-    "unk2": { "name": "unk2", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte" ] },
-    "unk3": { "name": "unk3", "delimiter": "00", "types": [ "Byte", "&CharString" ] },
+    "motion": { "name": "motion", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte" ] },
+    "map_name": { "name": "map_name", "delimiter": "00", "types": [ "Byte", "&CharString" ] },
     "unk5": { "name": "unk5", "types": [ "Byte", "Byte", "Byte", "Byte" ] },
     "unk6": { "name": "unk6", "delimiter": "FFFF", "types": [ "Byte", "Word" ] },
     "unk7": { "name": "unk7", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] },
@@ -2019,9 +2019,9 @@
     { "name": "func_00C9B8", "movable": true, "group": "functions", "parts": [
         { "start": "00C9B8", "end": "00C9FB", "name": "func_00C9B8", "struct": "Code" }
       ] },
-    { "name": "actor_00CA42", "movable": true, "group": "actors", "parts": [
-        { "start": "00CA42", "end": "00CA45", "name": "h_actor_00CA42", "struct": "h_actor" },
-        { "start": "00CA45", "end": "00CD59", "name": "e_actor_00CA42", "struct": "Code" }
+    { "name": "overworld_exit", "movable": true, "group": "actors", "parts": [
+        { "start": "00CA42", "end": "00CA45", "name": "h_overworld_exit", "struct": "h_actor" },
+        { "start": "00CA45", "end": "00CD59", "name": "e_overworld_exit", "struct": "Code" }
       ] },
     { "name": "actor_00CD59", "movable": true, "group": "actors", "parts": [
         { "start": "00CD59", "end": "00CD5C", "name": "h_actor_00CD59", "struct": "h_actor" },
@@ -2881,14 +2881,14 @@
         { "start": "03AB88", "end": "03AC53", "name": "func_03AB88", "struct": "Code" },
         { "start": "03AC53", "end": "03AD77", "name": "func_03AC53", "struct": "Code" }
       ] },
-    { "name": "table_03AD77", "movable": true, "parts": [
-        { "start": "03AD77", "end": "03B1D4", "name": "table_03AD77", "struct": "&unk2" }
+    { "name": "overworld_routes", "movable": true, "parts": [
+        { "start": "03AD77", "end": "03B1D4", "name": "overworld_routes", "struct": "&motion" }
       ] },
-    { "name": "map_names_03B1D4", "parts": [
-        { "start": "03B1D4", "end": "03B401", "name": "map_names_03B1D4", "struct": "unk3" }
+    { "name": "overworld_names", "parts": [
+        { "start": "03B1D4", "end": "03B401", "name": "overworld_names", "struct": "map_name" }
       ] },
-    { "name": "overworld_scripts", "parts": [
-        { "start": "03B401", "end": "03BAE1", "name": "overworld_scripts", "struct": "&Code" }
+    { "name": "overworld_options", "parts": [
+        { "start": "03B401", "end": "03BAE1", "name": "overworld_options", "struct": "&Code" }
       ] },
     { "name": "chunk_03BAE1", "parts": [
         { "start": "03BAE1", "end": "03BAF1", "name": "func_03BAE1", "struct": "Code" },
@@ -3114,17 +3114,17 @@
         { "start": "048E84", "end": "048E87", "name": "h_sc03_lances_mother", "struct": "h_actor" },
         { "start": "048E87", "end": "048F7A", "name": "e_sc03_lances_mother", "struct": "Code" }
       ] },
-    { "name": "sc04_eriks_mother", "movable": true, "group": "south_cape", "parts": [
-        { "start": "048F7A", "end": "048F7D", "name": "h_sc04_eriks_mother", "struct": "h_actor" },
-        { "start": "048F7D", "end": "048FDE", "name": "e_sc04_eriks_mother", "struct": "Code" }
+    { "name": "sc04_poverty", "movable": true, "group": "south_cape", "parts": [
+        { "start": "048F7A", "end": "048F7D", "name": "h_sc04_poverty", "struct": "h_actor" },
+        { "start": "048F7D", "end": "048FDE", "name": "e_sc04_poverty", "struct": "Code" }
       ] },
     { "name": "sc04_eriks_father", "movable": true, "group": "south_cape", "parts": [
         { "start": "048FDE", "end": "048FE1", "name": "h_sc04_eriks_father", "struct": "h_actor" },
         { "start": "048FE1", "end": "049052", "name": "e_sc04_eriks_father", "struct": "Code" }
       ] },
-    { "name": "sc04_poverty", "movable": true, "group": "south_cape", "parts": [
-        { "start": "049052", "end": "049055", "name": "h_sc04_poverty", "struct": "h_actor" },
-        { "start": "049055", "end": "0490FF", "name": "e_sc04_poverty", "struct": "Code" }
+    { "name": "sc04_eriks_mother", "movable": true, "group": "south_cape", "parts": [
+        { "start": "049052", "end": "049055", "name": "h_sc04_eriks_mother", "struct": "h_actor" },
+        { "start": "049055", "end": "0490FF", "name": "e_sc04_eriks_mother", "struct": "Code" }
       ] },
     { "name": "sc05_seths_mother", "movable": true, "group": "south_cape", "parts": [
         { "start": "0490FF", "end": "049102", "name": "h_sc05_seths_mother", "struct": "h_actor" },
@@ -6390,8 +6390,8 @@
     "03A048": "*func_00C455",
     "03A04E": "&func_00C455",
     "03A3FD": "*table_03A503",
-    "03A53C": "*table_03AD77",
-    "03A69B": "^map_names_03B1D4",
+    "03A53C": "*overworld_routes",
+    "03A69B": "^overworld_names",
     "03BBD3": "&func_00D62F",
     "03BBD9": "*func_00D62F",
     "03BEAC": "*func_00DB8A",

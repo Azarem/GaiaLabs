@@ -1,0 +1,12 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "COP \\[BD\\] \\( @string_01EADC \\)",
+    "value": "COP [6B] ( &diary_qr_string )"
+  },
+  {
+    "type": "Replace",
+    "key": "widestring_0BF6F9 `[^`]+`",
+    "value": "$&\r\n\r\ndiary_qr_string `[DLG:16,3][SIZ:2,2][ESC:CC,CD,CE,CF][N][ESC:EC,ED,EE,EF]`"
+  }
+]

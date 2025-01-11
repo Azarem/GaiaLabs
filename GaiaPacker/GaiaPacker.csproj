@@ -72,7 +72,7 @@
     <None Update="patches\InventoryManagement.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="patches\SkyDeliveryman.asm">
+    <None Update="patches\SouthCapeDeliveryman.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="patches\SpritemapPatch.asm">
@@ -97,6 +97,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="transforms\actors\sFA_diary_menu.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="transforms\actors\sEA_solid_arm.json">

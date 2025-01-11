@@ -17,7 +17,7 @@ public partial class PAnimSelector : Control
     public PAnimSelector()
     {
         FocusMode = FocusModeEnum.Click;
-        CustomMinimumSize = new(_colorSize * 15, _colorSize * 8);
+        CustomMinimumSize = new(_colorSize * 15, _colorSize * 16);
     }
 
     public override void _EnterTree()
@@ -47,7 +47,7 @@ public partial class PAnimSelector : Control
                         break;
 
                     case MouseButton.Left:
-                        SelectedIndex = (int)Math.Min(pos.Y / _colorSize, 7);
+                        SelectedIndex = (int)Math.Min(pos.Y / _colorSize, 15);
                         break;
 
                     case MouseButton.Middle:
@@ -77,7 +77,7 @@ public partial class PAnimSelector : Control
 
         int cIx = 0;
         var lineY = _colorSize / 2;
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 16; i++)
         {
             cIx += 4; //Skip first (transparent) color
             var lineX = 0f;
@@ -93,11 +93,11 @@ public partial class PAnimSelector : Control
             lineY += _colorSize;
         }
 
-        if (_selectedIndex >= 0 && _selectedIndex < 8)
+        if (_selectedIndex >= 0 && _selectedIndex < 16)
         {
             var y = _selectedIndex * _colorSize;
-            var w = _colorSize * 15 - 1;
-            var h = _colorSize - 1;
+            var w = _colorSize * 15;
+            var h = _colorSize;
             DrawDashedLine(new(0, y), new(w, y), new Color(1, 1, 1));
             DrawDashedLine(new(w, y), new(w, y + h), new Color(1, 1, 1));
             DrawDashedLine(new(w, y + h), new(0, y + h), new Color(1, 1, 1));

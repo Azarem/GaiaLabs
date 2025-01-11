@@ -57,7 +57,7 @@ public partial class PAnimGenerateButton : Button
 
             var distance = r0.Y;
 
-            builder.AppendLine($"anim{prefix}_frame{i:X2} [");
+            builder.AppendLine($"panim{prefix}_frame{i:X2} [");
             for (int c = 0; c < 15; c++)
             {
                 var color = srcColors[c].Lerp(dstColors[c], distance);

@@ -2,7 +2,7 @@
   {
     "type": "Replace",
     "key": "actor < #08, #0C, #03, @h_hidden_red_jewel >",
-    "value": "$&\r\n    actor < #0C, #2F, #00, @SkyDeliveryman >"
+    "value": "$&\r\n    actor < #0C, #2F, #00, @SouthCapeDeliveryman >"
   },
   {
     "type": "Replace",
