@@ -15,14 +15,14 @@ namespace GaiaLib.Sprites
             var setOffsets = new HashSet<int>();
             var groupOffsets = new HashSet<int>();
             //var frameSets = new List<List<SpriteFrame>>();
-            int position = 0;
+            stream.Position = 0;
 
             while (!setOffsets.Contains((int)stream.Position))
                 setOffsets.Add(getUshort() - 0x4000);
 
             foreach (var offStart in setOffsets)
             {
-                position = offStart;
+                stream.Position = offStart;
                 List<SpriteFrame> frameList = [];
 
                 do
@@ -44,7 +44,7 @@ namespace GaiaLib.Sprites
             int grpIx = 0;
             foreach (var offStart in groupOffsets.OrderBy(x => x))
             {
-                position = offStart;
+                stream.Position = offStart;
 
                 foreach (var set in spriteMap.FrameSets)
                     foreach (var frame in set)
