@@ -187,6 +187,8 @@ func_03D9F6 {
     PHY
     LDA $0D72           ;Is music playing?
     BEQ change_return          ;Should only be on boot
+    LDA $0D5A
+    BNE change_accept          ;Scenario where map movement is staged before transition
     LDX meta_next_id
     BEQ change_accept
     LDA @bgm_table, X

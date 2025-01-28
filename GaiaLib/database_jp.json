@@ -699,6 +699,8 @@
     { "start": "1D8000", "end": "1D9D23", "name": "gfx_it15_ext_tiles", "type": "Bitmap", "compressed": true },
 
     { "start": "1E01E8", "end": "1E03CA", "name": "set_ec0A_effect", "type": "Tileset", "compressed": true },
+    { "start": "1E555E", "end": "1E565E", "name": "palette_1E1935", "type": "Palette" },
+    { "start": "1E565E", "end": "1E575E", "name": "palette_1E1A35", "type": "Palette" },
     { "start": "1E595E", "end": "1E5A5E", "name": "pal_title", "type": "Palette" },
     { "start": "1E6AE4", "end": "1E6BC4", "name": "pal_ec0A_tiles", "type": "Palette" },
     { "start": "1E6E64", "end": "1E6F44", "name": "pal_it15_tiles", "type": "Palette" },
