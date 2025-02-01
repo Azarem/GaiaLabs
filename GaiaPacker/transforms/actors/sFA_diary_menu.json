@@ -1,6 +1,16 @@
 ﻿[
   {
     "type": "Replace",
+    "key": "COP \\[6B\\] \\( &widestring_0BF6B3 \\)\\s+COP \\[BD\\] \\( @string_01EADC \\)",
+    "value": "COP [BD] ( @string_01EADC )\r\n    COP [6B] ( &widestring_0BF6B3 )"
+  },
+  {
+    "type": "Replace",
+    "key": "COP \\[6B\\] \\( &widestring_0BF6A4 \\)\\s+COP \\[BD\\] \\( @string_01EADC \\)",
+    "value": "COP [6B] ( &widestring_0BF6A4 )"
+  },
+  {
+    "type": "Replace",
     "key": "COP \\[BD\\] \\( @string_01EADC \\)",
     "value": "COP [6B] ( &diary_qr_string )"
   },
