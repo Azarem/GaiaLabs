@@ -12,8 +12,8 @@ run_button_main:
   LDA $09B4
   BNE run_button_end    ;Skip if running already
   LDA $09AE
-  BIT #$2800
-  BNE run_button_end    ;Skip if movement is disabled or on a ladder
+  BIT #$3800
+  BNE run_button_end    ;Skip if movement is disabled or on a ladder or ramp
   LDA $0656
   BIT #$0080
   BEQ run_button_end    ;Skip if not pressing (A/Y)
