@@ -546,7 +546,7 @@ code_028B91 {
     ;BRK #$00
 
     LDA $06F2
-    BEQ bgm_check             ;Always branch to halt when reset is loading
+    BEQ bgm_check               ;Always branch to halt when reset is loading
 
     LDA msu_flag
     BNE msu_begin_load
@@ -628,8 +628,8 @@ code_028B91 {
     STZ $2005
 
   msu_busy_wait:
-    LDA $2000 
-    BMI msu_busy_wait           ;Wait for data busy to clear
+    BIT $2000 
+    BVS msu_busy_wait           ;Wait for data busy to clear
 
     LDA $2000
     AND #08
