@@ -185,6 +185,7 @@ func_03D9F6 {
     ;BRK #$00
     PHX
     PHY
+    STZ token
     LDA $0D72           ;Is music playing?
     BEQ change_return          ;Should only be on boot
     LDA $0D5A
