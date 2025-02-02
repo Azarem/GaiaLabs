@@ -4333,7 +4333,8 @@
     { "name": "gw82_necklace_stone", "movable": true, "group": "great_wall", "parts": [
         { "start": "07B59E", "end": "07B5A1", "name": "h_gw82_necklace_stone", "struct": "h_actor" },
         { "start": "07B5A1", "end": "07B5F5", "name": "e_gw82_necklace_stone", "struct": "Code" },
-        { "start": "07B5F5", "end": "07B677", "name": "widestring_07B5F5", "struct": "WideString" }
+        { "start": "07B5F5", "end": "07B5FA", "name": "flag_array", "struct": "Byte" },
+        { "start": "07B5FA", "end": "07B677", "name": "widestring_07B5FA", "struct": "WideString" }
       ] },
     { "name": "gw83_lily", "movable": true, "group": "great_wall", "parts": [
         { "start": "07B677", "end": "07B67A", "name": "h_gw83_lily", "struct": "h_actor" },

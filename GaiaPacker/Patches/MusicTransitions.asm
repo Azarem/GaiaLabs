@@ -624,6 +624,7 @@ code_028B91 {
 
   msu_begin_continue:
     LDA @bgm_track_map, X
+    STZ $2006
     STA $2004
     STZ $2005
 
@@ -639,8 +640,6 @@ code_028B91 {
     JMP bgm_halt                ;Track not found, revert to normal process
 
   msu_start_playback:
-    LDA #FF                     ;Max volume
-    STA $2006
 
     LDA @bgm_loop_map, X
     BEQ msu_start
@@ -652,6 +651,8 @@ code_028B91 {
 
   msu_write:
     STA $2007                   ;Start playback
+    LDA #FF                     ;Max volume
+    STA $2006
     LDA $0D72
     CMP #$1B
     BEQ msu_return
@@ -674,8 +675,4 @@ bgm_load_exit {
 }
 
 ----------------------------------------------
-
-
-
-
 
