@@ -121,7 +121,7 @@
       "85" : { "mnem": "85", "code": "85", "size": 3, "parts": [ "Byte", "Byte", "Byte" ], "halt": false },
       "86" : { "mnem": "86", "code": "86", "size": 3, "parts": [ "Byte", "Byte", "Byte" ], "halt": false },
       "87" : { "mnem": "87", "code": "87", "size": 4, "parts": [ "Byte", "Byte", "Byte", "Byte" ], "halt": false },
-      "88" : { "mnem": "88", "code": "88", "size": 3, "parts": [ "@&unk12" ], "halt": false },
+      "88" : { "mnem": "88", "code": "88", "size": 3, "parts": [ "@&sprite_set" ], "halt": false },
       "89" : { "mnem": "89", "code": "89", "size": 0, "parts": [], "halt": false },
       "8A" : { "mnem": "8A", "code": "8A", "size": 0, "parts": [], "halt": false },
       "8B" : { "mnem": "8B", "code": "8B", "size": 0, "parts": [], "halt": false },
@@ -630,7 +630,9 @@
     "unk9": { "name": "unk9", "delimiter": "FFFF", "types": [ "Word", "Word", "Word" ] },
     "unk10": { "name": "unk10", "types": [ "Word", "Word" ] },
     "unk11": { "name": "unk11", "delimiter": "FF", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte" ] },
-    "unk12": { "name": "unk12", "delimiter": "FFFF", "types": [ "Word", "&Binary" ] },
+    "sprite_set": { "name": "sprite_set", "delimiter": "FFFF", "types": [ "Word", "&sprite_group" ] },
+    "sprite_group": { "name": "sprite_group", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "sprite_part" ] },
+    "sprite_part":  { "name": "sprite_part", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Word" ] },
     "bundle": { "name": "bundle", "delimiter": "00", "types": [ "Byte", "&Word", "Byte", "Byte", "Byte" ] },
     "unk14": { "name": "unk14", "types": [ "Address", "@Binary" ] },
     "unk15": { "name": "unk15", "types": [ "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte", "Byte" ] },
@@ -2713,8 +2715,8 @@
     },
     { "name": "inventory_menu", "movable": false, "group": "actors", "parts": [
         { "start": "02E396", "end": "02E399", "name": "h_inventory_menu", "struct": "h_actor" },
-        { "start": "02E399", "end": "02E404", "name": "e_inventory_menu", "struct": "Code" },
-        { "start": "02E404", "end": "02E445", "name": "func_02E404", "struct": "Code" },
+        { "start": "02E399", "end": "02E445", "name": "e_inventory_menu", "struct": "Code" },
+        //{ "start": "02E404", "end": "02E445", "name": "func_02E404", "struct": "Code" },
         { "start": "02E445", "end": "02E7A3", "name": "func_02E445", "struct": "Code" },
         //{ "start": "02E5B1", "end": "02E7A3", "name": "func_02E5B1", "struct": "Code" },
         { "start": "02E7A3", "end": "02E7BB", "name": "sub_02E7A3", "struct": "Code" },
@@ -6189,58 +6191,58 @@
         { "start": "0D8000", "end": "0DAFFF", "name": "scene_meta", "struct": "mapdef" }
       ] },
     { "name": "table_0E8000", "parts": [
-        { "start": "0E8000", "end": "0ECADB", "name": "table_0E8000", "struct": "&unk12" }
+        { "start": "0E8000", "end": "0ECADB", "name": "table_0E8000", "struct": "&sprite_set" }
       ] },
     { "name": "table_0EDA00", "parts": [
-        { "start": "0EDA00", "end": "0EDD40", "name": "table_0EDA00", "struct": "&unk12" }
+        { "start": "0EDA00", "end": "0EDD40", "name": "table_0EDA00", "struct": "&sprite_set" }
       ] },
     { "name": "table_0EE000", "parts": [
-        { "start": "0EE000", "end": "0EFDCF", "name": "table_0EE000", "struct": "&unk12" }
+        { "start": "0EE000", "end": "0EFDCF", "name": "table_0EE000", "struct": "&sprite_set" }
       ] },
     { "name": "table_0F8000", "parts": [
-        { "start": "0F8000", "end": "0F90E5", "name": "table_0F8000", "struct": "&unk12" }
+        { "start": "0F8000", "end": "0F90E5", "name": "table_0F8000", "struct": "&sprite_set" }
       ] },
     { "name": "table_0FC000", "parts": [
-        { "start": "0FC000", "end": "0FED85", "name": "table_0FC000", "struct": "&unk12" }
+        { "start": "0FC000", "end": "0FED85", "name": "table_0FC000", "struct": "&sprite_set" }
       ] },
-    { "name": "table_108000", "parts": [
-        { "start": "108000", "end": "108F07", "name": "table_108000", "struct": "&unk12" }
+    { "name": "inventory_spritemap", "parts": [
+        { "start": "108000", "end": "108F07", "name": "table_108000", "struct": "&sprite_set" }
       ] },
     { "name": "table_148000", "parts": [
-        { "start": "148000", "end": "14B09B", "name": "table_148000", "struct": "&unk12" }
+        { "start": "148000", "end": "14B09B", "name": "table_148000", "struct": "&sprite_set" }
       ] },
     { "name": "table_14C000", "parts": [
-        { "start": "14C000", "end": "14C0C8", "name": "table_14C000", "struct": "&unk12" }
+        { "start": "14C000", "end": "14C0C8", "name": "table_14C000", "struct": "&sprite_set" }
       ] },
     { "name": "table_14C0C8", "parts": [
-        { "start": "14C0C8", "end": "14C12C", "name": "table_14C0C8", "struct": "&unk12" }
+        { "start": "14C0C8", "end": "14C12C", "name": "table_14C0C8", "struct": "&sprite_set" }
       ] },
     { "name": "table_14C12C", "parts": [
-        { "start": "14C12C", "end": "14C198", "name": "table_14C12C", "struct": "&unk12" }
+        { "start": "14C12C", "end": "14C198", "name": "table_14C12C", "struct": "&sprite_set" }
       ] },
     { "name": "table_158000", "parts": [
-        { "start": "158000", "end": "15C421", "name": "table_158000", "struct": "&unk12" }
+        { "start": "158000", "end": "15C421", "name": "table_158000", "struct": "&sprite_set" }
       ] },
     { "name": "palette_bundles", "parts": [
         { "start": "168000", "end": "16D82C", "name": "palette_bundles", "struct": "&bundle" }
       ] },
     { "name": "table_178000", "parts": [
-        { "start": "178000", "end": "17841D", "name": "table_178000", "struct": "&unk12" }
+        { "start": "178000", "end": "17841D", "name": "table_178000", "struct": "&sprite_set" }
       ] },
     { "name": "table_179000", "parts": [
-        { "start": "179000", "end": "1791AA", "name": "table_179000", "struct": "&unk12" }
+        { "start": "179000", "end": "1791AA", "name": "table_179000", "struct": "&sprite_set" }
       ] },
     { "name": "table_17A000", "parts": [
-        { "start": "17A000", "end": "17A4F2", "name": "table_17A000", "struct": "&unk12" }
+        { "start": "17A000", "end": "17A4F2", "name": "table_17A000", "struct": "&sprite_set" }
       ] },
     { "name": "table_17B000", "parts": [
-        { "start": "17B000", "end": "17B3A6", "name": "table_17B000", "struct": "&unk12" }
+        { "start": "17B000", "end": "17B3A6", "name": "table_17B000", "struct": "&sprite_set" }
       ] },
     { "name": "table_17C000", "parts": [
-        { "start": "17C000", "end": "17C443", "name": "table_17C000", "struct": "&unk12" }
+        { "start": "17C000", "end": "17C443", "name": "table_17C000", "struct": "&sprite_set" }
       ] },
     { "name": "table_17D000", "parts": [
-        { "start": "17D000", "end": "17D3F0", "name": "table_17D000", "struct": "&unk12" }
+        { "start": "17D000", "end": "17D3F0", "name": "table_17D000", "struct": "&sprite_set" }
       ] }
   ],
   "overrides": [

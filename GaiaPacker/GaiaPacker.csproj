@@ -18,6 +18,9 @@
     <None Update="graphics\gfx_fonts.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="graphics\gfx_inventory_sprites.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="palettes\pal_boot_logos.pal">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -38,6 +41,9 @@
     </None>
     <None Update="patches\GemShop.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="patches\InventoryCounters.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="patches\InventoryScript.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -97,9 +103,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="README.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="transforms\actors\sFA_diary_menu.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="transforms\actors\sEA_solid_arm.json">

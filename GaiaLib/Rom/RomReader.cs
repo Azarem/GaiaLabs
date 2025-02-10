@@ -1129,6 +1129,7 @@ namespace GaiaLib.Rom
             bool delReached;
             while (!(delReached = DelimiterReached(delimiter)))
             {
+                var startLoc = _lCur;
                 var target = parent;
                 if (descriminator != null) //Is composite?
                 {
@@ -1176,6 +1177,16 @@ namespace GaiaLib.Rom
 
                     objects.Add(def);
                 }
+
+                //Roll back work if struct overflows a chunk boundary
+                //SHOULD only happen for the inventory sprite map
+                while (++startLoc < _lCur)
+                    if (_chunkTable.ContainsKey(startLoc))
+                    {
+                        _pCur -= _lCur - startLoc;
+                        _lCur = startLoc;
+                        break;
+                    }
 
                 if (!CanContinue()) break;
             }
