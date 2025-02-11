@@ -265,8 +265,16 @@ code_03C807 {
 
 
 code_03C82D {
+    LDA $01, S
+    BEQ small_sprite_process
     LDA $@binary_03C841, X
     STA $00
+    BRA small_sprite_continue
+
+  small_sprite_process:
+    STZ $00
+
+  small_sprite_continue:
     LDA $@binary_03C841+1, X
     STA $0E
     REP #$20
