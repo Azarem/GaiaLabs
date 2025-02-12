@@ -672,7 +672,7 @@
     { "start": "002380", "end": "002F3A", "name": "file_002380", "type": "Unknown", "compressed": true },
     { "start": "002F3A", "end": "004A33", "name": "gfx_sc01_actors", "type": "Bitmap", "compressed": true },
     { "start": "004A33", "end": "006521", "name": "gfx_it16_int", "type": "Bitmap", "compressed": true },
-    { "start": "006521", "end": "007FFC", "name": "bmp_006521", "type": "Bitmap", "compressed": true },
+    { "start": "006521", "end": "007FFC", "name": "gfx_fr32_actors", "type": "Bitmap", "compressed": true },
 
     { "start": "010000", "end": "011AEA", "name": "gfx_overworld_tiles", "type": "Bitmap", "compressed": true },
     { "start": "011AEA", "end": "01359A", "name": "bmp_011AEA", "type": "Bitmap", "compressed": true },
