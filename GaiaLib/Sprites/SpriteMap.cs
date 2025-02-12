@@ -108,7 +108,8 @@ namespace GaiaLib.Sprites
 
             void writeLoc(int val) => writeShort(val + 0x4000);
 
-            var groupPos = new Dictionary<int, int>();
+            var count = Groups.Count;
+            var groupPos = new int[count];
 
             foreach (var set in FrameSets)
             {
@@ -116,19 +117,18 @@ namespace GaiaLib.Sprites
                 pos += (set.Count << 2) + 2;
             }
 
+            for(int i = 0; i < count; i++)
+            {
+                groupPos[i] = pos;
+                pos += Groups[i].Parts.Count * 7 + 13;
+            }
 
             foreach (var set in FrameSets)
             {
                 foreach (var frm in set)
                 {
                     writeShort(frm.Duration);
-                    var gix = frm.GroupIndex;
-                    if (!groupPos.TryGetValue(gix, out var grpPos))
-                    {
-                        groupPos[gix] = grpPos = pos;
-                        pos += (Groups[gix].Parts.Count * 7) + 13;
-                    }
-                    writeLoc(grpPos);
+                    writeLoc(groupPos[frm.GroupIndex]);
                 }
                 writeShort(0xFFFF);
             }

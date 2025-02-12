@@ -235,14 +235,11 @@ layout_mode = 2
 size_flags_vertical = 3
 split_offset = 400
 
-[node name="Control" type="Control" parent="TabContainer/Sprites/HSplitContainer2"]
+[node name="Control" type="VBoxContainer" parent="TabContainer/Sprites/HSplitContainer2"]
 layout_mode = 2
 
 [node name="HFlowContainer" type="HFlowContainer" parent="TabContainer/Sprites/HSplitContainer2/Control"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-grow_horizontal = 2
+layout_mode = 2
 
 [node name="SaveSpriteButton" type="Button" parent="TabContainer/Sprites/HSplitContainer2/Control/HFlowContainer"]
 layout_mode = 2
@@ -251,12 +248,8 @@ script = ExtResource("19_nshi8")
 
 [node name="SpriteProperties" type="GridContainer" parent="TabContainer/Sprites/HSplitContainer2/Control"]
 layout_direction = 2
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
+size_flags_vertical = 3
 columns = 2
 script = ExtResource("19_o162e")
 
