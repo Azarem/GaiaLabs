@@ -5227,7 +5227,7 @@
         { "start": "09D1B3", "end": "09D1B6", "name": "h_it1A_moon_tribe5", "struct": "h_actor" },
         { "start": "09D1B6", "end": "09D64D", "name": "e_it1A_moon_tribe5", "struct": "Code" }
       ] },
-    { "name": "sF7_credits", "movable": true, "group": "credits", "parts": [
+    { "name": "sF7_credits", "movable": false, "group": "credits", "parts": [
         { "start": "09D64D", "end": "09D650", "name": "h_sF7_credits", "struct": "h_actor" },
         { "start": "09D650", "end": "09DB4B", "name": "e_sF7_credits", "struct": "Code" },
         { "start": "09DB4B", "end": "09DB59", "name": "sub_09DB4B", "struct": "Code" },
