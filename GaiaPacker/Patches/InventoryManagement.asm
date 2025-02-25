@@ -7,6 +7,8 @@
 !player_actor                   09AA
 !jewels_collected               0AB0
 !inventory_slots                0AB4
+!inventory_equipped_index       0AC4
+!inventory_equipped_type        0AC6
 ;!page_2                         0B34  ;16 items per page
 
 !state_1                        0B54
@@ -49,45 +51,8 @@ inv_check_pages {
 }
 
 ------------------------------------------------
-;Entry point for gem use (prevent increase, this is done elsewhere)
-func_0384D5 {
-    COP [BF] ( &widestring_038517 )
-    JSR $&sub_039FB2
 
-;    SED 
-;    LDA $jewels_collected
-;    CLC 
-;    ADC #$0001
-;    STA $jewels_collected
-;    CLD 
-
-    PHX 
-    PHD 
-    LDA $player_actor
-    TCD 
-    TAX 
-    COP [A5] ( @code_038566, #00, #00, #$2000 )
-    TYX 
-    LDA #$0000
-    STA $0012, X
-    LDA #$3000
-    STA $000E, X
-    LDY $player_actor
-    LDA $0014, Y
-    STA $0014, X
-    LDA $0016, Y
-    STA $0016, X
-    PLD 
-    PLX 
-    RTS 
-}
-
----------------------------------------------
-;Entry point for removing an item from the inventory upon use
-
-sub_039FB2 {
-    PHX
-    LDX $0AC4
+  inv_remove_stub:
     SEP #$20
     LDA $inventory_slots, X
     CMP #$01
@@ -128,7 +93,6 @@ sub_039FB2 {
     DEC $herb_count
     BMI inv_remove_herb_minus
     BEQ inv_remove_item
-    PLX
     RTS
 
   inv_remove_herb_minus:
@@ -139,7 +103,6 @@ sub_039FB2 {
     DEC $crystal_count
     BMI inv_remove_crystal_minus
     BEQ inv_remove_item
-    PLX
     RTS
 
   inv_remove_crystal_minus:
@@ -147,12 +110,62 @@ sub_039FB2 {
 
   inv_remove_item:
     STZ $inventory_slots, X
+    CPX $inventory_equipped_index
+    BNE inv_remove_finish
     REP #$20
     LDA #$0000
-    STA $0AC6
+    STA $inventory_equipped_type
     DEC
-    STA $0AC4
+    STA $inventory_equipped_index
+    LDA #$1000
+    TRB $06EE
+
+  inv_remove_finish:
+    RTS
+
+------------------------------------------------
+;Entry point for gem use (prevent increase, this is done elsewhere)
+func_0384D5 {
+    COP [BF] ( &widestring_038517 )
+    JSR $&sub_039FB2
+
+;    SED 
+;    LDA $jewels_collected
+;    CLC 
+;    ADC #$0001
+;    STA $jewels_collected
+;    CLD 
+
+    PHX 
+    PHD 
+    LDA $player_actor
+    TCD 
+    TAX 
+    COP [A5] ( @code_038566, #00, #00, #$2000 )
+    TYX 
+    LDA #$0000
+    STA $0012, X
+    LDA #$3000
+    STA $000E, X
+    LDY $player_actor
+    LDA $0014, Y
+    STA $0014, X
+    LDA $0016, Y
+    STA $0016, X
+    PLD 
+    PLX 
+    RTS 
+}
+
+---------------------------------------------
+;Entry point for removing an item from the inventory upon use
+
+sub_039FB2 {
+    PHX
+    LDX $inventory_equipped_index
+    JSR inv_remove_stub
     PLX
+    REP #$20
     RTS
 }
 
@@ -232,6 +245,17 @@ code_03F0B9 {
     PLP 
     SEC 
     RTL 
+}
+
+---------------------------------------------
+;Route COP item removal through common process
+
+code_03F0A0 {
+    PHX
+    TYX
+    JSR inv_remove_stub
+    PLX
+    REP #$20
 }
 
 -----------------------------------------

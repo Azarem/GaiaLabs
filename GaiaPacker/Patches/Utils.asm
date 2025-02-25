@@ -39,7 +39,7 @@
 ;Global scripts
 global_scripts {
     JSL @RunButton
-
+    JSL @ItemSwapping
     RTS
 }
 
@@ -85,8 +85,6 @@ func_03D1C2 {
 
 
 word_03DF0A [
-  #$0000   ;00
-  #$0001   ;01
   #$2CCE   ;06
   #$2CCF   ;07
   #$0000   ;08
@@ -95,8 +93,10 @@ word_03DF0A [
   #$2CDA   ;0B
   #$2CDB   ;0C
   #$2CDC   ;0D
-  #$0000   ;0E
-  #$0002   ;0F
+  #$2CDD   ;0D
+  #$ACE9   ;0D
+  #$ECE9   ;0D
+  #$6CDD   ;0D
   #$6CDC   ;10
   #$6CDB   ;11
   #$6CDA   ;12
@@ -105,8 +105,6 @@ word_03DF0A [
   #$0008   ;15
   #$6CCF   ;16
   #$6CCE   ;17
-  #$0000   ;18
-  #$0002   ;19
   #$2CDE   ;1A
   #$0000   ;1B
   #$000A   ;1C
@@ -115,6 +113,8 @@ word_03DF0A [
   #$0000   ;1F
   #$0001   ;20
   #$2CED   ;21
+  #$0000   ;1F
+  #$0002   ;20
   #$6CED   ;22
   #$0000   ;23
   #$0002   ;24
@@ -122,8 +122,6 @@ word_03DF0A [
   #$0000   ;26
   #$000A   ;27
   #$6CDE   ;28
-  #$0000   ;29
-  #$0002   ;2A
   #$2CEE   ;2B
   #$0000   ;2C
   #$000A   ;2D
@@ -131,8 +129,10 @@ word_03DF0A [
   #$2CFB   ;2F
   #$2CFC   ;30
   #$2CFD   ;31
-  #$6CFD   ;32
   #$2CE9   ;33
+  #$6CE9   ;33
+  #$6CFD   ;32
+  #$6CFC   ;32
   #$6CFB   ;34
   #$6CFA   ;35
   #$0000   ;36
@@ -214,9 +214,9 @@ code_02B078 {
     STX $A1T0L
 }
 
-string_01E7F6 |[CUR:44,0][NHM:8][HP][CUR:5C,0][NHM:14][BCD:1,AD8][CUR:62,0][NUM:AD6]|
+string_01E7F6 |[CUR:42,0][NHM:8][HP][CUR:5A,0][NHM:14][BCD:1,AD8][CUR:64,0][NUM:AD6]|
 
-string_01E818 |[NHM:4][CUR:68,0][HE]|
+string_01E818 |[NHM:4][CUR:6A,0][HE]|
 
 -------------------------------------------------
 ;Print debug string on radar screen

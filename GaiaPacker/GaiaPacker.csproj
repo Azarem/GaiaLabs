@@ -24,7 +24,25 @@
     <None Update="graphics\gfx_inventory_sprites.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="graphics\gfx_item_exprite.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graphics\misc_fx_1CD580.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="palettes\fx_palette_198000.pal">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="palettes\pal_boot_logos.pal">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="palettes\pal_item_exprite.pal">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="palettes\pal_item_exprite2.pal">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="palettes\pal_sc02_main_characters.pal">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="patches\APUWaitFixes.asm">
@@ -38,6 +56,9 @@
     </None>
     <None Update="patches\DPShop.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="patches\EquippedIcon.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="patches\ExpandedHealthBars.asm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -62,6 +83,9 @@
     </None>
     <None Update="patches\ItemRewards.asm_">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="patches\ItemSwapping.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="patches\MenuBGPatch.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

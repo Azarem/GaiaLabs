@@ -59,16 +59,19 @@ run_store_ew:
 
 ;Fix Y button mapping for style 1
 code_0BE695 {
+    LDA #$0040
+    STA $0DB0
     LDA $0B26
     BNE code_0BE6B3
     LDA #$8000
     STA $0DAC
     LDA #$4000
     STA $0DAA
-    LDA #$0000
-    STA $0DB0
     LDA #$0080   ;This
     STA $0DAE
+}
+
+code_0BE6B3 {
     RTS 
 }
 

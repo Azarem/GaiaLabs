@@ -213,18 +213,31 @@ sprite_group_108BAA [
 code_03C7F6 {
     LDA $scene_current
     CMP #$00FF
-    BNE scene_check_normal
+    BNE direct_sprite_large
     
-    LDX #$1FC0
-    LDA #$0000
+    PEA #$0000
     BRA scene_check_next
 
-  scene_check_normal:
-    LDX #$0600
-    LDA #$00AA
+  direct_sprite_large:
+    PEA #$00AA
 
   scene_check_next:
-    PHA
+    CMP #$00FE
+    BEQ scene_addr_large
+    CMP #$0090
+    BCS scene_addr_small
+    CMP #$008C
+    BCS scene_addr_large
+    BRA scene_addr_small
+    
+  scene_addr_large:
+    LDX #$0600
+    BRA scene_addr_next
+
+  scene_addr_small:
+    LDX #$1FC0
+
+  scene_addr_next:
     LDY #$0422
     LDA $00DA
     BIT #$FE00
