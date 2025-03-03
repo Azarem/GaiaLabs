@@ -25,13 +25,15 @@ func_03DFF8 {
     PHP 
     LDA $scene_current
     CMP #$F7
-    BEQ code_03E04E
+    BEQ load_exit
     CMP #$FB
     BEQ load_fb_asset
+    CMP #$FA
+    BEQ load_exit
     CMP #$FE
-    BEQ code_03E04E
+    BEQ load_exit
     CMP #$8C
-    BEQ code_03E04E
+    BEQ load_exit
     LDX #$4200
     STX $VMADDL
     LDX #$&bmp_000000
