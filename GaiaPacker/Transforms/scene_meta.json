@@ -23,5 +23,10 @@
     "type": "Replace",
     "key": "music < #14, #00, @bgm_illusion_of_gaia >",
     "value": "music < #1F, #00, @bgm_illusion_of_gaia >"
+  },
+  {
+    "type": "Replace",
+    "key": "entry_41 \\[\\s+ppu < #00 >",
+    "value": "entry_41 [\r\n  ppu < #11 >"
   }
 ]
