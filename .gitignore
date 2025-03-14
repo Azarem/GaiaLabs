@@ -16,3 +16,8 @@
 /GaiaLib/bin/ExportDebug/net8.0
 /GaiaLabs/export
 /GaiaPacker/bin/Debug
+/GaiaApi/bin
+/GaiaApi/obj
+/GaiaApi/Properties/PublishProfiles
+/GaiaApi/appsettings.Development.json
+/GaiaApi/appsettings.json
