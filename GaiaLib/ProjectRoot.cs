@@ -1,6 +1,7 @@
 ﻿using GaiaLib.Asm;
 using GaiaLib.Database;
 using System.Globalization;
+using System.Text;
 using System.Text.Json;
 
 namespace GaiaLib
@@ -72,12 +73,40 @@ namespace GaiaLib
             //while (outRom.Position < 0x400000)
             //    outRom.WriteByte(0);
 
-            //Update size in header
-            outRom.Position = 0xFFD7;
-            outRom.WriteByte(0x0C);
-
             //Repack
             Process.Repack(BaseDir, DatabasePath, WriteFile, WriteTransform);
+
+            //Write header
+
+            //Maker/game code
+            outRom.Position = 0xFFB0;
+            outRom.Write(Encoding.ASCII.GetBytes("01JG  "));
+            for (int i = 0; i < 10; i++)
+                outRom.WriteByte(0);
+
+            //Cartridge Title
+            outRom.Write(Encoding.ASCII.GetBytes(Name.ToUpper().PadRight(21)));
+
+            //ROM speed and map mode
+            outRom.WriteByte(0x31);
+
+            //Chipset
+            outRom.WriteByte(0x02);
+
+            //ROM Size
+            outRom.WriteByte(0x0C);
+
+            //RAM Size
+            outRom.WriteByte(0x03);
+
+            //Country ID
+            outRom.WriteByte(0x01);
+
+            //Developer ID
+            outRom.WriteByte(0x33);
+
+            //Version
+            outRom.WriteByte(0x00);
 
             //Calculate checksum
             int sum = 0;
