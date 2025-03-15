@@ -384,7 +384,12 @@ e_sE5_epilogue {
     TSB $joypad_mask_std
     LDA #$4001
     TSB $09EC
+    COP [3B] ( #0B, @func_00B519 )
+    LDA #$1062
+    STA $7F0A00
+    COP [D0] ( #DB, #01, &code_0BD374 )
 
+    PHX
     LDA $0D8C
     XBA
     ASL
@@ -405,10 +410,7 @@ e_sE5_epilogue {
     STA $3063FE, X
 
   epilogue_init_next:
-    COP [3B] ( #0B, @func_00B519 )
-    LDA #$1062
-    STA $7F0A00
-    COP [D0] ( #DB, #01, &code_0BD374 )
+    PLX
     COP [DA] ( #B3 )
     COP [BF] ( &widestring_0BD558 )
     COP [A0] ( @func_0BD4DE, #$0088, #$0080, #$1800 )
