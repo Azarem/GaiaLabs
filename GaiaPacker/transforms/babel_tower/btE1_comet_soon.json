@@ -1,0 +1,7 @@
+﻿[
+  {
+    "type": "Replace",
+    "key": "COP \\[50\\] \\( @palette_1F00C0, #00, #A0, #50 \\)",
+    "value": "COP [50] ( @palette_1F00C0, #10, #B0, #40 )"
+  }
+]

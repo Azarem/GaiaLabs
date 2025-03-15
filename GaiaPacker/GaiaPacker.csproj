@@ -162,6 +162,9 @@
     <None Update="transforms\angel_village\av69_erik.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="transforms\babel_tower\btE1_comet_soon.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="transforms\babel_tower\btDE_kara_missing.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
