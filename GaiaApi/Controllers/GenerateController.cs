@@ -58,7 +58,7 @@ namespace GaiaApi.Controllers
 
                 var key = Convert.ToHexString(hash);
 
-                storeInfo = new FileInfo(Path.Combine(_settings.StorePath, $"{key}.bps"));
+                storeInfo = new FileInfo(Path.Combine(_settings.StorePath, $"{key}.smc"));
                 if (storeInfo.Exists)
                 {
                     var patchBytes = new byte[storeInfo.Length];
@@ -66,7 +66,7 @@ namespace GaiaApi.Controllers
                     using (var patchFile = storeInfo.OpenRead())
                         await patchFile.ReadAsync(patchBytes, 0, patchBytes.Length);
 
-                    return File(patchBytes, "application/octet-stream", $"{patchName}.bps");
+                    return File(patchBytes, "application/octet-stream", $"{patchName}.smc");
                 }
             }
 
@@ -133,17 +133,17 @@ namespace GaiaApi.Controllers
                     BaseDir = tempPath,
                     RomPath = _settings.RomPath,
                     DatabasePath = Path.Combine(_settings.ModulePath, "database.json"),
-                    FlipsPath = _settings.FlipsPath
+                    //FlipsPath = _settings.FlipsPath
                 };
 
                 project.Build();
 
-                var patchInfo = new FileInfo(Path.Combine(tempPath, $"{project.Name}.bps"));
+                var patchInfo = new FileInfo(Path.Combine(tempPath, $"{project.Name}.smc"));
 
                 if (!patchInfo.Exists)
                     return Problem("Patch file was not created");
 
-                if (!isCustomBuild)
+                if (storeInfo != null)
                     patchInfo.CopyTo(storeInfo.FullName, true);
 
                 var patchBytes = new byte[patchInfo.Length];
