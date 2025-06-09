@@ -1,0 +1,37 @@
+[
+  {
+    "start": 47867,
+    "end": 47869,
+    "block": "parallax_thinker",
+    "name": "h_parallax_thinker",
+    "struct": "h_thinker"
+  },
+  {
+    "start": 47869,
+    "end": 48638,
+    "block": "parallax_thinker",
+    "name": "e_parallax_thinker",
+    "struct": "Code"
+  },
+  {
+    "start": 117745,
+    "end": 119799,
+    "block": "parallax_table",
+    "name": "parallax_table",
+    "struct": "&Binary"
+  },
+  {
+    "start": 845218,
+    "end": 846631,
+    "block": "scene_thinkers",
+    "name": "t_scene_thinkers",
+    "struct": "&thinker"
+  },
+  {
+    "start": 884736,
+    "end": 896977,
+    "block": "scene_meta",
+    "name": "scene_meta",
+    "struct": "mapdef"
+  }
+]

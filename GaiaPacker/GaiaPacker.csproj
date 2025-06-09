@@ -171,7 +171,7 @@
     <None Update="transforms\chunk_008000.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="transforms\mountain_temple\mtA2_actor_07E7F0.json">
+    <None Update="transforms\mountain_temple\mtA5_actor_07E896.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="transforms\mountain_temple\mtA5_actor_07E843.json">
@@ -192,13 +192,13 @@
     <None Update="transforms\diamond_mine\dm47_imas.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="transforms\diamond_mine\dm47_remus.json">
+    <None Update="transforms\diamond_mine\dm47_sam.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="transforms\euro\eu9A_friezer.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="transforms\euro\eu9A_max.json">
+    <None Update="transforms\euro\eu9A_rudy.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="transforms\credits\sF7_actor_09DFF8.json">
@@ -240,7 +240,7 @@
     <None Update="transforms\pyramid\pyDA_lithograph3.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="transforms\pyramid\pyDA_lithograph2.json">
+    <None Update="transforms\pyramid\pyDA_lithograph6.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="transforms\pyramid\pyDA_lithograph5.json">

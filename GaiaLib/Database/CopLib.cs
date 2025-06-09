@@ -1,4 +1,6 @@
 ﻿using GaiaLib.Asm;
+using GaiaLib.Enum;
+using GaiaLib.Types;
 
 namespace GaiaLib.Database
 {

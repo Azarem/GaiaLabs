@@ -1,4 +1,6 @@
 ﻿
+using GaiaLib.Types;
+
 namespace GaiaLib.Database
 {
     public class DbSfx

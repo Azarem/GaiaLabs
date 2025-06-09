@@ -1,0 +1,1538 @@
+[
+  {
+    "mnem": "ADC",
+    "code": 105,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "ADC",
+    "code": 109,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "ADC",
+    "code": 111,
+    "size": 4,
+    "mode": "AbsoluteLong"
+  },
+  {
+    "mnem": "ADC",
+    "code": 101,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "ADC",
+    "code": 114,
+    "size": 2,
+    "mode": "DirectPageIndirect"
+  },
+  {
+    "mnem": "ADC",
+    "code": 103,
+    "size": 2,
+    "mode": "DirectPageIndirectLong"
+  },
+  {
+    "mnem": "ADC",
+    "code": 125,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "ADC",
+    "code": 127,
+    "size": 4,
+    "mode": "AbsoluteLongIndexedX"
+  },
+  {
+    "mnem": "ADC",
+    "code": 121,
+    "size": 3,
+    "mode": "AbsoluteIndexedY"
+  },
+  {
+    "mnem": "ADC",
+    "code": 117,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "ADC",
+    "code": 97,
+    "size": 2,
+    "mode": "DirectPageIndexedIndirectX"
+  },
+  {
+    "mnem": "ADC",
+    "code": 113,
+    "size": 2,
+    "mode": "DirectPageIndirectIndexedY"
+  },
+  {
+    "mnem": "ADC",
+    "code": 119,
+    "size": 2,
+    "mode": "DirectPageIndirectLongIndexedY"
+  },
+  {
+    "mnem": "ADC",
+    "code": 99,
+    "size": 2,
+    "mode": "StackRelative"
+  },
+  {
+    "mnem": "ADC",
+    "code": 115,
+    "size": 2,
+    "mode": "StackRelativeIndirectIndexedY"
+  },
+  {
+    "mnem": "AND",
+    "code": 41,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "AND",
+    "code": 45,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "AND",
+    "code": 47,
+    "size": 4,
+    "mode": "AbsoluteLong"
+  },
+  {
+    "mnem": "AND",
+    "code": 37,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "AND",
+    "code": 50,
+    "size": 2,
+    "mode": "DirectPageIndirect"
+  },
+  {
+    "mnem": "AND",
+    "code": 39,
+    "size": 2,
+    "mode": "DirectPageIndirectLong"
+  },
+  {
+    "mnem": "AND",
+    "code": 61,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "AND",
+    "code": 63,
+    "size": 4,
+    "mode": "AbsoluteLongIndexedX"
+  },
+  {
+    "mnem": "AND",
+    "code": 57,
+    "size": 3,
+    "mode": "AbsoluteIndexedY"
+  },
+  {
+    "mnem": "AND",
+    "code": 53,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "AND",
+    "code": 33,
+    "size": 2,
+    "mode": "DirectPageIndexedIndirectX"
+  },
+  {
+    "mnem": "AND",
+    "code": 49,
+    "size": 2,
+    "mode": "DirectPageIndirectIndexedY"
+  },
+  {
+    "mnem": "AND",
+    "code": 55,
+    "size": 2,
+    "mode": "DirectPageIndirectLongIndexedY"
+  },
+  {
+    "mnem": "AND",
+    "code": 35,
+    "size": 2,
+    "mode": "StackRelative"
+  },
+  {
+    "mnem": "AND",
+    "code": 51,
+    "size": 2,
+    "mode": "StackRelativeIndirectIndexedY"
+  },
+  {
+    "mnem": "ASL",
+    "code": 10,
+    "size": 1,
+    "mode": "Accumulator"
+  },
+  {
+    "mnem": "ASL",
+    "code": 14,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "ASL",
+    "code": 6,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "ASL",
+    "code": 30,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "ASL",
+    "code": 22,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "BPL",
+    "code": 16,
+    "size": 2,
+    "mode": "PCRelative"
+  },
+  {
+    "mnem": "BMI",
+    "code": 48,
+    "size": 2,
+    "mode": "PCRelative"
+  },
+  {
+    "mnem": "BRA",
+    "code": 128,
+    "size": 2,
+    "mode": "PCRelative"
+  },
+  {
+    "mnem": "BRL",
+    "code": 130,
+    "size": 3,
+    "mode": "PCRelativeLong"
+  },
+  {
+    "mnem": "BCC",
+    "code": 144,
+    "size": 2,
+    "mode": "PCRelative"
+  },
+  {
+    "mnem": "BCS",
+    "code": 176,
+    "size": 2,
+    "mode": "PCRelative"
+  },
+  {
+    "mnem": "BNE",
+    "code": 208,
+    "size": 2,
+    "mode": "PCRelative"
+  },
+  {
+    "mnem": "BEQ",
+    "code": 240,
+    "size": 2,
+    "mode": "PCRelative"
+  },
+  {
+    "mnem": "BVC",
+    "code": 80,
+    "size": 2,
+    "mode": "PCRelative"
+  },
+  {
+    "mnem": "BVS",
+    "code": 112,
+    "size": 2,
+    "mode": "PCRelative"
+  },
+  {
+    "mnem": "BIT",
+    "code": 137,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "BIT",
+    "code": 44,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "BIT",
+    "code": 36,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "BIT",
+    "code": 60,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "BIT",
+    "code": 52,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "BRK",
+    "code": 0,
+    "size": 2,
+    "mode": "StackInterrupt"
+  },
+  {
+    "mnem": "CLC",
+    "code": 24,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "CLD",
+    "code": 216,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "CLI",
+    "code": 88,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "CLV",
+    "code": 184,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "CMP",
+    "code": 201,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "CMP",
+    "code": 205,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "CMP",
+    "code": 207,
+    "size": 4,
+    "mode": "AbsoluteLong"
+  },
+  {
+    "mnem": "CMP",
+    "code": 197,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "CMP",
+    "code": 210,
+    "size": 2,
+    "mode": "DirectPageIndirect"
+  },
+  {
+    "mnem": "CMP",
+    "code": 199,
+    "size": 2,
+    "mode": "DirectPageIndirectLong"
+  },
+  {
+    "mnem": "CMP",
+    "code": 221,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "CMP",
+    "code": 223,
+    "size": 4,
+    "mode": "AbsoluteLongIndexedX"
+  },
+  {
+    "mnem": "CMP",
+    "code": 217,
+    "size": 3,
+    "mode": "AbsoluteIndexedY"
+  },
+  {
+    "mnem": "CMP",
+    "code": 213,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "CMP",
+    "code": 193,
+    "size": 2,
+    "mode": "DirectPageIndexedIndirectX"
+  },
+  {
+    "mnem": "CMP",
+    "code": 209,
+    "size": 2,
+    "mode": "DirectPageIndirectIndexedY"
+  },
+  {
+    "mnem": "CMP",
+    "code": 215,
+    "size": 2,
+    "mode": "DirectPageIndirectLongIndexedY"
+  },
+  {
+    "mnem": "CMP",
+    "code": 195,
+    "size": 2,
+    "mode": "StackRelative"
+  },
+  {
+    "mnem": "CMP",
+    "code": 211,
+    "size": 2,
+    "mode": "StackRelativeIndirectIndexedY"
+  },
+  {
+    "mnem": "COP",
+    "code": 2,
+    "size": 2,
+    "mode": "StackInterrupt"
+  },
+  {
+    "mnem": "CPX",
+    "code": 224,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "CPX",
+    "code": 236,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "CPX",
+    "code": 228,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "CPY",
+    "code": 192,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "CPY",
+    "code": 204,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "CPY",
+    "code": 196,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "DEC",
+    "code": 58,
+    "size": 1,
+    "mode": "Accumulator"
+  },
+  {
+    "mnem": "DEC",
+    "code": 206,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "DEC",
+    "code": 198,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "DEC",
+    "code": 222,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "DEC",
+    "code": 214,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "DEX",
+    "code": 202,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "DEY",
+    "code": 136,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "EOR",
+    "code": 73,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "EOR",
+    "code": 77,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "EOR",
+    "code": 79,
+    "size": 4,
+    "mode": "AbsoluteLong"
+  },
+  {
+    "mnem": "EOR",
+    "code": 69,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "EOR",
+    "code": 82,
+    "size": 2,
+    "mode": "DirectPageIndirect"
+  },
+  {
+    "mnem": "EOR",
+    "code": 71,
+    "size": 2,
+    "mode": "DirectPageIndirectLong"
+  },
+  {
+    "mnem": "EOR",
+    "code": 93,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "EOR",
+    "code": 95,
+    "size": 4,
+    "mode": "AbsoluteLongIndexedX"
+  },
+  {
+    "mnem": "EOR",
+    "code": 89,
+    "size": 3,
+    "mode": "AbsoluteIndexedY"
+  },
+  {
+    "mnem": "EOR",
+    "code": 85,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "EOR",
+    "code": 65,
+    "size": 2,
+    "mode": "DirectPageIndexedIndirectX"
+  },
+  {
+    "mnem": "EOR",
+    "code": 81,
+    "size": 2,
+    "mode": "DirectPageIndirectIndexedY"
+  },
+  {
+    "mnem": "EOR",
+    "code": 87,
+    "size": 2,
+    "mode": "DirectPageIndirectLongIndexedY"
+  },
+  {
+    "mnem": "EOR",
+    "code": 67,
+    "size": 2,
+    "mode": "StackRelative"
+  },
+  {
+    "mnem": "EOR",
+    "code": 83,
+    "size": 2,
+    "mode": "StackRelativeIndirectIndexedY"
+  },
+  {
+    "mnem": "INC",
+    "code": 26,
+    "size": 1,
+    "mode": "Accumulator"
+  },
+  {
+    "mnem": "INC",
+    "code": 238,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "INC",
+    "code": 230,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "INC",
+    "code": 254,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "INC",
+    "code": 246,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "INX",
+    "code": 232,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "INY",
+    "code": 200,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "JMP",
+    "code": 76,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "JMP",
+    "code": 108,
+    "size": 3,
+    "mode": "AbsoluteIndirect"
+  },
+  {
+    "mnem": "JMP",
+    "code": 124,
+    "size": 3,
+    "mode": "AbsoluteIndexedIndirect"
+  },
+  {
+    "mnem": "JML",
+    "code": 92,
+    "size": 4,
+    "mode": "AbsoluteLong"
+  },
+  {
+    "mnem": "JML",
+    "code": 220,
+    "size": 3,
+    "mode": "AbsoluteIndirectLong"
+  },
+  {
+    "mnem": "JSR",
+    "code": 32,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "JSR",
+    "code": 252,
+    "size": 3,
+    "mode": "AbsoluteIndexedIndirect"
+  },
+  {
+    "mnem": "JSL",
+    "code": 34,
+    "size": 4,
+    "mode": "AbsoluteLong"
+  },
+  {
+    "mnem": "LDA",
+    "code": 169,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "LDA",
+    "code": 173,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "LDA",
+    "code": 175,
+    "size": 4,
+    "mode": "AbsoluteLong"
+  },
+  {
+    "mnem": "LDA",
+    "code": 165,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "LDA",
+    "code": 178,
+    "size": 2,
+    "mode": "DirectPageIndirect"
+  },
+  {
+    "mnem": "LDA",
+    "code": 167,
+    "size": 2,
+    "mode": "DirectPageIndirectLong"
+  },
+  {
+    "mnem": "LDA",
+    "code": 189,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "LDA",
+    "code": 191,
+    "size": 4,
+    "mode": "AbsoluteLongIndexedX"
+  },
+  {
+    "mnem": "LDA",
+    "code": 185,
+    "size": 3,
+    "mode": "AbsoluteIndexedY"
+  },
+  {
+    "mnem": "LDA",
+    "code": 181,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "LDA",
+    "code": 161,
+    "size": 2,
+    "mode": "DirectPageIndexedIndirectX"
+  },
+  {
+    "mnem": "LDA",
+    "code": 177,
+    "size": 2,
+    "mode": "DirectPageIndirectIndexedY"
+  },
+  {
+    "mnem": "LDA",
+    "code": 183,
+    "size": 2,
+    "mode": "DirectPageIndirectLongIndexedY"
+  },
+  {
+    "mnem": "LDA",
+    "code": 163,
+    "size": 2,
+    "mode": "StackRelative"
+  },
+  {
+    "mnem": "LDA",
+    "code": 179,
+    "size": 2,
+    "mode": "StackRelativeIndirectIndexedY"
+  },
+  {
+    "mnem": "LDX",
+    "code": 162,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "LDX",
+    "code": 174,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "LDX",
+    "code": 166,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "LDX",
+    "code": 190,
+    "size": 3,
+    "mode": "AbsoluteIndexedY"
+  },
+  {
+    "mnem": "LDX",
+    "code": 182,
+    "size": 2,
+    "mode": "DirectPageIndexedY"
+  },
+  {
+    "mnem": "LDY",
+    "code": 160,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "LDY",
+    "code": 172,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "LDY",
+    "code": 164,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "LDY",
+    "code": 188,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "LDY",
+    "code": 180,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "LSR",
+    "code": 74,
+    "size": 1,
+    "mode": "Accumulator"
+  },
+  {
+    "mnem": "LSR",
+    "code": 78,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "LSR",
+    "code": 70,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "LSR",
+    "code": 94,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "LSR",
+    "code": 86,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "MVN",
+    "code": 84,
+    "size": 3,
+    "mode": "BlockMove"
+  },
+  {
+    "mnem": "MVP",
+    "code": 68,
+    "size": 3,
+    "mode": "BlockMove"
+  },
+  {
+    "mnem": "NOP",
+    "code": 234,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "ORA",
+    "code": 9,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "ORA",
+    "code": 13,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "ORA",
+    "code": 15,
+    "size": 4,
+    "mode": "AbsoluteLong"
+  },
+  {
+    "mnem": "ORA",
+    "code": 5,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "ORA",
+    "code": 18,
+    "size": 2,
+    "mode": "DirectPageIndirect"
+  },
+  {
+    "mnem": "ORA",
+    "code": 7,
+    "size": 2,
+    "mode": "DirectPageIndirectLong"
+  },
+  {
+    "mnem": "ORA",
+    "code": 29,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "ORA",
+    "code": 31,
+    "size": 4,
+    "mode": "AbsoluteLongIndexedX"
+  },
+  {
+    "mnem": "ORA",
+    "code": 25,
+    "size": 3,
+    "mode": "AbsoluteIndexedY"
+  },
+  {
+    "mnem": "ORA",
+    "code": 21,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "ORA",
+    "code": 1,
+    "size": 2,
+    "mode": "DirectPageIndexedIndirectX"
+  },
+  {
+    "mnem": "ORA",
+    "code": 17,
+    "size": 2,
+    "mode": "DirectPageIndirectIndexedY"
+  },
+  {
+    "mnem": "ORA",
+    "code": 23,
+    "size": 2,
+    "mode": "DirectPageIndirectLongIndexedY"
+  },
+  {
+    "mnem": "ORA",
+    "code": 3,
+    "size": 2,
+    "mode": "StackRelative"
+  },
+  {
+    "mnem": "ORA",
+    "code": 19,
+    "size": 2,
+    "mode": "StackRelativeIndirectIndexedY"
+  },
+  {
+    "mnem": "PEA",
+    "code": 244,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "PEI",
+    "code": 212,
+    "size": 2,
+    "mode": "DirectPageIndirect"
+  },
+  {
+    "mnem": "PER",
+    "code": 98,
+    "size": 3,
+    "mode": "PCRelativeLong"
+  },
+  {
+    "mnem": "PHA",
+    "code": 72,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PHB",
+    "code": 139,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PHD",
+    "code": 11,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PHK",
+    "code": 75,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PHP",
+    "code": 8,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PHX",
+    "code": 218,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PHY",
+    "code": 90,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PLA",
+    "code": 104,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PLB",
+    "code": 171,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PLD",
+    "code": 43,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PLP",
+    "code": 40,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PLX",
+    "code": 250,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "PLY",
+    "code": 122,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "REP",
+    "code": 194,
+    "size": 2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "ROL",
+    "code": 42,
+    "size": 1,
+    "mode": "Accumulator"
+  },
+  {
+    "mnem": "ROL",
+    "code": 46,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "ROL",
+    "code": 38,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "ROL",
+    "code": 62,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "ROL",
+    "code": 54,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "ROR",
+    "code": 106,
+    "size": 1,
+    "mode": "Accumulator"
+  },
+  {
+    "mnem": "ROR",
+    "code": 110,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "ROR",
+    "code": 102,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "ROR",
+    "code": 126,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "ROR",
+    "code": 118,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "RTI",
+    "code": 64,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "RTL",
+    "code": 107,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "RTS",
+    "code": 96,
+    "size": 1,
+    "mode": "Stack"
+  },
+  {
+    "mnem": "SBC",
+    "code": 233,
+    "size": -2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "SBC",
+    "code": 237,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "SBC",
+    "code": 239,
+    "size": 4,
+    "mode": "AbsoluteLong"
+  },
+  {
+    "mnem": "SBC",
+    "code": 229,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "SBC",
+    "code": 242,
+    "size": 2,
+    "mode": "DirectPageIndirect"
+  },
+  {
+    "mnem": "SBC",
+    "code": 231,
+    "size": 2,
+    "mode": "DirectPageIndirectLong"
+  },
+  {
+    "mnem": "SBC",
+    "code": 253,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "SBC",
+    "code": 255,
+    "size": 4,
+    "mode": "AbsoluteLongIndexedX"
+  },
+  {
+    "mnem": "SBC",
+    "code": 249,
+    "size": 3,
+    "mode": "AbsoluteIndexedY"
+  },
+  {
+    "mnem": "SBC",
+    "code": 245,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "SBC",
+    "code": 225,
+    "size": 2,
+    "mode": "DirectPageIndexedIndirectX"
+  },
+  {
+    "mnem": "SBC",
+    "code": 241,
+    "size": 2,
+    "mode": "DirectPageIndirectIndexedY"
+  },
+  {
+    "mnem": "SBC",
+    "code": 247,
+    "size": 2,
+    "mode": "DirectPageIndirectLongIndexedY"
+  },
+  {
+    "mnem": "SBC",
+    "code": 227,
+    "size": 2,
+    "mode": "StackRelative"
+  },
+  {
+    "mnem": "SBC",
+    "code": 243,
+    "size": 2,
+    "mode": "StackRelativeIndirectIndexedY"
+  },
+  {
+    "mnem": "SEC",
+    "code": 56,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "SED",
+    "code": 248,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "SEI",
+    "code": 120,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "SEP",
+    "code": 226,
+    "size": 2,
+    "mode": "Immediate"
+  },
+  {
+    "mnem": "STA",
+    "code": 141,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "STA",
+    "code": 143,
+    "size": 4,
+    "mode": "AbsoluteLong"
+  },
+  {
+    "mnem": "STA",
+    "code": 133,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "STA",
+    "code": 146,
+    "size": 2,
+    "mode": "DirectPageIndirect"
+  },
+  {
+    "mnem": "STA",
+    "code": 135,
+    "size": 2,
+    "mode": "DirectPageIndirectLong"
+  },
+  {
+    "mnem": "STA",
+    "code": 157,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "STA",
+    "code": 159,
+    "size": 4,
+    "mode": "AbsoluteLongIndexedX"
+  },
+  {
+    "mnem": "STA",
+    "code": 153,
+    "size": 3,
+    "mode": "AbsoluteIndexedY"
+  },
+  {
+    "mnem": "STA",
+    "code": 149,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "STA",
+    "code": 129,
+    "size": 2,
+    "mode": "DirectPageIndexedIndirectX"
+  },
+  {
+    "mnem": "STA",
+    "code": 145,
+    "size": 2,
+    "mode": "DirectPageIndirectIndexedY"
+  },
+  {
+    "mnem": "STA",
+    "code": 151,
+    "size": 2,
+    "mode": "DirectPageIndirectLongIndexedY"
+  },
+  {
+    "mnem": "STA",
+    "code": 131,
+    "size": 2,
+    "mode": "StackRelative"
+  },
+  {
+    "mnem": "STA",
+    "code": 147,
+    "size": 2,
+    "mode": "StackRelativeIndirectIndexedY"
+  },
+  {
+    "mnem": "STP",
+    "code": 219,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "STX",
+    "code": 142,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "STX",
+    "code": 134,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "STX",
+    "code": 150,
+    "size": 2,
+    "mode": "DirectPageIndexedY"
+  },
+  {
+    "mnem": "STY",
+    "code": 140,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "STY",
+    "code": 132,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "STY",
+    "code": 148,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "STZ",
+    "code": 156,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "STZ",
+    "code": 100,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "STZ",
+    "code": 158,
+    "size": 3,
+    "mode": "AbsoluteIndexedX"
+  },
+  {
+    "mnem": "STZ",
+    "code": 116,
+    "size": 2,
+    "mode": "DirectPageIndexedX"
+  },
+  {
+    "mnem": "TAX",
+    "code": 170,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TAY",
+    "code": 168,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TCD",
+    "code": 91,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TCS",
+    "code": 27,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TDC",
+    "code": 123,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TRB",
+    "code": 28,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "TRB",
+    "code": 20,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "TSB",
+    "code": 12,
+    "size": 3,
+    "mode": "Absolute"
+  },
+  {
+    "mnem": "TSB",
+    "code": 4,
+    "size": 2,
+    "mode": "DirectPage"
+  },
+  {
+    "mnem": "TSC",
+    "code": 59,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TSX",
+    "code": 186,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TXA",
+    "code": 138,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TXS",
+    "code": 154,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TXY",
+    "code": 155,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TYA",
+    "code": 152,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "TYX",
+    "code": 187,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "WAI",
+    "code": 203,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "WDM",
+    "code": 66,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "XBA",
+    "code": 235,
+    "size": 1,
+    "mode": "Implied"
+  },
+  {
+    "mnem": "XCE",
+    "code": 251,
+    "size": 1,
+    "mode": "Implied"
+  }
+]

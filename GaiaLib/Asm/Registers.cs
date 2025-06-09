@@ -1,4 +1,6 @@
 ﻿
+using GaiaLib.Enum;
+
 namespace GaiaLib.Asm
 {
     public class Registers

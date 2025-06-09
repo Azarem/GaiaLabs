@@ -1,10 +1,11 @@
-﻿using GaiaLib.Asm;
+﻿using GaiaLib.Enum;
+using GaiaLib.Types;
 
 namespace GaiaLib.Database
 {
     public class DbOverride
     {
-        public Location Location { get; set; }
+        public int Location { get; set; }
         public RegisterType Register { get; set; }
         public HexString Value { get; set; }
     }

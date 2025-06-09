@@ -1,0 +1,4920 @@
+[
+    {
+        "start": 0,
+        "end": 7168,
+        "name": "bmp_000000",
+        "type": "Bitmap"
+    },
+    {
+        "start": 7168,
+        "end": 7680,
+        "name": "radar_icons_001C00",
+        "type": "Bitmap"
+    },
+    {
+        "start": 7680,
+        "end": 9088,
+        "name": "radar_layout_001E00",
+        "type": "Unknown"
+    },
+    {
+        "start": 9088,
+        "end": 12090,
+        "name": "file_002380",
+        "type": "Unknown",
+        "compressed": true
+    },
+    {
+        "start": 12090,
+        "end": 18995,
+        "name": "gfx_sc01_actors",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 18995,
+        "end": 25889,
+        "name": "gfx_it16_int",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 25889,
+        "end": 32764,
+        "name": "gfx_fr32_actors",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 65536,
+        "end": 72426,
+        "name": "gfx_overworld_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 72426,
+        "end": 79258,
+        "name": "bmp_011AEA",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 79258,
+        "end": 86030,
+        "name": "gfx_sc03_int_main",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 86030,
+        "end": 92801,
+        "name": "gfx_fr32_ext_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 92801,
+        "end": 98238,
+        "name": "bmp_016A81",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 98238,
+        "end": 98302,
+        "name": "pal_title",
+        "type": "Palette"
+    },
+    {
+        "start": 131072,
+        "end": 137760,
+        "name": "bmp_020000",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 137760,
+        "end": 144316,
+        "name": "gfx_wa79_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 144316,
+        "end": 150819,
+        "name": "gfx_ir1D_enemy_set1",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 150819,
+        "end": 157318,
+        "name": "gfx_ir1F_enemy_set2",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 157318,
+        "end": 163761,
+        "name": "gfx_dsE6_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 163761,
+        "end": 163834,
+        "name": "map_027FB1",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 196608,
+        "end": 203018,
+        "name": "gfx_fr33_int_extra",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 203018,
+        "end": 209377,
+        "name": "gfx_ir1F_int_main",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 209377,
+        "end": 215736,
+        "name": "sprite_0331E1",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 215736,
+        "end": 222091,
+        "name": "bmp_034AB8",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 222091,
+        "end": 228445,
+        "name": "bmp_03638B",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 228445,
+        "end": 229361,
+        "name": "map_fr39_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 262144,
+        "end": 268492,
+        "name": "gfx_fr33_int_main",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 268492,
+        "end": 274833,
+        "name": "bmp_0418CC",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 274833,
+        "end": 281145,
+        "name": "bmp_043191",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 281145,
+        "end": 287363,
+        "name": "bmp_044A39",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 287363,
+        "end": 293575,
+        "name": "gfx_sp5A_effect_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 293575,
+        "end": 294903,
+        "name": "map_047AC7",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 620368,
+        "end": 622591,
+        "name": "map_dm3F_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 655360,
+        "end": 661558,
+        "name": "gfx_sc01_ext_main",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 661558,
+        "end": 667746,
+        "name": "bmp_0A1836",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 667746,
+        "end": 673911,
+        "name": "bmp_0A3062",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 673911,
+        "end": 680075,
+        "name": "gfx_sc01_ext_effect",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 680075,
+        "end": 686239,
+        "name": "gfx_wa78_actors",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 686239,
+        "end": 688127,
+        "name": "map_0A789F",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 720896,
+        "end": 727053,
+        "name": "bmp_0B0000",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 727053,
+        "end": 733118,
+        "name": "bmp_0B180D",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 733118,
+        "end": 739115,
+        "name": "spm_dm3E_enemies",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 739115,
+        "end": 745102,
+        "name": "gfx_it15_effect",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 745102,
+        "end": 751065,
+        "name": "sprite_0B5E8E",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 751065,
+        "end": 753652,
+        "name": "spm_na49_actors",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 786432,
+        "end": 792372,
+        "name": "bgm_threat_of_dark_gaia",
+        "type": "Music"
+    },
+    {
+        "start": 792372,
+        "end": 798253,
+        "name": "gfx_ir29_castoth",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 798253,
+        "end": 804132,
+        "name": "bmp_0C2E2D",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 804132,
+        "end": 810006,
+        "name": "spm_ir1F_enemy_set2",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 810006,
+        "end": 815880,
+        "name": "gfx_dm3E_enemies",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 815880,
+        "end": 819200,
+        "name": "sprite_0C7308",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 849443,
+        "end": 851968,
+        "name": "unknown_0CF623",
+        "type": "Unknown"
+    },
+    {
+        "start": 851968,
+        "end": 857831,
+        "name": "gfx_credits_actors2",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 857831,
+        "end": 863608,
+        "name": "bmp_0D16E7",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 863608,
+        "end": 869316,
+        "name": "bmp_0D2D78",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 869316,
+        "end": 874988,
+        "name": "gfx_dc2F_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 874988,
+        "end": 880647,
+        "name": "gfx_ec0C_enemies",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 880647,
+        "end": 884075,
+        "name": "bgm_unexplored_temple",
+        "type": "Music"
+    },
+    {
+        "start": 884075,
+        "end": 884717,
+        "name": "map_fr39_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 897023,
+        "end": 913409,
+        "name": "gfx_inventory_sprites",
+        "type": "Bitmap",
+        "compressed": false
+    },
+    {
+        "start": 913409,
+        "end": 917387,
+        "name": "bmp_0DF001",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 917387,
+        "end": 917504,
+        "name": "map_fr34_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 917504,
+        "end": 923114,
+        "name": "gfx_overworld_actors",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 923114,
+        "end": 928634,
+        "name": "bmp_0E15EA",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 928634,
+        "end": 934150,
+        "name": "bmp_0E2B7A",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 934150,
+        "end": 939655,
+        "name": "bmp_0E4106",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 939655,
+        "end": 945067,
+        "name": "bmp_0E5687",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 945067,
+        "end": 950268,
+        "name": "bmp_0E6BAB",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 969435,
+        "end": 973222,
+        "name": "spm_viper",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 973222,
+        "end": 973312,
+        "name": "map_0ED9A6",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 974144,
+        "end": 974844,
+        "name": "map_0EDD40",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 982479,
+        "end": 983033,
+        "name": "map_0EFDCF",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 983040,
+        "end": 988369,
+        "name": "gfx_viper",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 988369,
+        "end": 993591,
+        "name": "bmp_0F14D1",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 993591,
+        "end": 998754,
+        "name": "gfx_title_actors",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 998754,
+        "end": 1003900,
+        "name": "gfx_sg4C_enemies",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1003900,
+        "end": 1009038,
+        "name": "bmp_0F517C",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1009038,
+        "end": 1014143,
+        "name": "bmp_0F658E",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1014143,
+        "end": 1015808,
+        "name": "set_sc03_int_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1020133,
+        "end": 1031462,
+        "name": "gfx_sg4C_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1031462,
+        "end": 1032185,
+        "name": "map_0FBD26",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1043845,
+        "end": 1048509,
+        "name": "bmp_0FED85",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1048509,
+        "end": 1048576,
+        "name": "map_dc2F_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1048576,
+        "end": 1053549,
+        "name": "bmp_100000",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1053549,
+        "end": 1058510,
+        "name": "bmp_10136D",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1058510,
+        "end": 1063416,
+        "name": "bmp_1026CE",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1063416,
+        "end": 1068175,
+        "name": "bmp_1039F8",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1068175,
+        "end": 1072932,
+        "name": "bmp_104C8F",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1072932,
+        "end": 1077664,
+        "name": "spm_ir29_castoth",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1077664,
+        "end": 1080891,
+        "name": "bgm_great_pyramid",
+        "type": "Music"
+    },
+    {
+        "start": 1080891,
+        "end": 1081341,
+        "name": "map_dm44_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1085191,
+        "end": 1099105,
+        "name": "bmp_108F07",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1099105,
+        "end": 1112971,
+        "name": "bmp_10C561",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1112971,
+        "end": 1114108,
+        "name": "map_ir1E_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1114112,
+        "end": 1118771,
+        "name": "bmp_110000",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1118771,
+        "end": 1123396,
+        "name": "bgm_illusion_of_gaia",
+        "type": "Music"
+    },
+    {
+        "start": 1123396,
+        "end": 1128001,
+        "name": "gfx_credits_actors1",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1128001,
+        "end": 1132200,
+        "name": "sprite_113641",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1132200,
+        "end": 1136382,
+        "name": "gfx_fonts",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1136382,
+        "end": 1140494,
+        "name": "bmp_1156FE",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1140494,
+        "end": 1143589,
+        "name": "sprite_11670E",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1143589,
+        "end": 1146628,
+        "name": "gfx_boot_logos",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1146628,
+        "end": 1146876,
+        "name": "map_fr37_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1146880,
+        "end": 1160476,
+        "name": "bmp_118000",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1160476,
+        "end": 1173311,
+        "name": "gfx_gs2B_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1173311,
+        "end": 1179639,
+        "name": "bmp_11E73F",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1179648,
+        "end": 1182669,
+        "name": "bgm_legendary_sunken_continent",
+        "type": "Music"
+    },
+    {
+        "start": 1182669,
+        "end": 1185683,
+        "name": "sprite_120BCD",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1185683,
+        "end": 1188662,
+        "name": "bgm_bittersweet_victory",
+        "type": "Music"
+    },
+    {
+        "start": 1188662,
+        "end": 1191632,
+        "name": "spm_wa78_actors",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1191632,
+        "end": 1194600,
+        "name": "map_122ED0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1194600,
+        "end": 1197550,
+        "name": "bmp_123A68",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1197550,
+        "end": 1200498,
+        "name": "map_1245EE",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1200498,
+        "end": 1203428,
+        "name": "map_125172",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1203428,
+        "end": 1206356,
+        "name": "map_125CE4",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1206356,
+        "end": 1209262,
+        "name": "map_126854",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1209262,
+        "end": 1212096,
+        "name": "bgm_guardians",
+        "type": "Music"
+    },
+    {
+        "start": 1212096,
+        "end": 1212412,
+        "name": "map_127EC0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1212416,
+        "end": 1225082,
+        "name": "bmp_128000",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1225082,
+        "end": 1237719,
+        "name": "gfx_gw82_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1237719,
+        "end": 1245178,
+        "name": "gfx_it15_ext_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1245184,
+        "end": 1248004,
+        "name": "map_130000",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1248004,
+        "end": 1250792,
+        "name": "spm_ec0A_characters",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1250792,
+        "end": 1253527,
+        "name": "sprite_1315E8",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1253527,
+        "end": 1256220,
+        "name": "map_132097",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1256220,
+        "end": 1258876,
+        "name": "map_fr32_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1258876,
+        "end": 1261520,
+        "name": "map_13357C",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1261520,
+        "end": 1264139,
+        "name": "map_133FD0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1264139,
+        "end": 1266717,
+        "name": "map_134A0B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1266717,
+        "end": 1269273,
+        "name": "spm_sc02_main_characters",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1269273,
+        "end": 1271816,
+        "name": "map_overworld_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1271816,
+        "end": 1274330,
+        "name": "spm_it15_characters",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1274330,
+        "end": 1276820,
+        "name": "bgm_secret_of_nazca",
+        "type": "Music"
+    },
+    {
+        "start": 1276820,
+        "end": 1277933,
+        "name": "map_ec0D_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1277952,
+        "end": 1290297,
+        "name": "gfx_gs2C_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1290297,
+        "end": 1302634,
+        "name": "bmp_13B039",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1302634,
+        "end": 1310223,
+        "name": "gfx_sc02_main_characters",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1310223,
+        "end": 1310718,
+        "name": "map_13FE0F",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1310720,
+        "end": 1313197,
+        "name": "map_ir1D_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1313197,
+        "end": 1315674,
+        "name": "map_1409AD",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1315674,
+        "end": 1318140,
+        "name": "map_ec0A_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1318140,
+        "end": 1320605,
+        "name": "bgm_blessing_of_nature",
+        "type": "Music"
+    },
+    {
+        "start": 1320605,
+        "end": 1323031,
+        "name": "map_14269D",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1323031,
+        "end": 1325407,
+        "name": "bgm_golden_road",
+        "type": "Music"
+    },
+    {
+        "start": 1325407,
+        "end": 1327760,
+        "name": "sprite_14395F",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1327760,
+        "end": 1330105,
+        "name": "bgm_descent_into_darkness",
+        "type": "Music"
+    },
+    {
+        "start": 1330105,
+        "end": 1332449,
+        "name": "sprite_144BB9",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1332449,
+        "end": 1334777,
+        "name": "meta17_1454E1",
+        "type": "Meta17",
+        "compressed": true
+    },
+    {
+        "start": 1334777,
+        "end": 1337103,
+        "name": "spm_sc06_castle_actors",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1337103,
+        "end": 1339428,
+        "name": "bgm_awakening_the_wind",
+        "type": "Music"
+    },
+    {
+        "start": 1339428,
+        "end": 1341747,
+        "name": "map_147024",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1341747,
+        "end": 1343482,
+        "name": "set_na49_int_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1355931,
+        "end": 1359561,
+        "name": "map_14B09B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1359561,
+        "end": 1359872,
+        "name": "map_dm47_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1360280,
+        "end": 1372569,
+        "name": "gfx_ec0A_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1372569,
+        "end": 1376063,
+        "name": "map_14F199",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1376063,
+        "end": 1376256,
+        "name": "map_fr3B_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1376256,
+        "end": 1378534,
+        "name": "map_150000",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1378534,
+        "end": 1380750,
+        "name": "spm_ir1D_enemy_set1",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1380750,
+        "end": 1382963,
+        "name": "map_15118E",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1382963,
+        "end": 1385151,
+        "name": "map_151A33",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1385151,
+        "end": 1387308,
+        "name": "gfx_credits_font",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1387308,
+        "end": 1389453,
+        "name": "sprite_152B2C",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1389453,
+        "end": 1391537,
+        "name": "bgm_royal_anthem",
+        "type": "Music"
+    },
+    {
+        "start": 1391537,
+        "end": 1393616,
+        "name": "bmp_153BB1",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1393616,
+        "end": 1395685,
+        "name": "map_1543D0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1395685,
+        "end": 1397716,
+        "name": "bmp_154BE5",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1397716,
+        "end": 1399742,
+        "name": "map_1553D4",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1399742,
+        "end": 1401750,
+        "name": "sprite_155BBE",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1401750,
+        "end": 1403751,
+        "name": "sprite_156396",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1403751,
+        "end": 1405737,
+        "name": "map_156B67",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1405737,
+        "end": 1407708,
+        "name": "bgm_beautiful_world",
+        "type": "Music"
+    },
+    {
+        "start": 1407708,
+        "end": 1408999,
+        "name": "set_157ADC",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1426465,
+        "end": 1438620,
+        "name": "bmp_15C421",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1438620,
+        "end": 1441781,
+        "name": "bgm_lively_city_by_the_sea",
+        "type": "Music"
+    },
+    {
+        "start": 1441792,
+        "end": 1443760,
+        "name": "set_160000",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1443760,
+        "end": 1445723,
+        "name": "sprite_1607B0",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1445723,
+        "end": 1447685,
+        "name": "map_160F5B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1447685,
+        "end": 1449639,
+        "name": "set_161705",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1449639,
+        "end": 1451584,
+        "name": "map_ec12_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1451584,
+        "end": 1453515,
+        "name": "set_162640",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1453515,
+        "end": 1455443,
+        "name": "map_162DCB",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1455443,
+        "end": 1457363,
+        "name": "bgm_space_beyond_time",
+        "type": "Music"
+    },
+    {
+        "start": 1457363,
+        "end": 1459279,
+        "name": "set_gw82_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1459279,
+        "end": 1461195,
+        "name": "set_16444F",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1461195,
+        "end": 1463108,
+        "name": "map_164BCB",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1463108,
+        "end": 1465020,
+        "name": "set_165344",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1465020,
+        "end": 1466931,
+        "name": "map_sg51_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1466931,
+        "end": 1468806,
+        "name": "set_166233",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1468806,
+        "end": 1470680,
+        "name": "set_166986",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1470680,
+        "end": 1472551,
+        "name": "set_1670D8",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1472551,
+        "end": 1474412,
+        "name": "map_it15_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1474412,
+        "end": 1474558,
+        "name": "map_sg4E_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1497132,
+        "end": 1505807,
+        "name": "bmp_16D82C",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1505807,
+        "end": 1507322,
+        "name": "map_sg4D_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1507328,
+        "end": 1509188,
+        "name": "set_170000",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1509188,
+        "end": 1511021,
+        "name": "map_170744",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1511021,
+        "end": 1512851,
+        "name": "sprite_170E6D",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1512851,
+        "end": 1514668,
+        "name": "set_ec0A_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1514668,
+        "end": 1516482,
+        "name": "bgm_restart",
+        "type": "Music"
+    },
+    {
+        "start": 1516482,
+        "end": 1518265,
+        "name": "map_ir21_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1518265,
+        "end": 1520046,
+        "name": "set_172AB9",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1520046,
+        "end": 1521816,
+        "name": "map_1731AE",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1521816,
+        "end": 1523580,
+        "name": "map_173898",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1523580,
+        "end": 1525339,
+        "name": "sprite_173F7C",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1525339,
+        "end": 1527085,
+        "name": "map_17465B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1527085,
+        "end": 1528829,
+        "name": "set_174D2D",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1528829,
+        "end": 1530571,
+        "name": "sprite_1753FD",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1530571,
+        "end": 1532305,
+        "name": "set_sp5A_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1532305,
+        "end": 1534034,
+        "name": "set_sc01_ext",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1534034,
+        "end": 1535743,
+        "name": "set_176852",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1535743,
+        "end": 1537444,
+        "name": "set_it15_etx_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1537444,
+        "end": 1539142,
+        "name": "set_1775A4",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1539142,
+        "end": 1540093,
+        "name": "map_177C46",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1541149,
+        "end": 1544192,
+        "name": "gfx_dsE6_gaia_sprites",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1544618,
+        "end": 1548050,
+        "name": "map_sp5A_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1548050,
+        "end": 1548287,
+        "name": "map_fr36_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1549554,
+        "end": 1552377,
+        "name": "map_gw82_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1553318,
+        "end": 1556442,
+        "name": "spm_sc01_actors",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1556442,
+        "end": 1556474,
+        "name": "palette_17BFDA",
+        "type": "Palette"
+    },
+    {
+        "start": 1557571,
+        "end": 1560572,
+        "name": "bgm_lively_city",
+        "type": "Music"
+    },
+    {
+        "start": 1561584,
+        "end": 1572766,
+        "name": "gfx_credits_actors3",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1572766,
+        "end": 1572857,
+        "name": "map_17FF9E",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1572864,
+        "end": 1574552,
+        "name": "map_180000",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1574552,
+        "end": 1576225,
+        "name": "set_180698",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1576225,
+        "end": 1577896,
+        "name": "set_180D21",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1577896,
+        "end": 1579556,
+        "name": "set_dm3D_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1579556,
+        "end": 1581216,
+        "name": "map_181A24",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1581216,
+        "end": 1582869,
+        "name": "map_1820A0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1582869,
+        "end": 1584515,
+        "name": "map_ir22_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1584515,
+        "end": 1586151,
+        "name": "map_sg4F_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1586151,
+        "end": 1587786,
+        "name": "set_1833E7",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1587786,
+        "end": 1589417,
+        "name": "set_ir1F_int_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1589417,
+        "end": 1591044,
+        "name": "map_1840A9",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1591044,
+        "end": 1592668,
+        "name": "set_184704",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1592668,
+        "end": 1594284,
+        "name": "sprite_184D5C",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1594284,
+        "end": 1595893,
+        "name": "set_fr32_ext_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1595893,
+        "end": 1597495,
+        "name": "sprite_1859F5",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1597495,
+        "end": 1599095,
+        "name": "bgm_longing_for_the_past",
+        "type": "Music"
+    },
+    {
+        "start": 1599095,
+        "end": 1600682,
+        "name": "set_fr33_int",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1600682,
+        "end": 1602269,
+        "name": "set_186CAA",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1602269,
+        "end": 1603854,
+        "name": "map_sg53_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1603854,
+        "end": 1605436,
+        "name": "map_sg52_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1605436,
+        "end": 1605628,
+        "name": "pal_sc02_main_characters",
+        "type": "Palette"
+    },
+    {
+        "start": 1605632,
+        "end": 1616749,
+        "name": "gfx_credits_scenery",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1616749,
+        "end": 1627422,
+        "name": "bmp_18AB6D",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1627422,
+        "end": 1638044,
+        "name": "bmp_18D51E",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1638044,
+        "end": 1638400,
+        "name": "map_fr37_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1638400,
+        "end": 1639981,
+        "name": "set_ec0B_prison_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1639981,
+        "end": 1641555,
+        "name": "map_19062D",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1641555,
+        "end": 1643128,
+        "name": "set_190C53",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1643128,
+        "end": 1644699,
+        "name": "map_sc01_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1644699,
+        "end": 1646269,
+        "name": "set_19189B",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1646269,
+        "end": 1647832,
+        "name": "set_gs2C_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1647832,
+        "end": 1649392,
+        "name": "set_1924D8",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1649392,
+        "end": 1650948,
+        "name": "map_192AF0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1650948,
+        "end": 1652503,
+        "name": "set_193104",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1652503,
+        "end": 1654053,
+        "name": "map_193717",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1654053,
+        "end": 1655584,
+        "name": "map_193D25",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1655584,
+        "end": 1657111,
+        "name": "map_194320",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1657111,
+        "end": 1658616,
+        "name": "set_sc02_cave",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1658616,
+        "end": 1660112,
+        "name": "set_it15_ext_effect",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1660112,
+        "end": 1661589,
+        "name": "map_1954D0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1661589,
+        "end": 1663065,
+        "name": "set_195A95",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1663065,
+        "end": 1664540,
+        "name": "set_ir1D_ext_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1664540,
+        "end": 1666008,
+        "name": "map_19661C",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1666008,
+        "end": 1667453,
+        "name": "gfx_overworld_font",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1667453,
+        "end": 1668891,
+        "name": "map_ir23_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1668891,
+        "end": 1670328,
+        "name": "set_gs2B_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1670328,
+        "end": 1671146,
+        "name": "set_sp5A_effect",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1671168,
+        "end": 1671200,
+        "name": "fx_palette_198000",
+        "type": "Palette",
+        "upper": true
+    },
+    {
+        "start": 1671200,
+        "end": 1671232,
+        "name": "fx_palette_198020",
+        "type": "Palette",
+        "upper": true
+    },
+    {
+        "start": 1671232,
+        "end": 1671280,
+        "name": "fx_palette_198040",
+        "type": "Palette",
+        "upper": true
+    },
+    {
+        "start": 1671280,
+        "end": 1671312,
+        "name": "fx_palette_198070",
+        "type": "Palette",
+        "upper": true
+    },
+    {
+        "start": 1671312,
+        "end": 1671330,
+        "name": "fx_palette_198090",
+        "type": "Palette",
+        "upper": true
+    },
+    {
+        "start": 1671330,
+        "end": 1681852,
+        "name": "bmp_1980A2",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1681852,
+        "end": 1692262,
+        "name": "gfx_ir1D_ext_main",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1692262,
+        "end": 1700855,
+        "name": "bgm_rebirth",
+        "type": "Music"
+    },
+    {
+        "start": 1700855,
+        "end": 1703899,
+        "name": "sprite_19F3F7",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1703936,
+        "end": 1705373,
+        "name": "sprite_1A0000",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1705373,
+        "end": 1706803,
+        "name": "map_1A059D",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1706803,
+        "end": 1708231,
+        "name": "map_1A0B33",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1708231,
+        "end": 1709632,
+        "name": "map_1A10C7",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1709632,
+        "end": 1711031,
+        "name": "set_1A1640",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1711031,
+        "end": 1712429,
+        "name": "set_it16_int_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1712429,
+        "end": 1713825,
+        "name": "map_dm41_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1713825,
+        "end": 1715214,
+        "name": "map_1A26A1",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1715214,
+        "end": 1716594,
+        "name": "sprite_1A2C0E",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1716594,
+        "end": 1717973,
+        "name": "map_1A3172",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1717973,
+        "end": 1719331,
+        "name": "map_1A36D5",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1719331,
+        "end": 1720680,
+        "name": "map_1A3C23",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1720680,
+        "end": 1721966,
+        "name": "map_1A4168",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1721966,
+        "end": 1723250,
+        "name": "set_overworld",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1723250,
+        "end": 1724512,
+        "name": "bgm_deep_sadness",
+        "type": "Music"
+    },
+    {
+        "start": 1724512,
+        "end": 1725772,
+        "name": "map_1A5060",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1725772,
+        "end": 1727031,
+        "name": "sprite_1A554C",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1727031,
+        "end": 1728288,
+        "name": "map_1A5A37",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1728288,
+        "end": 1729543,
+        "name": "map_ec0E_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1729543,
+        "end": 1730790,
+        "name": "set_1A6407",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1730790,
+        "end": 1732031,
+        "name": "set_sc01_effect_misc",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1732031,
+        "end": 1733269,
+        "name": "spm_credits",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1733269,
+        "end": 1734498,
+        "name": "map_1A7295",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1734498,
+        "end": 1735713,
+        "name": "map_sg54_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1735713,
+        "end": 1736701,
+        "name": "map_1A7C21",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1736704,
+        "end": 1753088,
+        "name": "will_sprites_1A8000",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1753088,
+        "end": 1769472,
+        "name": "free_sprites_1AC000",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1769472,
+        "end": 1770684,
+        "name": "map_1B0000",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1770684,
+        "end": 1771875,
+        "name": "map_sg50_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1771875,
+        "end": 1773058,
+        "name": "map_1B0963",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1773058,
+        "end": 1774237,
+        "name": "map_1B0E02",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1774237,
+        "end": 1775411,
+        "name": "map_sg4E_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1775411,
+        "end": 1776570,
+        "name": "set_1B1733",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1776570,
+        "end": 1777679,
+        "name": "set_dsE6_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1777679,
+        "end": 1778774,
+        "name": "set_sg4C_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1778774,
+        "end": 1779868,
+        "name": "map_1B2456",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1779868,
+        "end": 1780962,
+        "name": "sprite_1B289C",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1780962,
+        "end": 1782056,
+        "name": "set_title",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1782056,
+        "end": 1783147,
+        "name": "map_1B3128",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1783147,
+        "end": 1784224,
+        "name": "set_1B356B",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1784224,
+        "end": 1785278,
+        "name": "map_1B39A0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1785278,
+        "end": 1786317,
+        "name": "set_1B3DBE",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1786317,
+        "end": 1787330,
+        "name": "map_1B41CD",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1787330,
+        "end": 1788343,
+        "name": "map_1B45C2",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1788343,
+        "end": 1789339,
+        "name": "bgm_ominous_whispers",
+        "type": "Music"
+    },
+    {
+        "start": 1789339,
+        "end": 1790325,
+        "name": "map_dm3E_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1790325,
+        "end": 1791296,
+        "name": "set_ec0A_effect",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1791296,
+        "end": 1792264,
+        "name": "set_sg4E_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1792264,
+        "end": 1793232,
+        "name": "map_1B5908",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1793232,
+        "end": 1794175,
+        "name": "map_dm40_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1794175,
+        "end": 1795087,
+        "name": "map_1B607F",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1795087,
+        "end": 1795994,
+        "name": "set_1B640F",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1795994,
+        "end": 1796900,
+        "name": "map_ir27_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1796900,
+        "end": 1797796,
+        "name": "set_1B6B24",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1797796,
+        "end": 1798690,
+        "name": "set_1B6EA4",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1798690,
+        "end": 1799584,
+        "name": "map_1B7222",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1799584,
+        "end": 1800475,
+        "name": "map_1B75A0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1800475,
+        "end": 1801360,
+        "name": "map_1B791B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1801360,
+        "end": 1802240,
+        "name": "map_na4B_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1802240,
+        "end": 1818624,
+        "name": "abil_sprites_1B8000",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1818624,
+        "end": 1835008,
+        "name": "shad_sprites_1BC000",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1835008,
+        "end": 1835889,
+        "name": "map_1C0000",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1835889,
+        "end": 1836768,
+        "name": "map_gs2C_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1836768,
+        "end": 1837647,
+        "name": "set_1C06E0",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1837647,
+        "end": 1838517,
+        "name": "set_1C0A4F",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1838517,
+        "end": 1839385,
+        "name": "map_1C0DB5",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1839385,
+        "end": 1840252,
+        "name": "sprite_1C1119",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1840252,
+        "end": 1841118,
+        "name": "set_1C147C",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1841118,
+        "end": 1841983,
+        "name": "map_ec0F_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1841983,
+        "end": 1842839,
+        "name": "map_1C1B3F",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1842839,
+        "end": 1843693,
+        "name": "map_gs2B_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1843693,
+        "end": 1844544,
+        "name": "map_ir28_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1844544,
+        "end": 1845392,
+        "name": "map_1C2540",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1845392,
+        "end": 1846238,
+        "name": "map_1C2890",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1846238,
+        "end": 1847053,
+        "name": "map_1C2BDE",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1847053,
+        "end": 1847868,
+        "name": "set_1C2F0D",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1847868,
+        "end": 1848682,
+        "name": "map_1C323C",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1848682,
+        "end": 1849488,
+        "name": "set_gw82_effect",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1849488,
+        "end": 1850287,
+        "name": "set_1C3890",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1850287,
+        "end": 1851080,
+        "name": "map_1C3BAF",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1851080,
+        "end": 1851865,
+        "name": "map_1C3EC8",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1851865,
+        "end": 1852644,
+        "name": "map_1C41D9",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1852644,
+        "end": 1853420,
+        "name": "map_1C44E4",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1853420,
+        "end": 1854193,
+        "name": "map_ir1D_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1854193,
+        "end": 1854964,
+        "name": "map_1C4AF1",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1854964,
+        "end": 1855735,
+        "name": "map_1C4DF4",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1855735,
+        "end": 1856482,
+        "name": "map_1C50F7",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1856482,
+        "end": 1857227,
+        "name": "map_sc06_wills_house_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1857227,
+        "end": 1857964,
+        "name": "map_ir26_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1857964,
+        "end": 1858701,
+        "name": "map_1C59AC",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1858701,
+        "end": 1859437,
+        "name": "bgm_drifting_endlessly",
+        "type": "Music"
+    },
+    {
+        "start": 1859437,
+        "end": 1860172,
+        "name": "map_dm3D_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1860172,
+        "end": 1860906,
+        "name": "set_1C624C",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1860906,
+        "end": 1861639,
+        "name": "set_1C652A",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1861639,
+        "end": 1862358,
+        "name": "map_dm42_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1862358,
+        "end": 1863077,
+        "name": "map_1C6AD6",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1863077,
+        "end": 1863785,
+        "name": "map_1C6DA5",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1863785,
+        "end": 1864490,
+        "name": "map_dm43_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1864490,
+        "end": 1865174,
+        "name": "map_ir25_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1865174,
+        "end": 1865853,
+        "name": "map_1C75D6",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1865853,
+        "end": 1866529,
+        "name": "map_ec12_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1866529,
+        "end": 1867196,
+        "name": "set_1C7B21",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1867196,
+        "end": 1867776,
+        "name": "map_ir1E_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1867776,
+        "end": 1875968,
+        "name": "free_fx_1C8000",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1875968,
+        "end": 1884160,
+        "name": "shad_fx_1CA000",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1884160,
+        "end": 1885312,
+        "name": "misc_fx_1CC000",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1885312,
+        "end": 1886848,
+        "name": "misc_fx_1CC480",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1886848,
+        "end": 1888384,
+        "name": "misc_fx_1CCA80",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1888384,
+        "end": 1888640,
+        "name": "misc_fx_1CD080",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1888640,
+        "end": 1889152,
+        "name": "misc_fx_1CD180",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1889152,
+        "end": 1889664,
+        "name": "misc_fx_1CD380",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1889664,
+        "end": 1891712,
+        "name": "misc_fx_1CD580",
+        "type": "Bitmap",
+        "upper": true
+    },
+    {
+        "start": 1891712,
+        "end": 1899926,
+        "name": "gfx_title",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1899926,
+        "end": 1900542,
+        "name": "set_1CFD96",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1900544,
+        "end": 1901184,
+        "name": "map_1D0000",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1901184,
+        "end": 1901813,
+        "name": "map_1D0280",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1901813,
+        "end": 1902439,
+        "name": "map_1D04F5",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1902439,
+        "end": 1903063,
+        "name": "set_1D0767",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1903063,
+        "end": 1903687,
+        "name": "map_dsE6_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1903687,
+        "end": 1904311,
+        "name": "map_1D0C47",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1904311,
+        "end": 1904923,
+        "name": "map_sc01_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1904923,
+        "end": 1905532,
+        "name": "map_sc04_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1905532,
+        "end": 1906137,
+        "name": "map_ec0B_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1906137,
+        "end": 1906740,
+        "name": "map_1D15D9",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1906740,
+        "end": 1907330,
+        "name": "set_1D1834",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1907330,
+        "end": 1907916,
+        "name": "map_1D1A82",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1907916,
+        "end": 1908496,
+        "name": "set_sg4C_effect",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1908496,
+        "end": 1909069,
+        "name": "map_ir20_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1909069,
+        "end": 1909641,
+        "name": "map_1D214D",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1909641,
+        "end": 1910209,
+        "name": "set_1D2389",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1910209,
+        "end": 1910776,
+        "name": "spm_dsE6_gaia_sprites",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1910776,
+        "end": 1911343,
+        "name": "map_1D27F8",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1911343,
+        "end": 1911905,
+        "name": "map_dm46_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1911905,
+        "end": 1912455,
+        "name": "map_1D2C61",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1912455,
+        "end": 1912992,
+        "name": "map_1D2E87",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1912992,
+        "end": 1913527,
+        "name": "map_1D30A0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1913527,
+        "end": 1914057,
+        "name": "map_1D32B7",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1914057,
+        "end": 1914586,
+        "name": "map_sp5A_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1914586,
+        "end": 1915097,
+        "name": "map_ir1F_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1915097,
+        "end": 1915604,
+        "name": "map_ir1C_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1915604,
+        "end": 1916110,
+        "name": "map_1D3AD4",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1916110,
+        "end": 1916612,
+        "name": "map_1D3CCE",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1916612,
+        "end": 1917114,
+        "name": "map_1D3EC4",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1917114,
+        "end": 1917602,
+        "name": "set_ir1D_ext_effect",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1917602,
+        "end": 1918083,
+        "name": "map_ir24_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1918083,
+        "end": 1918560,
+        "name": "map_it19_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1918560,
+        "end": 1919037,
+        "name": "set_1D4660",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1919037,
+        "end": 1919503,
+        "name": "map_1D483D",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1919503,
+        "end": 1919962,
+        "name": "set_dc2F_main",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1919962,
+        "end": 1920421,
+        "name": "map_1D4BDA",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1920421,
+        "end": 1920875,
+        "name": "set_dsE6_effect",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1920875,
+        "end": 1921329,
+        "name": "bgm_1D4F6B",
+        "type": "Music"
+    },
+    {
+        "start": 1921329,
+        "end": 1921774,
+        "name": "set_sg4E_effect",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1921774,
+        "end": 1922210,
+        "name": "map_1D52EE",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1922210,
+        "end": 1922641,
+        "name": "map_it1B_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1922641,
+        "end": 1923068,
+        "name": "map_1D5651",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1923068,
+        "end": 1923491,
+        "name": "bgm_important_item",
+        "type": "Music"
+    },
+    {
+        "start": 1923491,
+        "end": 1923909,
+        "name": "map_dm45_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1923909,
+        "end": 1924326,
+        "name": "map_1D5B45",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1924326,
+        "end": 1924738,
+        "name": "map_it1A_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1924738,
+        "end": 1925148,
+        "name": "map_ec11_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1925148,
+        "end": 1925550,
+        "name": "map_sg4C_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1925550,
+        "end": 1925951,
+        "name": "map_1D61AE",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1925951,
+        "end": 1926351,
+        "name": "map_1D633F",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1926351,
+        "end": 1926748,
+        "name": "map_1D64CF",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1926748,
+        "end": 1927139,
+        "name": "map_1D665C",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1927139,
+        "end": 1927530,
+        "name": "map_1D67E3",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1927530,
+        "end": 1927919,
+        "name": "map_1D696A",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1927919,
+        "end": 1928299,
+        "name": "sprite_1D6AEF",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1928299,
+        "end": 1928665,
+        "name": "map_1D6C6B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1928665,
+        "end": 1929027,
+        "name": "map_1D6DD9",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1929027,
+        "end": 1929388,
+        "name": "map_1D6F43",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1929388,
+        "end": 1929745,
+        "name": "map_1D70AC",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1929745,
+        "end": 1930092,
+        "name": "map_1D7211",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1930092,
+        "end": 1930438,
+        "name": "map_fr36_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1930438,
+        "end": 1930782,
+        "name": "map_fr38_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1930782,
+        "end": 1931123,
+        "name": "map_sg4C_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1931123,
+        "end": 1931462,
+        "name": "spm_boot_logos",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1931462,
+        "end": 1931795,
+        "name": "set_gs2B_ocean_effect",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1931795,
+        "end": 1932123,
+        "name": "map_1D7A13",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1932123,
+        "end": 1932451,
+        "name": "map_1D7B5B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1932451,
+        "end": 1932775,
+        "name": "map_ec0D_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1932775,
+        "end": 1933091,
+        "name": "set_1D7DE7",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1933091,
+        "end": 1933310,
+        "name": "map_1D7F23",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1933312,
+        "end": 1941506,
+        "name": "gfx_inventory_bg",
+        "type": "Bitmap",
+        "compressed": false
+    },
+    {
+        "start": 1941506,
+        "end": 1949087,
+        "name": "gfx_na49_actors",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1949087,
+        "end": 1956617,
+        "name": "bmp_1DBD9F",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1956617,
+        "end": 1963881,
+        "name": "gfx_ec0B_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 1963881,
+        "end": 1966074,
+        "name": "spm_fr32_actors",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1966080,
+        "end": 1966394,
+        "name": "map_1E0000",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1966394,
+        "end": 1966703,
+        "name": "map_1E013A",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1966703,
+        "end": 1967004,
+        "name": "map_1E026F",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1967004,
+        "end": 1967298,
+        "name": "map_1E039C",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1967298,
+        "end": 1967591,
+        "name": "map_sc03_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1967591,
+        "end": 1967882,
+        "name": "map_ir29_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1967882,
+        "end": 1968172,
+        "name": "map_1E070A",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1968172,
+        "end": 1968460,
+        "name": "palette_1E082C",
+        "type": "Palette"
+    },
+    {
+        "start": 1968460,
+        "end": 1968748,
+        "name": "palette_1E094C",
+        "type": "Palette"
+    },
+    {
+        "start": 1968748,
+        "end": 1969036,
+        "name": "palette_1E0A6C",
+        "type": "Palette"
+    },
+    {
+        "start": 1969036,
+        "end": 1969324,
+        "name": "palette_1E0B8C",
+        "type": "Palette"
+    },
+    {
+        "start": 1969324,
+        "end": 1969609,
+        "name": "map_sc0E_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1969609,
+        "end": 1969886,
+        "name": "spm_title_actors",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 1969886,
+        "end": 1970162,
+        "name": "map_1E0EDE",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1970162,
+        "end": 1970437,
+        "name": "map_1E0FF2",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1970437,
+        "end": 1970707,
+        "name": "map_1E1105",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1970707,
+        "end": 1970976,
+        "name": "map_1E1213",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1970976,
+        "end": 1971241,
+        "name": "map_1E1320",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1971241,
+        "end": 1971505,
+        "name": "map_1E1429",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1971505,
+        "end": 1971765,
+        "name": "map_dsE6_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1971765,
+        "end": 1972021,
+        "name": "pal_sc01_actors",
+        "type": "Palette"
+    },
+    {
+        "start": 1972021,
+        "end": 1972277,
+        "name": "palette_1E1735",
+        "type": "Palette"
+    },
+    {
+        "start": 1972277,
+        "end": 1972533,
+        "name": "palette_1E1835",
+        "type": "Palette"
+    },
+    {
+        "start": 1972533,
+        "end": 1972789,
+        "name": "palette_1E1935",
+        "type": "Palette"
+    },
+    {
+        "start": 1972789,
+        "end": 1973045,
+        "name": "palette_1E1A35",
+        "type": "Palette"
+    },
+    {
+        "start": 1973045,
+        "end": 1973301,
+        "name": "palette_1E1B35",
+        "type": "Palette"
+    },
+    {
+        "start": 1973301,
+        "end": 1973557,
+        "name": "palette_1E1C35",
+        "type": "Palette"
+    },
+    {
+        "start": 1973557,
+        "end": 1973813,
+        "name": "palette_1E1D35",
+        "type": "Palette"
+    },
+    {
+        "start": 1973813,
+        "end": 1974069,
+        "name": "palette_1E1E35",
+        "type": "Palette"
+    },
+    {
+        "start": 1974069,
+        "end": 1974325,
+        "name": "palette_1E1F35",
+        "type": "Palette"
+    },
+    {
+        "start": 1974325,
+        "end": 1974573,
+        "name": "map_fr38_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1974573,
+        "end": 1974817,
+        "name": "map_it15_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1974817,
+        "end": 1975061,
+        "name": "map_fr35_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1975061,
+        "end": 1975305,
+        "name": "map_1E2315",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1975305,
+        "end": 1975548,
+        "name": "map_1E2409",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1975548,
+        "end": 1975791,
+        "name": "map_1E24FC",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1975791,
+        "end": 1976023,
+        "name": "map_1E25EF",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1976023,
+        "end": 1976254,
+        "name": "map_dc30_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1976254,
+        "end": 1976485,
+        "name": "map_1E27BE",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1976485,
+        "end": 1976715,
+        "name": "map_1E28A5",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1976715,
+        "end": 1976942,
+        "name": "set_fr32_ext_effect",
+        "type": "Tileset",
+        "compressed": true
+    },
+    {
+        "start": 1976942,
+        "end": 1977169,
+        "name": "bgm_melody_of_memories",
+        "type": "Music"
+    },
+    {
+        "start": 1977169,
+        "end": 1977395,
+        "name": "map_sc08_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1977395,
+        "end": 1977619,
+        "name": "palette_1E2C33",
+        "type": "Palette"
+    },
+    {
+        "start": 1977619,
+        "end": 1977843,
+        "name": "pal_sc02_cave_int",
+        "type": "Palette"
+    },
+    {
+        "start": 1977843,
+        "end": 1978067,
+        "name": "palette_1E2DF3",
+        "type": "Palette"
+    },
+    {
+        "start": 1978067,
+        "end": 1978291,
+        "name": "palette_1E2ED3",
+        "type": "Palette"
+    },
+    {
+        "start": 1978291,
+        "end": 1978515,
+        "name": "palette_1E2FB3",
+        "type": "Palette"
+    },
+    {
+        "start": 1978515,
+        "end": 1978739,
+        "name": "pal_ec0A_tiles",
+        "type": "Palette"
+    },
+    {
+        "start": 1978739,
+        "end": 1978963,
+        "name": "pal_ec0B_tiles",
+        "type": "Palette"
+    },
+    {
+        "start": 1978963,
+        "end": 1979187,
+        "name": "palette_1E3253",
+        "type": "Palette"
+    },
+    {
+        "start": 1979187,
+        "end": 1979411,
+        "name": "pal_dsE6_gaia_sprites",
+        "type": "Palette"
+    },
+    {
+        "start": 1979411,
+        "end": 1979635,
+        "name": "pal_it15_tiles",
+        "type": "Palette"
+    },
+    {
+        "start": 1979635,
+        "end": 1979859,
+        "name": "pal_it16_int",
+        "type": "Palette"
+    },
+    {
+        "start": 1979859,
+        "end": 1980083,
+        "name": "pal_ir1D_ext_main",
+        "type": "Palette"
+    },
+    {
+        "start": 1980083,
+        "end": 1980307,
+        "name": "pal_ir1F_int_main",
+        "type": "Palette"
+    },
+    {
+        "start": 1980307,
+        "end": 1980531,
+        "name": "pal_gs2B_tiles_dark",
+        "type": "Palette"
+    },
+    {
+        "start": 1980531,
+        "end": 1980755,
+        "name": "pal_gs2C_tiles_gold",
+        "type": "Palette"
+    },
+    {
+        "start": 1980755,
+        "end": 1980979,
+        "name": "pal_gs2D_tiles_light",
+        "type": "Palette"
+    },
+    {
+        "start": 1980979,
+        "end": 1981203,
+        "name": "palette_1E3A33",
+        "type": "Palette"
+    },
+    {
+        "start": 1981203,
+        "end": 1981427,
+        "name": "pal_dc2F_tiles",
+        "type": "Palette"
+    },
+    {
+        "start": 1981427,
+        "end": 1981651,
+        "name": "pal_fr32_ext_tiles",
+        "type": "Palette"
+    },
+    {
+        "start": 1981651,
+        "end": 1981875,
+        "name": "pal_fr33_int_dark",
+        "type": "Palette"
+    },
+    {
+        "start": 1981875,
+        "end": 1982099,
+        "name": "pal_fr36_int_light",
+        "type": "Palette"
+    },
+    {
+        "start": 1982099,
+        "end": 1982323,
+        "name": "pal_fr3C_int_dark",
+        "type": "Palette"
+    },
+    {
+        "start": 1982323,
+        "end": 1982547,
+        "name": "pal_dm3D_tiles",
+        "type": "Palette"
+    },
+    {
+        "start": 1982547,
+        "end": 1982771,
+        "name": "pal_na49_int_tiles",
+        "type": "Palette"
+    },
+    {
+        "start": 1982771,
+        "end": 1982995,
+        "name": "pal_na4B_sand",
+        "type": "Palette"
+    },
+    {
+        "start": 1982995,
+        "end": 1983219,
+        "name": "pal_sg4C_tiles",
+        "type": "Palette"
+    },
+    {
+        "start": 1983219,
+        "end": 1983443,
+        "name": "pal_sg4E_tiles_inv",
+        "type": "Palette"
+    },
+    {
+        "start": 1983443,
+        "end": 1983667,
+        "name": "pal_sg55_tiles_clouds",
+        "type": "Palette"
+    },
+    {
+        "start": 1983667,
+        "end": 1983891,
+        "name": "palette_1E44B3",
+        "type": "Palette"
+    },
+    {
+        "start": 1983891,
+        "end": 1984115,
+        "name": "palette_1E4593",
+        "type": "Palette"
+    },
+    {
+        "start": 1984115,
+        "end": 1984339,
+        "name": "palette_1E4673",
+        "type": "Palette"
+    },
+    {
+        "start": 1984339,
+        "end": 1984563,
+        "name": "palette_1E4753",
+        "type": "Palette"
+    },
+    {
+        "start": 1984563,
+        "end": 1984787,
+        "name": "palette_1E4833",
+        "type": "Palette"
+    },
+    {
+        "start": 1984787,
+        "end": 1985011,
+        "name": "palette_1E4913",
+        "type": "Palette"
+    },
+    {
+        "start": 1985011,
+        "end": 1985235,
+        "name": "palette_1E49F3",
+        "type": "Palette"
+    },
+    {
+        "start": 1985235,
+        "end": 1985459,
+        "name": "palette_1E4AD3",
+        "type": "Palette"
+    },
+    {
+        "start": 1985459,
+        "end": 1985683,
+        "name": "palette_1E4BB3",
+        "type": "Palette"
+    },
+    {
+        "start": 1985683,
+        "end": 1985907,
+        "name": "palette_1E4C93",
+        "type": "Palette"
+    },
+    {
+        "start": 1985907,
+        "end": 1986131,
+        "name": "palette_1E4D73",
+        "type": "Palette"
+    },
+    {
+        "start": 1986131,
+        "end": 1986355,
+        "name": "palette_1E4E53",
+        "type": "Palette"
+    },
+    {
+        "start": 1986355,
+        "end": 1986579,
+        "name": "pal_gw82_tiles",
+        "type": "Palette"
+    },
+    {
+        "start": 1986579,
+        "end": 1986803,
+        "name": "palette_1E5013",
+        "type": "Palette"
+    },
+    {
+        "start": 1986803,
+        "end": 1987027,
+        "name": "palette_1E50F3",
+        "type": "Palette"
+    },
+    {
+        "start": 1987027,
+        "end": 1987251,
+        "name": "palette_1E51D3",
+        "type": "Palette"
+    },
+    {
+        "start": 1987251,
+        "end": 1987475,
+        "name": "palette_1E52B3",
+        "type": "Palette"
+    },
+    {
+        "start": 1987475,
+        "end": 1987699,
+        "name": "palette_1E5393",
+        "type": "Palette"
+    },
+    {
+        "start": 1987699,
+        "end": 1987923,
+        "name": "palette_1E5473",
+        "type": "Palette"
+    },
+    {
+        "start": 1987923,
+        "end": 1988147,
+        "name": "palette_1E5553",
+        "type": "Palette"
+    },
+    {
+        "start": 1988147,
+        "end": 1988371,
+        "name": "palette_1E5633",
+        "type": "Palette"
+    },
+    {
+        "start": 1988371,
+        "end": 1988595,
+        "name": "palette_1E5713",
+        "type": "Palette"
+    },
+    {
+        "start": 1988595,
+        "end": 1988819,
+        "name": "palette_1E57F3",
+        "type": "Palette"
+    },
+    {
+        "start": 1988819,
+        "end": 1989043,
+        "name": "palette_1E58D3",
+        "type": "Palette"
+    },
+    {
+        "start": 1989043,
+        "end": 1989267,
+        "name": "palette_1E59B3",
+        "type": "Palette"
+    },
+    {
+        "start": 1989267,
+        "end": 1989491,
+        "name": "palette_1E5A93",
+        "type": "Palette"
+    },
+    {
+        "start": 1989491,
+        "end": 1989715,
+        "name": "palette_1E5B73",
+        "type": "Palette"
+    },
+    {
+        "start": 1989715,
+        "end": 1989939,
+        "name": "palette_1E5C53",
+        "type": "Palette"
+    },
+    {
+        "start": 1989939,
+        "end": 1990163,
+        "name": "palette_1E5D33",
+        "type": "Palette"
+    },
+    {
+        "start": 1990163,
+        "end": 1990387,
+        "name": "palette_1E5E13",
+        "type": "Palette"
+    },
+    {
+        "start": 1990387,
+        "end": 1990611,
+        "name": "palette_1E5EF3",
+        "type": "Palette"
+    },
+    {
+        "start": 1990611,
+        "end": 1990835,
+        "name": "palette_1E5FD3",
+        "type": "Palette"
+    },
+    {
+        "start": 1990835,
+        "end": 1991059,
+        "name": "palette_1E60B3",
+        "type": "Palette"
+    },
+    {
+        "start": 1991059,
+        "end": 1991283,
+        "name": "palette_1E6193",
+        "type": "Palette"
+    },
+    {
+        "start": 1991283,
+        "end": 1991507,
+        "name": "palette_1E6273",
+        "type": "Palette"
+    },
+    {
+        "start": 1991507,
+        "end": 1991731,
+        "name": "palette_1E6353",
+        "type": "Palette"
+    },
+    {
+        "start": 1991731,
+        "end": 1991955,
+        "name": "palette_1E6433",
+        "type": "Palette"
+    },
+    {
+        "start": 1991955,
+        "end": 1992179,
+        "name": "palette_1E6513",
+        "type": "Palette"
+    },
+    {
+        "start": 1992179,
+        "end": 1992403,
+        "name": "palette_1E65F3",
+        "type": "Palette"
+    },
+    {
+        "start": 1992403,
+        "end": 1992627,
+        "name": "palette_1E66D3",
+        "type": "Palette"
+    },
+    {
+        "start": 1992627,
+        "end": 1992851,
+        "name": "palette_1E67B3",
+        "type": "Palette"
+    },
+    {
+        "start": 1992851,
+        "end": 1993075,
+        "name": "pal_overworld_tiles",
+        "type": "Palette"
+    },
+    {
+        "start": 1993075,
+        "end": 1993299,
+        "name": "palette_1E6973",
+        "type": "Palette"
+    },
+    {
+        "start": 1993299,
+        "end": 1993523,
+        "name": "palette_1E6A53",
+        "type": "Palette"
+    },
+    {
+        "start": 1993523,
+        "end": 1993746,
+        "name": "bgm_lost_incan_melody",
+        "type": "Music"
+    },
+    {
+        "start": 1993746,
+        "end": 1993968,
+        "name": "bgm_lolas_melody",
+        "type": "Music"
+    },
+    {
+        "start": 1993968,
+        "end": 1994182,
+        "name": "map_1E6CF0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1994182,
+        "end": 1994390,
+        "name": "map_1E6DC6",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1994390,
+        "end": 1994593,
+        "name": "map_ec0A_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1994593,
+        "end": 1994795,
+        "name": "map_na49_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1994795,
+        "end": 1994996,
+        "name": "map_gs2B_ocean_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1994996,
+        "end": 1995196,
+        "name": "map_ec0F_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1995196,
+        "end": 1995396,
+        "name": "map_gw82_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1995396,
+        "end": 1995596,
+        "name": "map_1E7284",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1995596,
+        "end": 1995788,
+        "name": "pal_sc06_castle_actors",
+        "type": "Palette"
+    },
+    {
+        "start": 1995788,
+        "end": 1995980,
+        "name": "pal_ec0A_characters",
+        "type": "Palette"
+    },
+    {
+        "start": 1995980,
+        "end": 1996172,
+        "name": "map_ec0B_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1996172,
+        "end": 1996364,
+        "name": "pal_ec0C_enemies",
+        "type": "Palette"
+    },
+    {
+        "start": 1996364,
+        "end": 1996556,
+        "name": "pal_it15_characters",
+        "type": "Palette"
+    },
+    {
+        "start": 1996556,
+        "end": 1996748,
+        "name": "pal_ir1D_enemy_set1",
+        "type": "Palette"
+    },
+    {
+        "start": 1996748,
+        "end": 1996940,
+        "name": "pal_ir1F_enemy_set2",
+        "type": "Palette"
+    },
+    {
+        "start": 1996940,
+        "end": 1997132,
+        "name": "pal_ir29_castoth",
+        "type": "Palette"
+    },
+    {
+        "start": 1997132,
+        "end": 1997324,
+        "name": "palette_1E794C",
+        "type": "Palette"
+    },
+    {
+        "start": 1997324,
+        "end": 1997516,
+        "name": "pal_fr32_actors",
+        "type": "Palette"
+    },
+    {
+        "start": 1997516,
+        "end": 1997708,
+        "name": "pal_dm3E_enemies",
+        "type": "Palette"
+    },
+    {
+        "start": 1997708,
+        "end": 1997900,
+        "name": "pal_na49_actors",
+        "type": "Palette"
+    },
+    {
+        "start": 1997900,
+        "end": 1998092,
+        "name": "pal_sg4C_enemies",
+        "type": "Palette"
+    },
+    {
+        "start": 1998092,
+        "end": 1998284,
+        "name": "pal_sg4E_enemies_alt",
+        "type": "Palette"
+    },
+    {
+        "start": 1998284,
+        "end": 1998476,
+        "name": "palette_1E7DCC",
+        "type": "Palette"
+    },
+    {
+        "start": 1998476,
+        "end": 1998668,
+        "name": "palette_1E7E8C",
+        "type": "Palette"
+    },
+    {
+        "start": 1998668,
+        "end": 1998848,
+        "name": "map_sc06_wills_house_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 1998848,
+        "end": 2006011,
+        "name": "gfx_sc02_cave_int",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 2006011,
+        "end": 2013129,
+        "name": "gfx_dm3D_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 2013129,
+        "end": 2020188,
+        "name": "gfx_ec0A_characters",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 2020188,
+        "end": 2027247,
+        "name": "bmp_1ED35C",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 2027247,
+        "end": 2031534,
+        "name": "spm_sg4C_enemies",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 2031534,
+        "end": 2031612,
+        "name": "map_dc30_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2031616,
+        "end": 2031808,
+        "name": "palette_1F0000",
+        "type": "Palette"
+    },
+    {
+        "start": 2031808,
+        "end": 2032000,
+        "name": "palette_1F00C0",
+        "type": "Palette"
+    },
+    {
+        "start": 2032000,
+        "end": 2032192,
+        "name": "palette_1F0180",
+        "type": "Palette"
+    },
+    {
+        "start": 2032192,
+        "end": 2032384,
+        "name": "palette_1F0240",
+        "type": "Palette"
+    },
+    {
+        "start": 2032384,
+        "end": 2032576,
+        "name": "pal_wa78_actors",
+        "type": "Palette"
+    },
+    {
+        "start": 2032576,
+        "end": 2032768,
+        "name": "palette_1F03C0",
+        "type": "Palette"
+    },
+    {
+        "start": 2032768,
+        "end": 2032960,
+        "name": "map_1F0480",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2032960,
+        "end": 2033152,
+        "name": "palette_1F0540",
+        "type": "Palette"
+    },
+    {
+        "start": 2033152,
+        "end": 2033344,
+        "name": "palette_1F0600",
+        "type": "Palette"
+    },
+    {
+        "start": 2033344,
+        "end": 2033536,
+        "name": "palette_1F06C0",
+        "type": "Palette"
+    },
+    {
+        "start": 2033536,
+        "end": 2033728,
+        "name": "palette_1F0780",
+        "type": "Palette"
+    },
+    {
+        "start": 2033728,
+        "end": 2033920,
+        "name": "palette_1F0840",
+        "type": "Palette"
+    },
+    {
+        "start": 2033920,
+        "end": 2034112,
+        "name": "palette_1F0900",
+        "type": "Palette"
+    },
+    {
+        "start": 2034112,
+        "end": 2034304,
+        "name": "palette_1F09C0",
+        "type": "Palette"
+    },
+    {
+        "start": 2034304,
+        "end": 2034496,
+        "name": "palette_1F0A80",
+        "type": "Palette"
+    },
+    {
+        "start": 2034496,
+        "end": 2034688,
+        "name": "palette_1F0B40",
+        "type": "Palette"
+    },
+    {
+        "start": 2034688,
+        "end": 2034880,
+        "name": "palette_1F0C00",
+        "type": "Palette"
+    },
+    {
+        "start": 2034880,
+        "end": 2035072,
+        "name": "pal_sE9_enemies",
+        "type": "Palette"
+    },
+    {
+        "start": 2035072,
+        "end": 2035264,
+        "name": "palette_1F0D80",
+        "type": "Palette"
+    },
+    {
+        "start": 2035264,
+        "end": 2035456,
+        "name": "pal_btF2_castoth",
+        "type": "Palette"
+    },
+    {
+        "start": 2035456,
+        "end": 2035648,
+        "name": "palette_1F0F00",
+        "type": "Palette"
+    },
+    {
+        "start": 2035648,
+        "end": 2035840,
+        "name": "palette_1F0FC0",
+        "type": "Palette"
+    },
+    {
+        "start": 2035840,
+        "end": 2036032,
+        "name": "palette_1F1080",
+        "type": "Palette"
+    },
+    {
+        "start": 2036032,
+        "end": 2036224,
+        "name": "palette_1F1140",
+        "type": "Palette"
+    },
+    {
+        "start": 2036224,
+        "end": 2036416,
+        "name": "pal_title_actors",
+        "type": "Palette"
+    },
+    {
+        "start": 2036416,
+        "end": 2036606,
+        "name": "map_it16_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2036606,
+        "end": 2036796,
+        "name": "map_dc2F_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2036796,
+        "end": 2036985,
+        "name": "map_1F143C",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2036985,
+        "end": 2037174,
+        "name": "map_1F14F9",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2037174,
+        "end": 2037362,
+        "name": "map_fr35_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2037362,
+        "end": 2037549,
+        "name": "map_sc05_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2037549,
+        "end": 2037736,
+        "name": "map_1F172D",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2037736,
+        "end": 2037921,
+        "name": "map_ec0C_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2037921,
+        "end": 2038104,
+        "name": "map_1F18A1",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2038104,
+        "end": 2038285,
+        "name": "map_1F1958",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2038285,
+        "end": 2038464,
+        "name": "map_1F1A0D",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2038464,
+        "end": 2038642,
+        "name": "map_1F1AC0",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2038642,
+        "end": 2038818,
+        "name": "map_1F1B72",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2038818,
+        "end": 2038993,
+        "name": "map_sc04_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2038993,
+        "end": 2039168,
+        "name": "map_it17_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2039168,
+        "end": 2039343,
+        "name": "map_fr3C_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2039343,
+        "end": 2039518,
+        "name": "map_1F1E2F",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2039518,
+        "end": 2039691,
+        "name": "map_fr3A_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2039691,
+        "end": 2039864,
+        "name": "map_1F1F8B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2039864,
+        "end": 2040036,
+        "name": "map_sc02_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2040036,
+        "end": 2040206,
+        "name": "map_sc03_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2040206,
+        "end": 2040370,
+        "name": "map_sc08_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2040370,
+        "end": 2040533,
+        "name": "map_ec13_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2040533,
+        "end": 2040694,
+        "name": "map_it18_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2040694,
+        "end": 2040854,
+        "name": "pal_boot_logos",
+        "type": "Palette"
+    },
+    {
+        "start": 2040854,
+        "end": 2041013,
+        "name": "map_fr33_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2041013,
+        "end": 2041172,
+        "name": "map_1F24B5",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2041172,
+        "end": 2041330,
+        "name": "map_1F2554",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2041330,
+        "end": 2041485,
+        "name": "map_dc31_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2041485,
+        "end": 2041640,
+        "name": "map_1F268D",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2041640,
+        "end": 2041795,
+        "name": "map_title_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2041795,
+        "end": 2041947,
+        "name": "map_1F27C3",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2041947,
+        "end": 2042099,
+        "name": "map_1F285B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2042099,
+        "end": 2042251,
+        "name": "map_1F28F3",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2042251,
+        "end": 2042397,
+        "name": "map_sg55_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2042397,
+        "end": 2042542,
+        "name": "bgm_no_music",
+        "type": "Music"
+    },
+    {
+        "start": 2042542,
+        "end": 2042685,
+        "name": "map_fr34_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2042685,
+        "end": 2042827,
+        "name": "map_1F2B3D",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2042827,
+        "end": 2042969,
+        "name": "bgm_waterfall",
+        "type": "Music"
+    },
+    {
+        "start": 2042969,
+        "end": 2043110,
+        "name": "map_1F2C59",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2043110,
+        "end": 2043251,
+        "name": "map_1F2CE6",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2043251,
+        "end": 2043390,
+        "name": "map_1F2D73",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2043390,
+        "end": 2043528,
+        "name": "map_1F2DFE",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2043528,
+        "end": 2043665,
+        "name": "map_1F2E88",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2043665,
+        "end": 2043802,
+        "name": "map_1F2F11",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2043802,
+        "end": 2043937,
+        "name": "map_1F2F9A",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2043937,
+        "end": 2044072,
+        "name": "map_1F3021",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2044072,
+        "end": 2044206,
+        "name": "map_sc07_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2044206,
+        "end": 2044336,
+        "name": "map_fr3B_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2044336,
+        "end": 2044465,
+        "name": "map_na49_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2044465,
+        "end": 2044594,
+        "name": "map_1F3231",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2044594,
+        "end": 2044723,
+        "name": "sprite_1F32B2",
+        "type": "Spritemap",
+        "compressed": true
+    },
+    {
+        "start": 2044723,
+        "end": 2044851,
+        "name": "palette_1F3333",
+        "type": "Palette"
+    },
+    {
+        "start": 2044851,
+        "end": 2044976,
+        "name": "map_1F33B3",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2044976,
+        "end": 2045100,
+        "name": "map_fr3A_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2045100,
+        "end": 2045224,
+        "name": "map_1F34AC",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2045224,
+        "end": 2045348,
+        "name": "map_1F3528",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2045348,
+        "end": 2045472,
+        "name": "map_1F35A4",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2045472,
+        "end": 2045594,
+        "name": "map_1F3620",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2045594,
+        "end": 2045715,
+        "name": "map_fr33_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2045715,
+        "end": 2045835,
+        "name": "map_sg55_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2045835,
+        "end": 2045948,
+        "name": "map_1F378B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2045948,
+        "end": 2046059,
+        "name": "map_1F37FC",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2046059,
+        "end": 2046169,
+        "name": "map_1F386B",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2046169,
+        "end": 2046278,
+        "name": "map_ir24_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2046278,
+        "end": 2046386,
+        "name": "map_1F3946",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2046386,
+        "end": 2046494,
+        "name": "map_1F39B2",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2046494,
+        "end": 2046601,
+        "name": "map_1F3A1E",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2046601,
+        "end": 2046707,
+        "name": "map_1F3A89",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2046707,
+        "end": 2046813,
+        "name": "map_1F3AF3",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2046813,
+        "end": 2046919,
+        "name": "map_1F3B5D",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2046919,
+        "end": 2047023,
+        "name": "map_ec10_main",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2047023,
+        "end": 2047125,
+        "name": "map_1F3C2F",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2047125,
+        "end": 2047226,
+        "name": "map_1F3C95",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2047226,
+        "end": 2047326,
+        "name": "map_1F3CFA",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2047326,
+        "end": 2047389,
+        "name": "map_ir29_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2047389,
+        "end": 2047448,
+        "name": "map_na4B_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2047448,
+        "end": 2047505,
+        "name": "map_fr32_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2047505,
+        "end": 2047560,
+        "name": "map_it18_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2047560,
+        "end": 2047604,
+        "name": "map_it16_effect",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2047604,
+        "end": 2047648,
+        "name": "map_1F3E74",
+        "type": "Tilemap",
+        "compressed": true
+    },
+    {
+        "start": 2064384,
+        "end": 2071429,
+        "name": "bmp_1F8000",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 2071429,
+        "end": 2078424,
+        "name": "gfx_it15_characters",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 2078424,
+        "end": 2085416,
+        "name": "gfx_sp5A_tiles",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 2085416,
+        "end": 2092359,
+        "name": "gfx_sc06_castle_actors",
+        "type": "Bitmap",
+        "compressed": true
+    },
+    {
+        "start": 2092359,
+        "end": 2097135,
+        "name": "spm_ec0C_enemies",
+        "type": "Spritemap",
+        "compressed": true
+    }
+]

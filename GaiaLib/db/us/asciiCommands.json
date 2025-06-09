@@ -1,0 +1,88 @@
+[
+  {
+    "key": 1,
+    "value": "CUR",
+    "types": [ "Byte", "Byte" ]
+  },
+  {
+    "key": 2,
+    "value": "PRT",
+    "types": [ "Address" ]
+  },
+  {
+    "key": 3,
+    "value": "NHM",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 4,
+    "value": "PTR",
+    "types": [ "Address", "Word" ]
+  },
+  {
+    "key": 5,
+    "value": "BCD",
+    "types": [ "Byte", "Word" ]
+  },
+  {
+    "key": 6,
+    "value": "RCT",
+    "types": [ "Byte", "Byte", "Word" ]
+  },
+  {
+    "key": 7,
+    "value": "CLR",
+    "types": [ "Word" ]
+  },
+  {
+    "key": 8,
+    "value": "CPY",
+    "types": [ "Byte", "Word" ]
+  },
+  {
+    "key": 9,
+    "value": "STR",
+    "types": []
+  },
+  {
+    "key": 10,
+    "value": "HP",
+    "types": []
+  },
+  {
+    "key": 11,
+    "value": "HE",
+    "types": []
+  },
+  {
+    "key": 12,
+    "value": "ESC",
+    "types": [ "Binary" ],
+    "delimiter": 255
+  },
+  {
+    "key": 13,
+    "value": "DBL",
+    "types": []
+  },
+  {
+    "key": 14,
+    "value": "NUM",
+    "types": [ "Word" ]
+  },
+  {
+    "key": 15,
+    "value": "RCC",
+    "types": [ "Byte", "Byte" ]
+  },
+  {
+    "key": 16,
+    "value": "LU",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 17,
+    "value": "N",
+    "types": []
+  }
+]

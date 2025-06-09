@@ -1,0 +1,1479 @@
+[
+  {
+    "code": 0,
+    "mnem": "00",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 1,
+    "mnem": "01",
+    "size": 4,
+    "halt": false,
+    "parts": [ "@dma_data", "Byte" ]
+  },
+  {
+    "code": 2,
+    "mnem": "02",
+    "size": 4,
+    "halt": false,
+    "parts": [ "@dma_data", "Byte" ]
+  },
+  {
+    "code": 3,
+    "mnem": "03",
+    "size": 5,
+    "halt": false,
+    "parts": [ "Byte", "Word", "Word" ]
+  },
+  {
+    "code": 4,
+    "mnem": "04",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 5,
+    "mnem": "05",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 6,
+    "mnem": "06",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 7,
+    "mnem": "07",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 8,
+    "mnem": "08",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 9,
+    "mnem": "09",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 10,
+    "mnem": "0A",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 11,
+    "mnem": "0B",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 12,
+    "mnem": "0C",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 13,
+    "mnem": "0D",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 14,
+    "mnem": "0E",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 15,
+    "mnem": "0F",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 16,
+    "mnem": "10",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 17,
+    "mnem": "11",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 18,
+    "mnem": "12",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 19,
+    "mnem": "13",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 20,
+    "mnem": "14",
+    "size": 4,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "&Code" ]
+  },
+  {
+    "code": 21,
+    "mnem": "15",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 22,
+    "mnem": "16",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 23,
+    "mnem": "17",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 24,
+    "mnem": "18",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 25,
+    "mnem": "19",
+    "size": 4,
+    "halt": false,
+    "parts": [ "Byte", "@WideString" ]
+  },
+  {
+    "code": 26,
+    "mnem": "1A",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 27,
+    "mnem": "1B",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 28,
+    "mnem": "1C",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 29,
+    "mnem": "1D",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 30,
+    "mnem": "1E",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 31,
+    "mnem": "1F",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 32,
+    "mnem": "20",
+    "size": 4,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "&Code" ]
+  },
+  {
+    "code": 33,
+    "mnem": "21",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 34,
+    "mnem": "22",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 35,
+    "mnem": "23",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 36,
+    "mnem": "24",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 37,
+    "mnem": "25",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 38,
+    "mnem": "26",
+    "size": 8,
+    "halt": false,
+    "parts": [ "Byte", "Word", "Word", "Byte", "Word" ]
+  },
+  {
+    "code": 39,
+    "mnem": "27",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 40,
+    "mnem": "28",
+    "size": 6,
+    "halt": false,
+    "parts": [ "Word", "Word", "&Code" ]
+  },
+  {
+    "code": 41,
+    "mnem": "29",
+    "size": 7,
+    "halt": false,
+    "parts": [ "Byte", "Word", "Word", "&Code" ]
+  },
+  {
+    "code": 42,
+    "mnem": "2A",
+    "size": 8,
+    "halt": false,
+    "parts": [ "Word", "&Code", "&Code", "&Code" ]
+  },
+  {
+    "code": 43,
+    "mnem": "2B",
+    "size": 8,
+    "halt": false,
+    "parts": [ "Word", "&Code", "&Code", "&Code" ]
+  },
+  {
+    "code": 44,
+    "mnem": "2C",
+    "size": 4,
+    "halt": false,
+    "parts": [ "&Code", "&Code" ]
+  },
+  {
+    "code": 45,
+    "mnem": "2D",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 46,
+    "mnem": "2E",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 47,
+    "mnem": "2F",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 48,
+    "mnem": "30",
+    "size": 5,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte", "&Code" ]
+  },
+  {
+    "code": 49,
+    "mnem": "31",
+    "size": 10,
+    "halt": false,
+    "parts": [ "&Code", "&Code", "&Code", "&Code", "&Code" ]
+  },
+  {
+    "code": 50,
+    "mnem": "32",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 51,
+    "mnem": "33",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 52,
+    "mnem": "34",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 53,
+    "mnem": "35",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 54,
+    "mnem": "36",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 55,
+    "mnem": "37",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 56,
+    "mnem": "38",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 57,
+    "mnem": "39",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 58,
+    "mnem": "3A",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 59,
+    "mnem": "3B",
+    "size": 4,
+    "halt": false,
+    "parts": [ "Byte", "@Code" ]
+  },
+  {
+    "code": 60,
+    "mnem": "3C",
+    "size": 3,
+    "halt": false,
+    "parts": [ "@Code" ]
+  },
+  {
+    "code": 61,
+    "mnem": "3D",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 62,
+    "mnem": "3E",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 63,
+    "mnem": "3F",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 64,
+    "mnem": "40",
+    "size": 4,
+    "halt": false,
+    "parts": [ "Word", "&Code" ]
+  },
+  {
+    "code": 65,
+    "mnem": "41",
+    "size": 4,
+    "halt": false,
+    "parts": [ "Word", "&Code" ]
+  },
+  {
+    "code": 66,
+    "mnem": "42",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 67,
+    "mnem": "43",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 68,
+    "mnem": "44",
+    "size": 6,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte", "Byte", "&Code" ]
+  },
+  {
+    "code": 69,
+    "mnem": "45",
+    "size": 6,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte", "Byte", "&Code" ]
+  },
+  {
+    "code": 70,
+    "mnem": "46",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 71,
+    "mnem": "47",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 72,
+    "mnem": "48",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 73,
+    "mnem": "49",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 74,
+    "mnem": "4A",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 75,
+    "mnem": "4B",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 76,
+    "mnem": "4C",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 77,
+    "mnem": "4D",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 78,
+    "mnem": "4E",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 79,
+    "mnem": "4F",
+    "size": 7,
+    "halt": false,
+    "parts": [ "Address", "Word", "Word" ]
+  },
+  {
+    "code": 80,
+    "mnem": "50",
+    "size": 6,
+    "halt": false,
+    "parts": [ "Address", "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 81,
+    "mnem": "51",
+    "size": 6,
+    "halt": false,
+    "parts": [ "Address", "Address" ]
+  },
+  {
+    "code": 82,
+    "mnem": "52",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 83,
+    "mnem": "53",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 84,
+    "mnem": "54",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Address" ]
+  },
+  {
+    "code": 85,
+    "mnem": "55",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "Word" ]
+  },
+  {
+    "code": 86,
+    "mnem": "56",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 87,
+    "mnem": "57",
+    "size": 3,
+    "halt": false,
+    "parts": [ "@Code" ]
+  },
+  {
+    "code": 88,
+    "mnem": "58",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 89,
+    "mnem": "59",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 90,
+    "mnem": "5A",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 91,
+    "mnem": "5B",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 92,
+    "mnem": "5C",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 93,
+    "mnem": "5D",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 94,
+    "mnem": "5E",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 95,
+    "mnem": "5F",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Word", "Byte" ]
+  },
+  {
+    "code": 96,
+    "mnem": "60",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 97,
+    "mnem": "61",
+    "size": 4,
+    "halt": false,
+    "parts": [ "Address", "Byte" ]
+  },
+  {
+    "code": 98,
+    "mnem": "62",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 99,
+    "mnem": "63",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 100,
+    "mnem": "64",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 101,
+    "mnem": "65",
+    "size": 6,
+    "halt": false,
+    "parts": [ "Word", "Word", "Byte", "Byte" ]
+  },
+  {
+    "code": 102,
+    "mnem": "66",
+    "size": 5,
+    "halt": false,
+    "parts": [ "Word", "Word", "Byte" ]
+  },
+  {
+    "code": 103,
+    "mnem": "67",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 104,
+    "mnem": "68",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 105,
+    "mnem": "69",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 106,
+    "mnem": "6A",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 107,
+    "mnem": "6B",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&WideString" ]
+  },
+  {
+    "code": 108,
+    "mnem": "6C",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 109,
+    "mnem": "6D",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 110,
+    "mnem": "6E",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 111,
+    "mnem": "6F",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 128,
+    "mnem": "80",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 129,
+    "mnem": "81",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 130,
+    "mnem": "82",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 131,
+    "mnem": "83",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 132,
+    "mnem": "84",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 133,
+    "mnem": "85",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 134,
+    "mnem": "86",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 135,
+    "mnem": "87",
+    "size": 4,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 136,
+    "mnem": "88",
+    "size": 3,
+    "halt": false,
+    "parts": [ "@&sprite_set" ]
+  },
+  {
+    "code": 137,
+    "mnem": "89",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 138,
+    "mnem": "8A",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 139,
+    "mnem": "8B",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 140,
+    "mnem": "8C",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 141,
+    "mnem": "8D",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 142,
+    "mnem": "8E",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 143,
+    "mnem": "8F",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 144,
+    "mnem": "90",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 145,
+    "mnem": "91",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 146,
+    "mnem": "92",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 147,
+    "mnem": "93",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 148,
+    "mnem": "94",
+    "size": 4,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "Byte", "Byte" ]
+  },
+  {
+    "code": 149,
+    "mnem": "95",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 150,
+    "mnem": "96",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 151,
+    "mnem": "97",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 152,
+    "mnem": "98",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 153,
+    "mnem": "99",
+    "size": 3,
+    "halt": false,
+    "parts": [ "@Code" ]
+  },
+  {
+    "code": 154,
+    "mnem": "9A",
+    "size": 5,
+    "halt": false,
+    "parts": [ "@Code", "Word" ]
+  },
+  {
+    "code": 155,
+    "mnem": "9B",
+    "size": 3,
+    "halt": false,
+    "parts": [ "@Code" ]
+  },
+  {
+    "code": 156,
+    "mnem": "9C",
+    "size": 5,
+    "halt": false,
+    "parts": [ "@Code", "Word" ]
+  },
+  {
+    "code": 157,
+    "mnem": "9D",
+    "size": 7,
+    "halt": false,
+    "parts": [ "Word", "Byte", "Word", "Word" ]
+  },
+  {
+    "code": 158,
+    "mnem": "9E",
+    "size": 9,
+    "halt": false,
+    "parts": [ "@Code", "Word", "Word", "Word" ]
+  },
+  {
+    "code": 159,
+    "mnem": "9F",
+    "size": 7,
+    "halt": false,
+    "parts": [ "Word", "Byte", "Word", "Word" ]
+  },
+  {
+    "code": 160,
+    "mnem": "A0",
+    "size": 9,
+    "halt": false,
+    "parts": [ "@Code", "Word", "Word", "Word" ]
+  },
+  {
+    "code": 161,
+    "mnem": "A1",
+    "size": 5,
+    "halt": false,
+    "parts": [ "@Code", "Word" ]
+  },
+  {
+    "code": 162,
+    "mnem": "A2",
+    "size": 5,
+    "halt": false,
+    "parts": [ "@Code", "Word" ]
+  },
+  {
+    "code": 163,
+    "mnem": "A3",
+    "size": 9,
+    "halt": false,
+    "parts": [ "@Code", "Word", "Word", "Word" ]
+  },
+  {
+    "code": 164,
+    "mnem": "A4",
+    "size": 7,
+    "halt": false,
+    "parts": [ "@Code", "Byte", "Byte", "Word" ]
+  },
+  {
+    "code": 165,
+    "mnem": "A5",
+    "size": 7,
+    "halt": false,
+    "parts": [ "@Code", "Byte", "Byte", "Word" ]
+  },
+  {
+    "code": 166,
+    "mnem": "A6",
+    "size": 8,
+    "halt": false,
+    "parts": [ "Word", "Byte", "Byte", "Byte", "Byte", "Word" ]
+  },
+  {
+    "code": 167,
+    "mnem": "A7",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 168,
+    "mnem": "A8",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 169,
+    "mnem": "A9",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 170,
+    "mnem": "AA",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 171,
+    "mnem": "AB",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 172,
+    "mnem": "AC",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 173,
+    "mnem": "AD",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 174,
+    "mnem": "AE",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 175,
+    "mnem": "AF",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 176,
+    "mnem": "B0",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 177,
+    "mnem": "B1",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 178,
+    "mnem": "B2",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 179,
+    "mnem": "B3",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 180,
+    "mnem": "B4",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 181,
+    "mnem": "B5",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 182,
+    "mnem": "B6",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 183,
+    "mnem": "B7",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 184,
+    "mnem": "B8",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 185,
+    "mnem": "B9",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 186,
+    "mnem": "BA",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 187,
+    "mnem": "BB",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 188,
+    "mnem": "BC",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 189,
+    "mnem": "BD",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Address" ]
+  },
+  {
+    "code": 190,
+    "mnem": "BE",
+    "size": 4,
+    "halt": true,
+    "parts": [ "Byte", "Byte", "&&Code" ]
+  },
+  {
+    "code": 191,
+    "mnem": "BF",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&WideString" ]
+  },
+  {
+    "code": 192,
+    "mnem": "C0",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 193,
+    "mnem": "C1",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 194,
+    "mnem": "C2",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 195,
+    "mnem": "C3",
+    "size": 5,
+    "halt": false,
+    "parts": [ "@Code", "Word" ]
+  },
+  {
+    "code": 196,
+    "mnem": "C4",
+    "size": 3,
+    "halt": true,
+    "parts": [ "@Code" ]
+  },
+  {
+    "code": 197,
+    "mnem": "C5",
+    "size": 0,
+    "halt": true,
+    "parts": []
+  },
+  {
+    "code": 198,
+    "mnem": "C6",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 199,
+    "mnem": "C7",
+    "size": 3,
+    "halt": true,
+    "parts": [ "@Code" ]
+  },
+  {
+    "code": 200,
+    "mnem": "C8",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 201,
+    "mnem": "C9",
+    "size": 2,
+    "halt": false,
+    "parts": [ "&Code" ]
+  },
+  {
+    "code": 202,
+    "mnem": "CA",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 203,
+    "mnem": "CB",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 204,
+    "mnem": "CC",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 205,
+    "mnem": "CD",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 206,
+    "mnem": "CE",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 207,
+    "mnem": "CF",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 208,
+    "mnem": "D0",
+    "size": 4,
+    "halt": false,
+    "parts": [ "Byte", "Byte", "&Code" ]
+  },
+  {
+    "code": 209,
+    "mnem": "D1",
+    "size": 5,
+    "halt": false,
+    "parts": [ "Word", "Byte", "&Code" ]
+  },
+  {
+    "code": 210,
+    "mnem": "D2",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Byte", "Byte" ]
+  },
+  {
+    "code": 211,
+    "mnem": "D3",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Word", "Byte" ]
+  },
+  {
+    "code": 212,
+    "mnem": "D4",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 213,
+    "mnem": "D5",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 214,
+    "mnem": "D6",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 215,
+    "mnem": "D7",
+    "size": 3,
+    "halt": false,
+    "parts": [ "Byte", "&Code" ]
+  },
+  {
+    "code": 216,
+    "mnem": "D8",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 217,
+    "mnem": "D9",
+    "size": 4,
+    "halt": true,
+    "parts": [ "Word", "&&Code" ]
+  },
+  {
+    "code": 218,
+    "mnem": "DA",
+    "size": 1,
+    "halt": false,
+    "parts": [ "Byte" ]
+  },
+  {
+    "code": 219,
+    "mnem": "DB",
+    "size": 2,
+    "halt": false,
+    "parts": [ "Word" ]
+  },
+  {
+    "code": 220,
+    "mnem": "DC",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 221,
+    "mnem": "DD",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 222,
+    "mnem": "DE",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 223,
+    "mnem": "DF",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 224,
+    "mnem": "E0",
+    "size": 0,
+    "halt": true,
+    "parts": []
+  },
+  {
+    "code": 225,
+    "mnem": "E1",
+    "size": 0,
+    "halt": false,
+    "parts": []
+  },
+  {
+    "code": 226,
+    "mnem": "E2",
+    "size": 3,
+    "halt": false,
+    "parts": [ "@Code" ]
+  }
+]

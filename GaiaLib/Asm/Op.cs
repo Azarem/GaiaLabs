@@ -1,16 +1,12 @@
 ﻿using GaiaLib.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GaiaLib.Asm
 {
     public class Op
     {
         public OpCode Code { get; set; }
-        public Location Location { get; set; }
+        public int Location { get; set; }
+
         //public int Operand { get; set; }
         public object[] Operands { get; set; }
         public byte Size { get; set; }

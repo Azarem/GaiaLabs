@@ -1,0 +1,87 @@
+[
+  {
+    "sfxLocation": 327680,
+    "sfxCount": 60,
+    "charmap": [
+      "A", "B", "C", "D", "E", "F", "G", "H", 
+      "I", "J", "K", "L", "M", "N", "O", "!",
+      "P", "Q", "R", "S", "T", "U", "V", "W",
+      "X", "Y", "Z", "/", "?", "-", "(", ")",
+      "a", "b", "c", "d", "e", "f", "g", "h",
+      "i", "j", "k", "l", "m", "n", "o", " ",
+      "p", "q", "r", "s", "t", "u", "v", "w",
+      "x", "y", "z", ",", ".", "'", "\"", "̏ˮ"
+    ],
+    "widemap": [
+      "Ǫ", "į", "ņ", "ţ", "ę", "ţ", "Ĕ", "Ň", "Ĭ", "Ẋ", "Ẍ", "Ĉ", "Č", "?", "'", "▼",
+      "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", ",", "►", "\"", "ˮ", ":",
+      "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "!",
+      "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "/", "*", "-", "(", ")",
+      "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", ";",
+      "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "ǁ", " ", "…", "♥", "|",
+      "Ā", "ā", "Ē", "ē", "Ī", "ī", "Ō", "ō", "Ū", "ū", "Ŷ", "ŷ", "ǁ", "ǁ", "ǁ", "ǁ"
+    ],
+    "asciiMap": [
+      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null, null, null, null, null, "⸓", null, null,
+      ".", "!", "ˎ", "Æ", "←", "˳", "‥", "˲", "[", "]", "*", "►", ",", "+", "-", "/",
+      "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", "·", "(", "▼", ")", "?",
+      " ", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
+      "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "-", "'", "<", ">", "#",
+      " ", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
+      "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "¥", "_", "{", "}", "¦",
+      "=", ";", "\"", null, null, null, null, null, null, null, null, null, null, null, null, null,
+      "█", "˅", "Ḇ", "ṵ", "ṯ", "ō", "ṉ", "Ḛ", "ḛ", "ṟ", "˭", "Ĉ", "ā", "ĉ", "ḻ", null,
+      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+      "☼", "○", "◦", "Ḣ", "Ṗ", "Ṡ", "Ṫ", "Ḋ", "Ḟ", "♥", null, null, null, null, null, null,
+      "ꝗ", "Ꝗ", null, null, "Ẋ", "Ẏ", "Ḃ", "Ạ", "⸔", null, null, null, null, null, null, null,
+      "₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉", null, null, null, null, null, null
+    ],
+    "asmFormats": {
+      "Immediate": "#${0:X2}",
+      "Absolute": "${0:X4}",
+      "AbsoluteLong": "${0:X6}",
+      "DirectPage": "${0:X2}",
+      "DirectPageIndirect": "(${0:X2})",
+      "DirectPageIndirectLong": "[${0:X2}]",
+      "AbsoluteIndexedX": "${0:X4}, X",
+      "AbsoluteLongIndexedX": "${0:X6}, X",
+      "AbsoluteIndexedY": "${0:X4}, Y",
+      "AbsoluteIndirect": "(${0})",
+      "AbsoluteIndirectLong": "[${0}]",
+      "AbsoluteIndexedIndirect":  "(${0}, X)",
+      "DirectPageIndexedX": "${0:X2}, X",
+      "DirectPageIndexedIndirectX": "(${0:X2}, X)",
+      "DirectPageIndirectIndexedY": "(${0:X2}), Y",
+      "DirectPageIndirectLongIndexedY": "[${0:X2}], Y",
+      "StackInterrupt": "#${0:X2}",
+      "StackRelative": "${0:X2}, S",
+      "StackRelativeIndirectIndexedY": "(${0:X2}, S), Y",
+      "PCRelative": "{0}",
+      "PCRelativeLong": "{0}",
+      "BlockMove": "#${0:X2}, #${1:X2}"
+    },
+    "paths": {
+      "Bitmap": { "folder": "graphics", "extension": "bin" },
+      "Palette": { "folder": "palettes", "extension": "pal" },
+      "Music": { "folder": "music", "extension": "bgm" },
+      "Tileset": { "folder": "tilesets", "extension": "set" },
+      "Tilemap": { "folder": "tilemaps", "extension": "map" },
+      "Spritemap": { "folder": "spritemaps", "extension": "bin" },
+      "Assembly": { "folder": "asm", "extension": "asm" },
+      "Sound": { "folder": "sfx", "extension": "bin" },
+      "Unknown": { "folder": "misc", "extension": "bin" },
+      "Patch": { "folder": "patches", "extension": "asm" },
+      "Transform": { "folder": "transforms", "extension": "json" }
+    },
+    "entrypoints": [
+      { "location": 65508, "name": "native_mode_cop_008007" },
+      { "location": 65510, "name": "native_mode_irq_00800F" },
+      { "location": 65514, "name": "native_mode_nmi_00800B" },
+      { "location": 65518, "name": "native_mode_irq_00800F" },
+      { "location": 65532, "name": "emulation_mode_reset_008000" }
+    ]
+  }
+]

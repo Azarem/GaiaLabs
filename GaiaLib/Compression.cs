@@ -1,107 +1,81 @@
-﻿
+﻿using GaiaLib.Types;
+
 namespace GaiaLib
 {
     public static unsafe class Compression
     {
-        public static unsafe byte[] Expand(byte* srcData, int srcLen = 0x8000)
+        public const int DictionarySize = 0x100;
+
+        public static unsafe byte[] Expand(byte[] srcData, int srcPosition = 0, int srcLen = 0x8000)
         {
-            byte* ptr = (byte*)srcData, stop = ptr + srcLen;
-            byte[] buffer = new byte[0x100];
+            var bitStream = new BitStream(srcData, srcPosition);
+            var srcStop = srcPosition + srcLen;
 
-            //Clear buffer (with spaces?)
-            for (int i = 0; i < buffer.Length; i++)
-                buffer[i] = 0x20;
+            byte[] dictionary = new byte[DictionarySize];
 
-            var bit = 0x80;
-            var cmd = *ptr & bit;
-            byte offset = 0xEF;
-            int outIx = 0;
+            //Clear buffer (with spaces)
+            for (int i = 0; i < DictionarySize; i++)
+                dictionary[i] = 0x20;
+
+            //Initialize positions
+            int dictPosition = 0xEF;
+            int outPosition = 0;
 
             //First two bytes is decompressed size
-            int dstLen = *(ushort*)ptr;
-            ptr += 2;
+            int dstLen = bitStream.ReadShort();
 
+            //Create output buffer with the expected size
             byte[] outBuffer = new byte[dstLen];
 
-            bool getCmd()
+            while (bitStream.Position < srcStop && outPosition < dstLen)
             {
-                int sample = *ptr & bit;
-                bit >>= 1;
-                if (bit == 0)
+                //If current bit is set, read byte and add to output buffer and dictionary
+                if (bitStream.ReadBit())
                 {
-                    bit = 0x80;
-                    ptr++;
-                }
-                return sample != 0;
-            }
+                    //Read byte from bitstream
+                    var sample = (byte)bitStream.ReadByte();
 
-            byte getByte()
-            {
-                int sample = *ptr++;
-                if (bit < 0x80)
-                {
-                    sample = (sample << 8) | *ptr;
-                    for (int x = bit; x > 0; x >>= 1)
-                        sample >>= 1;
-                }
-                return (byte)sample;
-            }
+                    //Add byte to output buffer and increment
+                    if (outPosition < dstLen)
+                        outBuffer[outPosition++] = sample;
 
-            byte getNibble()
-            {
-                int sample = *ptr;
+                    //Add byte to dictionary and increment
+                    dictionary[dictPosition++] = sample;
 
-                if (bit == 0x08)
-                {
-                    bit = 0x80;
-                    ptr++;
+                    //Wrap dictionary index
+                    dictPosition &= 0xFF;
                 }
+                //If current bit is not set, read sequence from dictionary
                 else
                 {
-                    int target = -4;
-                    while (bit != 0)
+                    //read wordIndex and wordLength from bitstream
+                    var wordIndex = bitStream.ReadByte();
+                    var wordLength = bitStream.ReadNibble() + 2;
+
+                    //Continue while there are remaining bytes to copy
+                    while (wordLength-- > 0)
                     {
-                        bit >>= 1;
-                        target++;
+                        //Read byte at wordIndex and increment
+                        var sample = dictionary[wordIndex++];
+
+                        //Wrap dictionary index
+                        wordIndex &= 0xFF;
+
+                        //Copy byte to output buffer and increment, but only if there is space
+                        if (outPosition < dstLen)
+                            outBuffer[outPosition++] = sample;
+
+                        //Add byte to dictionary and increment
+                        dictionary[dictPosition++] = sample;
+
+                        //Wrap dictionary index
+                        dictPosition &= 0xFF;
                     }
-
-                    if (target < 0)
-                    {
-                        sample = (sample << 8) | *++ptr;
-                        target += 8;
-                    }
-                    sample >>= target;
-                    bit = 1 << (target - 1);
-                }
-
-                return (byte)(sample & 0xF);
-            }
-
-            void writeByte(byte val)
-            {
-                if (outIx < dstLen)
-                    outBuffer[outIx++] = val;
-                buffer[offset++] = val;
-            }
-
-            while (ptr < stop && outIx < dstLen)
-            {
-                if (getCmd())
-                    writeByte(getByte());
-                else
-                {
-                    for (byte o = getByte(), i = (byte)(getNibble() + 2); i > 0; i--, o++)
-                        writeByte(buffer[o]);
                 }
             }
 
-            //if((stop - ptr) > 1 || outIx < dstLen)
-            //{
-
-            //}
-
-            if (outIx < dstLen)
-                outBuffer = outBuffer[0..outIx];
+            if (outPosition < dstLen)
+                outBuffer = outBuffer[0..outPosition];
 
             return outBuffer;
         }
@@ -117,67 +91,15 @@ namespace GaiaLib
             byte sample = 0;
             byte bit = 0x80;
             byte offset = 0xEF;
-            int srcIx = 0, dstIx = 0;
+            int srcIx = 0,
+                dstIx = 0;
 
             int srcLen = srcData.Length;
             byte[] outputBuffer = new byte[srcLen];
             byte[] final;
 
+            var bitStream = new BitStream(outputBuffer);
 
-            void writeCmd(bool cmd)
-            {
-                if (cmd)
-                    sample |= bit;
-
-                bit >>= 1;
-                if (bit == 0)
-                {
-                    bit = 0x80;
-                    outputBuffer[dstIx++] = sample;
-                    sample = 0;
-                }
-            }
-
-            void writeByte(int cmd)
-            {
-                if (bit == 0x80)
-                    outputBuffer[dstIx++] = (byte)cmd;
-                else
-                {
-                    for (int x = 1; x <= bit; x <<= 1)
-                        cmd <<= 1;
-
-                    outputBuffer[dstIx++] = (byte)(sample | (cmd >> 8));
-                    sample = (byte)cmd;
-                }
-
-            }
-
-            void writeNibble(byte cmd)
-            {
-                cmd &= 0xF;
-
-                byte shift = 2;
-                switch (bit)
-                {
-                    case 0x80: shift = 4; goto case 0x20;
-                    case 0x40: shift = 3; goto case 0x20;
-                    case 0x10: shift = 1; goto case 0x20;
-                    case 0x20:
-                        sample |= (byte)(cmd << shift);
-                        bit >>= 4;
-                        break;
-
-                    case 0x8: shift = 0; goto case 0x2;
-                    case 0x4: shift = 1; goto case 0x2;
-                    case 0x1: shift = 3; goto case 0x2;
-                    case 0x2:
-                        outputBuffer[dstIx++] = (byte)(sample | (cmd >> shift));
-                        sample = (byte)(cmd << (8 - shift));
-                        bit <<= 4;
-                        break;
-                }
-            }
 
             (byte, byte) getCommand()
             {
@@ -185,7 +107,8 @@ namespace GaiaLib
                 if (maxLen < 2)
                     return (0, 0);
 
-                int startByte = 0, bestLen = 0;
+                int startByte = 0,
+                    bestLen = 0;
                 byte bx = offset;
                 for (int i = 0; i < 0x100; i++, bx++)
                 {
@@ -212,7 +135,6 @@ namespace GaiaLib
                 return ((byte)startByte, (byte)bestLen);
             }
 
-
             //Write header
             outputBuffer[dstIx++] = (byte)srcLen;
             outputBuffer[dstIx++] = (byte)(srcLen >> 8);
@@ -222,17 +144,17 @@ namespace GaiaLib
                 var cmd = getCommand();
                 if (cmd.Item2 >= 2)
                 {
-                    writeCmd(false);
-                    writeByte(cmd.Item1);
-                    writeNibble((byte)(cmd.Item2 - 2));
+                    bitStream.WriteBit(false);
+                    bitStream.WriteByte(cmd.Item1);
+                    bitStream.WriteNibble((byte)(cmd.Item2 - 2));
                     for (int i = 0; i < cmd.Item2; i++)
                         dictionary[offset++] = srcData[srcIx++];
                 }
                 else
                 {
-                    writeCmd(true);
+                    bitStream.WriteBit(true);
                     var val = srcData[srcIx++];
-                    writeByte(val);
+                    bitStream.WriteByte(val);
                     dictionary[offset++] = val;
                 }
             }

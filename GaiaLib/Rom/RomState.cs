@@ -1,5 +1,10 @@
-﻿using GaiaLib.Database;
+﻿using GaiaLib.Asm;
+using GaiaLib.Database;
+using GaiaLib.Enum;
+using GaiaLib.Rom;
+using GaiaLib.Rom.Rebuild;
 using GaiaLib.Sprites;
+using GaiaLib.Types;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -36,12 +41,9 @@ namespace GaiaLib.Rom
 
         public static string StripName(string name)
         {
-            while (Process._addressspace.Contains(name[0]))
+            while (RomProcessingConstants.AddressSpace.Contains(name[0]))
                 name = name[1..];
 
-            //int ix;
-            //while ((ix = name.IndexOfAny(Process._addressspace)) >= 0)
-            //    name = name[..ix] + name[(ix + 1)..];
             return name;
         }
 
@@ -52,11 +54,13 @@ namespace GaiaLib.Rom
             var res = root.GetPath(BinType.Assembly);
             var filePath = Path.Combine(baseDir, res.Folder, $"{metaFile}.{res.Extension}");
 
-            List<Asm.AsmBlock> blocks;
+            List<AsmBlock> blocks;
             HashSet<string> includes;
             byte? bank;
-            using (var file = File.OpenRead(filePath))
-                (blocks, includes, bank) = Process.ParseAssembly(root, file, 0);
+            using (var assembler = new Assembler(root, filePath))
+            {
+                (blocks, includes, bank) = assembler.ParseAssembly(0);
+            }
 
             var label = (blocks[1].ObjList[id] as string).Replace("&", "");
             var block = blocks.First(x => label.Equals(x.Label, StringComparison.CurrentCultureIgnoreCase));

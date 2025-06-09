@@ -2,6 +2,19 @@
   "name": "GaiaLabs",
   "romPath": "C:\\Games\\SNES\\Illusion of Gaia.smc",
   "baseDir": "",
-  "database": "database",
-  "flipsPath": "C:\\Games\\flips.exe" 
+  "database": "us",
+  "flipsPath": "C:\\Games\\flips.exe",
+  "resources": {
+    "Bitmap": { "folder": "graphics", "extension": "bin" },
+    "Palette": { "folder": "palettes", "extension": "pal" },
+    "Music": { "folder": "music", "extension": "bgm" },
+    "Tileset": { "folder": "tilesets", "extension": "set" },
+    "Tilemap": { "folder": "tilemaps", "extension": "map" },
+    "Spritemap": { "folder": "spritemaps", "extension": "bin" },
+    "Assembly": { "folder": "asm", "extension": "asm" },
+    "Sound": { "folder": "sfx", "extension": "bin" },
+    "Unknown": { "folder": "misc", "extension": "bin" },
+    "Patch": { "folder": "patches", "extension": "asm" },
+    "Transform": { "folder": "transforms", "extension": "json" }
+  }
 }

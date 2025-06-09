@@ -1,0 +1,21 @@
+[
+    {
+        "name": "parallax_thinker",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "parallax_table"
+    },
+    {
+        "name": "scene_actors",
+        "movable": true
+    },
+    {
+        "name": "scene_thinkers"
+    },
+    {
+        "name": "scene_meta",
+        "movable": true
+    }
+]

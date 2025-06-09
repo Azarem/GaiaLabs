@@ -1,10 +1,9 @@
-﻿
-namespace GaiaLib.Database
+﻿namespace GaiaLib.Database
 {
     public class DbBlock
     {
         internal DbRoot Root;
-        internal HashSet<(HexString, string)> Mnemonics = new();
+        internal Dictionary<int, string> Mnemonics = new();
 
         public string Name { get; set; }
         public bool Movable { get; set; }
@@ -14,10 +13,15 @@ namespace GaiaLib.Database
         public IEnumerable<DbPart> Parts
         {
             get => _parts;
-            set { _parts = value; foreach (var p in _parts) p.Block = this; }
+            set
+            {
+                _parts = value;
+                foreach (var p in _parts)
+                    p._block = this;
+            }
         }
 
-        public bool IsOutside(Location loc, out DbPart? part)
+        public bool IsOutside(int loc, out DbPart? part)
         {
             if (IsInside(loc, out part))
                 return false;
@@ -30,11 +34,14 @@ namespace GaiaLib.Database
             return true;
         }
 
-        public bool IsInside(Location loc, out DbPart? part)
+        public bool IsInside(int loc, out DbPart? part)
         {
             foreach (var p in Parts)
                 if (p.IsInside(loc))
-                { part = p; return true; }
+                {
+                    part = p;
+                    return true;
+                }
 
             part = null;
             return false;
@@ -42,7 +49,7 @@ namespace GaiaLib.Database
 
         public IEnumerable<DbBlock> GetIncludes()
         {
-            return Parts.SelectMany(x => x.Includes).Select(x => x.Block).Distinct();
+            return Parts.SelectMany(x => x.Includes).Select(x => x._block).Distinct();
         }
     }
 }

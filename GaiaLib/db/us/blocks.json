@@ -1,0 +1,3912 @@
+[
+    {
+        "name": "chunk_008000"
+    },
+    {
+        "name": "floor_button",
+        "movable": true
+    },
+    {
+        "name": "hidden_red_jewel",
+        "movable": true
+    },
+    {
+        "name": "thinker_00B520",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "func_00B528",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "thinker_00B5C0",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B5DF",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B5FE",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B631",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B65E",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B671",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B6D2",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B6E5",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B6FD",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B71E",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B754",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B781",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B78F",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B79D",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B7BE",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B7CC",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B7D6",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B7E0",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B7EA",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B7F4",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B7FE",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B808",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B818",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B83F",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B853",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B867",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00B87B",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "parallax_thinker",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BB8E",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BBAF",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BC97",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BCB3",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BCDF",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BCF5",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BD21",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BD42",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BD96",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BDCA",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BDCD",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BE18",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BE39",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BE83",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BEAA",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BED1",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BEF2",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BF19",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BF52",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BF78",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "thinker_00BF89",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "actor_00C1AA",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00C1DF",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00C218",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00C251",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00C286",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00C2BB",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "func_00C397",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "entry_points_00C418",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00C62D",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00C667",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "func_00C6E4",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00C718",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00C725",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00C7FA",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00C806",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "f_inventory_full",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00C9B8",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "overworld_exit",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00CD59",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00CF29",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "func_00CF8E",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00CFAE",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00CFEF",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "chunk_00D088",
+        "movable": false
+    },
+    {
+        "name": "func_00D62F",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00B5B3",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00D718",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "death_message",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "actor_00D877",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "town_door",
+        "movable": true
+    },
+    {
+        "name": "large_ramps",
+        "movable": false
+    },
+    {
+        "name": "ramps",
+        "movable": false
+    },
+    {
+        "name": "actor_00DA78",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "func_00DB8A",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "stub_00DC77",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00DC79",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "func_00DCB4",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00DD03",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00DDF2",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00DF15",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00DF29",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "reward_actors",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00E155",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00E256",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00E3BA",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00E4DB",
+        "movable": false,
+        "group": "actors"
+    },
+    {
+        "name": "func_00E655",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "actor_00E8D7",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00E98B",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00E9EC",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_00EAED",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "chunk_00E683"
+    },
+    {
+        "name": "func_00F3B3",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_00F3C9",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "func_00F428",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "func_00F432",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "table_018000"
+    },
+    {
+        "name": "scene_warps"
+    },
+    {
+        "name": "table_01A95E"
+    },
+    {
+        "name": "reward_table_01AADE"
+    },
+    {
+        "name": "dir_sprite_01ABDE"
+    },
+    {
+        "name": "stats_01ABF0"
+    },
+    {
+        "name": "table_01ADA8"
+    },
+    {
+        "name": "table_01B086"
+    },
+    {
+        "name": "binary_01C384"
+    },
+    {
+        "name": "templates_01CA95"
+    },
+    {
+        "name": "music_array_01CBA6"
+    },
+    {
+        "name": "parallax_table"
+    },
+    {
+        "name": "array_01D3CE"
+    },
+    {
+        "name": "binary_01D8BE"
+    },
+    {
+        "name": "body_table"
+    },
+    {
+        "name": "table_01D9A7"
+    },
+    {
+        "name": "table_01D9BF"
+    },
+    {
+        "name": "system_strings"
+    },
+    {
+        "name": "itemcomp_table_01EB0F",
+        "movable": true
+    },
+    {
+        "name": "dictionary_01EBA8",
+        "movable": true
+    },
+    {
+        "name": "dictionary_01F54D",
+        "movable": true
+    },
+    {
+        "name": "itemget_table_01FD24"
+    },
+    {
+        "name": "chunk_028000"
+    },
+    {
+        "name": "actor_02B20E",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_02B29E",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_02B42B",
+        "movable": false,
+        "group": "actors"
+    },
+    {
+        "name": "actor_02B7B3",
+        "movable": false,
+        "group": "actors"
+    },
+    {
+        "name": "actor_02BDF6",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "player_character",
+        "movable": false,
+        "group": "actors"
+    },
+    {
+        "name": "chunk_02CFD0"
+    },
+    {
+        "name": "inventory_menu",
+        "movable": false,
+        "group": "actors"
+    },
+    {
+        "name": "func_02F048",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_02F06A",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "func_02ED02",
+        "movable": true,
+        "group": "functions"
+    },
+    {
+        "name": "chunk_038000"
+    },
+    {
+        "name": "s59_actor_03A0AA",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "sC0_actor_03A1FA",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "sFE_actor_03A2F1",
+        "movable": false,
+        "group": "actors"
+    },
+    {
+        "name": "pr8C_proc_03A6BA",
+        "movable": true,
+        "group": "prologue"
+    },
+    {
+        "name": "pr_proc_03A83E",
+        "movable": true,
+        "group": "prologue"
+    },
+    {
+        "name": "sFE_proc_03A940",
+        "group": "thinkers"
+    },
+    {
+        "name": "func_03AB88",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "overworld_routes",
+        "movable": true
+    },
+    {
+        "name": "overworld_names"
+    },
+    {
+        "name": "overworld_options"
+    },
+    {
+        "name": "chunk_03BAE1"
+    },
+    {
+        "name": "sc01_smoke",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_actor_048004",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_girl1",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_girl2",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_girl3",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_salesman",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_fisherman",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_roof_man",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_guard",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_worried_woman",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_startled_woman",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_astronomer",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_sympathetic_woman",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_actor_0489EE",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "sc01_jar_door",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc08_priest",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc08_lance",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc08_seth",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc08_erik",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc03_lances_mother",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc04_poverty",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc04_eriks_father",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc04_eriks_mother",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc05_seths_mother",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc05_seths_father",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc07_chef",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_sprint_man",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc06_bill",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc06_lola",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc06_kara",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc06_hamlet",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc06_main_soldier",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc06_actor_04A42F",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc06_monologue",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc06_kara_return",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc06_lily",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc02_card",
+        "movable": false,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc02_lance",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc02_seth",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc02_erik",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc01_house_intro",
+        "movable": true,
+        "group": "south_cape"
+    },
+    {
+        "name": "sc02_entry",
+        "movable": false,
+        "group": "south_cape"
+    },
+    {
+        "name": "ec0A_torch1",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_torch2",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_left_guard",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_right_guard",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_stair_guard",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_edward",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_actor_04C56A",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_edwina",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_door_guard",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_throne_guards",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_bed_maid",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_stair_maid",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_shy_guard",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_caring_maid",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_kara_guard",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_kara",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_barrel_roast",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0A_prison_guard",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0B_cell",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0B_door",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0B_moss",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0B_ball",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0B_guard",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0C_force_hint",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec10_dp_hint_spirit",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "it18_warning_man",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it15_running_man",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it18_warning_woman",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it15_fable_man",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it15_fable_woman",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it16_song_woman",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it15_friendly_woman",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it15_kara",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it17_kara",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it15_lily",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it17_lily",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it15_elder",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it15_bill",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it15_lola",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it19_inca_statue_a",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it19_actor_04F3CD",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it1A_lily",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it1B_trial",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "it1B_inca_statue_b",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "gs2B_actor_058027",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2C_actor_05813A",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2C_actor_05816F",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2C_descent",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2C_crew1",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2C_crew2",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2C_crew3",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2C_crew4",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2C_crew5",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2C_crow_crew",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2E_sleep",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2E_crew0",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2E_crew1",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2E_crew2",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2E_crew3",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2E_queen",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2D_mummy",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2D_kara",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2D_lily",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2D_lance",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2B_bones",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2B_seth",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2B_erik",
+        "movable": true,
+        "group": "gold_ship"
+    },
+    {
+        "name": "gs2A_shira",
+        "movable": false,
+        "group": "gold_ship"
+    },
+    {
+        "name": "dc2F_adrift",
+        "movable": false,
+        "group": "diamond_coast"
+    },
+    {
+        "name": "dc30_dog",
+        "movable": true,
+        "group": "diamond_coast"
+    },
+    {
+        "name": "dc30_kara",
+        "movable": true,
+        "group": "diamond_coast"
+    },
+    {
+        "name": "dc31_rescuer",
+        "movable": true,
+        "group": "diamond_coast"
+    },
+    {
+        "name": "dc31_kara",
+        "movable": true,
+        "group": "diamond_coast"
+    },
+    {
+        "name": "fr32_actor_05B01E",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_kara",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_guide",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_actor_05B32C",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_actor_05B33D",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_actor_05B35D",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_kidnapper",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_slap",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_hotel_hint",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_creep",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_alley_guard",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_slaver1",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_slaver2",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_fragrance",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_honest_life",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_doomsday",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr38_ashamed",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr38_girlfriend",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr38_boyfriend",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr36_mother",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr3B_tornado",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr3A_harborer",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr37_caution",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_showman",
+        "movable": false,
+        "group": "freejia"
+    },
+    {
+        "name": "fr3C_imas",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr3C_remus",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr3C_sam",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr3C_slaver",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr3C_man1",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr3C_man2",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr3A_sympathetic",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr35_slave1",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr35_slave2",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr35_slave3",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr39_lily_kara",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr39_lance",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr39_erik",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr33_erik",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_actor_05CEF8",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_actor_05CF04",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_actor_05CF10",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_herb",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_hp_jewel",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "fr32_locked_door",
+        "movable": true,
+        "group": "freejia"
+    },
+    {
+        "name": "dm3F_switch",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm3F_actor_05D066",
+        "movable": false,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm47_imas",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm47_remus",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm47_sam",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm_actor_05D49E",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm45_key",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm44_cell_door",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm40_hidden_dark_space",
+        "movable": false,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm3F_elevator_door",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm3F_elevator_sign",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm41_actor_05D6F3",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm41_actor_05D70A",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm40_trapped_slave",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "na49_neil",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na49_lily",
+        "movable": false,
+        "group": "nazca"
+    },
+    {
+        "name": "na49_kara",
+        "movable": false,
+        "group": "nazca"
+    },
+    {
+        "name": "na49_lance",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na49_erik",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na49_tank",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na49_wings",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na49_telescope",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na49_camera",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na4B_buried_tile",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na4B_neil",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na4B_kara",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na4B_lance",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na4B_lily",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na4B_erik",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "na4B_spirit",
+        "movable": true,
+        "group": "nazca"
+    },
+    {
+        "name": "sg4C_spirits",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg___hint_spirit",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg4C_platforms",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg52_actor_05F5DE",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg52_actor_05F655",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg52_switch",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg54_pressure_switch",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg4D_jump_handler",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "dm3E_intro",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "sg51_monologue",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "thinkers_05FB16",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "sp58_missed_flight",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp58_actor_068111",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp58_red_eye",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp58_monologue",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5A_monologue",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5B_kara",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5B_lily",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5B_erik",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5B_lance",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5B_neil",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5A_phantom_ribber",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5A_villagers",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5C_key_coffin",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5C_stone_coffin",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5D_fountain",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5A_voice",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5E_passageway",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "mu61_hint",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu62_hope_statue",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu63_spirits",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu66_altar1",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu66_altar2",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu66_actor_069C85",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu60_floor_spikes",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu64_switch_spikes",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu60_force_ball",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu66_rama_spirits",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu67_erik",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu67_bomb",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu67_neil_lily",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu67_actor_06A828",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu67_kara",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "st68_campfire",
+        "movable": true,
+        "group": "seaside_tunnel"
+    },
+    {
+        "name": "st68_neil",
+        "movable": true,
+        "group": "seaside_tunnel"
+    },
+    {
+        "name": "st68_erik",
+        "movable": true,
+        "group": "seaside_tunnel"
+    },
+    {
+        "name": "st68_lance",
+        "movable": true,
+        "group": "seaside_tunnel"
+    },
+    {
+        "name": "st68_kara",
+        "movable": true,
+        "group": "seaside_tunnel"
+    },
+    {
+        "name": "st68_lily",
+        "movable": true,
+        "group": "seaside_tunnel"
+    },
+    {
+        "name": "st68_mushrooms",
+        "movable": true,
+        "group": "seaside_tunnel"
+    },
+    {
+        "name": "st68_actor_06B937",
+        "movable": true,
+        "group": "seaside_tunnel"
+    },
+    {
+        "name": "func_06B9F2",
+        "movable": true
+    },
+    {
+        "name": "av69_signs",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av69_lance",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6A_lance",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av69_neil",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6A_neil",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av69_lily",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6A_lily",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av69_kara",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6A_kara",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av69_erik",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6A_erik",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6B_ocean_ache",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6B_villagers1",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6C_villagers4",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6B_villagers2",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6B_villagers3",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6C_villagers5",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av74_ishtar",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6C_only_sleeping",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6B_musician",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6C_unknown",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av74_kara",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6B_flame",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6D_flame_left",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6D_flame_right",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av70_flame_center",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av70_hidden_passage",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av70_crawlspace",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av71_actor_06D68D",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av73_actor_06D6F4",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6B_door",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av75_voice_doors",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av75_voice_rooms",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av75_apprentice",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "wa78_intro",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_actor_0781BE",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_centipede_man",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_moving_woman",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_water_kid",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_men",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_women",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_children",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa7D_glass_opponent",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_glass_game",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_kruk",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_prize_kruk",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_flower",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_lily_pad",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_full_pad",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_diary",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_moving_pad",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa78_crazy_man",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa7B_competitor_left",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa7B_competitor_right",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa79_neil",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa79_erik",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa79_kara",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa79_lily",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa7A_lance",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa79_lance",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa7F_lance",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa7F_lily",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "wa7A_lances_father",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "fireplace_journal",
+        "movable": true,
+        "group": "watermia"
+    },
+    {
+        "name": "gw82_trail_intro",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw82_necklace_stone",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw83_lily",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw8B_lance_lily",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw85_actor_07BCE8",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw85_short_switch_spear",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw85_long_switch_spear",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw85_multi_switch_spear",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw83_switch",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw88_actor_07BDE8",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "eu91_intro",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_merchant_counter",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_crate",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_merchants",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_men1",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_women1",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_men2",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_women2",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu97_clerk1",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu97_clerk2",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu97_life_medicine",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu97_dark_medicine",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu94_employee",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_peeking_man",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "actor_07D08C",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu9D_slaves",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu9D_bones",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_shop_queue",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_shop_door",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu92_rofsky",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu92_erasquez",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu96_kara",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu96_erik",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu96_neil",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu95_ann",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu95_neils_father",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu95_neils_mother",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu95_neil",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu91_book",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu93_found",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu9D_altar",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu9A_friezer",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu9A_max",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "eu9A_rudy",
+        "movable": true,
+        "group": "euro"
+    },
+    {
+        "name": "mtA0_intro",
+        "movable": true,
+        "group": "mountain_temple"
+    },
+    {
+        "name": "mtA2_actor_07E7F0",
+        "movable": true,
+        "group": "mountain_temple"
+    },
+    {
+        "name": "mtA5_actor_07E843",
+        "movable": true,
+        "group": "mountain_temple"
+    },
+    {
+        "name": "mtA5_actor_07E896",
+        "movable": true,
+        "group": "mountain_temple"
+    },
+    {
+        "name": "gw85_actor_07E901",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "nvAC_bones",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAC_kara",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nv_actor_0881A5",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAC_erik",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAC_hamlet",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAD_kara",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAD_erik",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAD_hamlet",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAC_bonfire",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAC_hand_man",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAC_dumpling_man",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAC_staring_man",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAC_map_kid",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAC_beckon_kid",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAE_stone_girl1",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAE_stone_girl2",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAE_stone_girl3",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAE_kara",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "nvAE_erik",
+        "movable": true,
+        "group": "native_village"
+    },
+    {
+        "name": "awB4_actor_0897CB",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB0_intro",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awBD_actor_08985E",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB2_actor_0898C8",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB3_actor_0898DA",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB4_actor_08992A",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB7_actor_0899AF",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awBC_blinding_light",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awBF_spirit_guide",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awBC_actor_089F2C",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awBA_glasses",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB6_bones",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awBA_bones",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "daC4_kara",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC4_erik",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC8_neil",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_man1",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_sandy",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_merchant",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC9_businessman",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC7_explorer1",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC7_explorer2",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC7_explorer3",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_moving_kruk",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_freedom_man",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_carpet_man",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_kruk1",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_kruk2",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_prisoner",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_jackal_girl",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_training_man",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC6_snake_panic",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_luggage_man",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_slaver",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC3_treasure_man",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC5_slaver",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "daC5_weaver",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "actor_08B577",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "pyD0_actor_08B592",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCC_actor_08B668",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCC_entrance_portal",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "py_actor_08B6F4",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCD_flame_statue",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCD_jackal",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCD_kara",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCD_explorer",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyD6_actor_08C2DA",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyD6_actor_08C3FD",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyD7_actor_08C4EA",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyD9_actor_08C4EA",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyD4_actor_08C6EA",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyDA_lithograph1",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyDA_lithograph2",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyDA_lithograph3",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyDA_lithograph4",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyDA_lithograph5",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyDA_lithograph6",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCD_puzzle",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCC_portal",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyDD_mystic_statue",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "jeweler_gem",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "dark_space",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "sE6_gaia",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "sEA_solid_arm",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "sE9_mansion_intro",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_08FCFF",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "btE3_dao_travel_spirit",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "daC3_babel_travel_spirit",
+        "movable": true,
+        "group": "dao"
+    },
+    {
+        "name": "btDC_plane_jumping",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE3_kara",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btDE_kara_missing",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE0_actor_098718",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE0_actor_098748",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE0_actor_098778",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE0_actor_0987A8",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE3_actor_0987D8",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btDE_olman",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE4_kara",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE4_olman",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE1_actor_099586",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE1_comet_soon",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btE2_brought_back",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btDE_monologue",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btDF_crystal_ring",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "bt_actor_099B1C",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btDF_spirits",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "btDF_kara",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "hint_npc",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "dark_rewards",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "ec0E_lily",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec11_actor_09AA40",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "actor_09AA6E",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "actor_09BA80",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "actor_09BAE3",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "func_09BB17",
+        "movable": true
+    },
+    {
+        "name": "kara_09BBB7",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "ec11_flower",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec11_actor_09BC8B",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec11_button_voice",
+        "movable": false,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec11_countdown",
+        "movable": false,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec12_actor_09BF0F",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec12_actor_09BF6B",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec13_lily",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ir1D_bones",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ec_actor_09C2D0",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ir25_ceiling_tile",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir25_block_slot",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1F_gold_tile",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1F_actor_09C489",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1E_actor_09C4B2",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1E_actor_09C54D",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1E_actor_09C563",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1D_wind_melody",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir24_glowing_tile",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir28_actor_09C6A9",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir26_bones",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir28_bones",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir26_journal_bones",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1C_lily",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1C_kara",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir29_transform",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1D_monologue",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "it1A_moon_tribe",
+        "movable": true,
+        "group": "itory"
+    },
+    {
+        "name": "sF7_credits",
+        "movable": false,
+        "group": "credits"
+    },
+    {
+        "name": "sF0_class_dismissed",
+        "movable": true,
+        "group": "ending"
+    },
+    {
+        "name": "sF7_actor_09DFF8",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "sF7_actor_09E26C",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "sF7_actor_09E3EB",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "sF7_actor_09E4DD",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "sF7_actor_09E591",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "sF7_actor_09E607",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "misc_actors_09E64B",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "func_09E8E4",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "crF7_proc_09F330",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "crF7_proc_09F360",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "crF7_proc_09F510",
+        "movable": true,
+        "group": "credits"
+    },
+    {
+        "name": "ec0D_canal_worm",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0C_ribber",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec12_skull_chaser",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0F_king_bat",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0C_bat",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0F_spear",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0E_statue",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ir26_statue",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ec0E_switch",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0F_rusty_switch",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ir20_statue",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ec0E_barrier",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ec0E_spiney",
+        "movable": true,
+        "group": "edward_castle"
+    },
+    {
+        "name": "ir1D_mudpit",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1D_four_way",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1B_slugger",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1D_scuttlebug",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir21_switch",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1F_stone_guard",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir1F_stone_lord",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir21_splop",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir21_whirligig",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir21_frozen_whirligig",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "ir29_castoth",
+        "movable": true,
+        "group": "incan_ruins"
+    },
+    {
+        "name": "func_0AA36E",
+        "movable": true
+    },
+    {
+        "name": "func_0AA3A7",
+        "movable": true
+    },
+    {
+        "name": "func_0AA3FD",
+        "movable": true
+    },
+    {
+        "name": "func_0AA41C",
+        "movable": true
+    },
+    {
+        "name": "func_0AA43F",
+        "movable": true
+    },
+    {
+        "name": "dm41_actor_0AA4E2",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm43_elevator",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm3F_laborer",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm3D_breakable_wall",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm3D_flayzer",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm3D_grundit",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "dm3D_eye_stalker",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "sg4C_actor_0AB496",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg4D_cyber",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg4D_knight_armor",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg4D_dynapede",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg4E_nitropede",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg4E_plasma_snake",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg55_mystic_statue",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg55_falling_tile",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg55_actor_0AD000",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg55_viper",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "sg_actors_0ADA52",
+        "movable": true,
+        "group": "sky_garden"
+    },
+    {
+        "name": "actor_0ADB38",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "func_0ADB45",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "btEA_actor_0ADC55",
+        "movable": true,
+        "group": "babel_tower"
+    },
+    {
+        "name": "mu5F_cyclops",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "mu5F_flasher",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "sp5C_slipper",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "sp5C_skuddle",
+        "movable": true,
+        "group": "seaside_palace"
+    },
+    {
+        "name": "mu60_plasma_chain",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "func_0AEE96_noref"
+    },
+    {
+        "name": "dm_func_0ADB6B",
+        "movable": true,
+        "group": "diamond_mine"
+    },
+    {
+        "name": "av6D_dive_bat",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6D_steelbones",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av6E_draco",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "av70_ramskull",
+        "movable": true,
+        "group": "angel_village"
+    },
+    {
+        "name": "mu67_vampires",
+        "movable": true,
+        "group": "mu"
+    },
+    {
+        "name": "func_0AFD5A_noref"
+    },
+    {
+        "name": "func_0AFD69",
+        "movable": true
+    },
+    {
+        "name": "gw8A_sand_fanger",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw88_short_wall_spear",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw82_wall_spear",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw82_fire_bug",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw82_eyesore",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw82_archer",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "gw83_asp",
+        "movable": true,
+        "group": "great_wall"
+    },
+    {
+        "name": "mtA1_fire_sprite",
+        "movable": true,
+        "group": "mountain_temple"
+    },
+    {
+        "name": "mtA0_skulker",
+        "movable": true,
+        "group": "mountain_temple"
+    },
+    {
+        "name": "mtA1_yorrick_ns",
+        "movable": true,
+        "group": "mountain_temple"
+    },
+    {
+        "name": "mtA1_yorrick_ew",
+        "movable": true,
+        "group": "mountain_temple"
+    },
+    {
+        "name": "mtA0_acid_spider",
+        "movable": true,
+        "group": "mountain_temple"
+    },
+    {
+        "name": "pyDD_actor_0BA5DF",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyDD_mummy_queen",
+        "movable": false,
+        "group": "pyramid"
+    },
+    {
+        "name": "py_queen_actor_0BAAAA",
+        "movable": false,
+        "group": "pyramid"
+    },
+    {
+        "name": "py_queen_actor_0BABB3",
+        "movable": false,
+        "group": "pyramid"
+    },
+    {
+        "name": "binary_0BACB4",
+        "movable": false
+    },
+    {
+        "name": "py_queen_actor_0BACBC",
+        "movable": false,
+        "group": "pyramid"
+    },
+    {
+        "name": "py_queen_actor_0BAD6B",
+        "movable": false,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyDD_actor_0BADBE",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyDD_teleporter",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "awB0_zip_fly",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB0_shrubber",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB0_zombie",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB1_gorgon",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB1_wall_walker",
+        "movable": true,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "awB1_goldcap",
+        "movable": false,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "aw_actor_0BBEE9",
+        "movable": false,
+        "group": "ankor_wat"
+    },
+    {
+        "name": "pyD2_haunt",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCE_tuts",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCC_mystic_ball",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "pyCC_blaster",
+        "movable": true,
+        "group": "pyramid"
+    },
+    {
+        "name": "strings_0BF706"
+    },
+    {
+        "name": "sFB_actor_0BC8BA",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "sFC_actor_0BC924",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "sFC_actor_0BC9AE",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "pr8C_prologue1",
+        "movable": true,
+        "group": "prologue"
+    },
+    {
+        "name": "pr8D_prologue2",
+        "movable": true,
+        "group": "prologue"
+    },
+    {
+        "name": "pr8E_prologue3",
+        "movable": true,
+        "group": "prologue"
+    },
+    {
+        "name": "pr8F_prologue4",
+        "movable": true,
+        "group": "prologue"
+    },
+    {
+        "name": "pr8C_prologue5",
+        "movable": true,
+        "group": "prologue"
+    },
+    {
+        "name": "pr_actor_0BCF52",
+        "movable": true,
+        "group": "prologue"
+    },
+    {
+        "name": "pr_thinkers",
+        "movable": true,
+        "group": "prologue"
+    },
+    {
+        "name": "actor_0BD2AB",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "sE5_epilogue",
+        "movable": true,
+        "group": "ending"
+    },
+    {
+        "name": "s90_changed_world",
+        "movable": true,
+        "group": "ending"
+    },
+    {
+        "name": "s89_new_babel",
+        "movable": true,
+        "group": "ending"
+    },
+    {
+        "name": "actor_0BE1C5",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "sFA_diary_menu",
+        "movable": false,
+        "group": "actors"
+    },
+    {
+        "name": "debug_man",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "actor_0BFA57",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "scene_actors",
+        "movable": true
+    },
+    {
+        "name": "scene_thinkers"
+    },
+    {
+        "name": "sE7_thinker_0CEB5B",
+        "movable": true,
+        "group": "thinkers"
+    },
+    {
+        "name": "sE8_thinker_0CEB74",
+        "movable": false,
+        "group": "thinkers"
+    },
+    {
+        "name": "sE7_actor_0CEDC5",
+        "movable": true,
+        "group": "actors"
+    },
+    {
+        "name": "sE8_actor_0CEEAA",
+        "movable": false,
+        "group": "actors"
+    },
+    {
+        "name": "actor_0CF61F",
+        "movable": true,
+        "group": "unused"
+    },
+    {
+        "name": "scene_meta",
+        "movable": true
+    },
+    {
+        "name": "table_0E8000"
+    },
+    {
+        "name": "table_0EDA00"
+    },
+    {
+        "name": "table_0EE000"
+    },
+    {
+        "name": "table_0F8000"
+    },
+    {
+        "name": "table_0FC000"
+    },
+    {
+        "name": "inventory_spritemap"
+    },
+    {
+        "name": "table_148000"
+    },
+    {
+        "name": "table_14C000"
+    },
+    {
+        "name": "table_14C0C8"
+    },
+    {
+        "name": "table_14C12C"
+    },
+    {
+        "name": "table_158000"
+    },
+    {
+        "name": "palette_bundles"
+    },
+    {
+        "name": "table_178000"
+    },
+    {
+        "name": "table_179000"
+    },
+    {
+        "name": "table_17A000"
+    },
+    {
+        "name": "table_17B000"
+    },
+    {
+        "name": "table_17C000"
+    },
+    {
+        "name": "table_17D000"
+    }
+]

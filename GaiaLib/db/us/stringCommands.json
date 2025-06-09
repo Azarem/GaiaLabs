@@ -1,0 +1,138 @@
+[
+  {
+    "key": 192,
+    "value": "END",
+    "types": []
+  },
+  {
+    "key": 193,
+    "value": "DLG",
+    "types": [ "Byte", "Byte" ]
+  },
+  {
+    "key": 194,
+    "value": "TPL",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 195,
+    "value": "PAL",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 196,
+    "value": "XXX",
+    "types": []
+  },
+  {
+    "key": 197,
+    "value": "ADR",
+    "types": [ "Offset", "Word" ]
+  },
+  {
+    "key": 198,
+    "value": "BCD",
+    "types": [ "Word", "Word" ]
+  },
+  {
+    "key": 199,
+    "value": "SIZ",
+    "types": [ "Byte", "Byte" ]
+  },
+  {
+    "key": 200,
+    "value": "CLD",
+    "types": []
+  },
+  {
+    "key": 201,
+    "value": "PAU",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 202,
+    "value": "RET",
+    "types": []
+  },
+  {
+    "key": 203,
+    "value": "N",
+    "types": []
+  },
+  {
+    "key": 204,
+    "value": "SKP",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 205,
+    "value": "PRT",
+    "types": [ "Address" ]
+  },
+  {
+    "key": 206,
+    "value": "CLR",
+    "types": []
+  },
+  {
+    "key": 207,
+    "value": "FIN",
+    "types": []
+  },
+  {
+    "key": 208,
+    "value": "WAI",
+    "types": []
+  },
+  {
+    "key": 209,
+    "value": "JMP",
+    "types": [ "Offset" ]
+  },
+  {
+    "key": 210,
+    "value": "SFX",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 211,
+    "value": "DEF",
+    "types": []
+  },
+  {
+    "key": 212,
+    "value": "SEP",
+    "types": [ "Byte", "Word" ]
+  },
+  {
+    "key": 213,
+    "value": "DLY",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 214,
+    "value": "LU1",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 215,
+    "value": "LU2",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 216,
+    "value": "ESC",
+    "types": [ "Binary" ],
+    "delimiter": 0
+  },
+  {
+    "key": 217,
+    "value": "BOR",
+    "types": [ "Byte" ]
+  },
+  {
+    "key": 218,
+    "value": "NAM",
+    "types": [ "Byte" ]
+  }
+]
