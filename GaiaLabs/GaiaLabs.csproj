@@ -4,9 +4,11 @@
     <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net7.0</TargetFramework>
     <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'ios' ">net8.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\GaiaLib\GaiaLib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\res\" />
   </ItemGroup>
 </Project>

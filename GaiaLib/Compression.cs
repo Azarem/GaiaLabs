@@ -2,11 +2,11 @@
 
 namespace GaiaLib
 {
-    public static unsafe class Compression
+    public static class Compression
     {
         public const int DictionarySize = 0x100;
 
-        public static unsafe byte[] Expand(byte[] srcData, int srcPosition = 0, int srcLen = 0x8000)
+        public static byte[] Expand(byte[] srcData, int srcPosition = 0, int srcLen = 0x8000)
         {
             var bitStream = new BitStream(srcData, srcPosition);
             var srcStop = srcPosition + srcLen;

@@ -11,6 +11,10 @@ using static Godot.WebSocketPeer;
 
 public partial class ControlTest : Control
 {
+    public const float _sample4to5 = 31.3f / 15f;
+    public const float _sample4to6 = 63.3f / 15f;
+    public const float _sample4to8 = 255.3f / 15f;
+    public const float _sample5to8 = 255.3f / 31f;
     public static ControlTest Instance { get; private set; }
 
     //private ImageTexture _texture;
@@ -43,7 +47,7 @@ public partial class ControlTest : Control
 
     internal static int _mapWidth, _mapHeight;
 
-    public unsafe override void _EnterTree()
+    public override void _EnterTree()
     {
         Instance = this;
         Project = ProjectRoot.Load();
@@ -162,7 +166,7 @@ public partial class ControlTest : Control
         var fullPalette = PaletteData = new byte[256 * 4];
         var fullTexture = TilesetBitmap = new byte[16 * 16 * 16 * 16 * 4];
 
-        byte convert(int color) => (byte)(int)(color * ImageConverter._sample5to8);
+        byte convert(int color) => (byte)(int)(color * _sample5to8);
 
         for (int i = 0, x = 0; i < pal.Length;)
         {
