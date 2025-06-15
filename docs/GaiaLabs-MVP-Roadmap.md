@@ -16,17 +16,21 @@
 
 ### Target State
 - **GaiaWasm**: Rust → WebAssembly core library
-- **GaiaStudio**: React + PixiJS web application
+- **GaiaStudio**: React + PixiJS ROM editor application
+- **GaiaCommunity**: Next.js community platform for project sharing
+- **GaiaDocs**: Docusaurus documentation site with interactive examples
 - **Database-Driven Architecture**: Support for multiple games through JSON ROM definitions
-- **Unified Platform**: Single web-based solution for all retro ROM editing needs
+- **Unified Ecosystem**: Complete web-based platform for retro ROM editing, sharing, and collaboration
 
 ### Key Benefits
 - **Cross-platform**: Works on any device with a modern browser
 - **Multi-game Support**: Extensible to any retro game with ROM database definition
+- **Complete Ecosystem**: Editing, sharing, documentation, and collaboration in one place
 - **Performance**: WebAssembly + WebGPU acceleration
-- **Maintainability**: Single codebase vs. multiple projects
+- **Maintainability**: Unified monorepo with shared components and authentication
 - **Accessibility**: No installation required, shareable via URL
-- **Community Driven**: Game support added through community database contributions
+- **Community Driven**: Project sharing, collaboration, and database contributions
+- **Seamless Integration**: One-click workflow from community browsing to project editing
 - **Future-proof**: Modern web technologies with active development
 
 ---
@@ -77,47 +81,128 @@ All database files must conform to the established JSON schema to ensure:
 - **Compatibility**: Adherence to platform processing requirements
 - **Performance**: Optimized data structures for efficient processing
 
-### Repository Structure (Recommended: Monorepo)
+### Repository Structure (Enhanced Monorepo)
 ```
 GaiaLabs/
-├── packages/
-│   ├── gaia-wasm/              # Rust → WASM core library
+├── apps/
+│   ├── gaia-studio/          # React + PixiJS ROM editor
 │   │   ├── src/
-│   │   │   ├── compression/    # Game-specific compression algorithms
-│   │   │   ├── rom/           # Universal ROM file handling
-│   │   │   ├── assembly/      # Multi-platform assembly processing
-│   │   │   ├── database/      # JSON database management & validation
-│   │   │   ├── engines/       # Game-specific processing engines
-│   │   │   └── types/         # Universal data structures
-│   │   ├── Cargo.toml
-│   │   └── pkg/              # Generated WASM output
-│   ├── gaia-studio/          # React web application
-│   │   ├── src/
-│   │   │   ├── components/    # React UI components
-│   │   │   ├── editors/       # PixiJS-based editors
-│   │   │   ├── hooks/         # Custom React hooks
-│   │   │   ├── utils/         # Utility functions
+│   │   │   ├── components/    # Editor-specific UI components
+│   │   │   ├── editors/       # PixiJS-based editors (tilemap, sprite, etc.)
+│   │   │   ├── hooks/         # Editor-specific React hooks
 │   │   │   └── wasm/          # WASM integration layer
 │   │   ├── public/
 │   │   └── package.json
-│   └── gaia-shared/          # Shared TypeScript types
-├── databases/                # Game database definitions
-│   ├── illusion-of-gaia/     # IoG database (US/JP/DM)
-│   ├── [future-games]/       # Community-contributed databases
-│   └── schema/               # Database validation schemas
-├── docs/                     # Documentation
-├── examples/                 # Sample projects
-├── tools/                    # Build tools
+│   ├── gaia-community/       # Next.js community platform
+│   │   ├── src/
+│   │   │   ├── app/           # Next.js 14+ App Router
+│   │   │   ├── components/    # Community-specific components
+│   │   │   ├── lib/           # API routes and utilities
+│   │   │   └── sanity/        # CMS configuration
+│   │   ├── public/
+│   │   └── package.json
+│   └── gaia-docs/            # Docusaurus documentation
+│       ├── docs/              # Documentation content
+│       ├── blog/              # Community blog posts
+│       ├── src/
+│       │   └── components/    # Custom doc components
+│       └── docusaurus.config.js
+├── packages/
+│   ├── gaia-wasm/            # Rust → WASM core library
+│   │   ├── src/
+│   │   │   ├── compression/   # Game-specific compression algorithms
+│   │   │   ├── rom/          # Universal ROM file handling
+│   │   │   ├── assembly/     # Multi-platform assembly processing
+│   │   │   ├── database/     # JSON database management & validation
+│   │   │   ├── engines/      # Game-specific processing engines
+│   │   │   └── types/        # Universal data structures
+│   │   ├── Cargo.toml
+│   │   └── pkg/             # Generated WASM output
+│   ├── gaia-shared/         # Shared TypeScript types and utilities
+│   │   ├── src/
+│   │   │   ├── types/        # Common TypeScript definitions
+│   │   │   ├── project/      # Project format definitions
+│   │   │   └── api/          # API client and types
+│   │   └── package.json
+│   ├── gaia-ui/             # Shared React component library
+│   │   ├── src/
+│   │   │   ├── components/   # Reusable UI components
+│   │   │   ├── rom/          # ROM-specific components (previews, etc.)
+│   │   │   └── themes/       # Design system and themes
+│   │   └── package.json
+│   └── gaia-auth/           # Shared authentication logic
+│       ├── src/
+│       │   ├── providers/    # Auth providers (NextAuth.js, custom)
+│       │   ├── hooks/        # Authentication React hooks
+│       │   └── utils/        # Auth utilities and validation
+│       └── package.json
+├── databases/               # Game database definitions
+│   ├── illusion-of-gaia/    # IoG database (US/JP/DM)
+│   ├── [future-games]/      # Community-contributed databases
+│   └── schema/              # Database validation schemas
+├── docs/                    # Project documentation
+├── examples/                # Sample projects and tutorials
+├── tools/                   # Build tools and scripts
 └── README.md
 ```
 
 ### Technology Stack
 - **Core Logic**: Rust (compiled to WebAssembly)
-- **UI Framework**: React 19 with TypeScript
-- **Graphics**: PixiJS v8 with WebGPU support
-- **Build Tools**: Vite, wasm-pack, Turborepo
-- **Testing**: Vitest, Playwright
-- **CI/CD**: GitHub Actions
+- **Studio App**: React 19 + PixiJS v8 with TypeScript
+- **Community Platform**: Next.js 14+ with Sanity CMS
+- **Documentation**: Docusaurus v3 with MDX
+- **Shared Components**: React component library with design system
+- **Authentication**: NextAuth.js with SSO support
+- **Database**: PostgreSQL for user data, Sanity for content
+- **Build Tools**: Turborepo, Vite, wasm-pack
+- **Testing**: Vitest, Playwright, Jest
+- **CI/CD**: GitHub Actions with smart deployment
+
+### Domain Structure Strategy
+
+GaiaLabs will use a **unified domain structure** that provides seamless integration across all platform components:
+
+```
+gaialabs.dev/               → Community platform (Next.js)
+├── studio/                 → ROM editor (React + PixiJS)
+├── docs/                   → Documentation (Docusaurus)
+├── api/                    → Shared API routes
+├── auth/                   → Authentication endpoints
+└── projects/[id]/          → Individual project pages
+```
+
+#### Implementation Architecture
+```typescript
+// Next.js routing in gaia-community
+app/
+├── page.tsx                    # Homepage - project gallery & community features
+├── studio/page.tsx             # Studio launcher - ROM editor application
+├── docs/[[...slug]]/page.tsx   # Documentation - tutorials & API docs
+├── projects/[id]/page.tsx      # Project details - individual project pages
+├── user/[username]/page.tsx    # User profiles - portfolios & contributions
+├── games/[game]/page.tsx       # Game-specific pages - database info & projects
+└── api/                        # Shared API routes - auth, projects, databases
+```
+
+#### User Journey Flow
+```
+1. gaialabs.dev                 → Discover projects & community
+2. gaialabs.dev/projects/123    → View specific ROM hack project
+3. gaialabs.dev/studio          → Edit project (authenticated session)
+4. gaialabs.dev/docs            → Reference documentation & tutorials
+5. gaialabs.dev/user/profile    → Manage projects & contributions
+```
+
+#### Key Benefits of Unified Domain
+
+- **Seamless User Experience**: Single domain with shared authentication state
+- **SEO Advantage**: All content under one domain for better search ranking
+- **Simplified Infrastructure**: One SSL certificate, unified CDN caching
+- **Perfect Monorepo Integration**: Natural fit with shared components and authentication
+- **Cost Efficiency**: Single hosting plan with unified monitoring and analytics
+- **Component Reuse**: Direct imports between apps without package publishing
+- **Atomic Deployments**: Deploy all apps together for consistent feature rollouts
+- **Unified Analytics**: Complete user journey tracking across the entire platform
 
 ---
 
@@ -246,13 +331,15 @@ GaiaLabs/
 - [ ] Add undo/redo system
 - [ ] Create auto-save functionality
 - [ ] Add project validation
+- [ ] Set up shared component library (gaia-ui)
 
 #### Week 14: User Experience
-- [ ] Design responsive UI layout
+- [ ] Design responsive UI layout with shared design system
 - [ ] Add keyboard shortcuts and hotkeys
 - [ ] Implement drag-and-drop functionality
 - [ ] Create onboarding tutorial
 - [ ] Add contextual help system
+- [ ] Implement unified authentication system
 
 #### Week 15: Performance Optimization
 - [ ] Profile and optimize WASM performance
@@ -260,6 +347,7 @@ GaiaLabs/
 - [ ] Add progressive loading for large ROMs
 - [ ] Optimize memory usage
 - [ ] Add performance monitoring
+- [ ] Optimize monorepo build system
 
 #### Week 16: Testing & Documentation
 - [ ] Complete end-to-end testing
@@ -267,12 +355,88 @@ GaiaLabs/
 - [ ] Create developer API documentation
 - [ ] Add example projects
 - [ ] Prepare release materials
+- [ ] Set up unified domain deployment strategy
 
 **Deliverables**:
-- Complete, production-ready application
-- Comprehensive documentation
+- Complete, production-ready ROM editor
+- Shared component library and design system
+- Unified authentication system
 - Performance benchmarks
-- Release-ready deployment
+- Release-ready deployment infrastructure
+
+### Phase 5: Community Platform (Weeks 17-20)
+**Goal**: Build community platform for project sharing and collaboration
+
+#### Week 17: Community Site Foundation
+- [ ] Set up Next.js community platform structure
+- [ ] Integrate Sanity CMS for content management
+- [ ] Implement user authentication with NextAuth.js
+- [ ] Create project database schema
+- [ ] Set up unified domain routing strategy
+
+#### Week 18: Project Sharing Features
+- [ ] Build project gallery with ROM previews
+- [ ] Implement project upload and storage system
+- [ ] Create project metadata and categorization
+- [ ] Add project search and filtering
+- [ ] Implement project ownership and permissions
+
+#### Week 19: Community Features
+- [ ] Add user profiles and project portfolios
+- [ ] Implement project commenting and reviews
+- [ ] Create project favoriting and following
+- [ ] Add community forums and discussions
+- [ ] Build project collaboration tools
+
+#### Week 20: Studio Integration
+- [ ] Implement seamless studio launcher from community
+- [ ] Add "Edit Project" functionality with authentication context
+- [ ] Create project versioning and backup system
+- [ ] Build real-time collaboration features
+- [ ] Add project sharing and export options
+
+**Deliverables**:
+- Complete community platform
+- Project hosting and sharing system
+- User authentication and profiles
+- Studio integration and collaboration tools
+
+### Phase 6: Documentation & Ecosystem (Weeks 21-24)
+**Goal**: Create comprehensive documentation and ecosystem tools
+
+#### Week 21: Documentation Site
+- [ ] Set up Docusaurus documentation platform
+- [ ] Create comprehensive user guides
+- [ ] Build interactive tutorials with embedded components
+- [ ] Add API documentation and examples
+- [ ] Implement community blog system
+
+#### Week 22: Database Contribution System
+- [ ] Create database editor for new game support
+- [ ] Build database validation and testing tools
+- [ ] Implement community database submission system
+- [ ] Add database review and approval workflow
+- [ ] Create database marketplace/repository
+
+#### Week 23: Advanced Features
+- [ ] Implement real-time collaborative editing
+- [ ] Add advanced project management tools
+- [ ] Create plugin system for custom tools
+- [ ] Build community challenges and showcases
+- [ ] Add integration with external ROM hacking tools
+
+#### Week 24: Launch Preparation
+- [ ] Complete end-to-end ecosystem testing
+- [ ] Prepare community guidelines and moderation tools
+- [ ] Create launch marketing materials
+- [ ] Set up community support channels
+- [ ] Prepare open-source release
+
+**Deliverables**:
+- Complete documentation ecosystem
+- Community database contribution system
+- Advanced collaboration features
+- Launch-ready platform
 
 ---
 
@@ -299,7 +463,12 @@ GaiaLabs/
 - [ ] Assembly processing maintains full compatibility
 - [ ] Database system supports all existing configurations
 - [ ] Game detection and database loading system functional
+- [ ] Community platform with project sharing and collaboration
+- [ ] Documentation site with interactive tutorials and examples
+- [ ] Unified authentication across all platform components
+- [ ] Seamless workflow from community browsing to project editing
 - [ ] Clear documentation for adding new game support
+- [ ] Database contribution system for community-driven game support
 
 ---
 
@@ -349,20 +518,20 @@ GaiaLabs/
 
 ## 🛣️ Post-MVP Roadmap
 
-### Phase 5: Advanced Features (Weeks 17-20)
-- Collaborative editing with WebRTC
-- Plugin system for custom tools
-- Cloud project storage and sharing
-- Advanced debugging tools
-- Database editor for creating new game support
+### Phase 7: Advanced Features (Weeks 25-28)
+- Enhanced collaborative editing with WebRTC
+- Plugin system for custom ROM hacking tools
+- Advanced project management and version control
+- Performance analytics and optimization tools
+- Mobile companion app exploration
 
-### Phase 6: Community & Ecosystem (Weeks 21-24)
+### Phase 8: Community Growth & Ecosystem (Weeks 29-32)
 - Open-source release preparation  
-- Community documentation and database contribution guides
-- Game database marketplace/repository
-- Plugin marketplace
-- Integration with existing ROM hacking tools
-- Community database validation and review system
+- Community onboarding and growth initiatives
+- Plugin marketplace and ecosystem expansion
+- Advanced integration with existing ROM hacking tools
+- Community governance and moderation systems
+- Long-term sustainability planning
 
 ---
 
@@ -381,10 +550,48 @@ GaiaLabs/
 - **Monitoring**: Error tracking, analytics
 
 ### Timeline Summary
-- **MVP Development**: 16 weeks (4 months)
+- **Core Platform Development**: 16 weeks (Phases 1-4)
+- **Community Platform**: 4 weeks (Phase 5)
+- **Documentation & Ecosystem**: 4 weeks (Phase 6)
 - **Beta Testing**: 4 weeks
-- **Production Release**: Week 20
-- **Total Project Duration**: 5 months
+- **Production Release**: Week 28
+- **Total MVP Duration**: 7 months
+
+### Deployment Architecture
+
+#### Unified Domain Deployment (Recommended)
+```typescript
+// Vercel deployment configuration
+{
+  "builds": [
+    { 
+      "src": "apps/gaia-community/package.json", 
+      "use": "@vercel/next" 
+    },
+    { 
+      "src": "apps/gaia-studio/package.json", 
+      "use": "@vercel/static-build" 
+    },
+    { 
+      "src": "apps/gaia-docs/package.json", 
+      "use": "@vercel/static-build" 
+    }
+  ],
+  "routes": [
+    { "src": "/studio/(.*)", "dest": "/studio/$1" },
+    { "src": "/docs/(.*)", "dest": "/docs/$1" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}
+```
+
+#### Benefits of Unified Domain + Monorepo:
+- **Shared Authentication**: Single session across all apps
+- **Component Reuse**: Direct imports, no package publishing
+- **Atomic Deployments**: Deploy all apps together for feature consistency
+- **Simplified Analytics**: Unified user journey tracking
+- **Cost Efficiency**: Single hosting plan and SSL certificate
+- **SEO Benefits**: All content under one domain authority
 
 ---
 
@@ -396,11 +603,26 @@ The MVP is considered complete when:
 2. **Visual Editing**: Four editors (tilemap, tileset, sprite, palette) fully functional
 3. **Game Support**: Full compatibility with Illusion of Gaia and clear pathway for new games
 4. **Database System**: Robust database loading, validation, and game detection
-5. **Performance**: Meets or exceeds current tool performance benchmarks
-6. **Stability**: Passes comprehensive test suite with >95% coverage
-7. **Documentation**: Complete user, developer, and database contribution documentation
-8. **Deployment**: Successfully deployed and accessible via web browser
-9. **Validation**: Successfully processes existing ROM projects without regression
-10. **Extensibility**: Clear, documented process for community to add new game support
+5. **Community Platform**: Project sharing, user profiles, and collaboration tools functional
+6. **Documentation Site**: Interactive tutorials, API docs, and community blog operational
+7. **Unified Experience**: Seamless authentication and navigation across all platform components
+8. **Performance**: Meets or exceeds current tool performance benchmarks
+9. **Stability**: Passes comprehensive test suite with >95% coverage across all apps
+10. **Deployment**: Unified domain deployment with all apps accessible via web browser
+11. **Integration**: One-click workflow from community project browsing to editing
+12. **Validation**: Successfully processes existing ROM projects without regression
+13. **Extensibility**: Clear, documented process for community to add new game support
+14. **Database Contribution**: Community system for submitting and validating new game databases
+
+### Complete Ecosystem Vision
+
+GaiaLabs will provide a **complete ROM hacking ecosystem** where users can:
+
+- **Discover**: Browse community projects and ROM databases
+- **Learn**: Follow interactive tutorials and documentation
+- **Create**: Use professional-grade visual editors
+- **Collaborate**: Work together on projects in real-time
+- **Share**: Publish projects and contribute to the community
+- **Extend**: Add support for new games through database contributions
 
 This roadmap provides a comprehensive path from the current multi-project architecture to a modern, unified web-based ROM editing platform that will serve the community for years to come. 
