@@ -19,7 +19,7 @@ namespace GaiaLib.Rom.Rebuild
             var root = DbRoot.FromFolder(project.DatabasePath);
 
             //Update paths from project
-            root.Paths = project.Resources;
+            root.Paths = project.Resources ?? root.Paths;
 
             //Discover all files to be used
             var allFiles = DiscoverFiles(project.BaseDir, root);

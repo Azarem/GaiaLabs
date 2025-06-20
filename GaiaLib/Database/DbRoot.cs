@@ -84,6 +84,8 @@ namespace GaiaLib.Database
             foreach (var block in blocks)
                 block.Parts = [.. parts.Where(x => x.Block == block.Name)];
 
+            var cfg = config.FirstOrDefault();
+
             return new()
             {
                 Mnemonics = mnemonics.ToDictionary(x => x.Key, x => x.Value),
@@ -97,10 +99,11 @@ namespace GaiaLib.Database
                 Files = files,
                 CopDef = copdef.ToDictionary(x => x.Code),
                 CopLookup = copdef.ToDictionary(x => x.Mnem),
-                Config = config.FirstOrDefault(),
+                Config = cfg,
                 OpCodes = opCodes.ToDictionary(x => x.Code),
                 OpLookup = opCodes.ToLookup(x => x.Mnem),
-                EntryPoints = config.FirstOrDefault()?.EntryPoints,
+                EntryPoints = cfg.EntryPoints,
+                Paths = cfg.Paths
             };
         }
 

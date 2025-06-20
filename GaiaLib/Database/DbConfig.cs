@@ -11,4 +11,5 @@ public class DbConfig
     public string[] AsciiMap { get; set; }
     public Dictionary<AddressingMode, string> AsmFormats { get; set; }
     public IEnumerable<DbEntryPoint> EntryPoints { get; set; }
+    public IDictionary<BinType, DbPath> Paths { get; set; }
 }

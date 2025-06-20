@@ -27,135 +27,145 @@ namespace GaiaApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Index([FromForm] GenerateViewModel vm)
         {
-            if (vm.RomFile.Length != RomSize)
-                return BadRequest();
-
-            var isCustomBuild = !string.IsNullOrWhiteSpace(vm.Notepad) || vm.PatchFiles?.Any() == true;
-
-            var romBytes = new byte[RomSize];
-            using (var romStream = vm.RomFile.OpenReadStream())
-                await romStream.ReadAsync(romBytes);
-
-            var crc = Crc32Algorithm.Compute(romBytes);
-            if (crc != RomCrc)
-                return BadRequest();
-
-            var patchName = $"iog_rxlt_{_settings.Version.Replace('.', '_')}";
-            FileInfo? storeInfo = null;
-
-            if (!isCustomBuild)
-            {
-                //Check store for existing patch
-                var hashStream = new MemoryStream();
-                hashStream.Write(Encoding.ASCII.GetBytes(patchName));
-
-                foreach (var module in vm.Modules)
-                    if (!string.IsNullOrWhiteSpace(module))
-                        hashStream.Write(Encoding.ASCII.GetBytes($"|{module.Trim()}"));
-
-                hashStream.Position = 0;
-                var hash = await SHA256.HashDataAsync(hashStream);
-
-                var key = Convert.ToHexString(hash);
-
-                storeInfo = new FileInfo(Path.Combine(_settings.StorePath, $"{key}.smc"));
-                if (storeInfo.Exists)
-                {
-                    var patchBytes = new byte[storeInfo.Length];
-
-                    using (var patchFile = storeInfo.OpenRead())
-                        await patchFile.ReadAsync(patchBytes, 0, patchBytes.Length);
-
-                    return File(patchBytes, "application/octet-stream", $"{patchName}.smc");
-                }
-            }
-
-            var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            while (System.IO.File.Exists(tempPath) || Directory.Exists(tempPath))
-                tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-
-            var tempDir = Directory.CreateDirectory(tempPath);
             try
             {
-                void copyDir(DirectoryInfo src, DirectoryInfo dst)
+                if (vm.RomFile.Length != RomSize)
+                    return BadRequest();
+
+                var isCustomBuild = !string.IsNullOrWhiteSpace(vm.Notepad) || vm.PatchFiles?.Any() == true;
+
+                var romBytes = new byte[RomSize];
+                using (var romStream = vm.RomFile.OpenReadStream())
+                    await romStream.ReadAsync(romBytes);
+
+                var crc = Crc32Algorithm.Compute(romBytes);
+                if (crc != RomCrc)
+                    return BadRequest();
+
+                var patchName = $"iog_rxlt_{_settings.Version.Replace('.', '_')}";
+                FileInfo? storeInfo = null;
+
+                if (!isCustomBuild)
                 {
-                    if (!src.Exists)
-                        return;
+                    //Check store for existing patch
+                    var hashStream = new MemoryStream();
+                    hashStream.Write(Encoding.ASCII.GetBytes(patchName));
 
-                    if (!dst.Exists)
-                        dst.Create();
+                    foreach (var module in vm.Modules)
+                        if (!string.IsNullOrWhiteSpace(module))
+                            hashStream.Write(Encoding.ASCII.GetBytes($"|{module.Trim()}"));
 
-                    foreach (var item in src.GetFiles())
-                        item.CopyTo(Path.Combine(dst.FullName, item.Name), true);
+                    hashStream.Position = 0;
+                    var hash = await SHA256.HashDataAsync(hashStream);
 
-                    foreach (var item in src.GetDirectories())
-                        copyDir(item, dst.CreateSubdirectory(item.Name));
-                }
+                    var key = Convert.ToHexString(hash);
 
-                void copyModule(string name)
-                {
-                    copyDir(new DirectoryInfo(Path.Combine(_settings.ModulePath, name)), tempDir);
-                }
-
-                copyModule("base");
-
-                foreach (var module in vm.Modules)
-                    if (!string.IsNullOrWhiteSpace(module))
-                        copyModule(module.Trim());
-
-                ///TODO: Process ad-hoc patches
-                ///
-                if (vm.PatchFiles != null)
-                    foreach (var patch in vm.PatchFiles)
+                    if (_settings.UseStore)
                     {
-                        if (patch.FileName.EndsWith(".asm"))
+                        storeInfo = new FileInfo(Path.Combine(_settings.StorePath, $"{key}.smc"));
+                        if (storeInfo.Exists)
                         {
-                            using var asmStream = patch.OpenReadStream();
-                            using var asmFile = System.IO.File.Create(Path.Combine(tempPath, "patches", patch.FileName));
-                            await asmStream.CopyToAsync(asmFile);
-                        }
-                        else if (patch.FileName.EndsWith(".zip"))
-                        {
-                            using var zipStream = patch.OpenReadStream();
-                            ZipFile.ExtractToDirectory(zipStream, tempPath, true);
+                            var patchBytes = new byte[storeInfo.Length];
+
+                            using (var patchFile = storeInfo.OpenRead())
+                                await patchFile.ReadAsync(patchBytes, 0, patchBytes.Length);
+
+                            return File(patchBytes, "application/octet-stream", $"{patchName}.smc");
                         }
                     }
-
-                if (!string.IsNullOrWhiteSpace(vm.Notepad))
-                {
-                    using var npFile = System.IO.File.Create(Path.Combine(tempPath, "patches", "zz_notepad.asm"));
-                    npFile.Write(Encoding.UTF8.GetBytes(vm.Notepad));
                 }
 
-                var project = new ProjectRoot()
+                var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                while (System.IO.File.Exists(tempPath) || Directory.Exists(tempPath))
+                    tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+
+                var tempDir = Directory.CreateDirectory(tempPath);
+                try
                 {
-                    Name = patchName,
-                    BaseDir = tempPath,
-                    RomPath = _settings.RomPath,
-                    DatabasePath = Path.Combine(_settings.ModulePath, "database.json"),
-                    //FlipsPath = _settings.FlipsPath
-                };
+                    void copyDir(DirectoryInfo src, DirectoryInfo dst)
+                    {
+                        if (!src.Exists)
+                            return;
 
-                project.Build();
+                        if (!dst.Exists)
+                            dst.Create();
 
-                var patchInfo = new FileInfo(Path.Combine(tempPath, $"{project.Name}.smc"));
+                        foreach (var item in src.GetFiles())
+                            item.CopyTo(Path.Combine(dst.FullName, item.Name), true);
 
-                if (!patchInfo.Exists)
-                    return Problem("Patch file was not created");
+                        foreach (var item in src.GetDirectories())
+                            copyDir(item, dst.CreateSubdirectory(item.Name));
+                    }
 
-                if (storeInfo != null)
-                    patchInfo.CopyTo(storeInfo.FullName, true);
+                    void copyModule(string name)
+                    {
+                        copyDir(new DirectoryInfo(Path.Combine(_settings.ModulePath, _settings.Version, name)), tempDir);
+                    }
 
-                var patchBytes = new byte[patchInfo.Length];
+                    copyModule("base");
 
-                using (var patchFile = patchInfo.OpenRead())
-                    await patchFile.ReadAsync(patchBytes);
+                    foreach (var module in vm.Modules)
+                        if (!string.IsNullOrWhiteSpace(module))
+                            copyModule(module.Trim());
 
-                return File(patchBytes, "application/octet-stream", patchInfo.Name);
+                    ///TODO: Process ad-hoc patches
+                    ///
+                    if (vm.PatchFiles != null)
+                        foreach (var patch in vm.PatchFiles)
+                        {
+                            if (patch.FileName.EndsWith(".asm"))
+                            {
+                                using var asmStream = patch.OpenReadStream();
+                                using var asmFile = System.IO.File.Create(Path.Combine(tempPath, "patches", patch.FileName));
+                                await asmStream.CopyToAsync(asmFile);
+                            }
+                            else if (patch.FileName.EndsWith(".zip"))
+                            {
+                                using var zipStream = patch.OpenReadStream();
+                                ZipFile.ExtractToDirectory(zipStream, tempPath, true);
+                            }
+                        }
+
+                    if (!string.IsNullOrWhiteSpace(vm.Notepad))
+                    {
+                        using var npFile = System.IO.File.Create(Path.Combine(tempPath, "patches", "zz_notepad.asm"));
+                        npFile.Write(Encoding.UTF8.GetBytes(vm.Notepad));
+                    }
+
+                    var project = new ProjectRoot()
+                    {
+                        Name = patchName,
+                        BaseDir = tempPath,
+                        RomPath = _settings.RomPath,
+                        DatabasePath = Path.Combine(_settings.DatabasePath, "us"),
+                        //FlipsPath = _settings.FlipsPath
+                    };
+
+                    project.Build();
+
+                    var patchInfo = new FileInfo(Path.Combine(tempPath, $"{project.Name}.smc"));
+
+                    if (!patchInfo.Exists)
+                        return Problem("Patch file was not created");
+
+                    if (storeInfo != null)
+                        patchInfo.CopyTo(storeInfo.FullName, true);
+
+                    var patchBytes = new byte[patchInfo.Length];
+
+                    using (var patchFile = patchInfo.OpenRead())
+                        await patchFile.ReadAsync(patchBytes);
+
+                    return File(patchBytes, "application/octet-stream", patchInfo.Name);
+                }
+                finally
+                {
+                    tempDir.Delete(true);
+                }
             }
-            finally
+            catch (Exception x)
             {
-                tempDir.Delete(true);
+                return Problem(x.ToString(), statusCode: 500, title: x.Message);
             }
         }
     }
