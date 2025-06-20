@@ -374,58 +374,26 @@ code_0BEE11 {
 }
 
 
------------------------------------------------
-?INCLUDE 'sE5_epilogue'
------------------------------------------------
-;Set game clear flag in currently active save file
+------------------------------------------------
+?INCLUDE 'thinker_00BBAF'
+------------------------------------------------
+;Enable 5th menu option highlight
 
-e_sE5_epilogue {
-    LDA #$FFF0
-    TSB $joypad_mask_std
-    LDA #$4001
-    TSB $09EC
-    COP [3B] ( #0B, @func_00B519 )
-    LDA #$1062
-    STA $7F0A00
-    COP [D0] ( #DB, #01, &code_0BD374 )
-
-    PHX
-    LDA $0D8C
-    XBA
-    ASL
-    TAX
-    LDA $306354, X
-    BIT #$0080
-    BNE epilogue_init_next
-    ORA #$0080
-    STA $306354, X
-
-    LDA $3063FC, X
-    CLC
-    ADC #$0080
-    STA $3063FC, X
-    
-    LDA $3063FE, X
-    EOR #$0080
-    STA $3063FE, X
-
-  epilogue_init_next:
-    PLX
-    COP [DA] ( #B3 )
-    COP [BF] ( &widestring_0BD558 )
-    COP [A0] ( @func_0BD4DE, #$0088, #$0080, #$1800 )
-    COP [DA] ( #77 )
-    COP [BF] ( &widestring_0BD5A0 )
-    COP [DA] ( #77 )
-    COP [BF] ( &widestring_0BD70E )
-    COP [CC] ( #02 )
-    COP [A0] ( @code_0BD539, #$00A0, #$FFF0, #$1800 )
-    COP [D2] ( #02, #00 )
-    COP [BF] ( &widestring_0BD740 )
-    COP [CC] ( #DB )
-    LDA #$0202
-    STA $064A
-    COP [26] ( #90, #$0000, #$0000, #00, #$1100 )
-    COP [C1]
+code_00BC45 {
+    DEC 
+    BNE code_extra
+    COP [02] ( @dma_data_00BC8D, #26 )
     RTL 
 }
+
+code_extra {
+    COP [02] ( @dma_data_extra, #26 )
+    RTL 
+}
+
+dma_data_extra [
+  dma_data < #10, #FF, #00 >   ;00
+  dma_data < #7F, #FF, #00 >   ;00
+  dma_data < #0F, #30, #D0 >   ;01
+  dma_data < #60, #FF, #00 >   ;02
+]
