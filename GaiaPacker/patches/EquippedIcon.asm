@@ -554,6 +554,22 @@ code_02B9C0 {
 }
 
 ------------------------------------------------------
+?INCLUDE 'func_02ED02'
+------------------------------------------------------
+;Fix for copied palette during aura barrier
+
+code_02EEF0 {
+    LDX #$4400
+    STX $VMADDL
+    LDX #$&misc_fx_1CC480
+    LDA #$^misc_fx_1CC480
+    LDY #$0600
+    JSL $@func_0283A2
+    COP [50] ( @fx_palette_198090, #00, #F9, #07 )
+    RTS 
+}
+
+------------------------------------------------------
 ?INCLUDE 'table_17A000'
 ------------------------------------------------------
 ;Fix for sword palette during aura barrier

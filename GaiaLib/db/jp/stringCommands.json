@@ -123,7 +123,7 @@
     "key": 216,
     "value": "ESC",
     "types": [ "Binary" ],
-    "delimiter": "00"
+    "delimiter": 0
   },
   {
     "key": 217,

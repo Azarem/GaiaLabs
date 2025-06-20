@@ -58,7 +58,7 @@
     "key": 12,
     "value": "ESC",
     "types": [ "Binary" ],
-    "delimiter": "FF"
+    "delimiter": 255
   },
   {
     "key": 13,

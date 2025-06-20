@@ -261,5 +261,12 @@
     "name": "gfx_it16_int",
     "type": "Bitmap",
     "compressed": true
+  },
+  {
+    "start": 875458,
+    "end": 881270,
+    "name": "gfx_sc01_ext_effect",
+    "type": "Bitmap",
+    "compressed": true
   }
 ]
