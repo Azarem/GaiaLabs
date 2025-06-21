@@ -11,6 +11,25 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<GaiaApiSettings>(builder.Configuration.GetSection("GaiaApi"));
 
+// Configure CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("GaiaHackPolicy", policy =>
+    {
+        policy.WithOrigins(
+                "https://gaiahack.ing",           // Your main domain
+                "http://gaiahack.ing",            // HTTP version (if needed)
+                "https://www.gaiahack.ing",       // WWW version (if used)
+                "http://localhost:3000",          // For local development
+                "http://localhost:8080"           // For local development
+            )
+            .AllowAnyMethod()                     // Allow GET, POST, PUT, DELETE, etc.
+            .AllowAnyHeader()                     // Allow any headers
+            .WithExposedHeaders("Content-Disposition") // Expose specific headers if needed
+            .AllowCredentials();                  // Allow cookies/credentials if needed
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,6 +40,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// IMPORTANT: Use CORS before routing and authorization
+app.UseCors("GaiaHackPolicy");
 
 app.UseAuthorization();
 
