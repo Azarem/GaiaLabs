@@ -54,6 +54,9 @@
     <None Update="palettes\pal_sc02_main_characters.pal">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="patches\AccentMap.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="patches\APUWaitFixes.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

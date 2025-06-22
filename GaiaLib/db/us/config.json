@@ -21,6 +21,10 @@
       "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "ǁ", " ", "…", "♥", "|",
       "Ā", "ā", "Ē", "ē", "Ī", "ī", "Ō", "ō", "Ū", "ū", "Ŷ", "ŷ", "ǁ", "ǁ", "ǁ", "ǁ"
     ],
+    "accentMap": [
+      "à", "á", "â", "ã", "ä", "å", "è", "é", "ê", "ë", "ç", "ü", null, null, null, null,
+      "ì", "í", "î", "ï", "ò", "ó", "ô", "õ", "ö", "ù", "ú", "û", null, null, null, null
+    ],
     "asciiMap": [
       null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
       null, null, null, null, null, null, null, null, null, null, null, null, null, "⸓", null, null,

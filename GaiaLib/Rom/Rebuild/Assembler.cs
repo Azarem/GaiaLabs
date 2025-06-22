@@ -304,7 +304,6 @@ public class Assembler : IDisposable
         memStream.Position = 0;
         memStream.SetLength(0);
 
-        byte? lastCmd = null;
         switch (typeChar)
         {
             case '`':
@@ -313,6 +312,7 @@ public class Assembler : IDisposable
                      StringType.Wide,
                     _root.WideCommands,
                     _root.Config.WideMap,
+                    _root.Config.AccentMap,
                     i => (byte)((i & 0x70) << 1 | i & 0x0F)
                 );
                 break;
@@ -323,17 +323,21 @@ public class Assembler : IDisposable
                     StringType.Char,
                     _root.WideCommands,
                     _root.Config.CharMap,
+                    null,
                     i => (byte)((i & 0x38) << 1 | i & 0x07)
                 );
                 break;
 
             default:
-                ProcessString(str, StringType.ASCII, _root.StringCommands, _root.Config.AsciiMap, i => i);
-                //memStream.WriteByte(0);
+                ProcessString(
+                    str, 
+                    StringType.ASCII, 
+                    _root.StringCommands, 
+                    _root.Config.AsciiMap, 
+                    null, 
+                    i => i
+                );
                 break;
-
-                //default:
-                //    throw new("Unsupported string type");
         }
     }
 
@@ -369,6 +373,7 @@ public class Assembler : IDisposable
         StringType stringType,
         IDictionary<int, DbStringCommand> dict,
         string[]? charMap,
+        string[]? accentMap,
         Func<byte, byte>? shift
     )
     {
@@ -421,6 +426,19 @@ public class Assembler : IDisposable
                     break;
                 }
             }
+
+            //Check Accent Map if provided
+            if (accentMap != null)
+                for (int i = 0, len = accentMap.Length; i < len; i++)
+                {
+                    var v = accentMap[i];
+                    if (v != null && c == v[0])
+                    {
+                        //These map directly over to tiles 0xE0 - 0xFF
+                        memStream.WriteByte((byte)(i + 0xE0));
+                        break;
+                    }
+                }
         }
 
         //Terminate string
