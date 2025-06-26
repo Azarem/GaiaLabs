@@ -78,12 +78,12 @@ public class Assembler : IDisposable
 
         Read:
         line = reader.ReadLine();
-        lineCount++;
 
         //This can happen
         if (line == null)
             return null;
 
+        Clean:
         lineCount++;
 
         //Ignore comments
@@ -97,6 +97,12 @@ public class Assembler : IDisposable
         //This can happen
         if (line.Length == 0)
             goto Read;
+
+        if (line.EndsWith('\\'))
+        {
+            line = line[..^1] + (reader.ReadLine() ?? "");
+            goto Clean;
+        }
 
         //Process directives
         if (line[0] == '?')
