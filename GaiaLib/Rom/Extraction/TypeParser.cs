@@ -8,12 +8,20 @@ namespace GaiaLib.Rom.Extraction;
 internal class TypeParser
 {
     private readonly BlockReader _blockReader;
+    private readonly RomDataReader _romDataReader;
+    private readonly ProcessorStateManager _stateManager;
+    private readonly StringReader _stringReader;
     private readonly Dictionary<int, string> _chunkTable;
+    private readonly IDictionary<string, DbStringType> _stringTypes;
 
     public TypeParser(BlockReader blockReader)
     {
         _blockReader = blockReader;
         _chunkTable = blockReader._chunkTable;
+        _stateManager = blockReader._stateManager;
+        _romDataReader = blockReader._romDataReader;
+        _stringReader = blockReader._stringReader;
+        _stringTypes = blockReader._root.StringTypes;
     }
 
 
@@ -23,203 +31,196 @@ internal class TypeParser
         //string otherStr = _part.Struct ?? "Binary";
         //char? command = typeName[0];
 
+        //Shortcut for symbolic Offsets
         if (typeName[0] == '&')
-            return ParseLocation(_blockReader.ReadUShort(), bank, typeName[1..], '&');
+            return ParseLocation(_romDataReader.ReadUShort(), bank, typeName[1..], AddressType.Offset);
 
+        //Shortcut for symbolic Addresses
         if (typeName[0] == '@')
-            return ParseLocation(_blockReader.ReadUShort(), _blockReader.ReadByte(), typeName[1..], '@');
+            return ParseLocation(_romDataReader.ReadUShort(), _romDataReader.ReadByte(), typeName[1..], AddressType.Address);
 
-        // (otherStr, cmd, typeName) = isPtr
-        //     ? (typeName[1..], typeName[0], typeName[0] == '&' ? "Offset" : "Address")
-        //     : (_part.Struct ?? "Binary", (char?)null, typeName);
-
-        //bool isPtr = str[0] == '*', isAddr = str[0] == '&';
-        //var otherStr = isPtr ? str[1..] : (_part.Struct ?? "Binary");
-
-        //char cmd = isPtr ? str[0] : (char)0;
-        //if (isPtr)
-        //    str = str[0] == '&' ? "Offset" : "Address";
+        //Check string types
+        if (_stringTypes.TryGetValue(typeName, out var stringType))
+            return _stringReader.ParseString(stringType);
 
         //Parse raw values
         if (System.Enum.TryParse<MemberType>(typeName, true, out var mType))
             return mType switch
             {
-                MemberType.Byte => _blockReader.ReadByte(),
-                MemberType.Word => _chunkTable.ContainsKey(_blockReader._romPosition + 1)
-                    ? (object)_blockReader.ReadByte()
-                    : _blockReader.ReadUShort(),
-                MemberType.Offset => ParseLocation(
-                    _blockReader.ReadUShort(),
-                    bank,
-                    _blockReader._currentPart.Struct ?? "Binary",
-                    '&'
-                ),
-                MemberType.Address => ParseLocation(
-                    _blockReader.ReadUShort(),
-                    _blockReader.ReadByte(),
-                    _blockReader._currentPart.Struct ?? "Binary",
-                    '@'
-                ),
+                MemberType.Byte => _romDataReader.ReadByte(),
+                MemberType.Word => ParseWordSafe(),
+                MemberType.Offset => ParseLocation(_romDataReader.ReadUShort(), bank, null, AddressType.Offset),
+                MemberType.Address => ParseLocation(_romDataReader.ReadUShort(), _romDataReader.ReadByte(), null, AddressType.Address),
                 MemberType.Binary => ParseBinary(),
-                MemberType.String => _blockReader._stringReader.ParseASCIIString(),
-                MemberType.CharString => _blockReader._stringReader.ParseCharString(),
-                MemberType.WideString => _blockReader._stringReader.ParseWideString(),
+                //MemberType.String => _blockReader._stringReader.ParseASCIIString(),
+                //MemberType.CharString => _blockReader._stringReader.ParseCharString(),
+                //MemberType.WideString => _blockReader._stringReader.ParseWideString(),
                 MemberType.Code => ParseCode(reg),
                 _ => throw new("Invalid member type"),
             };
 
-        var parent = _blockReader._root.Structs[typeName];
-        var delimiter = parent.Delimiter;
+        var parentType = _blockReader._root.Structs[typeName];
+        var delimiter = parentType.Delimiter;
 
-        //On parent classes, the descriminator is the integer offset to the descriminator value.
-        var descOffset = parent.Descriminator;
+        //On parent classes, the discriminator is the integer offset to the discriminator value.
+        var discOffset = parentType.Discriminator;
         var objects = new List<object>();
 
         //Continue to iterate until end or delimiter is reached
         bool delReached;
         while (!(delReached = _blockReader.DelimiterReached(delimiter)))
         {
-            var startPosition = _blockReader._romPosition;
-            var targetType = parent;
+            var startPosition = _romDataReader.Position;
+            var targetType = parentType;
 
-            //If a descriminator offset is present, use it to identify the type
-            if (descOffset != null)
+            //If a discriminator offset is present, use it to identify the type
+            if (discOffset != null)
             {
-                //Get descriminator position in ROM
-                var descPosition = _blockReader._romPosition + descOffset.Value;
+                //Get discriminator position in ROM
+                var discPosition = _romDataReader.Position + discOffset.Value;
 
-                //Get descriminator value
-                var desc = _blockReader.RomData[descPosition];
+                //Get discriminator value
+                var desc = _romDataReader.RomData[discPosition];
 
-                //Advance position (hide) if descriminator is first
-                if (descOffset.Value == 0u)
-                    _blockReader._romPosition++;
+                //Advance position (hide value) if discriminator is first
+                if (discOffset.Value == 0u)
+                    _romDataReader.Position++;
 
-                //Match descriminator to type. On child classes, the descriminator is the value used to identify the type.
+                //Match discriminator to type. On child classes, the discriminator is the value used to identify the type.
                 targetType =
                     _blockReader._root.Structs.FirstOrDefault(x =>
-                            x.Value.Parent == typeName && x.Value.Descriminator == desc
+                            x.Value.Parent == typeName && x.Value.Discriminator == desc
                         )
-                        .Value ?? parent; //Default to parent if no match is found
+                        .Value ?? parentType; //Default to parent if no match is found
             }
 
             var types = targetType.Types;
             if (types != null)
             {
-                var members = types.Length;
-                var prevPosition = _blockReader._romPosition;
-                var parts = new object[members]; //Create new member collection
+                var memberCount = types.Length;
+                var prevPosition = _romDataReader.Position;
+                var parts = new object[memberCount]; //Create new member collection
                 var def = new StructDef { Name = targetType.Name, Parts = parts };
 
                 //Parse each member of the struct
-                for (int i = 0; i < members; i++)
+                for (int i = 0; i < memberCount; i++)
                     parts[i] = ParseType(types[i], null, depth + 1);
 
-                //Advance (hide) descriminator if it is the last member
-                if (
-                    descOffset != null &&
-                    descOffset == _blockReader._romPosition - prevPosition
-                )
-                    _blockReader._romPosition++;
+                //Advance (hide) discriminator if it is the last member
+                if (discOffset != null && discOffset == _romDataReader.Position - prevPosition)
+                    _romDataReader.Position++;
 
                 objects.Add(def);
             }
 
             //Roll back work if struct overflows a chunk boundary
             //SHOULD only happen for the inventory sprite map
-            while (++startPosition < _blockReader._romPosition)
+            while (++startPosition < _romDataReader.Position)
                 if (_chunkTable.ContainsKey(startPosition))
                 {
                     //_pCur -= _lCur - startLoc;
-                    _blockReader._romPosition = startPosition;
+                    _romDataReader.Position = startPosition;
                     break;
                 }
 
-            if (!_blockReader.CanContinue())
+            //Stop if the reader should not continue
+            if (!_blockReader.PartCanContinue())
                 break;
         }
 
+        //If we have reached
         if (delReached && depth == 0)
-            _chunkTable.TryAdd(_blockReader._romPosition, typeName);
+            _chunkTable.TryAdd(_romDataReader.Position, typeName);
 
         return objects;
     }
 
+    private object ParseWordSafe()
+        => _chunkTable.ContainsKey(_romDataReader.Position + 1)
+            ? (object)_romDataReader.ReadByte()
+            : _romDataReader.ReadUShort();
 
     private byte[] ParseBinary()
     {
-        var startPosition = _blockReader._romPosition;
+        //Store old position for length calculation
+        var startPosition = _romDataReader.Position;
 
-        do _blockReader._romPosition++;
-        while (_blockReader.CanContinue());
+        //Advance the reader until we reach the end of the section
+        do _romDataReader.Position++;
+        while (_blockReader.PartCanContinue());
 
-        var len = _blockReader._romPosition - startPosition;
-        var bytes = new byte[len];
+        //Length is determined by the new position relative to the old
+        var len = _romDataReader.Position - startPosition;
 
+        //Create buffer for the raw bytes
+        var outBuffer = new byte[len];
+
+        //Copy raw bytes from ROM to buffer
         for (int i = 0; i < len;)
-            bytes[i++] = _blockReader.RomData[startPosition++];
+            outBuffer[i++] = _romDataReader.RomData[startPosition++];
 
-        return bytes;
+        return outBuffer;
     }
 
-    private object ParseLocation(ushort offset, byte? bank, string typeName, char? cmd)
+    private object ParseLocation(ushort offset, byte? bank, string? typeName, AddressType addrType)
     {
+        //If bank is not provided and offset is 0, it should resolve to #$0000
         if (bank == null && offset == 0)
             return offset;
 
         //Bank cannot be null, instead use bank from current position.
-        var resolvedBank = bank ?? (byte)(_blockReader._romPosition >> 16 | (cmd == '@' ? 0xC0 : 0x80));
+        var resolvedBank = bank ?? (byte)(_romDataReader.Position >> 16);
 
+        //Create the address with resolved bank
         var adrs = new Address(resolvedBank, offset);
+
+        //If we have a system address, keep it as is
         if (adrs.Space != AddressSpace.ROM)
             return adrs;
 
+        //Convert address to ROM location
         var loc = (int)adrs;
 
+        //If the location is inside the current block and there is no rewrite for it...
         if (
-            _blockReader._currentBlock.IsInside(loc, out var part)
+            _blockReader._currentBlock.IsInside(loc, out _)
             && !_blockReader._root.Rewrites.ContainsKey(loc)
         )
         {
+            //Normalize the type name to default to current part definition
+            typeName ??= _blockReader._currentPart.Struct ?? "Binary";
+
+            //Add the struct type to our chunk table if it is not already present
             _chunkTable.TryAdd(loc, typeName);
+
+            //If the location is not already in the reference table, add it
             _blockReader._referenceTable.TryAdd(loc, $"{typeName.ToLower()}_{loc:X6}");
         }
 
-        return new LocationWrapper(
-            loc,
-            cmd != null ? Address.TypeFromCode(cmd.Value)
-                : bank == null ? AddressType.Offset
-                : AddressType.Address
-        );
+        return new LocationWrapper(loc, addrType);
     }
 
     private List<Op> ParseCode(Registers reg)
     {
-
+        //Output list
         var opList = new List<Op>();
-        //var reg = new Registers();
-        //Op prev = null, head = null;
+
         bool first = true;
-        while (_blockReader._romPosition < _blockReader._partEnd)
+        while (_romDataReader.Position < _blockReader._partEnd)
         {
-            var position = _blockReader._romPosition;
+            //Check the chunk table for a new type block, but not on the first iteration
             if (first)
                 first = false;
-            else if (_chunkTable.ContainsKey(position))
+            else if (_chunkTable.ContainsKey(_romDataReader.Position))
                 break;
 
-            //Process branch adjustments before parse
-            if (_blockReader.AccumulatorFlags.TryGetValue(position, out var acc))
-                reg.AccumulatorFlag = acc;
-            if (_blockReader.IndexFlags.TryGetValue(position, out var ind))
-                reg.IndexFlag = ind;
-            if (_blockReader.BankNotes.TryGetValue(position, out var bnk))
-                reg.DataBank = bnk;
-            if (_blockReader.StackPosition.TryGetValue(position, out var stack))
-                reg.Stack.Location = stack;
+            //Process register adjustments before parse
+            _blockReader.HydrateRegisters(reg);
 
-            var op = _blockReader._asmReader.ParseAsm(reg); //Parse instruction
+            //Parse instruction
+            var op = _blockReader._asmReader.ParseAsm(reg);
 
+            //Add instruction to list
             opList.Add(op);
         }
 

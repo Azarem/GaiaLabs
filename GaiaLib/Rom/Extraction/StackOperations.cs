@@ -7,15 +7,15 @@ namespace GaiaLib.Rom.Extraction;
 /// <summary>
 /// Handles stack operations for various stack-related instructions
 /// </summary>
-public class StackOperations
+internal class StackOperations
 {
     private readonly Registers _registers;
-    private readonly BlockReader _romReader;
+    private readonly BlockReader _blockReader;
 
     public StackOperations(Registers registers, BlockReader romReader)
     {
         _registers = registers;
-        _romReader = romReader;
+        _blockReader = romReader;
     }
 
     public void HandleStackOperation(string mnemonic)
@@ -31,7 +31,7 @@ public class StackOperations
                 break;
                 
             case "PHK":
-                _registers.Stack.Push((byte)(_romReader._romPosition >> 16 | 0x80));
+                _registers.Stack.Push((byte)(_blockReader._romDataReader.Position >> 16 | 0x80));
                 break;
                 
             case "PHB":

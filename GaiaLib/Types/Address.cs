@@ -4,14 +4,14 @@ using System.Runtime.InteropServices;
 
 namespace GaiaLib.Types
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Address(byte bank, ushort offset)
     {
         public ushort Offset = offset;
         public byte Bank = bank;
 
         public const int UpperBank = 0x8000;
-        public const int CodeBankMask = 0x40;
+        public const int DataBankFlag = 0x40;
+        public const int FastBankFlag = 0x80;
 
         public readonly bool IsROM
         {
@@ -20,7 +20,7 @@ namespace GaiaLib.Types
 
         public readonly bool IsCodeBank
         {
-            get => (Bank & CodeBankMask) == 0;
+            get => (Bank & DataBankFlag) == 0;
         }
 
         public readonly AddressSpace Space
@@ -33,7 +33,7 @@ namespace GaiaLib.Types
                     // Memory map for lower banks
                     return Offset switch
                     {
-                        >= UpperBank => AddressSpace.ROM,
+                        >= RomProcessingConstants.PageSize => AddressSpace.ROM,
                         >= 0x6000 when (Bank & 0x20) != 0 => AddressSpace.SRAM,
                         < 0x2000 => AddressSpace.WRAM,
                         < 0x2100 => AddressSpace.None,

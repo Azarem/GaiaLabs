@@ -24,7 +24,7 @@
   {
     "name": "map_name",
     "delimiter": 0,
-    "types": [ "Byte", "&CharString" ]
+    "types": [ "Byte", "&SpriteString" ]
   },
   {
     "name": "unk5",

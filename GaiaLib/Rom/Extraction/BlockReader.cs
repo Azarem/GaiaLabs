@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace GaiaLib.Rom;
 
-public partial class BlockReader
+internal partial class BlockReader
 {
     #region Constants
     private const int RefSearchMaxRange = 0x1A0;
@@ -25,31 +25,29 @@ public partial class BlockReader
     internal readonly Extraction.StringReader _stringReader;
     internal readonly AsmReader _asmReader;
     internal readonly TypeParser _typeParser;
-    
-    // New injected services
-    private readonly RomDataReader _romDataReader;
-    private readonly ProcessorStateManager _stateManager;
+    internal readonly RomDataReader _romDataReader;
+    internal readonly ProcessorStateManager _stateManager;
     private readonly ReferenceManager _referenceManager;
     #endregion
 
     #region Backward Compatibility Properties
-    internal byte[] RomData => _romDataReader.RomData;
-    internal int _romPosition 
-    { 
-        get => _romDataReader.Position; 
-        set => _romDataReader.Position = value; 
-    }
-    
+    //internal byte[] RomData => _romDataReader.RomData;
+    //internal int _romPosition
+    //{
+    //    get => _romDataReader.Position;
+    //    set => _romDataReader.Position = value;
+    //}
+
     // Backward compatibility for state tracking
-    internal Dictionary<int, bool?> AccumulatorFlags => _stateManager.AccumulatorFlags;
-    internal Dictionary<int, bool?> IndexFlags => _stateManager.IndexFlags;
-    internal Dictionary<int, byte?> BankNotes => _stateManager.BankNotes;
-    internal Dictionary<int, byte> StackPosition => _stateManager.StackPositions;
-    
+    internal Dictionary<int, bool?> AccumulatorFlags => _stateManager._accumulatorFlags;
+    internal Dictionary<int, bool?> IndexFlags => _stateManager._indexFlags;
+    internal Dictionary<int, byte?> BankNotes => _stateManager._bankNotes;
+    internal Dictionary<int, byte> StackPosition => _stateManager._stackPositions;
+
     // Direct access to reference management collections
-    internal Dictionary<int, string> _chunkTable => _referenceManager.ChunkTable;
-    internal Dictionary<int, int> _markerTable => _referenceManager.MarkerTable;
-    internal Dictionary<int, string> _referenceTable => _referenceManager.ReferenceTable;
+    internal Dictionary<int, string> _chunkTable => _referenceManager._chunkTable;
+    internal Dictionary<int, int> _markerTable => _referenceManager._markerTable;
+    internal Dictionary<int, string> _referenceTable => _referenceManager._referenceTable;
     #endregion
 
     #region Current Processing State
@@ -60,22 +58,12 @@ public partial class BlockReader
 
     #region Constructor and Initialization
     public BlockReader(byte[] romData, DbRoot root)
-        : this(new RomDataReader(romData), new ProcessorStateManager(), new ReferenceManager(root), root)
     {
-    }
-
-    // Internal constructor for dependency injection
-    internal BlockReader(
-        RomDataReader romDataReader, 
-        ProcessorStateManager stateManager, 
-        ReferenceManager referenceManager, 
-        DbRoot root)
-    {
-        _romDataReader = romDataReader ?? throw new ArgumentNullException(nameof(romDataReader));
-        _stateManager = stateManager ?? throw new ArgumentNullException(nameof(stateManager));
-        _referenceManager = referenceManager ?? throw new ArgumentNullException(nameof(referenceManager));
+        _romDataReader = new(romData);
+        _stateManager = new();
+        _referenceManager = new(root);
         _root = root ?? throw new ArgumentNullException(nameof(root));
-        
+
         _stringReader = new(this);
         _asmReader = new(this);
         _typeParser = new(this);
@@ -122,22 +110,22 @@ public partial class BlockReader
     #endregion
 
     #region Data Reading Methods (Delegated to RomDataReader)
-    internal byte ReadByte() => _romDataReader.ReadByte();
-    internal sbyte ReadSByte() => _romDataReader.ReadSByte();
-    internal ushort ReadUShort() => _romDataReader.ReadUShort();
-    internal short ReadShort() => _romDataReader.ReadShort();
-    internal int ReadAddress() => _romDataReader.ReadAddress();
-    internal int ReadInt() => _romDataReader.ReadInt();
-    internal int PeekByte() => _romDataReader.PeekByte();
-    internal int PeekShort() => _romDataReader.PeekShort();
-    internal int PeekAddress() => _romDataReader.PeekAddress();
+    //internal byte ReadByte() => _romDataReader.ReadByte();
+    //internal sbyte ReadSByte() => _romDataReader.ReadSByte();
+    //internal ushort ReadUShort() => _romDataReader.ReadUShort();
+    //internal short ReadShort() => _romDataReader.ReadShort();
+    //internal int ReadAddress() => _romDataReader.ReadAddress();
+    //internal int ReadInt() => _romDataReader.ReadInt();
+    //internal int PeekByte() => _romDataReader.PeekByte();
+    //internal int PeekShort() => _romDataReader.PeekShort();
+    //internal int PeekAddress() => _romDataReader.PeekAddress();
     #endregion
 
     #region Mnemonic Resolution
     internal void ResolveMnemonic(Address addr)
     {
         //If the address is in high memory (ROM only), skip processing
-        if ((addr.Bank & Address.CodeBankMask) != 0)
+        if ((addr.Bank & Address.DataBankFlag) != 0)
             return;
 
         int offset = addr.Offset;
@@ -168,21 +156,6 @@ public partial class BlockReader
     internal string ResolveName(int location, AddressType type, bool isBranch)
     {
         return _referenceManager.ResolveName(location, type, isBranch);
-    }
-
-    private string CreateBranchLabel(int location)
-    {
-        return _referenceManager.CreateBranchLabel(location);
-    }
-
-    private string? FindClosestReference(int location)
-    {
-        return _referenceManager.FindClosestReference(location);
-    }
-
-    private string CreateFallbackName(int location)
-    {
-        return _referenceManager.CreateFallbackName(location);
     }
     #endregion
 
@@ -232,23 +205,23 @@ public partial class BlockReader
 
         if (delimiter >= RomProcessingConstants.BlockReader.ByteDelimiterThreshold)
         {
-            if (PeekShort() == delimiter)
+            if (_romDataReader.PeekShort() == delimiter)
             {
-                _romPosition += 2;
+                _romDataReader.Position += 2;
                 return true;
             }
         }
-        else if (PeekByte() == delimiter)
+        else if (_romDataReader.PeekByte() == delimiter)
         {
-            _romPosition++;
+            _romDataReader.Position++;
             return true;
         }
 
         return false;
     }
 
-    internal bool CanContinue()
-        => _romPosition < _partEnd && !_referenceManager.ContainsChunk(_romPosition);
+    internal bool PartCanContinue()
+        => _romDataReader.Position < _partEnd && !_referenceManager.ContainsChunk(_romDataReader.Position);
     #endregion
 
     #region Main Analysis Methods
@@ -261,7 +234,7 @@ public partial class BlockReader
     private void AnalyzeBlocks()
     {
         InitializeBlocksAndParts();
-        
+
         foreach (var block in _root.Blocks)
         {
             _currentBlock = block;
@@ -286,7 +259,7 @@ public partial class BlockReader
     private void ProcessPart(DbPart part)
     {
         _currentPart = part;
-        _romPosition = part.Start;
+        _romDataReader.Position = part.Start;
         _partEnd = part.End;
 
         var current = part.Struct ?? RomProcessingConstants.BlockReader.BinaryType;
@@ -295,9 +268,9 @@ public partial class BlockReader
         byte? bank = part.Bank != null ? (byte)part.Bank.Value.Value : null;
         TableEntry? last = null;
 
-        while (_romPosition < _partEnd)
+        while (_romDataReader.Position < _partEnd)
         {
-            if (_referenceManager.TryGetChunk(_romPosition, out var value))
+            if (_referenceManager.TryGetChunk(_romDataReader.Position, out var value))
             {
                 current = value!;
             }
@@ -307,7 +280,7 @@ public partial class BlockReader
                 continue;
             }
 
-            chunks.Add(last = new(_romPosition));
+            chunks.Add(last = new(_romDataReader.Position));
             ProcessNewEntry(current, reg, bank, last);
         }
 
@@ -393,5 +366,7 @@ public partial class BlockReader
             || op.Code.Mnem[0] == 'J';
     }
     #endregion
+
+    public void HydrateRegisters(Registers reg) => _stateManager.HydrateRegisters(_romDataReader.Position, reg);
 }
 

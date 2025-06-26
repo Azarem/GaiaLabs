@@ -23,7 +23,7 @@ public static class RomProcessingConstants
     public static readonly char[] LabelSpace = ['[', '{', '#', '`', '~', '|', ':'];
     public static readonly char[] ObjectSpace = ['<', '['];
     public static readonly char[] CopSplitChars = [' ', '\t', ',', '(', ')', '[', ']', '$', '#'];
-    public static readonly char[] StringSpace = ['~', '`', '|'];
+    //public static readonly char[] StringSpace = ['~', '`', '|'];
 
     // BlockReader specific constants
     public static class BlockReader

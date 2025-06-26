@@ -94,7 +94,7 @@ ins_on_item_lr:
 
 e_inventory_menu {
     COP [88] ( @table_108000 )
-    COP [BD] ( @string_01E869 )
+    COP [BD] ( @asciistring_01E869 )
     STZ $0AFA
     LDA #$000F
     STA $24
@@ -120,8 +120,8 @@ e_inventory_menu {
 ;Hook for listening for lr press on main
 
 code_02E40C {
-    COP [BD] ( @string_01E90B )
-    COP [BD] ( @string_01E8E9 )
+    COP [BD] ( @asciistring_01E90B )
+    COP [BD] ( @asciistring_01E8E9 )
     STZ $1C
     LDA #$FFFF
     STA $18
@@ -148,12 +148,12 @@ code_02E40C {
 
 code_02E47F {
     JSR $&sub_02EA73
-    COP [BD] ( @string_01E912 )
+    COP [BD] ( @asciistring_01E912 )
     LDY $1A
     LDA $inventory_slots, Y
     AND #$00FF
     STA $0AE8
-    COP [BD] ( @string_01E9D0 )
+    COP [BD] ( @asciistring_01E9D0 )
     COP [C2]
     COP [40] ( #$0030, &ins_on_item_lr )           ;This
     COP [40] ( #$C040, &code_02E50B )

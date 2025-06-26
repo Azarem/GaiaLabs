@@ -8,17 +8,19 @@ namespace GaiaLib.Rom.Extraction;
 /// <summary>
 /// Handles different addressing modes for assembly instructions
 /// </summary>
-public class AddressingModeHandler
+internal class AddressingModeHandler
 {
-    private readonly BlockReader _romReader;
+    private readonly BlockReader _blockReader;
     private readonly TransformProcessor _transformProcessor;
     private readonly CopCommandProcessor _copProcessor;
+    private readonly RomDataReader _dataReader;
 
-    public AddressingModeHandler(BlockReader romReader, TransformProcessor transformProcessor)
+    public AddressingModeHandler(BlockReader blockReader, TransformProcessor transformProcessor)
     {
-        _romReader = romReader;
+        _blockReader = blockReader;
         _transformProcessor = transformProcessor;
-        _copProcessor = new CopCommandProcessor(romReader);
+        _copProcessor = new CopCommandProcessor(blockReader);
+        _dataReader = blockReader._romDataReader;
     }
 
     public List<object> ProcessAddressingMode(OpCode code, AsmReader.OperationContext context, Registers reg)
@@ -90,81 +92,67 @@ public class AddressingModeHandler
     {
         var operand = ReadImmediateOperand(size);
         operands.Add(operand);
-        UpdateRegisterForImmediateInstruction(mnemonic, operand, size, reg);
+        UpdateRegisterForImmediateInstruction(mnemonic, operand, reg);
     }
 
     private object ReadImmediateOperand(int size)
     {
-        return size == 3 ? _romReader.ReadUShort() : _romReader.ReadByte();
+        return size == 3 ? _dataReader.ReadUShort() : (object)_dataReader.ReadByte();
     }
 
-    private void UpdateRegisterForImmediateInstruction(string mnemonic, object operand, int size, Registers reg)
+    private void UpdateRegisterForImmediateInstruction(string mnemonic, object operand, Registers reg)
     {
-        var normalizedOperand = NormalizeOperand(operand);
-        
         switch (mnemonic)
         {
             case "LDA":
-                reg.Accumulator = CalculateRegisterValue(reg.Accumulator, normalizedOperand, size);
+                reg.Accumulator = CalculateRegisterValue(reg.Accumulator, operand);
                 break;
-                
+
             case "LDX":
-                reg.XIndex = CalculateRegisterValue(reg.XIndex, normalizedOperand, size);
+                reg.XIndex = CalculateRegisterValue(reg.XIndex, operand);
                 break;
-                
+
             case "LDY":
-                reg.YIndex = CalculateRegisterValue(reg.YIndex, normalizedOperand, size);
+                reg.YIndex = CalculateRegisterValue(reg.YIndex, operand);
                 break;
-                
+
             case "SEP":
             case "REP":
-                UpdateStatusFlags(mnemonic, (byte)normalizedOperand);
+                UpdateStatusFlags(mnemonic, (byte)operand);
                 break;
         }
     }
 
-    private static ushort NormalizeOperand(object operand)
+
+    private static ushort CalculateRegisterValue(ushort? currentValue, object operand)
     {
         return operand switch
         {
-            byte b => b,
-            ushort us => us,
-            _ => throw new InvalidOperationException($"Unexpected operand type: {operand.GetType()}")
+            ushort us => us,// 16-bit mode: use full operand value
+            _ => (ushort)(((currentValue ?? 0) & 0xFF00u) | (byte)operand) // 8-bit mode: preserve high byte
         };
-    }
-
-    private static ushort CalculateRegisterValue(ushort? currentValue, ushort operand, int size)
-    {
-        if (size == 3)
-        {
-            return operand; // 16-bit mode: use full operand value
-        }
-        else
-        {
-            return (ushort)((currentValue ?? 0) & 0xFF00u | operand & 0xFF); // 8-bit mode: preserve high byte
-        }
     }
 
     private void UpdateStatusFlags(string mnemonic, byte flagValue)
     {
         var flag = (StatusFlags)flagValue;
         var isSep = mnemonic == "SEP";
-        
+
         if (flag.HasFlag(StatusFlags.AccumulatorMode))
         {
-            _romReader.AccumulatorFlags.TryAdd(_romReader._romPosition, isSep);
+            _blockReader.AccumulatorFlags.TryAdd(_dataReader.Position, isSep);
         }
-        
+
         if (flag.HasFlag(StatusFlags.IndexMode))
         {
-            _romReader.IndexFlags.TryAdd(_romReader._romPosition, isSep);
+            _blockReader.IndexFlags.TryAdd(_dataReader.Position, isSep);
         }
     }
 
     private void HandleAbsoluteLongMode(string mnemonic, List<object> operands, Registers reg)
     {
-        var refLoc = _romReader.ReadUShort();
-        var bank = _romReader.ReadByte();
+        var refLoc = _dataReader.ReadUShort();
+        var bank = _dataReader.ReadByte();
         var address = new Address(bank, refLoc);
 
         if (address.Space == AddressSpace.ROM)
@@ -172,7 +160,7 @@ public class AddressingModeHandler
             var wrapper = new LocationWrapper((int)address, AddressType.Address);
             if (IsJumpInstruction(mnemonic))
             {
-                _romReader.NoteType(wrapper.Location, "Code", false, reg);
+                _blockReader.NoteType(wrapper.Location, "Code", false, reg);
             }
             operands.Add(wrapper);
         }
@@ -184,39 +172,39 @@ public class AddressingModeHandler
 
     private void HandleBlockMoveMode(List<object> operands, AsmReader.OperationContext context)
     {
-        operands.Add(_romReader.ReadByte());
+        operands.Add(_dataReader.ReadByte());
         context.XForm2 = _transformProcessor.GetTransform();
-        operands.Add(_romReader.ReadByte());
+        operands.Add(_dataReader.ReadByte());
     }
 
     private void HandleDirectPageMode(List<object> operands)
     {
-        operands.Add(_romReader.ReadByte());
+        operands.Add(_dataReader.ReadByte());
     }
 
     private void HandlePCRelativeMode(List<object> operands, int nextAddress, Registers reg, bool isLong)
     {
-        int relative = isLong 
-            ? nextAddress + _romReader.ReadShort()
-            : nextAddress + _romReader.ReadSByte();
-            
-        _romReader.NoteType(relative, "Code", reg: reg);
+        int relative = isLong
+            ? nextAddress + _dataReader.ReadShort()
+            : nextAddress + _dataReader.ReadSByte();
+
+        _blockReader.NoteType(relative, "Code", reg: reg);
         operands.Add(relative);
     }
 
     private void HandleStackRelativeMode(List<object> operands)
     {
-        operands.Add(_romReader.ReadByte());
+        operands.Add(_dataReader.ReadByte());
     }
 
     private void HandleStackInterruptMode(string mnemonic, List<object> operands, AsmReader.OperationContext context)
     {
-        var cmd = _romReader.ReadByte();
+        var cmd = _dataReader.ReadByte();
         operands.Add(cmd);
-        
+
         if (mnemonic == "COP")
         {
-            if (!_romReader._root.CopDef.TryGetValue(cmd, out var copDef))
+            if (!_blockReader._root.CopDef.TryGetValue(cmd, out var copDef))
                 throw new InvalidOperationException("Unknown COP command");
 
             context.CopDef = copDef;
@@ -226,20 +214,20 @@ public class AddressingModeHandler
 
     private void HandleStackOrImpliedMode(string mnemonic, Registers reg)
     {
-        var stackOperations = new StackOperations(reg, _romReader);
+        var stackOperations = new StackOperations(reg, _blockReader);
         stackOperations.HandleStackOperation(mnemonic);
     }
 
     private void HandleAbsoluteMode(string mnemonic, byte? xBank1, int next, byte? dataBank, List<object> operands, Registers registers)
     {
-        var refLoc = _romReader.ReadUShort();
+        var refLoc = _dataReader.ReadUShort();
 
         var isPush = IsPushInstruction(mnemonic);
         if (isPush)
             refLoc++;
-            
+
         var isJump = isPush || IsJumpInstruction(mnemonic);
-        var bank = xBank1 ?? (isJump ? (byte)(_romReader._romPosition >> 16) : dataBank ?? 0x81);
+        var bank = xBank1 ?? (isJump ? (byte)(_dataReader.Position >> 16) : dataBank ?? 0x81);
 
         var addr = new Address(bank, refLoc);
         if (addr.IsROM)
@@ -247,7 +235,7 @@ public class AddressingModeHandler
             var wrapper = new LocationWrapper((int)addr, AddressType.Offset);
             if (isJump)
             {
-                var name = _romReader.NoteType(wrapper.Location, "Code", isPush, registers);
+                var name = _blockReader.NoteType(wrapper.Location, "Code", isPush, registers);
 
                 if (isPush)
                 {
@@ -265,4 +253,4 @@ public class AddressingModeHandler
 
     private static bool IsJumpInstruction(string mnemonic) => mnemonic[0] == 'J';
     private static bool IsPushInstruction(string mnemonic) => mnemonic[0] == 'P';
-} 
+}

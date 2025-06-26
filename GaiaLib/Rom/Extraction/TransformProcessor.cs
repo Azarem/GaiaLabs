@@ -7,13 +7,15 @@ namespace GaiaLib.Rom.Extraction;
 /// <summary>
 /// Handles transform processing for assembly instructions
 /// </summary>
-public class TransformProcessor
+internal class TransformProcessor
 {
-    private readonly BlockReader _romReader;
+    private readonly BlockReader _blockReader;
+    private readonly RomDataReader _romDataReader;
 
     public TransformProcessor(BlockReader romReader)
     {
-        _romReader = romReader;
+        _blockReader = romReader;
+        _romDataReader = romReader._romDataReader;
     }
 
     /// <summary>
@@ -21,14 +23,14 @@ public class TransformProcessor
     /// </summary>
     public string? GetTransform()
     {
-        if (!_romReader._root.Transforms.TryGetValue(_romReader._romPosition, out var transform) || transform == "")
+        if (!_blockReader._root.Labels.TryGetValue(_romDataReader.Position, out var transform) || transform == "")
             return transform;
 
         var transformName = CleanTransformName(transform);
         var referenceLocation = ResolveTransformReference(transformName);
         
         if (referenceLocation != null)
-            _romReader.ResolveInclude(referenceLocation.Value, false);
+            _blockReader.ResolveInclude(referenceLocation.Value, false);
 
         return transform;
     }
@@ -36,38 +38,39 @@ public class TransformProcessor
     /// <summary>
     /// Applies transforms to operands
     /// </summary>
-    public void ApplyTransforms(string? xForm1, string? xForm2, List<object> operands)
+    public void ApplyTransforms(string? op1Label, string? op2Label, List<object> operands)
     {
-        ApplyTransform(xForm1, 0, operands);
-        ApplyTransform(xForm2, 1, operands);
+        ApplyTransform(op1Label, 0, operands);
+        ApplyTransform(op2Label, 1, operands);
     }
 
-    private void ApplyTransform(string? xform, int operandIndex, List<object> operands)
+    private void ApplyTransform(string? transform, int operandIndex, List<object> operands)
     {
-        if (xform == null || operandIndex >= operands.Count)
+        if (transform == null || operandIndex >= operands.Count)
             return;
 
-        if (xform == "")
+        // There is special logic for empty labels
+        if (transform == "")
         {
             ApplyDefaultTransform(operandIndex, operands);
         }
         else
         {
-            operands[operandIndex] = xform;
+            operands[operandIndex] = transform; //Otherwise it is a direct replacement
         }
     }
 
     private void ApplyDefaultTransform(int operandIndex, List<object> operands)
     {
-        int value = _romReader._romPosition & 0xFF0000 | (ushort)operands[operandIndex];
+        int value = _romDataReader.Position & 0xFF0000 | (ushort)operands[operandIndex];
         
-        if (!_romReader._referenceTable.TryGetValue(value, out var referenceName))
+        if (!_blockReader._referenceTable.TryGetValue(value, out var referenceName))
         {
             referenceName = $"loc_{value:X6}";
-            _romReader._referenceTable[value] = referenceName;
+            _blockReader._referenceTable[value] = referenceName;
         }
         
-        _romReader.ResolveInclude(value, false);
+        _blockReader.ResolveInclude(value, false);
         operands[operandIndex] = $"&{referenceName}";
     }
 
@@ -85,7 +88,7 @@ public class TransformProcessor
     private int? ResolveTransformReference(string transformName)
     {
         // First check reference table
-        foreach (var entry in _romReader._referenceTable)
+        foreach (var entry in _blockReader._referenceTable)
         {
             if (entry.Value == transformName)
                 return entry.Key;

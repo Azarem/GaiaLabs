@@ -1,9 +1,4 @@
 ﻿using GaiaLib.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GaiaLib.Rom.Rebuild
 {
@@ -117,7 +112,7 @@ namespace GaiaLib.Rom.Rebuild
                 else if (file.Upper && !currentUpper)
                     continue;
 
-                //Is this file already a part of a another pass?
+                //Is this file already a part of another pass?
                 var inList = false;
                 for (var y = bestOffset; --y >= 0;)
                     if (bestResult[y] == fileIndex)

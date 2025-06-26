@@ -8,11 +8,11 @@ namespace GaiaLib.Rom.Extraction;
 /// <summary>
 /// Manages references, chunks, and markers during ROM analysis
 /// </summary>
-public class ReferenceManager
+internal class ReferenceManager
 {
-    private readonly Dictionary<int, string> _chunkTable = [];
-    private readonly Dictionary<int, int> _markerTable = [];
-    private readonly Dictionary<int, string> _referenceTable = [];
+    internal readonly Dictionary<int, string> _chunkTable = [];
+    internal readonly Dictionary<int, int> _markerTable = [];
+    internal readonly Dictionary<int, string> _referenceTable = [];
     private readonly DbRoot _root;
 
     public ReferenceManager(DbRoot root)
@@ -135,12 +135,6 @@ public class ReferenceManager
         return ProcessClosestMatch(location, closestName, closestLocation, closestDistance);
     }
 
-    public void Clear()
-    {
-        _chunkTable.Clear();
-        _markerTable.Clear();
-        _referenceTable.Clear();
-    }
 
     private (int location, string? label) ProcessRewrite(int location, int rewrite)
     {
@@ -184,9 +178,4 @@ public class ReferenceManager
 
         return result;
     }
-
-    // Internal access for BlockReader compatibility
-    internal Dictionary<int, string> ChunkTable => _chunkTable;
-    internal Dictionary<int, int> MarkerTable => _markerTable;
-    internal Dictionary<int, string> ReferenceTable => _referenceTable;
 } 

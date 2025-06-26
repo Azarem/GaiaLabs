@@ -374,13 +374,7 @@ internal class BlockWriter
                 //var sLoc = Location.Parse(str.Substring(ix + 1, 6));
                 //sw.String = str = str.Replace(str.Substring(ix, 7), ResolveName(sLoc, str[ix] == '^' ? (byte)2 : (byte)3, false));
             }
-            var refChar = sw.Type switch
-            {
-                StringType.ASCII => '|',
-                StringType.Char => '~',
-                StringType.Wide => '`',
-                _ => throw new("Unsupported string type"),
-            };
+            var refChar = sw.Type.Delimiter;
 
             if (sw.Marker <= 0)
                 _markerTable.TryGetValue(sw.Location, out sw.Marker);
@@ -396,7 +390,7 @@ internal class BlockWriter
                         var eix = str.IndexOf(']', ++six);
                         var parts = str[six..eix].Split(',', ':', ' ');
 
-                        var cmd = _root.WideCommands.Values.First(x => x.Value == parts[0]);
+                        var cmd = sw.Type.Commands.Values.First(x => x.Value == parts[0]);
                         foreach (var t in cmd.Types)
                         {
                             mix += t switch

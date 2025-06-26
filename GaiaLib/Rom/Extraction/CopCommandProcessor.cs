@@ -7,72 +7,80 @@ namespace GaiaLib.Rom.Extraction;
 /// <summary>
 /// Handles COP (Coprocessor) command processing
 /// </summary>
-public class CopCommandProcessor
+internal class CopCommandProcessor
 {
-    private readonly BlockReader _romReader;
+    private readonly BlockReader _blockReader;
+    private readonly RomDataReader _romDataReader;
 
-    public CopCommandProcessor(BlockReader romReader)
+    public CopCommandProcessor(BlockReader blockReader)
     {
-        _romReader = romReader;
+        _blockReader = blockReader;
+        _romDataReader = blockReader._romDataReader;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="copDef"></param>
+    /// <param name="operands"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public void ParseCopCommand(CopDef copDef, List<object> operands)
     {
-        foreach (var p in copDef.Parts)
+        foreach (var partStr in copDef.Parts)
         {
-            var addrType = Address.TypeFromCode(p[0]);
+            //Use the first character to determine the address type (for pointers)
+            var addrType = Address.TypeFromCode(partStr[0]);
             var isPtr = addrType != AddressType.Unknown;
-            var otherStr = isPtr ? p[1..] : _romReader._currentPart.Struct ?? "Binary";
-            var memberTypeName = isPtr ? addrType.ToString() : p;
+            //Reference type is the target of a pointer from partStr, or the struct type if not a pointer
+            var referenceType = isPtr ? partStr[1..] : _blockReader._currentPart.Struct ?? "Binary";
+            //Member type resolves to the underlying pointer type, or partStr
+            var memberTypeName = isPtr ? addrType.ToString() : partStr;
 
-            if (!System.Enum.TryParse<MemberType>(memberTypeName, true, out var mtype))
-                throw new InvalidOperationException("Cannot use structs in cop def");
+            //Resolve member type name to a MemberType enum. (for Offset / Address overlap)
+            if (!System.Enum.TryParse<MemberType>(memberTypeName, true, out var memberType))
+                throw new InvalidOperationException("Cannot use structs in cop def"); //Only basic types are allowed in COP definitions
 
-            _romReader._root.Transforms.TryGetValue(_romReader._romPosition, out var xform);
-
-            object resolve(object obj) => !string.IsNullOrEmpty(xform) ? xform : obj;
-
-            switch (mtype)
+            //If there is a label, ignore reading and use the label instead
+            if (_blockReader._root.Labels.TryGetValue(_romDataReader.Position, out var label))
             {
-                case MemberType.Byte:
-                    operands.Add(resolve(_romReader.ReadByte()));
-                    break;
-                    
-                case MemberType.Word:
-                    operands.Add(resolve(_romReader.ReadUShort()));
-                    break;
-                    
-                case MemberType.Offset:
-                    operands.Add(CreateCopLocation(_romReader.ReadUShort(), null, xform, p, isPtr, otherStr, addrType));
-                    break;
-                    
-                case MemberType.Address:
-                    operands.Add(CreateCopLocation(_romReader.ReadUShort(), _romReader.ReadByte(), xform, p, isPtr, otherStr, addrType));
-                    break;
-                    
-                default:
-                    throw new InvalidOperationException("Unsupported COP member type");
+                _romDataReader.Position += memberType switch
+                {
+                    MemberType.Byte => 1,
+                    MemberType.Word => 2,
+                    MemberType.Offset => 2,
+                    MemberType.Address => 3,
+                    _ => throw new InvalidOperationException("Unsupported COP member type")
+                };
+                operands.Add(label);
             }
+            else
+                operands.Add(memberType switch
+                {
+                    MemberType.Byte => _romDataReader.ReadByte(),
+                    MemberType.Word => _romDataReader.ReadUShort(),
+                    MemberType.Offset => CreateCopLocation(_romDataReader.ReadUShort(), null, partStr, isPtr, referenceType, addrType),
+                    MemberType.Address => CreateCopLocation(_romDataReader.ReadUShort(), _romDataReader.ReadByte(), partStr, isPtr, referenceType, addrType),
+                    _ => throw new InvalidOperationException("Unsupported COP member type")
+                });
+
         }
     }
 
-    private object CreateCopLocation(ushort offset, byte? bank, string xform, string p, bool isPtr, string otherStr, AddressType type)
+    private object CreateCopLocation(ushort offset, byte? bank, string partStr, bool isPtr, string otherStr, AddressType type)
     {
-        if (!string.IsNullOrEmpty(xform))
-            return xform;
-
         if (bank == null && offset == 0)
             return offset;
 
-        var addr = new Address(bank ?? (byte)(_romReader._romPosition >> 16), offset);
+        var addr = new Address(bank ?? (byte)(_romDataReader.Position >> 16), offset);
         if (addr.Space == AddressSpace.ROM)
         {
             var location = (int)addr;
-            if (p != "Address" && isPtr && !_romReader._root.Rewrites.ContainsKey(location))
-                _romReader.NoteType(location, otherStr, true);
-                
+            if (partStr != "Address" && isPtr && !_blockReader._root.Rewrites.ContainsKey(location))
+                _blockReader.NoteType(location, otherStr, true);
+
+            //When address is unknown, try to use the part string (for Offset or Address)
             if (type == AddressType.Unknown)
-                type = System.Enum.TryParse<AddressType>(p, true, out var parsedType) ? parsedType : AddressType.Unknown;
+                type = System.Enum.TryParse<AddressType>(partStr, true, out var parsedType) ? parsedType : AddressType.Unknown;
 
             return new LocationWrapper(location, type);
         }

@@ -1,11 +1,8 @@
 ﻿
 using GaiaLib.Asm;
 using GaiaLib.Database;
-using GaiaLib.Enum;
 using GaiaLib.Types;
 using System.Globalization;
-using System.IO;
-using System.Net;
 
 namespace GaiaLib.Rom.Rebuild;
 
@@ -14,9 +11,9 @@ public class Assembler : IDisposable
     public readonly DbRoot _root;
     private readonly FileStream inStream;
     private readonly StreamReader reader;
-    public readonly MemoryStream memStream;
+    internal readonly StringProcessor _stringProcessor;
 
-    public string? line = "";
+    internal string? line = "";
     public HashSet<string> includes = new();
     SortedDictionary<string, string?> tags = new(StringSizeComparer.Instance);
     public List<AsmBlock> blocks = [];
@@ -26,19 +23,20 @@ public class Assembler : IDisposable
     internal int? lastDelimiter;
     internal byte? reqBank;
 
+
     public Assembler(DbRoot dbRoot, string filePath)
     {
         _root = dbRoot;
         inStream = File.OpenRead(filePath);
         reader = new StreamReader(inStream);
-        memStream = new MemoryStream();
+        _stringProcessor = new StringProcessor(this);
     }
 
     public void Dispose()
     {
         reader.Dispose();
         inStream.Dispose();
-        memStream.Dispose();
+        _stringProcessor.Dispose();
         GC.SuppressFinalize(this);
     }
 
@@ -124,7 +122,7 @@ public class Assembler : IDisposable
         var index = line.IndexOf(sequence);
         if (index >= 0)
         {
-            var cix = line.IndexOfAny(RomProcessingConstants.StringSpace);
+            var cix = line.IndexOfAny(_root.StringDelimiters);
             if (cix < 0 || cix > index || (cix = line.LastIndexOf(line[cix])) < index)
                 line = line[..index];
         }
@@ -274,224 +272,6 @@ public class Assembler : IDisposable
                 }
             }
         }
-    }
-
-    public void ConsumeString()
-    {
-        int ix;
-        string? str = null;
-
-        //Get character code of string type
-        var typeChar = line[0];
-
-        //Find last index of character code
-        var endIx = line.IndexOf(typeChar, 1);
-        if (endIx >= 0) //If end found
-        {
-            //Take the line up until the type code
-            str = line[1..endIx];
-            //Line takes content after and code
-            line = line[(endIx + 1)..].TrimStart(RomProcessingConstants.CommaSpace);
-        }
-        else
-        {
-            //Take the remaining line
-            str = line[1..];
-            line = "";
-        }
-
-        //Reset memory stream for new string
-        memStream.Position = 0;
-        memStream.SetLength(0);
-
-        switch (typeChar)
-        {
-            case '`':
-                ProcessString(
-                    str,
-                     StringType.Wide,
-                    _root.WideCommands,
-                    _root.Config.WideMap,
-                    _root.Config.AccentMap,
-                    i => (byte)((i & 0x70) << 1 | i & 0x0F)
-                );
-                break;
-
-            case '~':
-                ProcessString(
-                    str,
-                    StringType.Char,
-                    _root.WideCommands,
-                    _root.Config.CharMap,
-                    null,
-                    i => (byte)((i & 0x38) << 1 | i & 0x07)
-                );
-                break;
-
-            default:
-                ProcessString(
-                    str, 
-                    StringType.ASCII, 
-                    _root.StringCommands, 
-                    _root.Config.AsciiMap, 
-                    null, 
-                    i => i
-                );
-                break;
-        }
-    }
-
-
-    private void flushBuffer(StringType stringType, bool wrap = false)
-    {
-        var buffer = memStream.GetBuffer();
-        var size = (int)memStream.Length;
-        if (size > 0)
-        {
-            var newBuffer = new byte[size];
-            Array.Copy(buffer, newBuffer, size);
-            currentBlock.ObjList.Add(
-                wrap && stringType == StringType.Wide
-                    ? new StringEntry
-                    {
-                        Data = newBuffer,
-                        Block = currentBlock,
-                        Index = currentBlock.ObjList.Count,
-                        Size = newBuffer.Length,
-                    }
-                    : newBuffer
-            );
-            currentBlock.Size += size;
-            memStream.Position = 0;
-            memStream.SetLength(0);
-        }
-    }
-
-
-    void ProcessString(
-        string str,
-        StringType stringType,
-        IDictionary<int, DbStringCommand> dict,
-        string[]? charMap,
-        string[]? accentMap,
-        Func<byte, byte>? shift
-    )
-    {
-        byte? lastCmd = null;
-
-        for (int x = 0; x < str.Length; x++)
-        {
-            var c = str[x];
-            if (c == '[')
-            {
-                var endIx = str.IndexOf(']', x + 1);
-                var splitChars = new char[] { ':', ',', ' ' };
-                var parts = str[(x + 1)..endIx]
-                    .Split(
-                        splitChars,
-                        StringSplitOptions.RemoveEmptyEntries
-                    );
-
-                x = endIx;
-
-                //Marker
-                if (parts.Length == 0)
-                {
-                    flushBuffer(stringType, stringType == StringType.Wide);
-                    currentBlock.ObjList.Add(
-                        new StringMarker { Offset = currentBlock.Size }
-                    );
-                    continue;
-                }
-
-                var cmd = dict.Values.FirstOrDefault(x => x.Value == parts[0]);
-                if (cmd != null)
-                {
-                    lastCmd = (byte)cmd.Key;
-                    memStream.WriteByte(lastCmd.Value);
-                    ProcessStringCommand(cmd, stringType, parts);
-                    continue;
-                }
-            }
-
-            lastCmd = null;
-            //processChar(c);
-
-            for (int i = 0, len = charMap.Length; i < len; i++)
-            {
-                var v = charMap[i];
-                if (v != null && c == v[0])
-                {
-                    memStream.WriteByte(shift((byte)i));
-                    break;
-                }
-            }
-
-            //Check Accent Map if provided
-            if (accentMap != null)
-                for (int i = 0, len = accentMap.Length; i < len; i++)
-                {
-                    var v = accentMap[i];
-                    if (v != null && c == v[0])
-                    {
-                        //These map directly over to tiles 0xE0 - 0xFF
-                        memStream.WriteByte((byte)(i + 0xE0));
-                        break;
-                    }
-                }
-        }
-
-        //Terminate string
-        if (stringType == StringType.ASCII)
-            memStream.WriteByte(0);
-        else if (lastCmd == null || !RomProcessingConstants.EndChars.Contains(lastCmd.Value))
-            memStream.WriteByte(0xCA);
-
-        flushBuffer(stringType, true);
-    }
-
-    private void ProcessStringCommand(DbStringCommand cmd, StringType stringType, string[] parts)
-    {
-        var hasPointer = cmd.Types.Contains(MemberType.Address) || cmd.Types.Contains(MemberType.Offset);
-        if (hasPointer)
-            flushBuffer(stringType, true);
-
-        for (int y = 0, pix = 1; y < cmd.Types.Length; y++, pix++)
-        {
-            switch (cmd.Types[y])
-            {
-                case MemberType.Byte:
-                    memStream.WriteByte(byte.Parse(parts[pix], NumberStyles.HexNumber));
-                    break;
-
-                case MemberType.Word:
-                    var us = ushort.Parse(parts[pix], NumberStyles.HexNumber);
-                    memStream.WriteByte((byte)us);
-                    memStream.WriteByte((byte)(us >> 8));
-                    break;
-
-                case MemberType.Binary:
-                    while (pix < parts.Length)
-                    {
-                        var ch = byte.Parse(parts[pix], NumberStyles.HexNumber);
-                        memStream.WriteByte(ch);
-                        pix++;
-                    }
-                    memStream.WriteByte((byte)cmd.Delimiter.Value);
-                    break;
-
-                case MemberType.Offset:
-                case MemberType.Address:
-                    //Have to keep these for later since we don't have lookups yet
-                    flushBuffer(stringType, false);
-                    currentBlock.ObjList.Add(parts[pix]);
-                    currentBlock.Size += cmd.Types[y] == MemberType.Offset ? 2 : 3;
-                    break;
-            }
-        }
-
-        if (hasPointer)
-            flushBuffer(stringType, false);
     }
 
 

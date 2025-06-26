@@ -1,138 +1,284 @@
 [
   {
-    "key": 192,
-    "value": "END",
+    "set": "ASCIIString",
+    "key": 1,
+    "value": "CUR",
+    "types": [ "Byte", "Byte" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 2,
+    "value": "PRT",
+    "types": [ "Address" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 3,
+    "value": "NHM",
+    "types": [ "Byte" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 4,
+    "value": "PTR",
+    "types": [ "Address", "Word" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 5,
+    "value": "BCD",
+    "types": [ "Byte", "Word" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 6,
+    "value": "RCT",
+    "types": [ "Byte", "Byte", "Word" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 7,
+    "value": "CLR",
+    "types": [ "Word" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 8,
+    "value": "CPY",
+    "types": [ "Byte", "Word" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 9,
+    "value": "STR",
     "types": []
   },
   {
+    "set": "ASCIIString",
+    "key": 10,
+    "value": "HP",
+    "types": []
+  },
+  {
+    "set": "ASCIIString",
+    "key": 11,
+    "value": "HE",
+    "types": []
+  },
+  {
+    "set": "ASCIIString",
+    "key": 12,
+    "value": "ESC",
+    "types": [ "Binary" ],
+    "delimiter": 255
+  },
+  {
+    "set": "ASCIIString",
+    "key": 13,
+    "value": "DBL",
+    "types": []
+  },
+  {
+    "set": "ASCIIString",
+    "key": 14,
+    "value": "NUM",
+    "types": [ "Word" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 15,
+    "value": "RCC",
+    "types": [ "Byte", "Byte" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 16,
+    "value": "LU",
+    "types": [ "Byte" ]
+  },
+  {
+    "set": "ASCIIString",
+    "key": 17,
+    "value": "N",
+    "types": []
+  },
+  {
+    "set": "WideString",
+    "key": 192,
+    "value": "END",
+    "types": [],
+    "halt": true
+  },
+  {
+    "set": "WideString",
     "key": 193,
     "value": "DLG",
     "types": [ "Byte", "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 194,
     "value": "TPL",
     "types": [ "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 195,
     "value": "PAL",
     "types": [ "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 196,
     "value": "XXX",
     "types": []
   },
   {
+    "set": "WideString",
     "key": 197,
     "value": "ADR",
     "types": [ "Offset", "Word" ]
   },
   {
+    "set": "WideString",
     "key": 198,
     "value": "BCD",
     "types": [ "Word", "Word" ]
   },
   {
+    "set": "WideString",
     "key": 199,
     "value": "SIZ",
     "types": [ "Byte", "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 200,
     "value": "CLD",
     "types": []
   },
   {
+    "set": "WideString",
     "key": 201,
     "value": "PAU",
     "types": [ "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 202,
     "value": "RET",
-    "types": []
+    "types": [],
+    "halt": true
   },
   {
+    "set": "WideString",
     "key": 203,
     "value": "N",
     "types": []
   },
   {
+    "set": "WideString",
     "key": 204,
     "value": "SKP",
     "types": [ "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 205,
     "value": "PRT",
     "types": [ "Address" ]
   },
   {
+    "set": "WideString",
     "key": 206,
     "value": "CLR",
     "types": []
   },
   {
+    "set": "WideString",
     "key": 207,
     "value": "FIN",
     "types": []
   },
   {
+    "set": "WideString",
     "key": 208,
     "value": "WAI",
     "types": []
   },
   {
+    "set": "WideString",
     "key": 209,
     "value": "JMP",
-    "types": [ "Offset" ]
+    "types": [ "Offset" ],
+    "halt": true
   },
   {
+    "set": "WideString",
     "key": 210,
     "value": "SFX",
     "types": [ "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 211,
     "value": "DEF",
     "types": []
   },
   {
+    "set": "WideString",
     "key": 212,
     "value": "SEP",
     "types": [ "Byte", "Word" ]
   },
   {
+    "set": "WideString",
     "key": 213,
     "value": "DLY",
     "types": [ "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 214,
     "value": "LU1",
     "types": [ "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 215,
     "value": "LU2",
     "types": [ "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 216,
     "value": "ESC",
     "types": [ "Binary" ],
     "delimiter": 0
   },
   {
+    "set": "WideString",
     "key": 217,
     "value": "BOR",
     "types": [ "Byte" ]
   },
   {
+    "set": "WideString",
     "key": 218,
     "value": "NAM",
     "types": [ "Byte" ]
+  },
+  {
+    "set": "SpriteString",
+    "key": 202,
+    "value": "RET",
+    "types": [],
+    "halt": true
+  },
+  {
+    "set": "SpriteString",
+    "key": 203,
+    "value": "N",
+    "types": []
   }
 ]

@@ -214,9 +214,9 @@ code_02B078 {
     STX $A1T0L
 }
 
-string_01E7F6 |[CUR:42,0][NHM:8][HP][CUR:5A,0][NHM:14][BCD:1,AD8][CUR:64,0][NUM:AD6]|
+asciistring_01E7F6 |[CUR:42,0][NHM:8][HP][CUR:5A,0][NHM:14][BCD:1,AD8][CUR:64,0][NUM:AD6]|
 
-string_01E818 |[NHM:4][CUR:6A,0][HE]|
+asciistring_01E818 |[NHM:4][CUR:6A,0][HE]|
 
 -------------------------------------------------
 ;Print debug string on radar screen

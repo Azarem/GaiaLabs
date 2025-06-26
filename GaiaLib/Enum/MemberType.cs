@@ -10,8 +10,8 @@ public enum MemberType
     Offset,
     Address,
     Binary,
-    String,
-    CharString,
-    WideString,
+    //String,
+    //CharString,
+    //WideString,
     Code
 }

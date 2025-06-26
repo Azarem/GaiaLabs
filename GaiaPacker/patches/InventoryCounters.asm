@@ -125,7 +125,7 @@ push_number_sprite {
 
 e_inventory_menu {
     COP [88] ( @table_108000 )
-    COP [BD] ( @string_01E869 )
+    COP [BD] ( @asciistring_01E869 )
     LDA #$1000
     TSB $06EE
     JSR generate_number_sprites

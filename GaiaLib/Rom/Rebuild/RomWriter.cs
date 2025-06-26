@@ -9,7 +9,8 @@ namespace GaiaLib.Rom.Rebuild;
 
 public class RomWriter : IDisposable
 {
-    private readonly ProjectRoot _projectRoot;
+    internal readonly ProjectRoot _projectRoot;
+    internal readonly DbRoot _dbRoot;
     public readonly string RomPath;
     public string? BpsPath;
     private FileStream? OutStream;
@@ -17,7 +18,11 @@ public class RomWriter : IDisposable
     public RomWriter(ProjectRoot projectRoot)
     {
         _projectRoot = projectRoot;
-        RomPath = Path.Combine(_projectRoot.BaseDir, $"{_projectRoot.Name}.smc");
+        //Load database
+        _dbRoot = DbRoot.FromFolder(projectRoot.DatabasePath);
+        //Use paths from project if available
+        _dbRoot.Paths = projectRoot.Resources ?? _dbRoot.Paths;
+        RomPath = Path.Combine(projectRoot.BaseDir, $"{projectRoot.Name}.smc");
     }
 
     public void Repack()
@@ -29,7 +34,10 @@ public class RomWriter : IDisposable
             outStream.Position = 0;
 
             OutStream = outStream;
-            Process.Repack(_projectRoot, WriteFile, WriteTransform);
+
+            var processor = new RomProcessor(this);
+            processor.Repack();
+
             WriteHeader();
             OutStream = null;
 
@@ -115,7 +123,7 @@ public class RomWriter : IDisposable
         Console.WriteLine(result);
     }
 
-    private void WriteTransform(int location, object value)
+    internal void WriteTransform(int location, object value)
     {
         OutStream.Position = location;
         if (value is ushort us)
@@ -133,7 +141,7 @@ public class RomWriter : IDisposable
             OutStream.WriteByte(b);
     }
 
-    private int WriteFile(ChunkFile file, DbRoot root, IDictionary<string, int> chunkLookup)
+    internal int WriteFile(ChunkFile file, DbRoot root, IDictionary<string, int> chunkLookup)
     {
         int filePos = file.Location;
         OutStream.Position = filePos;

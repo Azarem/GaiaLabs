@@ -19,7 +19,7 @@ diary_ngp_option {
     JSR $&sub_0BEBF9
     COP [6B] ( &widestring_0BF437 )
     COP [C8] ( &code_0BEB8B )
-    COP [BD] ( @string_01EADC )
+    COP [BD] ( @asciistring_01EADC )
     LDA $0D8C
     AND #$0003
     STA $0D92
@@ -161,7 +161,7 @@ e_sFA_diary_menu {
     LDA #$2800
     TSB $player_flags
     JSR $&sub_0BED64
-    COP [BD] ( @string_01EADC )
+    COP [BD] ( @asciistring_01EADC )
     LDA $20
     BEQ diary_menu_normal
     COP [6B] ( &diary_ngp_str )

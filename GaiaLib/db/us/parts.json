@@ -4273,36 +4273,36 @@
   {
     "start": 121304,
     "end": 121415,
-    "name": "string_01D9D8",
-    "struct": "String",
+    "name": "asciistring_01D9D8",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 121415,
     "end": 121438,
-    "name": "string_01DA47",
-    "struct": "String",
+    "name": "asciistring_01DA47",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 121438,
     "end": 121535,
-    "name": "string_01DA5E",
-    "struct": "String",
+    "name": "asciistring_01DA5E",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 121535,
     "end": 122398,
     "name": "itemname_table_01DABF",
-    "struct": "&String",
+    "struct": "&ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 122398,
     "end": 123178,
     "name": "itemmenu_table_01DE1E",
-    "struct": "&String",
+    "struct": "&ASCIIString",
     "block": "system_strings"
   },
   {
@@ -4316,252 +4316,252 @@
     "start": 123186,
     "end": 124396,
     "name": "itemdesc_table_01E132",
-    "struct": "&String",
+    "struct": "&ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 124396,
     "end": 124509,
     "name": "abilmenu_table_01E5EC",
-    "struct": "&String",
+    "struct": "&ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 124509,
     "end": 124636,
     "name": "abilname_table_01E65D",
-    "struct": "&String",
+    "struct": "&ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 124636,
     "end": 124878,
     "name": "abildesc_table_01E6DC",
-    "struct": "&String",
+    "struct": "&ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 124878,
     "end": 124918,
     "name": "charname_table_01E7CE",
-    "struct": "&String",
+    "struct": "&ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 124918,
     "end": 124952,
-    "name": "string_01E7F6",
-    "struct": "String",
+    "name": "asciistring_01E7F6",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 124952,
     "end": 125033,
-    "name": "string_01E818",
-    "struct": "String",
+    "name": "asciistring_01E818",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125033,
     "end": 125040,
-    "name": "string_01E869",
-    "struct": "String",
+    "name": "asciistring_01E869",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125040,
     "end": 125154,
-    "name": "string_01E870",
-    "struct": "String",
+    "name": "asciistring_01E870",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125154,
     "end": 125161,
-    "name": "string_01E8E2",
-    "struct": "String",
+    "name": "asciistring_01E8E2",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125161,
     "end": 125195,
-    "name": "string_01E8E9",
-    "struct": "String",
+    "name": "asciistring_01E8E9",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125195,
     "end": 125202,
-    "name": "string_01E90B",
-    "struct": "String",
+    "name": "asciistring_01E90B",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125202,
     "end": 125209,
-    "name": "string_01E912",
-    "struct": "String",
+    "name": "asciistring_01E912",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125209,
     "end": 125260,
-    "name": "string_01E919",
-    "struct": "String",
+    "name": "asciistring_01E919",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125260,
     "end": 125268,
     "name": "table_01E94C",
-    "struct": "&String",
+    "struct": "&ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125268,
     "end": 125282,
-    "name": "string_01E954",
-    "struct": "String",
+    "name": "asciistring_01E954",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125282,
     "end": 125301,
-    "name": "string_01E962",
-    "struct": "String",
+    "name": "asciistring_01E962",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125301,
     "end": 125324,
-    "name": "string_01E975",
-    "struct": "String",
+    "name": "asciistring_01E975",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125324,
     "end": 125350,
-    "name": "string_01E98C",
-    "struct": "String",
+    "name": "asciistring_01E98C",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125350,
     "end": 125367,
-    "name": "string_01E9A6",
-    "struct": "String",
+    "name": "asciistring_01E9A6",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125367,
     "end": 125392,
-    "name": "string_01E9B7",
-    "struct": "String",
+    "name": "asciistring_01E9B7",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125392,
     "end": 125410,
-    "name": "string_01E9D0",
-    "struct": "String",
+    "name": "asciistring_01E9D0",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125410,
     "end": 125442,
-    "name": "string_01E9E2",
-    "struct": "String",
+    "name": "asciistring_01E9E2",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125442,
     "end": 125460,
-    "name": "string_01EA02",
-    "struct": "String",
+    "name": "asciistring_01EA02",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125460,
     "end": 125479,
-    "name": "string_01EA14",
-    "struct": "String",
+    "name": "asciistring_01EA14",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125479,
     "end": 125497,
-    "name": "string_01EA27",
-    "struct": "String",
+    "name": "asciistring_01EA27",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125497,
     "end": 125513,
-    "name": "string_01EA39",
-    "struct": "String",
+    "name": "asciistring_01EA39",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125513,
     "end": 125526,
-    "name": "string_01EA49",
-    "struct": "String",
+    "name": "asciistring_01EA49",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125526,
     "end": 125539,
-    "name": "string_01EA56",
-    "struct": "String",
+    "name": "asciistring_01EA56",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125539,
     "end": 125552,
-    "name": "string_01EA63",
-    "struct": "String",
+    "name": "asciistring_01EA63",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125552,
     "end": 125620,
-    "name": "string_01EA70",
-    "struct": "String",
+    "name": "asciistring_01EA70",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125620,
     "end": 125638,
-    "name": "string_01EAB4",
-    "struct": "String",
+    "name": "asciistring_01EAB4",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125638,
     "end": 125649,
-    "name": "string_01EAC6",
-    "struct": "String",
+    "name": "asciistring_01EAC6",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125649,
     "end": 125660,
-    "name": "string_01EAD1",
-    "struct": "String",
+    "name": "asciistring_01EAD1",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125660,
     "end": 125711,
-    "name": "string_01EADC",
-    "struct": "String",
+    "name": "asciistring_01EADC",
+    "struct": "ASCIIString",
     "block": "system_strings"
   },
   {
     "start": 125711,
     "end": 125864,
     "name": "itemcomp_table_01EB0F",
-    "struct": "&String",
+    "struct": "&ASCIIString",
     "block": "itemcomp_table_01EB0F"
   },
   {
@@ -5141,7 +5141,7 @@
   {
     "start": 172393,
     "end": 172402,
-    "name": "string_02A169",
+    "name": "asciistring_02A169",
     "struct": "WideString",
     "block": "chunk_028000"
   },
@@ -8753,7 +8753,7 @@
   {
     "start": 256652,
     "end": 256688,
-    "name": "string_cmd_table_03EA8C",
+    "name": "asciistring_cmd_table_03EA8C",
     "struct": "&Code",
     "block": "chunk_03BAE1"
   },
@@ -21416,15 +21416,15 @@
   {
     "start": 774212,
     "end": 774253,
-    "name": "charstring_0BD044",
-    "struct": "CharString",
+    "name": "spritestring_0BD044",
+    "struct": "SpriteString",
     "block": "pr8C_prologue1"
   },
   {
     "start": 774253,
     "end": 774322,
-    "name": "charstring_0BD06D",
-    "struct": "CharString",
+    "name": "spritestring_0BD06D",
+    "struct": "SpriteString",
     "block": "pr8C_prologue1"
   },
   {
@@ -21451,36 +21451,36 @@
   {
     "start": 774322,
     "end": 774371,
-    "name": "charstring_0BD0B2",
-    "struct": "CharString",
+    "name": "spritestring_0BD0B2",
+    "struct": "SpriteString",
     "block": "pr8D_prologue2"
   },
   {
     "start": 774371,
     "end": 774428,
-    "name": "charstring_0BD0E3",
-    "struct": "CharString",
+    "name": "spritestring_0BD0E3",
+    "struct": "SpriteString",
     "block": "pr8D_prologue2"
   },
   {
     "start": 774428,
     "end": 774468,
-    "name": "charstring_0BD11C",
-    "struct": "CharString",
+    "name": "spritestring_0BD11C",
+    "struct": "SpriteString",
     "block": "pr8D_prologue2"
   },
   {
     "start": 774468,
     "end": 774537,
-    "name": "charstring_0BD144",
-    "struct": "CharString",
+    "name": "spritestring_0BD144",
+    "struct": "SpriteString",
     "block": "pr8D_prologue2"
   },
   {
     "start": 774537,
     "end": 774602,
-    "name": "charstring_0BD189",
-    "struct": "CharString",
+    "name": "spritestring_0BD189",
+    "struct": "SpriteString",
     "block": "pr8D_prologue2"
   },
   {
@@ -21507,8 +21507,8 @@
   {
     "start": 774602,
     "end": 774690,
-    "name": "charstring_0BD1CA",
-    "struct": "CharString",
+    "name": "spritestring_0BD1CA",
+    "struct": "SpriteString",
     "block": "pr8E_prologue3"
   },
   {
@@ -21528,8 +21528,8 @@
   {
     "start": 774690,
     "end": 774770,
-    "name": "charstring_0BD222",
-    "struct": "CharString",
+    "name": "spritestring_0BD222",
+    "struct": "SpriteString",
     "block": "pr8F_prologue4"
   },
   {
@@ -21549,8 +21549,8 @@
   {
     "start": 774770,
     "end": 774827,
-    "name": "charstring_0BD272",
-    "struct": "CharString",
+    "name": "spritestring_0BD272",
+    "struct": "SpriteString",
     "block": "pr8C_prologue5"
   },
   {

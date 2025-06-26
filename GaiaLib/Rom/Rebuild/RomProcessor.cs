@@ -5,24 +5,28 @@ using GaiaLib.Types;
 
 namespace GaiaLib.Rom.Rebuild
 {
-    public static class Process
+    internal class RomProcessor
     {
+        private readonly RomWriter _writer;
+        private readonly DbRoot _root;
         //public static readonly byte[] _endChars = [0xC0, 0xCA, 0xD1];
 
-        public static void Repack(
-            ProjectRoot project,
-            Func<ChunkFile, DbRoot, IDictionary<string, int>, int> onProcess,
-            Action<int, object> onTransform
-        )
+        public RomProcessor(RomWriter writer)
+        {
+            _writer = writer;
+            _root = writer._dbRoot;
+        }
+
+        public void Repack()
         {
             //Initialize database
-            var root = DbRoot.FromFolder(project.DatabasePath);
+            //var root = DbRoot.FromFolder(project.DatabasePath);
 
             //Update paths from project
-            root.Paths = project.Resources ?? root.Paths;
+            //root.Paths = project.Resources ?? root.Paths;
 
             //Discover all files to be used
-            var allFiles = DiscoverFiles(project.BaseDir, root);
+            var allFiles = DiscoverFiles(_writer._projectRoot.BaseDir);
 
             var patches = allFiles.Where(x => x.Type == BinType.Patch).ToList();
             var stdPatches = patches.Where(x => x.Bank != null).ToList();
@@ -66,23 +70,23 @@ namespace GaiaLib.Rom.Rebuild
 
             //Write file contents
             foreach (var file in allFiles)
-                onProcess(file, root, blockLookup);
+                _writer.WriteFile(file, _root, blockLookup);
 
             foreach (var file in nullPatches)
-                onProcess(file, root, blockLookup);
+                _writer.WriteFile(file, _root, blockLookup);
 
             var entryBlocks = (from b in asmFiles.Where(x => x.Bank == 0).SelectMany(x => x.Blocks)
                                where b.Label != null
-                               join i in root.EntryPoints on b.Label equals i.Name
+                               join i in _root.EntryPoints on b.Label equals i.Name
                                select new { EntryLocation = i.Location, BlockLocation = b.Location });
 
             foreach (var e in entryBlocks)
-                onTransform(e.EntryLocation, (ushort)e.BlockLocation);
+                _writer.WriteTransform(e.EntryLocation, (ushort)e.BlockLocation);
 
         }
 
 
-        private static List<ChunkFile> DiscoverFiles(string baseDir, DbRoot root)
+        private List<ChunkFile> DiscoverFiles(string baseDir)
         {
             var chunkFiles = new List<ChunkFile>();
             foreach (BinType type in System.Enum.GetValues<BinType>())
@@ -95,7 +99,7 @@ namespace GaiaLib.Rom.Rebuild
                 if (type == BinType.Meta17)
                     continue;
 
-                var res = root.GetPath(type);
+                var res = _root.GetPath(type);
 
                 foreach (
                     var filePath in Directory.GetFiles(
@@ -115,7 +119,7 @@ namespace GaiaLib.Rom.Rebuild
 
                     if (type == BinType.Assembly || type == BinType.Patch)
                     {
-                        using var assembler = new Assembler(root, filePath);
+                        using var assembler = new Assembler(_root, filePath);
                         (chunkFile.Blocks, chunkFile.Includes, chunkFile.Bank) = assembler.ParseAssembly(0);
                     }
                     //else if (type == BinType.Palette)
@@ -129,7 +133,7 @@ namespace GaiaLib.Rom.Rebuild
                     //    chunkFile.Size = (lastNonzero + (0x20 - lastNonzero % 0x20));
                     //}
 
-                    var oldFile = root.Files.FirstOrDefault(x =>
+                    var oldFile = _root.Files.FirstOrDefault(x =>
                         x.Type == type && x.Name == chunkFile.Name
                     );
                     if (oldFile != null)
@@ -149,7 +153,7 @@ namespace GaiaLib.Rom.Rebuild
                 var i in chunkFiles
                     .Where(x => x.Blocks == null)
                     .Select(x =>
-                        (x, root.Files.FirstOrDefault(y => x.Type == y.Type && x.Name == y.Name))
+                        (x, _root.Files.FirstOrDefault(y => x.Type == y.Type && x.Name == y.Name))
                     )
             )
                 if (i.Item2 != null)

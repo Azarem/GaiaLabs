@@ -3,10 +3,10 @@ namespace GaiaLib.Rom.Extraction;
 /// <summary>
 /// Provides low-level ROM data reading functionality
 /// </summary>
-public class RomDataReader
+internal class RomDataReader
 {
-    public byte[] RomData { get; }
-    public int Position { get; set; }
+    public readonly byte[] RomData;
+    public int Position;
 
     public RomDataReader(byte[] romData)
     {

@@ -10,6 +10,6 @@ namespace GaiaLib.Database
         public string Parent { get; set; }
         public int? Delimiter { get; set; }
 
-        public int? Descriminator { get; set; }
+        public int? Discriminator { get; set; }
     }
 }

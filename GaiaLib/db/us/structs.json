@@ -24,7 +24,7 @@
   {
     "name": "map_name",
     "delimiter": 0,
-    "types": ["Byte", "&CharString"]
+    "types": ["Byte", "&SpriteString"]
   },
   {
     "name": "unk5",
@@ -93,79 +93,79 @@
   },
   {
     "name": "meta<>",
-    "descriminator": 0,
+    "discriminator": 0,
     "delimiter": 0
   },
   {
     "name": "ppu",
     "parent": "meta<>",
-    "descriminator": 2,
+    "discriminator": 2,
     "types": ["Byte"]
   },
   {
     "name": "bitmap",
     "parent": "meta<>",
-    "descriminator": 3,
+    "discriminator": 3,
     "types": ["Byte", "Byte", "Byte", "@Binary", "Byte"]
   },
   {
     "name": "palette",
     "parent": "meta<>",
-    "descriminator": 4,
+    "discriminator": 4,
     "types": ["Byte", "Byte", "Byte", "@Binary"]
   },
   {
     "name": "tileset",
     "parent": "meta<>",
-    "descriminator": 5,
+    "discriminator": 5,
     "types": ["Byte", "Byte", "Byte", "Byte", "@Binary"]
   },
   {
     "name": "tilemap",
     "parent": "meta<>",
-    "descriminator": 6,
+    "discriminator": 6,
     "types": ["Byte", "@Binary"]
   },
   {
     "name": "metaE",
     "parent": "meta<>",
-    "descriminator": 14,
+    "discriminator": 14,
     "types": ["Byte", "Byte", "Byte"]
   },
   {
     "name": "spritemap",
     "parent": "meta<>",
-    "descriminator": 16,
+    "discriminator": 16,
     "types": ["Word", "Byte", "@Binary"]
   },
   {
     "name": "music",
     "parent": "meta<>",
-    "descriminator": 17,
+    "discriminator": 17,
     "types": ["Byte", "Byte", "@Binary"]
   },
   {
     "name": "branch",
     "parent": "meta<>",
-    "descriminator": 19,
+    "discriminator": 19,
     "types": ["Byte", "Byte"]
   },
   {
     "name": "label",
     "parent": "meta<>",
-    "descriminator": 20,
+    "discriminator": 20,
     "types": ["Byte"]
   },
   {
     "name": "jump",
     "parent": "meta<>",
-    "descriminator": 21,
+    "discriminator": 21,
     "types": ["Byte"]
   },
   {
     "name": "meta17",
     "parent": "meta<>",
-    "descriminator": 23,
+    "discriminator": 23,
     "types": ["Byte", "@Binary"]
   },
   {
@@ -175,14 +175,14 @@
   },
   {
     "name": "enemy",
-    "descriminator": 6,
+    "discriminator": 6,
     "delimiter": 255,
     "types": ["Byte", "Byte", "Byte", "@h_actor", "Byte", "Byte", "Byte"]
   },
   {
     "name": "actor",
     "parent": "enemy",
-    "descriminator": 0,
+    "discriminator": 0,
     "types": ["Byte", "Byte", "Byte", "@h_actor"]
   },
   {

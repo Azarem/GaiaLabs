@@ -2,19 +2,14 @@
 using GaiaLib.Database;
 using GaiaLib.Enum;
 using GaiaLib.Types;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GaiaLib.Rom.Rebuild
 {
     public class AssemblerState
     {
-        private readonly DbStruct? dbs;
-        private readonly DbStruct? parent;
+        private readonly DbStruct? dbStruct;
+        private readonly DbStruct? parentStruct;
         private readonly DbRoot _root;
         private readonly int? discriminator;
         private int? delimiter;
@@ -30,35 +25,35 @@ namespace GaiaLib.Rom.Rebuild
             this.assembler = assembler;
             _root = assembler._root;
 
-            dbs = structType == null ? null
+            dbStruct = structType == null ? null
                 : _root.Structs.Values.FirstOrDefault(x =>
                     x.Name.Equals(structType, StringComparison.CurrentCultureIgnoreCase)
                 );
 
-            parent = dbs?.Parent == null ? null
+            parentStruct = dbStruct?.Parent == null ? null
                 : _root.Structs.Values.FirstOrDefault(x =>
-                    x.Name.Equals(dbs.Parent, StringComparison.CurrentCultureIgnoreCase)
+                    x.Name.Equals(dbStruct.Parent, StringComparison.CurrentCultureIgnoreCase)
                 );
 
-            discriminator = parent?.Descriminator;
-            delimiter = dbs?.Delimiter;
+            discriminator = parentStruct?.Discriminator;
+            delimiter = dbStruct?.Delimiter;
             memberOffset = 0;
             dataOffset = 0;
-            memberTypes = dbs?.Types;
+            memberTypes = dbStruct?.Types;
             currentType = memberTypes?[memberOffset];
 
             if (saveDelimiter)
-                assembler.lastDelimiter = dbs?.Delimiter ?? parent?.Delimiter;
+                assembler.lastDelimiter = dbStruct?.Delimiter ?? parentStruct?.Delimiter;
         }
 
 
 
-        private void CheckDesc()
+        private void CheckDisc()
         {
             if (discriminator == dataOffset)
             {
                 //Discriminator is always 1 byte
-                assembler.currentBlock.ObjList.Add((byte)dbs.Descriminator.Value);
+                assembler.currentBlock.ObjList.Add((byte)dbStruct.Discriminator.Value);
                 assembler.currentBlock.Size += 1;
                 dataOffset += 1;
             }
@@ -98,7 +93,7 @@ namespace GaiaLib.Rom.Rebuild
             assembler.blockIndex++;
         }
 
-        private string DoMaths(string operand)
+        private static string DoMath(string operand)
         {
             var ix = operand.IndexOfAny(RomProcessingConstants.Operators);
             if (ix >= 0)
@@ -156,7 +151,7 @@ namespace GaiaLib.Rom.Rebuild
             {
                 Location = assembler.currentBlock.Location + assembler.currentBlock.Size,
                 Label = mnemonic,
-                IsString = RomProcessingConstants.StringSpace.Contains(operand[0]),
+                IsString = _root.StringDelimiters.Contains(operand[0]),
             };
 
             //Add block to assembler
@@ -188,7 +183,7 @@ namespace GaiaLib.Rom.Rebuild
 
         public void ProcessText(char? openTag = null)
         {
-            CheckDesc();
+            CheckDisc();
 
             while (assembler.line != null)
             {
@@ -213,9 +208,10 @@ namespace GaiaLib.Rom.Rebuild
                     var lineSymbol = assembler.line[0];
 
                     //Process strings
-                    if (RomProcessingConstants.StringSpace.Contains(lineSymbol))
+                    //if (RomProcessingConstants.StringSpace.Contains(lineSymbol))
+                    if(_root.StringDelimiters.Contains(lineSymbol))
                     {
-                        assembler.ConsumeString();
+                        assembler._stringProcessor.ConsumeString();
                         AdvancePart();
                         continue;
                     }
@@ -237,7 +233,7 @@ namespace GaiaLib.Rom.Rebuild
                         if (openTag == '<')
                         {
                             assembler.line = assembler.line[1..].TrimStart(RomProcessingConstants.CommaSpace);
-                            CheckDesc();
+                            CheckDisc();
                         }
                         return;
                     }
@@ -349,7 +345,7 @@ namespace GaiaLib.Rom.Rebuild
                     }
 
                     //Do maths before regex processing
-                    operand = DoMaths(operand);
+                    operand = DoMath(operand);
 
                     ///COP processing
                     OpCode? opCode = codes.FirstOrDefault();

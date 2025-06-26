@@ -1,14 +1,32 @@
+using GaiaLib.Asm;
+using static GaiaLib.Types.RomProcessingConstants;
+
 namespace GaiaLib.Rom.Extraction;
 
 /// <summary>
 /// Manages CPU processor state during ROM analysis
 /// </summary>
-public class ProcessorStateManager
+internal class ProcessorStateManager
 {
-    private readonly Dictionary<int, bool?> _accumulatorFlags = [];
-    private readonly Dictionary<int, bool?> _indexFlags = [];
-    private readonly Dictionary<int, byte?> _bankNotes = [];
-    private readonly Dictionary<int, byte> _stackPositions = [];
+    internal readonly Dictionary<int, bool?> _accumulatorFlags = [];
+    internal readonly Dictionary<int, bool?> _indexFlags = [];
+    internal readonly Dictionary<int, byte?> _bankNotes = [];
+    internal readonly Dictionary<int, byte> _stackPositions = [];
+
+    public void HydrateRegisters(int position, Registers reg)
+    {
+        if (_accumulatorFlags.TryGetValue(position, out var acc))
+            reg.AccumulatorFlag = acc;
+
+        if (_indexFlags.TryGetValue(position, out var ind))
+            reg.IndexFlag = ind;
+
+        if (_bankNotes.TryGetValue(position, out var bnk))
+            reg.DataBank = bnk;
+
+        if (_stackPositions.TryGetValue(position, out var stack))
+            reg.Stack.Location = stack;
+    }
 
     public bool? GetAccumulatorFlag(int location)
     {
@@ -65,17 +83,4 @@ public class ProcessorStateManager
         return _stackPositions.TryAdd(location, value);
     }
 
-    public void Clear()
-    {
-        _accumulatorFlags.Clear();
-        _indexFlags.Clear();
-        _bankNotes.Clear();
-        _stackPositions.Clear();
-    }
-
-    // Internal access for BlockReader compatibility
-    internal Dictionary<int, bool?> AccumulatorFlags => _accumulatorFlags;
-    internal Dictionary<int, bool?> IndexFlags => _indexFlags;
-    internal Dictionary<int, byte?> BankNotes => _bankNotes;
-    internal Dictionary<int, byte> StackPositions => _stackPositions;
-} 
+}
