@@ -110,8 +110,8 @@ The at symbol provides **database-driven type safety** for complex data structur
 @sprite_part(#0x10, #0x20, #0x30, #0x40, #0x50, #0x1234)
 
 // String types (generated from database)  
-@WideString`Hello [LU1:BB] World![END]`  // Type-safe game text
-@ASCIIString`Menu text here`             // Validates character map
+@WideString`Hello [LU1:BB] World![END]`  // Type-safe game text with command validation
+@ASCIIString`Menu text here`             // Validates character map and commands
 
 // File imports (cross-reference system)
 import actors from @scene_actors;         // Import assembly definitions
@@ -300,98 +300,228 @@ const processMetaCommand = (commandAddr: Address) => {
 
 ## **String Type System**
 
-### **Database-Driven String Types**
+### **Advanced Command-Embedded String Validation**
 
-String types are **automatically generated** from your game's string encoding definitions, providing full character map validation and encoding support.
+String types in TSAL provide **sophisticated validation** for embedded commands within game text, going far beyond simple character map validation to ensure command syntax, parameter types, and control flow are all correct.
 
-#### **String Type Definitions**
+#### **The Challenge: Complex Embedded Commands**
+
+Game strings contain sophisticated mini-programs with typed parameters:
+
 ```typescript
-// Generated from stringTypes.json
-interface StringTypes {
-  // ASCII string type
-  ASCIIString: {
-    delimiter: "|";
-    terminator: 0;
-    characterMap: [/* 256 character mappings */];
-    maxLength?: number;
-  };
-  
-  // Wide string type (for dialogue)
-  WideString: {
-    delimiter: "`"; 
-    terminator: 202;
-    greedyTerminator: true;
-    characterMap: [/* game-specific characters */];
-    commands: [/* text commands like [LU1:BB] */];
-  };
-  
-  // Sprite string type (for UI text)
-  SpriteString: {
-    delimiter: "~";
-    terminator: 202;
-    shiftType: "wh2";
-    characterMap: [/* limited character set */];
-  };
+// Real game string with multiple embedded commands
+`[TPL:A][TPL:3]Erik: The sun is [LU2:95]bright. I [LU1:BB]noticed [LU1:D7]before.[PAL:0][END]`
+
+// Each command has specific parameter requirements:
+[TPL:A]     // TPL command with Byte parameter
+[LU2:95]    // LU2 lookup with Byte index  
+[LU1:BB]    // LU1 lookup with Byte index
+[PAL:0]     // PAL palette change with Byte parameter
+[END]       // END terminator with no parameters (halt: true)
+```
+
+#### **Database-Driven Command Definitions**
+
+Commands are **auto-generated from stringCommands.json** with full type information:
+
+```typescript
+// Generated from stringCommands.json
+interface WideStringCommands {
+  END: { params: []; halt: true };
+  TPL: { params: [byte: number]; halt: false };
+  PAL: { params: [byte: number]; halt: false };
+  LU1: { params: [byte: number]; halt: false };
+  LU2: { params: [byte: number]; halt: false };
+  SFX: { params: [byte: number]; halt: false };
+  BCD: { params: [word1: number, word2: number]; halt: false };
+  ADR: { params: [offset: number, word: number]; halt: false };
+  JMP: { params: [offset: number]; halt: true };
+  FIN: { params: []; halt: false };
+  WAI: { params: []; halt: false };
+}
+
+interface ASCIIStringCommands {
+  CUR: { params: [byte1: number, byte2: number]; halt: false };
+  PRT: { params: [address: number]; halt: false };
+  HP: { params: []; halt: false };
+  NUM: { params: [word: number]; halt: false };
+  BCD: { params: [byte: number, word: number]; halt: false };
+  CLR: { params: [word: number]; halt: false };
+  LU: { params: [byte: number]; halt: false };
 }
 ```
 
-#### **Type-Safe String Creation**
+#### **TypeScript Template Literal Parser**
+
+TSAL uses **advanced TypeScript types** to parse and validate embedded commands at compile time:
+
 ```typescript
-// Multi-line strings with validation
-const dialogue = @WideString`
+// Recursive type that parses and validates string commands
+type ParseStringCommands<T extends string, CommandSet> = 
+  T extends `${infer Before}[${infer Command}]${infer After}`
+    ? ParseCommand<Command, CommandSet> extends never
+      ? never // Invalid command
+      : ParseStringCommands<After, CommandSet> // Continue parsing
+    : T extends `${string}` 
+      ? T // Valid text content
+      : never;
+
+// Parse individual commands with parameters
+type ParseCommand<T extends string, CommandSet> =
+  T extends `${infer Cmd}:${infer Params}`
+    ? Cmd extends keyof CommandSet
+      ? ValidateParams<Params, CommandSet[Cmd]['params']>
+      : never
+    : T extends keyof CommandSet
+      ? CommandSet[T]['params'] extends []
+        ? T // Command with no parameters
+        : never
+      : never;
+
+// Validate parameter types and counts
+type ValidateParams<
+  ParamString extends string,
+  ExpectedParams extends readonly unknown[]
+> = 
+  ExpectedParams extends readonly []
+    ? ParamString extends '' ? true : never
+    : ExpectedParams extends readonly [infer First, ...infer Rest]
+      ? ParamString extends `${infer Value}:${infer Remaining}`
+        ? ValidateParamType<Value, First> extends true
+          ? ValidateParams<Remaining, Rest>
+          : never
+        : ExpectedParams extends readonly [infer Only]
+          ? ValidateParamType<ParamString, Only>
+          : never
+      : never;
+```
+
+#### **Type-Safe String Creation with Full Validation**
+
+```typescript
+// ✅ Valid - all commands exist and have correct parameters
+const validDialogue = @WideString`
   [TPL:A][TPL:3]Erik: The sun is [LU2:95]
   bright. I [LU1:BB]
   noticed [LU1:D7]before.[PAL:0][END]
 `;
 
-const menuText = @ASCIIString`
-  Health: ${playerHP}
-  Magic:  ${playerMP}
+// ✅ Valid - ASCII string with correct commands
+const statusDisplay = @ASCIIString`
+  [CUR:10:15]Player Stats:[N]
+  [HP]Health: [NUM:999][N]
+  Magic: [NUM:50]
 `;
 
-const spriteLabel = @SpriteString`PRESS START`;
-
-// Compile-time validation
-const invalidString = @ASCIIString`
-  This has ♥ invalid chars  // ❌ Error: ♥ not in ASCIIString character map
+// ❌ TypeScript Error: Unknown command
+const invalidCommand = @WideString`
+  [INVALID:123]Hello World[END]
 `;
 
-const tooLong = @SpriteString`
-  This string exceeds the maximum length for sprite strings
-`; // ❌ Error: String too long for sprite display
+// ❌ TypeScript Error: Wrong parameter count
+const wrongParams = @WideString`
+  [TPL:A:B]Hello[END]  // TPL expects 1 param, got 2
+`;
+
+// ❌ TypeScript Error: Invalid parameter type  
+const wrongType = @WideString`
+  [LU1:hello]World[END]  // LU1 expects number, got string
+`;
+
+// ❌ TypeScript Error: Missing termination
+const noEnd = @WideString`
+  Hello World  // Missing [END] or other halt command
+`;
+
+// ✅ Valid - Complex command with multiple parameters
+const complexCommand = @WideString`
+  Player has [BCD:1000:999] coins[FIN]
+  Jump to [JMP:0x8000]  // JMP is halt command
+`;
 ```
 
-#### **String Command Validation**
+#### **Advanced Command Validation Features**
+
 ```typescript
-// Game-specific text commands are validated
-const validCommands = @WideString`
-  [TPL:A]         // ✅ Valid template command
-  [LU1:BB]        // ✅ Valid lookup command
-  [PAL:0]         // ✅ Valid palette command  
-  [END]           // ✅ Valid terminator
-`;
+// Halt command validation - strings must end with halt commands
+type HaltCommands<CommandSet> = {
+  [K in keyof CommandSet]: CommandSet[K]['halt'] extends true ? K : never
+}[keyof CommandSet];
 
-const invalidCommands = @WideString`
-  [INVALID:123]   // ❌ Error: Unknown command
-  [LU1:999]       // ❌ Error: Lookup index out of range
-`;
+// Context-aware command validation
+type ValidInContext<Command, Context> =
+  Context extends 'dialogue'
+    ? Command extends 'TPL' | 'PAL' | 'LU1' | 'LU2' | 'END' | 'FIN' ? true : never
+    : Context extends 'menu'
+      ? Command extends 'CUR' | 'NUM' | 'CLR' | 'HP' ? true : never
+      : true;
+
+// String factory with complete validation
+export function WideString<T extends string>(
+  template: T
+): ParseStringCommands<T, WideStringCommands> extends never 
+  ? never 
+  : ValidatedWideString<T> {
+  
+  // Runtime validation matches compile-time checking
+  const commands = extractCommands(template);
+  
+  for (const cmd of commands) {
+    const commandDef = WideStringCommands[cmd.name];
+    if (!commandDef) {
+      throw new Error(`Unknown WideString command: ${cmd.name}`);
+    }
+    
+    validateCommandParams(cmd.params, commandDef.params);
+  }
+  
+  return new ValidatedWideString(template, commands);
+}
 ```
 
-#### **String Interpolation with Type Safety**
+#### **IDE Integration for Commands**
+
 ```typescript
-// Dynamic string generation with validation
-const createStatusMessage = (health: number, magic: number) => @WideString`
-  Player Status:
-  HP: ${health.toString().padStart(3, '0')}   // Type-safe number conversion
-  MP: ${magic.toString().padStart(3, '0')}
-  [END]
+// Intelligent autocomplete for commands
+@WideString`[T  // Shows: TPL (template command)
+@WideString`[TPL:  // Shows parameter hint: "byte: number"
+@WideString`[LU1:BB]Text[  // Shows: END, FIN, PAL, etc.
+
+// Real-time error checking
+@WideString`[TPL:256]`  // ❌ Warning: "Byte value 256 out of range (0-255)"
+@WideString`[LU1:]`     // ❌ Error: "Missing required parameter"
+@WideString`[TPL:A:B]`  // ❌ Error: "Too many parameters for TPL command"
+
+// Hover documentation
+[LU1:BB]  // ↑ Hover: "Lookup table 1 - Retrieves text from lookup table 1 at index BB"
+[PAL:0]   // ↑ Hover: "Palette change - Changes dialogue palette to index 0"
+[END]     // ↑ Hover: "End dialogue - Terminates string processing (halt command)"
+```
+
+#### **Character Map Integration**
+
+```typescript
+// Character validation combined with command validation
+interface StringTypeDefinition {
+  delimiter: string;
+  terminator: number;
+  characterMap: readonly (string | null)[];
+  commands: CommandDefinitions;
+  greedyTerminator?: boolean;
+  maxLength?: number;
+}
+
+// Multi-layer validation
+const dialogue = @WideString`
+  [TPL:A]This has ♥ hearts[END]  // ✅ ♥ valid in WideString character map
 `;
 
-// Template-based string creation
-const createDialogue = (characterName: string, message: string) => @WideString`
-  [TPL:A][TPL:3]${characterName}: ${message}[PAL:0][END]
+const asciiText = @ASCIIString`
+  This has ♥ hearts  // ❌ ♥ not valid in ASCIIString character map  
 `;
 ```
+
+This sophisticated string validation system ensures that **every embedded command is correct** before the ROM is built, preventing countless runtime text display bugs and making complex game text systems much more maintainable.
 
 ---
 
