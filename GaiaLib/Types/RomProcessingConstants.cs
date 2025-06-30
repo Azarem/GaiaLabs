@@ -59,8 +59,8 @@ public static class RomProcessingConstants
             return op.Size;
         else if (obj is byte[] arr)
             return arr.Length;
-        else if (obj is StringEntry se)
-            return se.Data.Length;
+        //else if (obj is StringEntry se)
+        //    return se.Data.Length;
         else if (obj is byte)
             return 1;
         else if (obj is ushort)

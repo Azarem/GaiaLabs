@@ -9,16 +9,18 @@ internal class TypeParser
 {
     private readonly BlockReader _blockReader;
     private readonly RomDataReader _romDataReader;
-    private readonly ProcessorStateManager _stateManager;
+    //private readonly ProcessorStateManager _stateManager;
     private readonly StringReader _stringReader;
-    private readonly Dictionary<int, string> _chunkTable;
+    //private readonly Dictionary<int, string> _chunkTable;
     private readonly IDictionary<string, DbStringType> _stringTypes;
+    private readonly ReferenceManager _referenceManager;
 
     public TypeParser(BlockReader blockReader)
     {
         _blockReader = blockReader;
-        _chunkTable = blockReader._chunkTable;
-        _stateManager = blockReader._stateManager;
+        _referenceManager = blockReader._referenceManager;
+        //_chunkTable = blockReader._structTable;
+        //_stateManager = blockReader._stateManager;
         _romDataReader = blockReader._romDataReader;
         _stringReader = blockReader._stringReader;
         _stringTypes = blockReader._root.StringTypes;
@@ -116,7 +118,7 @@ internal class TypeParser
             //Roll back work if struct overflows a chunk boundary
             //SHOULD only happen for the inventory sprite map
             while (++startPosition < _romDataReader.Position)
-                if (_chunkTable.ContainsKey(startPosition))
+                if (_referenceManager.ContainsStruct(startPosition))
                 {
                     //_pCur -= _lCur - startLoc;
                     _romDataReader.Position = startPosition;
@@ -130,13 +132,13 @@ internal class TypeParser
 
         //If we have reached
         if (delReached && depth == 0)
-            _chunkTable.TryAdd(_romDataReader.Position, typeName);
+            _referenceManager.TryAddStruct(_romDataReader.Position, typeName);
 
         return objects;
     }
 
     private object ParseWordSafe()
-        => _chunkTable.ContainsKey(_romDataReader.Position + 1)
+        => _referenceManager.ContainsStruct(_romDataReader.Position + 1)
             ? (object)_romDataReader.ReadByte()
             : _romDataReader.ReadUShort();
 
@@ -191,10 +193,10 @@ internal class TypeParser
             typeName ??= _blockReader._currentPart.Struct ?? "Binary";
 
             //Add the struct type to our chunk table if it is not already present
-            _chunkTable.TryAdd(loc, typeName);
+            _referenceManager.TryAddStruct(loc, typeName);
 
             //If the location is not already in the reference table, add it
-            _blockReader._referenceTable.TryAdd(loc, $"{typeName.ToLower()}_{loc:X6}");
+            _referenceManager.TryAddName(loc, $"{typeName.ToLower()}_{loc:X6}");
         }
 
         return new LocationWrapper(loc, addrType);
@@ -211,7 +213,7 @@ internal class TypeParser
             //Check the chunk table for a new type block, but not on the first iteration
             if (first)
                 first = false;
-            else if (_chunkTable.ContainsKey(_romDataReader.Position))
+            else if (_referenceManager.ContainsStruct(_romDataReader.Position))
                 break;
 
             //Process register adjustments before parse

@@ -1,12 +1,12 @@
 ﻿using GaiaLib.Types;
 
-namespace GaiaLib
+namespace GaiaLib.Compression
 {
-    public static class Compression
+    public class QuintetLZ : ICompressionProvider
     {
         public const int DictionarySize = 0x100;
 
-        public static byte[] Expand(byte[] srcData, int srcPosition = 0, int srcLen = 0x8000)
+        public byte[] Expand(byte[] srcData, int srcPosition = 0, int srcLen = RomProcessingConstants.PageSize)
         {
             var bitStream = new BitStream(srcData, srcPosition);
             var srcStop = srcPosition + srcLen;
@@ -80,7 +80,7 @@ namespace GaiaLib
             return outBuffer;
         }
 
-        public static byte[] Compact(byte[] srcData)
+        public byte[] Compact(byte[] srcData)
         {
             byte[] dictionary = new byte[0x100];
 

@@ -13,9 +13,7 @@ internal class BlockWriter
 {
     public DbRoot _root;
     public BlockReader _blockReader;
-    internal readonly Dictionary<int, string> _chunkTable = [];
-    internal readonly Dictionary<int, int> _markerTable = [];
-    internal readonly Dictionary<int, string> _referenceTable = [];
+    internal readonly ReferenceManager _referenceManager;
 
     private bool _isInline;
     private DbPart _currentPart;
@@ -24,9 +22,7 @@ internal class BlockWriter
     {
         _blockReader = reader;
         _root = reader._root;
-        _chunkTable = reader._chunkTable;
-        _markerTable = reader._markerTable;
-        _referenceTable = reader._referenceTable;
+        _referenceManager = reader._referenceManager;
     }
 
     public void WriteBlocks(string outPath)
@@ -113,7 +109,9 @@ internal class BlockWriter
                         var loc = tableEntry.Location + eIx;
 
                         newParts.Add(new() { Location = loc, Object = value });
-                        _referenceTable[loc] = name;
+
+                        //Force labels to match the new name
+                        _referenceManager._nameTable[loc] = name;
 
                         while (newList.Count <= key)
                             newList.Add((ushort)0);
@@ -205,7 +203,7 @@ internal class BlockWriter
             {
                 _isInline = true;
                 writer.Write(
-                    $"{(_referenceTable.TryGetValue(t.Location, out var s) ? s : $"loc_{t.Location:X6}")} "
+                    $"{(_referenceManager.TryGetName(t.Location, out var s) ? s : $"loc_{t.Location:X6}")} "
                 );
                 WriteObject(writer, t.Object, depth);
                 writer.WriteLine();
@@ -242,7 +240,7 @@ internal class BlockWriter
                 {
                     first = false;
                 }
-                else if (_referenceTable.TryGetValue(op.Location, out var label)) //Check for code label
+                else if (_referenceManager.TryGetName(op.Location, out var label)) //Check for code label
                 {
                     //if (first)
                     //{
@@ -377,7 +375,7 @@ internal class BlockWriter
             var refChar = sw.Type.Delimiter;
 
             if (sw.Marker <= 0)
-                _markerTable.TryGetValue(sw.Location, out sw.Marker);
+                _referenceManager.TryGetMarker(sw.Location, out sw.Marker);
 
             if (sw.Marker > 0)
             {

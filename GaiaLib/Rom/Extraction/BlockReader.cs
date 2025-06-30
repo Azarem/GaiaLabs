@@ -27,7 +27,7 @@ internal partial class BlockReader
     internal readonly TypeParser _typeParser;
     internal readonly RomDataReader _romDataReader;
     internal readonly ProcessorStateManager _stateManager;
-    private readonly ReferenceManager _referenceManager;
+    internal readonly ReferenceManager _referenceManager;
     #endregion
 
     #region Backward Compatibility Properties
@@ -45,9 +45,9 @@ internal partial class BlockReader
     internal Dictionary<int, byte> StackPosition => _stateManager._stackPositions;
 
     // Direct access to reference management collections
-    internal Dictionary<int, string> _chunkTable => _referenceManager._chunkTable;
+    internal Dictionary<int, string> _structTable => _referenceManager._structTable;
     internal Dictionary<int, int> _markerTable => _referenceManager._markerTable;
-    internal Dictionary<int, string> _referenceTable => _referenceManager._referenceTable;
+    internal Dictionary<int, string> _nameTable => _referenceManager._nameTable;
     #endregion
 
     #region Current Processing State
@@ -100,7 +100,7 @@ internal partial class BlockReader
     private void InitializeFileReferences()
     {
         foreach (var file in _root.Files)
-            _referenceManager.TryAddReference(file.Start, file.Name);
+            _referenceManager.TryAddName(file.Start, file.Name);
     }
     #endregion
 
@@ -164,20 +164,20 @@ internal partial class BlockReader
     {
         if (_currentBlock.IsOutside(loc, out var p) && p != null)
             _currentPart.Includes.Add(p);
-        else if (isBranch && !_referenceManager.TryGetReference(loc, out _))
-            _referenceManager.TryAddReference(loc, string.Format(RomProcessingConstants.BlockReader.LocationFormat, loc));
+        else if (isBranch && !_referenceManager.TryGetName(loc, out _))
+            _referenceManager.TryAddName(loc, string.Format(RomProcessingConstants.BlockReader.LocationFormat, loc));
     }
     #endregion
 
     #region Type and Chunk Management
     internal string NoteType(int loc, string type, bool silent = false, Registers? reg = null)
     {
-        _referenceManager.TryAddChunk(loc, type);
+        _referenceManager.TryAddStruct(loc, type);
 
-        if (!_referenceManager.TryGetReference(loc, out var name))
+        if (!_referenceManager.TryGetName(loc, out var name))
         {
             name = _referenceManager.CreateTypeName(type, loc);
-            _referenceManager.TryAddReference(loc, name);
+            _referenceManager.TryAddName(loc, name);
         }
 
         if (!silent && type == RomProcessingConstants.BlockReader.CodeType && reg != null)
@@ -221,7 +221,7 @@ internal partial class BlockReader
     }
 
     internal bool PartCanContinue()
-        => _romDataReader.Position < _partEnd && !_referenceManager.ContainsChunk(_romDataReader.Position);
+        => _romDataReader.Position < _partEnd && !_referenceManager.ContainsStruct(_romDataReader.Position);
     #endregion
 
     #region Main Analysis Methods
@@ -251,8 +251,8 @@ internal partial class BlockReader
             foreach (var part in block.Parts)
             {
                 part.Includes = new();
-                _referenceManager.TryAddChunk(part.Start, part.Struct);
-                _referenceManager.TryAddReference(part.Start, part.Name);
+                _referenceManager.TryAddStruct(part.Start, part.Struct);
+                _referenceManager.TryAddName(part.Start, part.Name);
             }
     }
 
@@ -270,7 +270,7 @@ internal partial class BlockReader
 
         while (_romDataReader.Position < _partEnd)
         {
-            if (_referenceManager.TryGetChunk(_romDataReader.Position, out var value))
+            if (_referenceManager.TryGetStruct(_romDataReader.Position, out var value))
             {
                 current = value!;
             }

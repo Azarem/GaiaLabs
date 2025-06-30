@@ -250,11 +250,11 @@ public class RomWriter : IDisposable
                     OutStream.Write(arr);
                     opos += arr.Length;
                 }
-                else if (obj is StringEntry sw)
-                {
-                    obj = sw.Data;
-                    goto Top;
-                }
+                //else if (obj is StringEntry sw)
+                //{
+                //    obj = sw.Data;
+                //    goto Top;
+                //}
                 else if (obj is string str)
                 {
                     var label = str;

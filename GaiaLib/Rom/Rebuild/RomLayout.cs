@@ -2,7 +2,7 @@
 
 namespace GaiaLib.Rom.Rebuild
 {
-    public class RomLayout
+    internal class RomLayout
     {
         private const int MinAcceptedRemaining = 0x20;
         private readonly List<ChunkFile> unmatchedFiles;

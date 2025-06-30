@@ -120,7 +120,7 @@ namespace GaiaLib.Rom.Rebuild
                     if (type == BinType.Assembly || type == BinType.Patch)
                     {
                         using var assembler = new Assembler(_root, filePath);
-                        (chunkFile.Blocks, chunkFile.Includes, chunkFile.Bank) = assembler.ParseAssembly(0);
+                        (chunkFile.Blocks, chunkFile.Includes, chunkFile.Bank) = assembler.ParseAssembly();
                     }
                     //else if (type == BinType.Palette)
                     //{

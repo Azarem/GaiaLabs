@@ -1,14 +1,16 @@
+using GaiaLib.Compression;
 using GaiaLib.Database;
 using GaiaLib.Enum;
 
 namespace GaiaLib.Rom.Extraction;
 
-internal class FileReader(byte[] romData, DbRoot dbRoot)
+internal class FileReader(byte[] romData, DbRoot dbRoot, ICompressionProvider provider)
 {
     public const int PaletteMinSize = 0x200;
 
     private readonly byte[] _romData = romData;
     private readonly DbRoot _dbRoot = dbRoot;
+    private readonly ICompressionProvider _compression = provider;
 
     /// <summary>
     /// Extracts all files from the ROM to the given output path
@@ -59,7 +61,7 @@ internal class FileReader(byte[] romData, DbRoot dbRoot)
             if (file.Compressed == true)
             {
                 //Expand the compressed data
-                var data = Compression.Expand(_romData, start, length);
+                var data = _compression.Expand(_romData, start, length);
 
                 //Copy the expanded data to the file stream
                 await CopyBytes(fileStream, data, 0, data.Length, header, file.Type);

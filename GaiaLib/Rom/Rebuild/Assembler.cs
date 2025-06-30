@@ -13,15 +13,16 @@ public class Assembler : IDisposable
     private readonly StreamReader reader;
     internal readonly StringProcessor _stringProcessor;
 
-    internal string? line = "";
-    public HashSet<string> includes = new();
-    SortedDictionary<string, string?> tags = new(StringSizeComparer.Instance);
+    internal string _lineBuffer = "";
+    public HashSet<string> includes = [];
     public List<AsmBlock> blocks = [];
-    internal AsmBlock currentBlock;
-    internal int lineCount;
-    internal int blockIndex;
-    internal int? lastDelimiter;
-    internal byte? reqBank;
+    SortedDictionary<string, string?> tags = new(StringSizeComparer.Instance);
+    internal AsmBlock? currentBlock = null;
+    internal int lineCount = 0;
+    internal int blockIndex = 0;
+    internal int? lastDelimiter = null;
+    internal byte? reqBank = null;
+    internal bool eof = false;
 
 
     public Assembler(DbRoot dbRoot, string filePath)
@@ -40,50 +41,45 @@ public class Assembler : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public (List<AsmBlock> blocks, HashSet<string> includes, byte? reqBank) ParseAssembly(int startLoc)
+    public (List<AsmBlock> blocks, HashSet<string> includes, byte? reqBank) ParseAssembly()
     {
         using var reader = new StreamReader(inStream);
 
-        includes = new HashSet<string>();
-        blocks = new List<AsmBlock>();
-        currentBlock = null;
-        //AsmBlock? target;
-        tags = new SortedDictionary<string, string?>(StringSizeComparer.Instance);
-        //memStream.Position = 0;
+        //Initialize root block (no label, location 0) and set as current
+        blocks.Add(currentBlock = new ());
 
-        blockIndex = 0;
-        lineCount = 0;
-
-        reqBank = null;
-        //string? lastStruct = null;
-        lastDelimiter = null;
-
-        blocks.Add(currentBlock = new AsmBlock { Location = startLoc });
-
+        //Initialize state machine and process text
         var state = new AssemblerState(this);
         state.ProcessText();
 
         return (blocks, includes, reqBank);
     }
 
-    public string? GetLine()
+    public bool GetLine()
     {
         //This can happen
-        if (line == null)
-            return null;
+        if (eof)
+            return false;
 
         //Keep processing what we already have
-        if (line.Length > 0)
-            return line;
+        if (_lineBuffer.Length > 0)
+            return true;
 
         Read:
-        line = reader.ReadLine();
+        var rawLine = reader.ReadLine();
 
         //This can happen
-        if (line == null)
-            return null;
+        if (rawLine == null)
+            if (_lineBuffer.Length == 0)
+            {
+                eof = true;
+                return false;
+            }
+            else
+                rawLine = "";
+        else
+            _lineBuffer += rawLine;
 
-        Clean:
         lineCount++;
 
         //Ignore comments
@@ -92,45 +88,52 @@ public class Assembler : IDisposable
         TrimComments("//");
 
         //Trim
-        line = line.Trim(RomProcessingConstants.CommaSpace);
+        _lineBuffer = _lineBuffer.Trim(RomProcessingConstants.CommaSpace);
 
         //This can happen
-        if (line.Length == 0)
+        if (_lineBuffer.Length == 0)
             goto Read;
 
-        if (line.EndsWith('\\'))
+        //Process hard line continuations
+        if (_lineBuffer.EndsWith('\\'))
         {
-            line = line[..^1] + (reader.ReadLine() ?? "");
-            goto Clean;
+            _lineBuffer = _lineBuffer[..^1];
+            goto Read;
         }
 
         //Process directives
-        if (line[0] == '?')
+        if (_lineBuffer[0] == '?')
         {
             ProcessDirectives();
+            _lineBuffer = "";
             goto Read;
         }
 
         //Process tags
-        if (line[0] == '!')
+        if (_lineBuffer[0] == '!')
         {
             ProcessTags();
+            _lineBuffer = "";
             goto Read;
         }
 
         ResolveTags();
 
-        return line;
+        return true;
     }
 
     private void TrimComments(string sequence)
     {
-        var index = line.IndexOf(sequence);
+        //Look for the first instance of the comment sequence
+        var index = _lineBuffer.IndexOf(sequence);
         if (index >= 0)
         {
-            var cix = line.IndexOfAny(_root.StringDelimiters);
-            if (cix < 0 || cix > index || (cix = line.LastIndexOf(line[cix])) < index)
-                line = line[..index];
+            //Make sure it's not inside a string
+            var strIndex = _lineBuffer.IndexOfAny(_root.StringDelimiters);
+            //This works with line continuations because the string ending will not be on this line yet
+            //If no string, string starts after comment, or last delimiter is before comment, trim it
+            if (strIndex < 0 || strIndex > index || _lineBuffer.LastIndexOf(_lineBuffer[strIndex]) < index)
+                _lineBuffer = _lineBuffer[..index];
         }
     }
 
@@ -138,15 +141,15 @@ public class Assembler : IDisposable
     private void ProcessDirectives()
     {
         //Find end of directive
-        var endIx = line.IndexOfAny(RomProcessingConstants.CommaSpace);
+        var endIx = _lineBuffer.IndexOfAny(RomProcessingConstants.CommaSpace);
 
         //Default to line length if no end characters
         if (endIx < 0)
-            endIx = line.Length;
+            endIx = _lineBuffer.Length;
 
-        var value = line[endIx..].TrimStart(RomProcessingConstants.CommaSpace);
+        var value = _lineBuffer[endIx..].TrimStart(RomProcessingConstants.CommaSpace);
 
-        switch (line[1..endIx].ToUpper())
+        switch (_lineBuffer[1..endIx].ToUpper())
         {
             //This is taken care of by the loader
             case "BANK":
@@ -163,30 +166,40 @@ public class Assembler : IDisposable
     private void ProcessTags()
     {
         //Remove the '!' prefix and trim leading spaces
-        line = line[1..].TrimStart(RomProcessingConstants.CommaSpace);
+        _lineBuffer = _lineBuffer[1..].TrimStart(RomProcessingConstants.CommaSpace);
 
         //Process as many pairs as we can
-        while (line.Length > 0)
+        while (_lineBuffer.Length > 0)
         {
-            string name = line;
+            //Default name and value
+            string name = _lineBuffer;
             string? value = null;
-            var endIx = line.IndexOfAny(RomProcessingConstants.CommaSpace);
+
+            //Find first index of comma/space/tab
+            var endIx = _lineBuffer.IndexOfAny(RomProcessingConstants.CommaSpace);
 
             if (endIx >= 0)
             {
-                name = line[..endIx];
-                value = line[(endIx + 1)..].TrimStart(RomProcessingConstants.CommaSpace);
-                if ((endIx = value.IndexOfAny(RomProcessingConstants.CommaSpace)) >= 0)
+                //Split into name and value
+                name = _lineBuffer[..endIx];
+                value = _lineBuffer[(endIx + 1)..].TrimStart(RomProcessingConstants.CommaSpace);
+
+                //Find next index of comma/space/tab inside value
+                var nextIx = value.IndexOfAny(RomProcessingConstants.CommaSpace);
+                if (nextIx >= 0)
                 {
-                    line = value[(endIx + 1)..].TrimStart(RomProcessingConstants.CommaSpace);
-                    value = value[..endIx];
+                    //Line buffer then take the remainder
+                    _lineBuffer = value[(nextIx + 1)..].TrimStart(RomProcessingConstants.CommaSpace);
+                    //Value takes up to next index
+                    value = value[..nextIx];
                 }
                 else
-                    line = "";
+                    _lineBuffer = ""; //No more pairs, clear buffer
             }
             else
-                line = "";
+                _lineBuffer = ""; //Take all as name, clear buffer
 
+            //Assign name/value pair to tags
             tags[name] = value;
         }
     }
@@ -194,9 +207,10 @@ public class Assembler : IDisposable
     private void ResolveTags()
     {
         int ix;
+        //Tags are sorted by length descending so longer tags are replaced first (avoids minor conflicts)
         foreach (var tag in tags)
-            while ((ix = line.IndexOf(tag.Key, StringComparison.CurrentCultureIgnoreCase)) >= 0)
-                line = line[..ix] + tag.Value + line[(ix + tag.Key.Length)..];
+            while ((ix = _lineBuffer.IndexOf(tag.Key, StringComparison.CurrentCultureIgnoreCase)) >= 0)
+                _lineBuffer = _lineBuffer[..ix] + tag.Value + _lineBuffer[(ix + tag.Key.Length)..];
     }
 
 
@@ -216,27 +230,27 @@ public class Assembler : IDisposable
         bool reverse = false;
 
         //Immediate binary marker
-        if (line[0] == '#')
-            line = line[1..];
+        if (_lineBuffer[0] == '#')
+            _lineBuffer = _lineBuffer[1..];
 
         //Reverse binary marker
-        if (line[0] == '$')
+        if (_lineBuffer[0] == '$')
         {
             reverse = true;
-            line = line[1..];
+            _lineBuffer = _lineBuffer[1..];
         }
 
         string hex;
-        var symbolIx = line.IndexOfAny(RomProcessingConstants.SymbolSpace);
+        var symbolIx = _lineBuffer.IndexOfAny(RomProcessingConstants.SymbolSpace);
         if (symbolIx >= 0)
         {
-            hex = line[..symbolIx];
-            line = line[symbolIx..].TrimStart(RomProcessingConstants.CommaSpace);
+            hex = _lineBuffer[..symbolIx];
+            _lineBuffer = _lineBuffer[symbolIx..].TrimStart(RomProcessingConstants.CommaSpace);
         }
         else
         {
-            hex = line;
-            line = "";
+            hex = _lineBuffer;
+            _lineBuffer = "";
         }
 
         if (hex.Length > 0)
@@ -265,6 +279,7 @@ public class Assembler : IDisposable
                             data[y] = sample;
                         }
 
+                    //Explicitly change two-byte data into ushort for easier processing later
                     if (data.Length == 2)
                     {
                         currentBlock.ObjList.Add((ushort)(data[0] | data[1] << 8));

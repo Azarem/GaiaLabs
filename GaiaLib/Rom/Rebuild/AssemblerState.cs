@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace GaiaLib.Rom.Rebuild
 {
-    public class AssemblerState
+    internal class AssemblerState
     {
         private readonly DbStruct? dbStruct;
         private readonly DbStruct? parentStruct;
@@ -70,21 +70,21 @@ namespace GaiaLib.Rom.Rebuild
 
         private void ProcessOrigin()
         {
-            assembler.line = assembler.line[3..].TrimStart(RomProcessingConstants.CommaSpace);
-            if (assembler.line.StartsWith('$'))
-                assembler.line = assembler.line[1..];
+            assembler._lineBuffer = assembler._lineBuffer[3..].TrimStart(RomProcessingConstants.CommaSpace);
+            if (assembler._lineBuffer.StartsWith('$'))
+                assembler._lineBuffer = assembler._lineBuffer[1..];
 
             string hex;
-            var endIx = assembler.line.IndexOfAny(RomProcessingConstants.CommaSpace);
+            var endIx = assembler._lineBuffer.IndexOfAny(RomProcessingConstants.CommaSpace);
             if (endIx >= 0)
             {
-                hex = assembler.line[..endIx];
-                assembler.line = assembler.line[(endIx + 1)..].TrimStart(RomProcessingConstants.CommaSpace);
+                hex = assembler._lineBuffer[..endIx];
+                assembler._lineBuffer = assembler._lineBuffer[(endIx + 1)..].TrimStart(RomProcessingConstants.CommaSpace);
             }
             else
             {
-                hex = assembler.line;
-                assembler.line = "";
+                hex = assembler._lineBuffer;
+                assembler._lineBuffer = "";
             }
 
             var location = int.Parse(hex, NumberStyles.HexNumber);
@@ -165,10 +165,10 @@ namespace GaiaLib.Rom.Rebuild
 
             //Remove label marker
             if (labelChar == ':')
-                assembler.line = assembler.line[1..];
+                assembler._lineBuffer = assembler._lineBuffer[1..];
             else if (labelChar == '[' || labelChar == '{')
             {
-                assembler.line = operand[1..].TrimStart(RomProcessingConstants.CommaSpace);
+                assembler._lineBuffer = operand[1..].TrimStart(RomProcessingConstants.CommaSpace);
 
                 //Process the next 
                 var state = new AssemblerState(assembler, currentType);
@@ -185,27 +185,26 @@ namespace GaiaLib.Rom.Rebuild
         {
             CheckDisc();
 
-            while (assembler.line != null)
+            while (!assembler.eof)
             {
-                assembler.GetLine();
-                if (assembler.line == null)
+                if (!assembler.GetLine())
                     return;
 
-                if (assembler.line.StartsWith("DB"))
+                if (assembler._lineBuffer.StartsWith("DB"))
                 {
-                    string hex = OpCode.HexRegex().Replace(assembler.line[2..], "");
+                    string hex = OpCode.HexRegex().Replace(assembler._lineBuffer[2..], "");
                     var data = Convert.FromHexString(hex);
                     assembler.currentBlock.ObjList.Add(data);
                     assembler.currentBlock.Size += data.Length;
-                    assembler.line = "";
+                    assembler._lineBuffer = "";
                     continue;
                 }
 
                 string? mnemonic = null, operand = null, operand2 = null;
 
-                while (assembler.line.Length > 0)
+                while (assembler._lineBuffer.Length > 0)
                 {
-                    var lineSymbol = assembler.line[0];
+                    var lineSymbol = assembler._lineBuffer[0];
 
                     //Process strings
                     //if (RomProcessingConstants.StringSpace.Contains(lineSymbol))
@@ -232,7 +231,7 @@ namespace GaiaLib.Rom.Rebuild
                     {
                         if (openTag == '<')
                         {
-                            assembler.line = assembler.line[1..].TrimStart(RomProcessingConstants.CommaSpace);
+                            assembler._lineBuffer = assembler._lineBuffer[1..].TrimStart(RomProcessingConstants.CommaSpace);
                             CheckDisc();
                         }
                         return;
@@ -241,18 +240,21 @@ namespace GaiaLib.Rom.Rebuild
                     //Array Close
                     if (lineSymbol == ']')
                     {
-                        assembler.line = assembler.line[1..].TrimStart(RomProcessingConstants.CommaSpace);
+                        assembler._lineBuffer = assembler._lineBuffer[1..].TrimStart(RomProcessingConstants.CommaSpace);
 
                         delimiter ??= assembler.lastDelimiter;
 
+                        //Apply delimiter if set
                         if (delimiter != null)
                             if (delimiter >= 0x100)
                             {
+                                //When over the word boundary use two bytes
                                 assembler.currentBlock.ObjList.Add((ushort)delimiter);
                                 assembler.currentBlock.Size += 2;
                             }
                             else
                             {
+                                //Otherwise default to single byte
                                 assembler.currentBlock.ObjList.Add((byte)delimiter);
                                 assembler.currentBlock.Size += 1;
                             }
@@ -264,14 +266,14 @@ namespace GaiaLib.Rom.Rebuild
                     if (lineSymbol == '}')
                     {
                         if (openTag == '{')
-                            assembler.line = assembler.line[1..].TrimStart(RomProcessingConstants.CommaSpace);
+                            assembler._lineBuffer = assembler._lineBuffer[1..].TrimStart(RomProcessingConstants.CommaSpace);
                         return;
                     }
 
                     //Array Open
                     if (lineSymbol == '[')
                     {
-                        assembler.line = assembler.line[1..].TrimStart(RomProcessingConstants.CommaSpace);
+                        assembler._lineBuffer = assembler._lineBuffer[1..].TrimStart(RomProcessingConstants.CommaSpace);
                         var state = new AssemblerState(assembler, currentType);
                         state.ProcessText('[');
                         AdvancePart();
@@ -279,35 +281,35 @@ namespace GaiaLib.Rom.Rebuild
                     }
 
                     //Process origin tags
-                    if (assembler.line.StartsWith("ORG"))
+                    if (assembler._lineBuffer.StartsWith("ORG"))
                     {
                         ProcessOrigin();
                         continue;
                     }
 
                     //Separate instructions into mnemonic and operand parts
-                    var symbolIndex = assembler.line.IndexOfAny(RomProcessingConstants.SymbolSpace);
+                    var symbolIndex = assembler._lineBuffer.IndexOfAny(RomProcessingConstants.SymbolSpace);
                     if (symbolIndex > 0)
                     {
-                        mnemonic = assembler.line[..symbolIndex];
-                        operand = assembler.line[symbolIndex..].TrimStart(RomProcessingConstants.CommaSpace);
+                        mnemonic = assembler._lineBuffer[..symbolIndex];
+                        operand = assembler._lineBuffer[symbolIndex..].TrimStart(RomProcessingConstants.CommaSpace);
 
                         //Process object tags
                         if (operand.StartsWith('<'))
                         {
-                            assembler.line = operand[1..].TrimStart(RomProcessingConstants.CommaSpace);
+                            assembler._lineBuffer = operand[1..].TrimStart(RomProcessingConstants.CommaSpace);
                             var state = new AssemblerState(assembler, mnemonic, openTag == '[' && currentType == null);
                             state.ProcessText('<');
                             mnemonic = null;
                             continue;
                         }
 
-                        assembler.line = operand;
+                        assembler._lineBuffer = operand;
                     }
                     else
                     {
-                        mnemonic = assembler.line;
-                        assembler.line = "";
+                        mnemonic = assembler._lineBuffer;
+                        assembler._lineBuffer = "";
                     }
 
                     break;
@@ -329,7 +331,7 @@ namespace GaiaLib.Rom.Rebuild
                     }
 
                     //Reset current assembler line?
-                    assembler.line = "";
+                    assembler._lineBuffer = "";
 
                     //No operand instructions
                     if (string.IsNullOrEmpty(operand))
@@ -423,7 +425,7 @@ namespace GaiaLib.Rom.Rebuild
                             ?? codes.SingleOrDefault(x => x.Mode == AddressingMode.Absolute);
 
                         if (opCode == null)
-                            throw new($"Unable to determine mode/code line {assembler.lineCount}: '{assembler.line}'");
+                            throw new($"Unable to determine mode/code line {assembler.lineCount}: '{assembler._lineBuffer}'");
                     }
 
                     object opnd1 = assembler.ParseOperand(operand);

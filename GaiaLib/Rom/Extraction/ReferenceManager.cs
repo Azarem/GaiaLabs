@@ -10,9 +10,9 @@ namespace GaiaLib.Rom.Extraction;
 /// </summary>
 internal class ReferenceManager
 {
-    internal readonly Dictionary<int, string> _chunkTable = [];
+    internal readonly Dictionary<int, string> _structTable = [];
     internal readonly Dictionary<int, int> _markerTable = [];
-    internal readonly Dictionary<int, string> _referenceTable = [];
+    internal readonly Dictionary<int, string> _nameTable = [];
     private readonly DbRoot _root;
 
     public ReferenceManager(DbRoot root)
@@ -20,29 +20,29 @@ internal class ReferenceManager
         _root = root ?? throw new ArgumentNullException(nameof(root));
     }
 
-    public bool TryGetChunk(int location, out string? chunkType)
+    public bool TryGetStruct(int location, out string? chunkType)
     {
-        return _chunkTable.TryGetValue(location, out chunkType);
+        return _structTable.TryGetValue(location, out chunkType);
     }
 
-    public bool TryAddChunk(int location, string chunkType)
+    public bool TryAddStruct(int location, string chunkType)
     {
-        return _chunkTable.TryAdd(location, chunkType);
+        return _structTable.TryAdd(location, chunkType);
     }
 
-    public bool ContainsChunk(int location)
+    public bool ContainsStruct(int location)
     {
-        return _chunkTable.ContainsKey(location);
+        return _structTable.ContainsKey(location);
     }
 
-    public bool TryGetReference(int location, out string? referenceName)
+    public bool TryGetName(int location, out string? referenceName)
     {
-        return _referenceTable.TryGetValue(location, out referenceName);
+        return _nameTable.TryGetValue(location, out referenceName);
     }
 
-    public bool TryAddReference(int location, string referenceName)
+    public bool TryAddName(int location, string referenceName)
     {
-        return _referenceTable.TryAdd(location, referenceName);
+        return _nameTable.TryAdd(location, referenceName);
     }
 
     public bool TryGetMarker(int location, out int offset)
@@ -58,7 +58,7 @@ internal class ReferenceManager
     public string CreateBranchLabel(int location)
     {
         var name = string.Format(RomProcessingConstants.BlockReader.LocationFormat, location);
-        _referenceTable[location] = name;
+        _nameTable[location] = name;
         return name;
     }
 
@@ -99,7 +99,7 @@ internal class ReferenceManager
         }
 
         // Try to get existing reference
-        if (!_referenceTable.TryGetValue(location, out name))
+        if (!_nameTable.TryGetValue(location, out name))
         {
             name = isBranch ? 
                 CreateBranchLabel(location) : 
@@ -115,7 +115,7 @@ internal class ReferenceManager
         string? closestName = null;
         int? closestLocation = null;
 
-        foreach (var entry in _referenceTable)
+        foreach (var entry in _nameTable)
         {
             if (entry.Key > location)
                 continue;
@@ -143,7 +143,7 @@ internal class ReferenceManager
         if (offset < 0) offset = -offset;
 
         string? label = null;
-        if (_chunkTable.TryGetValue(rewrite, out var ctype) && ctype == RomProcessingConstants.BlockReader.WideStringType)
+        if (_structTable.TryGetValue(rewrite, out var ctype) && ctype == RomProcessingConstants.BlockReader.WideStringType)
         {
             _markerTable[rewrite] = offset;
             _markerTable[location] = offset;
@@ -165,7 +165,7 @@ internal class ReferenceManager
 
         string result = closestName;
 
-        if (_chunkTable.TryGetValue(closestLocation!.Value, out var ctype) && ctype == RomProcessingConstants.BlockReader.WideStringType)
+        if (_structTable.TryGetValue(closestLocation!.Value, out var ctype) && ctype == RomProcessingConstants.BlockReader.WideStringType)
         {
             _markerTable[closestLocation.Value] = closestDistance;
             _markerTable[location] = closestDistance;

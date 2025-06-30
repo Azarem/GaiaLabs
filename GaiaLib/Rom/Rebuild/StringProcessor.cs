@@ -31,22 +31,22 @@ internal class StringProcessor : IDisposable
         string? str = null;
 
         //Get character code of string type
-        var typeChar = _assembler.line[0];
+        var typeChar = _assembler._lineBuffer[0];
 
         //Find last index of character code
-        var endIx = _assembler.line.IndexOf(typeChar, 1);
+        var endIx = _assembler._lineBuffer.IndexOf(typeChar, 1);
         if (endIx >= 0) //If end found
         {
             //Take the line up until the type code
-            str = _assembler.line[1..endIx];
+            str = _assembler._lineBuffer[1..endIx];
             //Line takes content after and code
-            _assembler.line = _assembler.line[(endIx + 1)..].TrimStart(RomProcessingConstants.CommaSpace);
+            _assembler._lineBuffer = _assembler._lineBuffer[(endIx + 1)..].TrimStart(RomProcessingConstants.CommaSpace);
         }
         else
         {
             //Take the remaining line
-            str = _assembler.line[1..];
-            _assembler.line = "";
+            str = _assembler._lineBuffer[1..];
+            _assembler._lineBuffer = "";
         }
 
         //Reset memory stream for new string

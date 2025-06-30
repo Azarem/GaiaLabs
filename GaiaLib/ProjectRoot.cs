@@ -1,4 +1,5 @@
-﻿using GaiaLib.Database;
+﻿using GaiaLib.Compression;
+using GaiaLib.Database;
 using GaiaLib.Enum;
 using GaiaLib.Rom;
 using GaiaLib.Rom.Extraction;
@@ -18,6 +19,14 @@ namespace GaiaLib
 
         //public string ProjectPath { get; set; }
         public string DatabasePath { get; set; }
+        public string Compression { get; set; }
+
+        public ICompressionProvider GetCompression()
+        {
+            var type = Type.GetType($"GaiaLib.Compression.{Compression ?? "QuintetLZ"}");
+            return Activator.CreateInstance(type) as ICompressionProvider
+                   ?? throw new InvalidOperationException("Could not create compression provider");
+        }
 
 
         public static ProjectRoot Load(string? path = null)
@@ -72,7 +81,7 @@ namespace GaiaLib
             root.Paths = Resources;
 
             //Extract the files from the rom data
-            var fileReader = new FileReader(data, root);
+            var fileReader = new FileReader(data, root, GetCompression());
             await fileReader.Extract(BaseDir);
 
             //Extract the sound effects from the rom data

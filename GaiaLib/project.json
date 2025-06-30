@@ -4,6 +4,7 @@
   "baseDir": "",
   "database": "us",
   "flipsPath": "C:\\Games\\flips.exe",
+  "compression": "QuintetLZ",
   "resources": {
     "Bitmap": { "folder": "graphics", "extension": "bin" },
     "Palette": { "folder": "palettes", "extension": "pal" },

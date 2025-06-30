@@ -11,11 +11,15 @@ internal class TransformProcessor
 {
     private readonly BlockReader _blockReader;
     private readonly RomDataReader _romDataReader;
+    private readonly ReferenceManager _referenceManager;
+    private readonly IDictionary<int, string> _labelLookup;
 
     public TransformProcessor(BlockReader romReader)
     {
         _blockReader = romReader;
         _romDataReader = romReader._romDataReader;
+        _referenceManager = romReader._referenceManager;
+        _labelLookup = romReader._root.Labels;
     }
 
     /// <summary>
@@ -23,7 +27,7 @@ internal class TransformProcessor
     /// </summary>
     public string? GetTransform()
     {
-        if (!_blockReader._root.Labels.TryGetValue(_romDataReader.Position, out var transform) || transform == "")
+        if (!_labelLookup.TryGetValue(_romDataReader.Position, out var transform) || transform == "")
             return transform;
 
         var transformName = CleanTransformName(transform);
@@ -64,10 +68,10 @@ internal class TransformProcessor
     {
         int value = _romDataReader.Position & 0xFF0000 | (ushort)operands[operandIndex];
         
-        if (!_blockReader._referenceTable.TryGetValue(value, out var referenceName))
+        if (!_referenceManager.TryGetName(value, out var referenceName))
         {
             referenceName = $"loc_{value:X6}";
-            _blockReader._referenceTable[value] = referenceName;
+            _referenceManager._nameTable[value] = referenceName;
         }
         
         _blockReader.ResolveInclude(value, false);
@@ -88,7 +92,7 @@ internal class TransformProcessor
     private int? ResolveTransformReference(string transformName)
     {
         // First check reference table
-        foreach (var entry in _blockReader._referenceTable)
+        foreach (var entry in _referenceManager._nameTable)
         {
             if (entry.Value == transformName)
                 return entry.Key;

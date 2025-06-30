@@ -59,7 +59,7 @@ namespace GaiaLib.Rom
             byte? bank;
             using (var assembler = new Assembler(root, filePath))
             {
-                (blocks, includes, bank) = assembler.ParseAssembly(0);
+                (blocks, includes, bank) = assembler.ParseAssembly();
             }
 
             var label = (blocks[1].ObjList[id] as string).Replace("&", "");
