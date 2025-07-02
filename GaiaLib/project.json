@@ -3,6 +3,7 @@
   "romPath": "C:\\Games\\SNES\\Illusion of Gaia.smc",
   "baseDir": "",
   "database": "us",
+  "system": "snes",
   "flipsPath": "C:\\Games\\flips.exe",
   "compression": "QuintetLZ",
   "resources": {

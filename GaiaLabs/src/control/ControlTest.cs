@@ -51,7 +51,7 @@ public partial class ControlTest : Control
 	{
 		Instance = this;
 		Project = ProjectRoot.Load();
-		DbRoot = DbRoot.FromFolder(Project.DatabasePath);
+		DbRoot = DbRoot.FromFolder(Project.DatabasePath, Project.SystemPath);
 
 		base._EnterTree();
 	}

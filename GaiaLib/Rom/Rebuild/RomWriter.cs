@@ -19,7 +19,7 @@ public class RomWriter : IDisposable
     {
         _projectRoot = projectRoot;
         //Load database
-        _dbRoot = DbRoot.FromFolder(projectRoot.DatabasePath);
+        _dbRoot = DbRoot.FromFolder(projectRoot.DatabasePath, projectRoot.SystemPath);
         //Use paths from project if available
         _dbRoot.Paths = projectRoot.Resources ?? _dbRoot.Paths;
         RomPath = Path.Combine(projectRoot.BaseDir, $"{projectRoot.Name}.smc");

@@ -83,7 +83,7 @@ namespace GaiaLib.Database
             return JsonSerializer.Deserialize<T>(table, JsonOptions);
         }
 
-        public static DbRoot FromFolder(string folderPath)
+        public static DbRoot FromFolder(string folderPath, string systemPath)
         {
             var mnemonics = ReadTable<List<DbMnemonic>>(Path.Combine(folderPath, "mnemonics_old.json"));
             var overrides = ReadTable<List<DbOverride>>(Path.Combine(folderPath, "overrides.json"));
@@ -97,7 +97,7 @@ namespace GaiaLib.Database
             var labels = ReadTable<List<DbLabel>>(Path.Combine(folderPath, "labels.json"));
             var structs = ReadTable<List<DbStruct>>(Path.Combine(folderPath, "structs.json"));
             var copdef = ReadTable<List<CopDef>>(Path.Combine(folderPath, "copdef.json"));
-            var opCodes = ReadTable<List<OpCode>>(Path.Combine(folderPath, "opCodes.json"));
+            var opCodes = ReadTable<List<OpCode>>(Path.Combine(systemPath, "opCodes.json"));
 
             var stringTypes = ReadTable<List<DbStringType>>(Path.Combine(folderPath, "stringTypes.json"));
             var stringCommands = ReadTable<List<DbStringCommand>>(Path.Combine(folderPath, "stringCommands.json"));

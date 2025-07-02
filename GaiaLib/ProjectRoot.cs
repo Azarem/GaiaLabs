@@ -13,12 +13,14 @@ namespace GaiaLib
         public string Name { get; set; }
         public string RomPath { get; set; }
         public string BaseDir { get; set; }
+        public string System { get; set; }
         public string Database { get; set; }
         public string FlipsPath { get; set; }
         public Dictionary<BinType, DbPath> Resources { get; set; }
 
         //public string ProjectPath { get; set; }
         public string DatabasePath { get; set; }
+        public string SystemPath { get; set; }
         public string Compression { get; set; }
 
         public ICompressionProvider GetCompression()
@@ -48,6 +50,7 @@ namespace GaiaLib
 
                 //project.ProjectPath = path;
                 project.DatabasePath = Path.Combine(project.BaseDir, "db", project.Database);
+                project.SystemPath = Path.Combine(project.BaseDir, "db", "snes");
 
                 return project;
             }
@@ -76,7 +79,7 @@ namespace GaiaLib
 
         public async Task<DbRoot> DumpDatabase()
         {
-            var root = DbRoot.FromFolder(DatabasePath);
+            var root = DbRoot.FromFolder(DatabasePath, SystemPath);
             var data = await File.ReadAllBytesAsync(RomPath);
             root.Paths = Resources;
 

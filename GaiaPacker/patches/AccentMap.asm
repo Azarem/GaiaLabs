@@ -6,7 +6,6 @@
 ;Characters >= 0xE0 will use the accent table
 
 sub_03E255 {
-    BRK #$90
     PHP 
     PHD 
     PHX 

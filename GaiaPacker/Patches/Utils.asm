@@ -57,7 +57,7 @@ global_thinkers {
 
 ------------------------------------------------------------
 
-pause_debug_print |[NHM:14][CUR:C0,6]S:[BCD:2,644]█X:[BCD:3,9A2]█Y:[BCD:3,9A4]█C:[BCD:4,E6]|
+pause_debug_print |[NHM:14][CUR:C0,6]S:[BCD:2,644] X:[BCD:3,9A2] Y:[BCD:3,9A4] C:[BCD:4,E6]|
 
 ------------------------------------------------------------
 ;Hook for global thinkers
@@ -347,3 +347,36 @@ code_02A12C {
     RTL
 }
 
+--------------------------------------------
+?INCLUDE 'inventory_menu'
+--------------------------------------------
+;Force some palette colors for cleaner font
+h_inventory_menu [
+  h_actor < #00, #00, #28 >   ;00
+    LDA #$4063
+    STA $7F0A06
+    LDA #$2180
+    STA $7F0A2E
+]
+
+;Make flashing cursor show blank when hidden
+sub_02EC46 {
+    LDA #$0001
+    TSB $09EC
+    LDA #$2060
+    STA $7F0896
+    STA $7F0916
+    RTS 
+}
+
+;Make flashing cursor show blank when hidden
+sub_02ECE8 {
+    LDA #$0001
+    TSB $09EC
+    LDA #$2060
+    STA $7F0784
+    STA $7F0804
+    STA $7F0884
+    STA $7F0904
+    RTS 
+}
