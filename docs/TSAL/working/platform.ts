@@ -119,7 +119,7 @@ export const abs = (value: number): Address<Word> => ({
     value
 });
 
-export const longAddress = (value: number): Address<Long> => ({
+export const long = (value: number): Address<Long> => ({
     _tag: 'SizedNumber',
     size: 3,
     value
@@ -154,18 +154,6 @@ export function word(...values:number[]): Word | DataChunk {
     return createDataChunk(values, 2);
 }
 
-/**
- * Defines a 3-byte value for an instruction operand, OR a sequence of raw longs for ROM data.
- * @param values A single value for an operand, or multiple values for a data chunk.
- */
-export function long(value: number): Long;
-export function long(...values: number[]): DataChunk;
-export function long(...values:number[]): Long | DataChunk {
-    if (values.length === 1) {
-        return { _tag: 'SizedNumber', size: 3, value: values[0] };
-    }
-    return createDataChunk(values, 3);
-} 
 
 export interface Code extends SnesLayoutable {
     readonly layout: SnesLayoutFunction;

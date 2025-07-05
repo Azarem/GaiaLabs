@@ -6,7 +6,7 @@
  */
 import {
     SnesLayoutable, SnesContext, Operand, SizedNumber, Address,
-    Code, Byte, Word, Long, dp, abs, longAddress
+    Code, Byte, Word, Long, dp, abs, long
 } from "./platform";
 import { Locational } from "./tsal";
 
@@ -51,29 +51,29 @@ function createInstruction(mnemonic: string, opcode: number, operand?: Operand):
 
 export const LDA = {
     imm: (val: Byte | Word) => createInstruction('LDA', 0xA9, val),
-    dp: (addr: Address<Byte>) => createInstruction('LDA', 0xA5, addr),
-    dp_x: (addr: Address<Byte>) => createInstruction('LDA', 0xB5, addr),
-    abs: (addr: Address<Word>) => createInstruction('LDA', 0xAD, addr),
-    abs_x: (addr: Address<Word>) => createInstruction('LDA', 0xBD, addr),
-    abs_y: (addr: Address<Word>) => createInstruction('LDA', 0xB9, addr),
-    long: (addr: Address<Long>) => createInstruction('LDA', 0xAF, addr),
-    long_x: (addr: Address<Long>) => createInstruction('LDA', 0xBF, addr),
+    dp: (addr: Address<Byte> | number) => createInstruction('LDA', 0xA5, typeof addr === 'number' ? dp(addr) : addr),
+    dp_x: (addr: Address<Byte> | number) => createInstruction('LDA', 0xB5, typeof addr === 'number' ? dp(addr) : addr),
+    abs: (addr: Address<Word> | number) => createInstruction('LDA', 0xAD, typeof addr === 'number' ? abs(addr) : addr),
+    abs_x: (addr: Address<Word> | number) => createInstruction('LDA', 0xBD, typeof addr === 'number' ? abs(addr) : addr),
+    abs_y: (addr: Address<Word> | number) => createInstruction('LDA', 0xB9, typeof addr === 'number' ? abs(addr) : addr),
+    long: (addr: Address<Long> | number) => createInstruction('LDA', 0xAF, typeof addr === 'number' ? long(addr) : addr),
+    long_x: (addr: Address<Long> | number) => createInstruction('LDA', 0xBF, typeof addr === 'number' ? long(addr) : addr),
     // todo: add indirect modes
 };
 
 export const STA = {
-    abs: (addr: Address<Word>) => createInstruction('STA', 0x8D, addr),
+    abs: (addr: Address<Word> | number) => createInstruction('STA', 0x8D, typeof addr === 'number' ? abs(addr) : addr),
     // ... other STA modes
 };
 
 export const TRB = {
-    dp: (addr: Address<Byte>) => createInstruction('TRB', 0x14, addr),
-    abs: (addr: Address<Word>) => createInstruction('TRB', 0x1C, addr),
+    dp: (addr: Address<Byte> | number) => createInstruction('TRB', 0x14, typeof addr === 'number' ? dp(addr) : addr),
+    abs: (addr: Address<Word> | number) => createInstruction('TRB', 0x1C, typeof addr === 'number' ? abs(addr) : addr),
 };
 
 export const TSB = {
-    dp: (addr: Address<Byte>) => createInstruction('TSB', 0x04, addr),
-    abs: (addr: Address<Word>) => createInstruction('TSB', 0x0C, addr),
+    dp: (addr: Address<Byte> | number) => createInstruction('TSB', 0x04, typeof addr === 'number' ? dp(addr) : addr),
+    abs: (addr: Address<Word> | number) => createInstruction('TSB', 0x0C, typeof addr === 'number' ? abs(addr) : addr),
 };
 
 export const BRA = (target: Code) => createInstruction('BRA', 0x80, target);
