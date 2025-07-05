@@ -14,8 +14,8 @@ export interface SnesPlatform extends Platform {
     name: 'snes';
 }
 
-export interface SnesLayoutable extends Layoutable<SnesPlatform> {
-    layout: LayoutFunction<SnesPlatform>;
+export interface SnesLayoutable {
+    readonly layout: SnesLayoutFunction;
 }
 
 export type SnesLayoutFunction = (ctx: SnesContext) => void;
@@ -60,7 +60,7 @@ export interface Byte extends SizedNumber {
     readonly size: 1;
 }
 
-/** The Word type inherits _tag and value from SizedNumber, only narrowing the size. */
+/** The Word type inherits _tag and value from SnedNumber, only narrowing the size. */
 export interface Word extends SizedNumber {
     readonly size: 2;
 }
@@ -165,3 +165,13 @@ export function code(func: SnesLayoutFunction): Code {
     };
 }
 
+export interface Label extends SnesLayoutable, Locational {};
+
+export function label() : Label {
+    return {
+        // A label has no binary output, it's just a marker.
+        // Its location is resolved by the toolchain.
+        layout: (ctx: SnesContext) => {},
+        location: -1 // Default location, to be updated by the layout engine
+    };
+}
