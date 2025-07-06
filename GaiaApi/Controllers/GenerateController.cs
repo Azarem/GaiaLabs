@@ -75,6 +75,7 @@ namespace GaiaApi.Controllers
                     }
                 }
 
+
                 var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
                 while (System.IO.File.Exists(tempPath) || Directory.Exists(tempPath))
                     tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
@@ -82,6 +83,8 @@ namespace GaiaApi.Controllers
                 var tempDir = Directory.CreateDirectory(tempPath);
                 try
                 {
+                    var moduleRoot = Path.Combine(_settings.ModulePath, _settings.Version);
+
                     void copyDir(DirectoryInfo src, DirectoryInfo dst)
                     {
                         if (!src.Exists)
@@ -99,7 +102,7 @@ namespace GaiaApi.Controllers
 
                     void copyModule(string name)
                     {
-                        copyDir(new DirectoryInfo(Path.Combine(_settings.ModulePath, _settings.Version, name)), tempDir);
+                        copyDir(new DirectoryInfo(Path.Combine(moduleRoot, name)), tempDir);
                     }
 
                     copyModule("base");
@@ -137,7 +140,8 @@ namespace GaiaApi.Controllers
                         Name = patchName,
                         BaseDir = tempPath,
                         RomPath = _settings.RomPath,
-                        DatabasePath = Path.Combine(_settings.DatabasePath, "us"),
+                        DatabasePath = Path.Combine(moduleRoot, "db", "us"),
+                        SystemPath = Path.Combine(moduleRoot, "db", "snes")
                         //FlipsPath = _settings.FlipsPath
                     };
 
