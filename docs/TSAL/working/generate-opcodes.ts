@@ -1,0 +1,504 @@
+#!/usr/bin/env node
+/**
+ * Compile-time OpCode Generator
+ * Generates type-safe TypeScript from any data source (JSON, Database, etc.)
+ * 
+ * Prerequisites: npm install @types/node --save-dev
+ */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import { fileURLToPath, pathToFileURL } from 'url';
+
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Addressing mode definition interfaces
+interface AddressingModeDefinition {
+  mode: string;
+  shorthand: string;
+  operandType: string;
+  description: string;
+  officialName: string;
+  length: number | string;
+  format: string;
+  formatString: string;
+  parseRegex: string;
+  operandSize: number | string;
+  supportsSymbols: boolean;
+  bankWrapping: boolean;
+  pageWrapping: boolean;
+  validationPatterns: Record<string, string>;
+  examples: string[];
+}
+
+interface OperandTypeDefinition {
+  type: string;
+  description: string;
+  typeScriptSignature: string;
+  parameterName: string;
+  size: number | string;
+  examples: string[];
+}
+
+interface AddressingModeConfig {
+  metadata: {
+    name: string;
+    version: string;
+    description: string;
+    features: string[];
+    totalAddressingModes: number;
+    totalOperandTypes: number;
+  };
+  addressingModes: Record<string, AddressingModeDefinition>;
+  operandTypes: Record<string, OperandTypeDefinition>;
+  reference: {
+    byOperandType: Record<string, string[]>;
+    factorySignatures: Record<string, string>;
+  };
+  shorthandReference: {
+    mapping: Record<string, string>;
+  };
+}
+
+// Complete instruction set interfaces
+interface CompleteInstructionSetData {
+  metadata: any;
+  instructionGroups: Record<string, InstructionGroup>;
+  validationRules?: Record<string, any>;
+}
+
+interface InstructionGroup {
+  description: string;
+  instructions: Record<string, CompleteInstruction>;
+}
+
+interface CompleteInstruction {
+  mnemonic: string;
+  description: string;
+  affectsFlags: string[];
+  variants: InstructionVariant[];
+}
+
+interface InstructionVariant {
+  addressingMode: string;
+  opcode: number;
+  size: number | 'flag-dependent';
+  cycles: any;
+}
+
+// Data source interfaces - can be implemented for any source
+interface DataSource {
+  getInstructions(): Promise<InstructionData[]>;
+}
+
+interface InstructionData {
+  mnemonic: string;
+  variants: VariantData[];
+}
+
+interface VariantData {
+  addressingMode: string;
+  opcode: number;
+  size: number | 'flag-dependent';
+  cycles?: any;
+}
+
+// JSON Data Source (existing)
+class JsonDataSource implements DataSource {
+  private filePath: string;
+
+  constructor(filePath: string) {
+    this.filePath = filePath;
+  }
+
+  async getInstructions(): Promise<InstructionData[]> {
+    const data = JSON.parse(fs.readFileSync(this.filePath, 'utf8'));
+    return data.instructions || [];
+  }
+}
+
+// Database Data Source (existing)
+class DatabaseDataSource implements DataSource {
+  private connectionString: string;
+
+  constructor(connectionString: string) {
+    this.connectionString = connectionString;
+  }
+
+  async getInstructions(): Promise<InstructionData[]> {
+    // Implementation would connect to database
+    // Return normalized instruction data
+    throw new Error('Database data source not implemented');
+  }
+}
+
+// Complete Instruction Set Data Source (new)
+class CompleteInstructionSetDataSource implements DataSource {
+  private dataSource: CompleteInstructionSetData;
+
+  constructor(dataSource: CompleteInstructionSetData) {
+    this.dataSource = dataSource;
+  }
+
+  async getInstructions(): Promise<InstructionData[]> {
+    const instructions: InstructionData[] = [];
+
+    // Iterate through all instruction groups
+    for (const [groupName, group] of Object.entries(this.dataSource.instructionGroups)) {
+      // Iterate through all instructions in this group
+      for (const [mnemonic, instruction] of Object.entries(group.instructions)) {
+        // Convert variants to the expected format
+        const variants: VariantData[] = instruction.variants.map(variant => ({
+          addressingMode: variant.addressingMode,
+          opcode: variant.opcode,
+          size: variant.size,
+          cycles: variant.cycles
+        }));
+
+        instructions.push({
+          mnemonic,
+          variants
+        });
+      }
+    }
+
+    return instructions;
+  }
+}
+
+// Complete Instruction Set File Data Source (loads from file)
+class CompleteInstructionSetFileDataSource implements DataSource {
+  private filePath: string;
+
+  constructor(filePath: string) {
+    this.filePath = filePath;
+  }
+
+  async getInstructions(): Promise<InstructionData[]> {
+    // Import the complete instruction set from the TypeScript file
+    const modulePath = path.resolve(__dirname, this.filePath);
+    const moduleURL = pathToFileURL(modulePath).href;
+    const module = await import(moduleURL);
+    const completeInstructionSet = module.completeInstructionSet;
+
+    const completeDataSource = new CompleteInstructionSetDataSource(completeInstructionSet);
+    return completeDataSource.getInstructions();
+  }
+}
+
+// Type-safe code generator
+class OpCodeGenerator {
+  private addressingModeConfig!: AddressingModeConfig;
+  private addressingModeMap: Map<string, string> = new Map();
+  private shorthandToModeMap: Map<string, string> = new Map();
+
+  constructor(addressingModeConfigPath: string = '../../../65c816/addressing-mode.json') {
+    this.loadAddressingModeConfig(addressingModeConfigPath);
+    this.buildAddressingModeMaps();
+  }
+
+  private loadAddressingModeConfig(configPath: string): void {
+    try {
+      const fullPath = path.join(__dirname, configPath);
+      const configData = fs.readFileSync(fullPath, 'utf8');
+      this.addressingModeConfig = JSON.parse(configData);
+      
+      console.log(`✓ Loaded addressing mode config: ${this.addressingModeConfig.metadata.name} v${this.addressingModeConfig.metadata.version}`);
+      console.log(`✓ Total addressing modes: ${this.addressingModeConfig.metadata.totalAddressingModes}`);
+      console.log(`✓ Total operand types: ${this.addressingModeConfig.metadata.totalOperandTypes}`);
+    } catch (error) {
+      throw new Error(`Failed to load addressing mode config from ${configPath}: ${error}`);
+    }
+  }
+
+  private buildAddressingModeMaps(): void {
+    // Build addressing mode to shorthand mapping
+    for (const [mode, definition] of Object.entries(this.addressingModeConfig.addressingModes)) {
+      this.addressingModeMap.set(mode, definition.shorthand);
+      this.shorthandToModeMap.set(definition.shorthand, mode);
+    }
+  }
+
+  async generateFromSource(dataSource: DataSource): Promise<void> {
+    console.log('🚀 65C816 OpCode Generator');
+    console.log('================================================================');
+    console.log('🔄 Generating TypeScript from data source...');
+
+    const instructions = await dataSource.getInstructions();
+    console.log(`✓ Loaded ${instructions.length} instructions`);
+    const totalVariants = instructions.reduce((sum, i) => sum + i.variants.length, 0);
+    console.log(`✓ Total variants: ${totalVariants}`);
+
+    // Generate the two separate files
+    const dataContent = this.generateDataFile(instructions);
+    const factoryContent = this.generateFactoryFile(instructions);
+
+    // Hardcode the output directory for simplicity, assuming script is run from `docs/TSAL/working`
+    const outputDir = path.resolve(__dirname);
+    const dataOutputPath = path.join(outputDir, 'generated-opcodes.ts');
+    const factoryOutputPath = path.join(outputDir, 'op-factories.ts');
+
+    fs.writeFileSync(dataOutputPath, dataContent);
+    console.log(`✅ Data file generated: ${dataOutputPath}`);
+
+    fs.writeFileSync(factoryOutputPath, factoryContent);
+    console.log(`✅ Factory file generated: ${factoryOutputPath}`);
+    console.log('🎉 Generation complete!');
+  }
+
+  private generateDataFile(instructions: InstructionData[]): string {
+    const typeAliases = this.generateTypeAliases();
+    const opDefInterface = this.generateOpDefInterface();
+    const opCodeEnum = this.generateOpCodeEnum(instructions);
+    const opDefs = this.generateOpDefs(instructions);
+    const opLookup = this.generateOpLookup(instructions);
+
+    return `${typeAliases}\n\n${opDefInterface}\n\n${opCodeEnum}\n\n${opDefs}\n\n${opLookup}`;
+  }
+
+  private generateFactoryFile(instructions: InstructionData[]): string {
+    const imports = `import { Instruction } from './op';
+import * as defs from './generated-opcodes';
+import { Byte, Word, Absolute, AbsoluteLong, Direct, Label, Immediate, BankPair, InterruptVector } from './generated-opcodes';`;
+
+    // Separate single-variant and multi-variant instructions
+    const singleVariantInstructions = instructions.filter(instr => instr.variants.length === 1);
+    const multiVariantInstructions = instructions.filter(instr => instr.variants.length > 1);
+
+    const singleVariantFunctions = this.generateSingleVariantFunctions(singleVariantInstructions);
+    const factoryTypes = this.generateFactoryTypes(multiVariantInstructions);
+    const factoryImplementations = this.generateFactoryImplementations(multiVariantInstructions);
+
+    return `${imports}\n\n// === SINGLE-VARIANT INSTRUCTIONS (Simple Functions) ===\n\n${singleVariantFunctions}\n\n// === MULTI-VARIANT INSTRUCTIONS (Factory Objects) ===\n\n${factoryTypes}\n\n${factoryImplementations}`;
+  }
+  
+  private generateTypeAliases(): string {
+    return `// Generated TypeScript OpCode definitions
+// Source: Complete 65C816 Instruction Set
+// Generated: ${new Date().toISOString()}
+
+export type Byte = number;
+export type Word = number;
+export type Absolute = number;
+export type Direct = number;
+export type Label = string;
+export type Immediate = number;
+export type AbsoluteLong = number;
+export type BankPair = { src: number; dest: number };
+export type InterruptVector = number;`;
+  }
+
+  private generateOpDefInterface(): string {
+    return `export interface OpDef {
+  opcode: OpCode;
+  mnemonic: string;
+  size: number | 'flag-dependent';
+  addressingMode: string;
+}`;
+  }
+
+  private generateTypeScript(instructions: InstructionData[]): string {
+    const dataContent = this.generateDataFile(instructions);
+    const factoryContent = this.generateFactoryFile(instructions);
+    // This method is now split, but we can return a concatenation for logging or other purposes if needed.
+    return dataContent + '\\n\\n' + factoryContent;
+  }
+
+  private generateImports(): string {
+    // This is now handled by generateDataFile and generateFactoryFile
+    return '';
+  }
+
+  private generateOpCodeEnum(instructions: InstructionData[]): string {
+    const enumEntries: string[] = [];
+    
+    instructions.forEach(instruction => {
+      instruction.variants.forEach(variant => {
+        const shortMode = this.getShortModeName(variant.addressingMode);
+        const enumName = `${instruction.mnemonic}_${shortMode}`;
+        enumEntries.push(`  ${enumName} = 0x${variant.opcode.toString(16).toUpperCase().padStart(2, '0')}`);
+      });
+    });
+
+    return `export enum OpCode {\n${enumEntries.join(',\n')}\n}`;
+  }
+
+  private generateOpDefs(instructions: InstructionData[]): string {
+    const lines: string[] = [];
+    instructions.forEach(instruction => {
+      instruction.variants.forEach(variant => {
+        const shortMode = this.getShortModeName(variant.addressingMode);
+        const varName = `${instruction.mnemonic}_${shortMode}`;
+        const size = typeof variant.size === 'number' ? variant.size : `'${variant.size}'`;
+        lines.push(`export const ${varName}: OpDef = {
+  opcode: OpCode.${varName},
+  size: ${size},
+  addressingMode: '${variant.addressingMode}',
+  mnemonic: '${instruction.mnemonic}'
+};`);
+      });
+    });
+    return lines.join('\n\n');
+  }
+
+  private generateOpLookup(instructions: InstructionData[]): string {
+    const lookupEntries: string[] = [];
+    
+    instructions.forEach(instruction => {
+      instruction.variants.forEach(variant => {
+        const shortMode = this.getShortModeName(variant.addressingMode);
+        lookupEntries.push(`  [OpCode.${instruction.mnemonic}_${shortMode}]: ${instruction.mnemonic}_${shortMode}`);
+      });
+    });
+
+    return `export const OpLookup = {\n${lookupEntries.join(',\n')}\n};`;
+  }
+
+  private generateFactoryTypes(instructions: InstructionData[]): string {
+    const factoryTypes: string[] = [];
+    instructions.forEach(instruction => {
+      const methods: string[] = [];
+      instruction.variants.forEach(variant => {
+        const shortMode = this.getShortModeName(variant.addressingMode);
+        const paramSignature = this.getParameterSignature(variant.addressingMode);
+        if (this.hasNoOperands(variant.addressingMode)) {
+          methods.push(`  ${shortMode}: () => Instruction;`);
+        } else {
+          methods.push(`  ${shortMode}: (${paramSignature}) => Instruction;`);
+        }
+      });
+      factoryTypes.push(`export interface ${instruction.mnemonic}Factory {\n${methods.join('\n')}\n}`);
+    });
+    return factoryTypes.join('\n\n');
+  }
+
+  private generateSingleVariantFunctions(instructions: InstructionData[]): string {
+    const functions: string[] = [];
+    
+    instructions.forEach(instruction => {
+      const variant = instruction.variants[0]; // Single variant
+      const shortMode = this.getShortModeName(variant.addressingMode);
+      const paramSignature = this.getParameterSignature(variant.addressingMode);
+      const paramName = this.getParameterName(variant.addressingMode);
+      const opDefName = `${instruction.mnemonic}_${shortMode}`;
+
+      if (this.hasNoOperands(variant.addressingMode)) {
+        functions.push(`/**
+ * ${instruction.mnemonic} - ${variant.addressingMode} mode
+ * Creates a new ${instruction.mnemonic} instruction with no operands
+ */
+export function ${instruction.mnemonic}(): Instruction {
+  return new Instruction(defs.${opDefName});
+}`);
+      } else {
+        // Special case for Block Move instructions with two operands
+        if (variant.addressingMode === 'BlockMove') {
+          functions.push(`/**
+ * ${instruction.mnemonic} - ${variant.addressingMode} mode
+ * Creates a new ${instruction.mnemonic} instruction with source and destination banks
+ */
+export function ${instruction.mnemonic}(${paramSignature}): Instruction {
+  return new Instruction(defs.${opDefName}, [srcBank, destBank]);
+}`);
+        } else {
+          functions.push(`/**
+ * ${instruction.mnemonic} - ${variant.addressingMode} mode
+ * Creates a new ${instruction.mnemonic} instruction with the specified operand
+ */
+export function ${instruction.mnemonic}(${paramSignature}): Instruction {
+  return new Instruction(defs.${opDefName}, ${paramName});
+}`);
+        }
+      }
+    });
+    
+    return functions.join('\n\n');
+  }
+
+  private generateFactoryImplementations(instructions: InstructionData[]): string {
+    const factoryImpls: string[] = [];
+    instructions.forEach(instruction => {
+      const methods: string[] = [];
+      instruction.variants.forEach(variant => {
+        const shortMode = this.getShortModeName(variant.addressingMode);
+        const paramSignature = this.getParameterSignature(variant.addressingMode);
+        const paramName = this.getParameterName(variant.addressingMode);
+        const opDefName = `${instruction.mnemonic}_${shortMode}`;
+
+        if (this.hasNoOperands(variant.addressingMode)) {
+          methods.push(`  ${shortMode}: () => new Instruction(defs.${opDefName})`);
+        } else {
+          // Special case for Block Move instructions with two operands
+          if (variant.addressingMode === 'BlockMove') {
+            methods.push(`  ${shortMode}: (${paramSignature}) => new Instruction(defs.${opDefName}, [srcBank, destBank])`);
+          } else {
+            methods.push(`  ${shortMode}: (${paramSignature}) => new Instruction(defs.${opDefName}, ${paramName})`);
+          }
+        }
+      });
+
+      factoryImpls.push(`export const ${instruction.mnemonic}: ${instruction.mnemonic}Factory = {\n${methods.join(',\n')}\n};`);
+    });
+    return factoryImpls.join('\n\n');
+  }
+
+  private getShortModeName(addressingMode: string): string {
+    return this.addressingModeMap.get(addressingMode) || addressingMode.toLowerCase();
+  }
+
+  private getParameterSignature(addressingMode: string): string {
+    const definition = this.addressingModeConfig.addressingModes[addressingMode];
+    if (!definition) {
+      return 'operand: any';
+    }
+    
+    const operandType = this.addressingModeConfig.operandTypes[definition.operandType];
+    if (!operandType) {
+      return 'operand: any';
+    }
+    
+    return operandType.typeScriptSignature;
+  }
+
+  private getParameterName(addressingMode: string): string {
+    const definition = this.addressingModeConfig.addressingModes[addressingMode];
+    if (!definition) {
+      return 'operand';
+    }
+    
+    const operandType = this.addressingModeConfig.operandTypes[definition.operandType];
+    if (!operandType) {
+      return 'operand';
+    }
+    
+    return operandType.parameterName;
+  }
+
+  private hasNoOperands(addressingMode: string): boolean {
+    const definition = this.addressingModeConfig.addressingModes[addressingMode];
+    return definition?.operandType === 'None';
+  }
+}
+
+//
+// Main execution
+//
+async function run() {
+  try {
+    console.log('Initializing 65c816 OpCode Generator...');
+    const generator = new OpCodeGenerator();
+    
+    // Use the complete instruction set from the compiled JavaScript module
+    const completeSetDataSource = new CompleteInstructionSetFileDataSource('../../../65c816/dist/index.js');
+    await generator.generateFromSource(completeSetDataSource);
+    process.exit(0);
+  } catch (error) {
+    console.error('An error occurred during code generation:');
+    console.error(error);
+    process.exit(1);
+  }
+}
+
+run(); 

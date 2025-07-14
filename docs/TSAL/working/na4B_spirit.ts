@@ -1,4 +1,4 @@
-import { word, SnesLayoutable, code } from './platform'
+import { word, code, label } from './platform'
 import { mem, WideString, h_actor, COP } from './game'
 import { LDA, TRB, TSB, BRA } from './op'
 
@@ -13,30 +13,32 @@ export const moduleInfo = {
 export const h_na4B_spirit = h_actor(0x32, 0x00, 0x30);
 export const widestring_05F349 = WideString`[DEF]Ku ku ku...[END]`;
 
-const code_05F307 = code((ctx) => {});
-export const e_na4B_spirit = code((ctx) => ctx.emit([
-    COP.D2(0x06, 0x01),
-    COP.D2(0x07, 0x01),
-    LDA.imm(word(0x2000)),
-    TRB.dp(mem.dp.actor.flags10),
-    LDA.imm(word(0x0200)),
-    TSB.dp(mem.dp.actor.flags12),
-    COP.CA(0x03),
-    code_05F307,
-    COP[0x80](0x32),
-    COP[0x89](),
-    COP[0x21](0x02, code_05F313),
-    BRA(code_05F307)
-]));
+export const e_na4B_spirit = code((ctx) => {
+    const code_05F307 = label();
+    ctx.emit([
+        COP.D2(0x06, 0x01),
+        COP.D2(0x07, 0x01),
+        LDA.imm_w(word(0x2000)),
+        TRB.dp(mem.dp.actor.flags10),
+        LDA.imm_w(word(0x0200)),
+        TSB.dp(mem.dp.actor.flags12),
+        COP.CA(0x03),
+        code_05F307,
+        COP[0x80](0x32),
+        COP[0x89](),
+        COP[0x21](0x02, code_05F313),
+        BRA(code_05F307)
+    ]);
+});
 
 export const code_05F313 = code((ctx) => ctx.emit([
     COP[0xBC](0x70, 0x00),
     COP[0xCB](),
-    LDA.imm(word(0xFFF0)),
+    LDA.imm_w(word(0xFFF0)),
     TSB.abs(mem.joypad_mask_std),
     COP[0xDA](0x13),
     COP[0xBF](widestring_05F349),
-    LDA.imm(word(0xFFF0)),
+    LDA.imm_w(word(0xFFF0)),
     TRB.abs(mem.joypad_mask_std),
     COP[0xCC](0x02),
     COP[0x87](0x32, 0x02, 0x11, 0x12),

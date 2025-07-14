@@ -505,6 +505,7 @@ h_sp58_actor_068111 [
   h_actor < #00, #02, #18 >
     LDA #$4000
     TSB $09EC
+    COP [4F] ( $7F0200, #$7800, #$0100 ) ;For some reason there is a situation where the BG3 data isn't refreshed
 ]
 
 ------------------------------------------------------

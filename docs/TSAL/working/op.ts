@@ -4,78 +4,87 @@
  * This module provides factory functions for creating SnesLayoutable objects
  * that represent individual 65c816 CPU instructions.
  */
-import {
-    SnesLayoutable, SnesContext, Operand, SizedNumber, Address,
-    Code, Byte, Word, Long, dp, abs, long
-} from "./platform";
-import { Locational } from "./tsal";
+import { ILayoutable, EmitContext } from "./tsal";
+import { OpCode, OpDef, Byte, Word } from "./generated-opcodes";
 
-/** Base interface for a CPU instruction. */
-export interface Instruction extends SnesLayoutable, Partial<Locational> {
-    readonly mnemonic: string;
-    readonly operand?: Operand;
-    location?: number;
+export type Operand = Byte | Word | number | string | any[];
+
+export enum AddressingMode {
+    Accumulator = 'Accumulator',
+    Immediate = 'Immediate',
+    Absolute = 'Absolute',
+    AbsoluteIndirect = 'AbsoluteIndirect',
+    AbsoluteIndirectLong = 'AbsoluteIndirectLong',
+    DirectPage = 'DirectPage',
+    AbsoluteIndexedX = 'AbsoluteIndexedX',
+    AbsoluteIndexedY = 'AbsoluteIndexedY',
+    AbsoluteIndexedIndirect = 'AbsoluteIndexedIndirect',
+    DirectPageIndexedX = 'DirectPageIndexedX',
+    DirectPageIndexedY = 'DirectPageIndexedY',
+    DirectPageIndexedIndirectX = 'DirectPageIndexedIndirectX',
+    Implied = 'Implied',
+    StackRelative = 'StackRelative',
+    StackRelativeIndirectIndexedY = 'StackRelativeIndirectIndexedY',
+    DirectPageIndirect = 'DirectPageIndirect',
+    AbsoluteLong = 'AbsoluteLong',
+    AbsoluteLongIndexedX = 'AbsoluteLongIndexedX',
+    DirectPageIndirectLong = 'DirectPageIndirectLong',
+    DirectPageIndirectLongIndexedY = 'DirectPageIndirectLongIndexedY',
+    DirectPageIndirectIndexedY = 'DirectPageIndirectIndexedY',
+    BlockMove = 'BlockMove',
+    PCRelative = 'PCRelative',
+    PCRelativeLong = 'PCRelativeLong',
+    StackInterrupt = 'StackInterrupt',
+    Stack = 'Stack'
+  }
+
+export enum IndexMode {
+    X = 'X',
+    Y = 'Y',
+    Indirect = 'Indirect',
+    IndirectX = 'IndirectX',
+    IndirectLong = 'IndirectLong',
+    IndirectLongY = 'IndirectLongY',
+    XIndirect = 'XIndirect',
+    IndirectY = 'IndirectY',
+    S = 'S',
+    SIndirectY = 'SIndirectY'
 }
 
-/** Internal helper to create a generic instruction. */
-function createInstruction(mnemonic: string, opcode: number, operand?: Operand): Instruction {
-    return {
-        mnemonic,
-        operand,
-        layout: function (ctx: SnesContext) { // Use 'function' to get a 'this' context
-            const self = this as Instruction;
-            ctx.emitBytes([opcode]);
+export class Instruction implements ILayoutable {
+    public readonly size: number;
 
-            if (operand) {
-                if ('_tag' in operand && operand._tag === 'SizedNumber') {
-                    const val = operand.value;
-                    if (operand.size === 1) ctx.emitBytes([val & 0xFF]);
-                    if (operand.size === 2) ctx.emitBytes([val & 0xFF, (val >> 8) & 0xFF]);
-                    if (operand.size === 3) ctx.emitBytes([val & 0xFF, (val >> 8) & 0xFF, (val >> 16) & 0xFF]);
-                } else if (typeof (operand as any).layout === 'function') {
-                    // This handles branching, where the operand is a Locational Code object
-                    const target = operand as Code & Locational;
-                    if (self.location === undefined || target.location === undefined) {
-                        throw new Error(`Branch source or target location is not defined for ${mnemonic}.`);
-                    }
-                    const offset = target.location - (self.location + 2); // rel8 is from next instruction
-                    if (offset < -128 || offset > 127) throw new Error(`BRA target out of range.`);
-                    ctx.emitBytes([offset & 0xFF]);
-                }
+    constructor(
+        public readonly opDef: OpDef,
+        public readonly operand?: Operand
+    ) {
+        if (typeof opDef.size === 'number') {
+            this.size = opDef.size;
+        } else { // 'flag-dependent'
+            // This logic might need to be state-aware in a real assembler.
+            // For now, we'll assume Word (3 bytes total) if not a Byte.
+            this.size = 3;
+            if (this.operand && typeof this.operand === 'number' && this.operand < 256) {
+                this.size = 2;
             }
         }
-    };
-}
+    }
 
-// --- Factory Functions ---
+    getChildren() { return []; }
 
-export const LDA = {
-    imm: (val: Byte | Word) => createInstruction('LDA', 0xA9, val),
-    dp: (addr: Address<Byte> | number) => createInstruction('LDA', 0xA5, typeof addr === 'number' ? dp(addr) : addr),
-    dp_x: (addr: Address<Byte> | number) => createInstruction('LDA', 0xB5, typeof addr === 'number' ? dp(addr) : addr),
-    abs: (addr: Address<Word> | number) => createInstruction('LDA', 0xAD, typeof addr === 'number' ? abs(addr) : addr),
-    abs_x: (addr: Address<Word> | number) => createInstruction('LDA', 0xBD, typeof addr === 'number' ? abs(addr) : addr),
-    abs_y: (addr: Address<Word> | number) => createInstruction('LDA', 0xB9, typeof addr === 'number' ? abs(addr) : addr),
-    long: (addr: Address<Long> | number) => createInstruction('LDA', 0xAF, typeof addr === 'number' ? long(addr) : addr),
-    long_x: (addr: Address<Long> | number) => createInstruction('LDA', 0xBF, typeof addr === 'number' ? long(addr) : addr),
-    // todo: add indirect modes
-};
+    getSize() {
+        if (this.opDef.size === 'flag-dependent') {
+            if (this.operand && typeof this.operand === 'number' && this.operand > 255) {
+                return 3;
+            }
+            return 2;
+        }
+        return this.opDef.size;
+    }
 
-export const STA = {
-    abs: (addr: Address<Word> | number) => createInstruction('STA', 0x8D, typeof addr === 'number' ? abs(addr) : addr),
-    // ... other STA modes
-};
-
-export const TRB = {
-    dp: (addr: Address<Byte> | number) => createInstruction('TRB', 0x14, typeof addr === 'number' ? dp(addr) : addr),
-    abs: (addr: Address<Word> | number) => createInstruction('TRB', 0x1C, typeof addr === 'number' ? abs(addr) : addr),
-};
-
-export const TSB = {
-    dp: (addr: Address<Byte> | number) => createInstruction('TSB', 0x04, typeof addr === 'number' ? dp(addr) : addr),
-    abs: (addr: Address<Word> | number) => createInstruction('TSB', 0x0C, typeof addr === 'number' ? abs(addr) : addr),
-};
-
-export const BRA = (target: Code) => createInstruction('BRA', 0x80, target);
-
-// ... other instructions would follow the same pattern 
+    emit(ctx: EmitContext) {
+        ctx.emitBytes([this.opDef.opcode]);
+        console.log(`Emitting 0x${this.opDef.opcode.toString(16)} for ${this.opDef.mnemonic}`);
+        // ... more complex operand emission logic will go here ...
+    }
+} 

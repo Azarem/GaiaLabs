@@ -1,50 +1,93 @@
 /**
- * Mock TSAL Core Definitions
+ * Mock TSAL Core Definitions (v3 - Generic/Delegation Model)
  *
- * This file provides the core type definitions for the TSAL language itself,
- * such as the execution context and layout functions.
+ * This file provides the core type definitions for the TSAL language itself.
+ * The core principle is that the `ILayoutable` part contains all the specific
+ * logic, and the `AstNode` is a generic structural wrapper.
  */
 
+// --- Interfaces for the Build Passes ---
 
-// A placeholder for any kind of data or instruction that can be laid out in the ROM.
-export interface Layoutable<T extends Platform> {
-    readonly layout: LayoutFunction<T>;
+/** The context passed during the Organization pass to enable optimizations. */
+export interface OrganizationContext {
+    getDistance(from: AstNode<any>, to: AstNode<any>): number | undefined;
 }
 
-
-
-export interface Locational {
-    location: number;
+/** The context passed to an EmitFunction, containing the final address map. */
+export interface EmitContext {
+    readonly addressMap: Map<ILocatable, number>;
+    readonly emitBytes: (bytes: number[]) => void;
 }
 
-/**
- * Represents a target platform for code generation.
- */
-export interface Platform {
-    name: string;
-}
+// --- Core Architectural Interfaces ---
 
-/**
- * The ExecutionContext (`ctx`) is the core of the code generation engine.
- * It provides methods for emitting CPU instructions and data.
- * The context is typed to a specific platform (`T`) to ensure that only
- * valid instructions for that platform can be called.
- */
-export interface ExecutionContext<T extends Platform> {
-    /** Lays out a single layoutable object. */
-    (data: Layoutable<T>): void;
-    /** Lays out a sequence of layoutable objects in order. */
-    (data: Layoutable<T>[]): void;
-
-    /** A primitive for emitting a sequence of raw bytes into the ROM. */
-    emitBytes: (bytes: number[]) => void;
-
-    // Direct methods for CPU instructions
-    LDA: (operand: any) => void;
+/** An object that can be located at a specific address in the final ROM. */
+export interface ILocatable {
+    address: number;
 }
 
 /**
- * A LayoutFunction is any function that takes an ExecutionContext and uses it
- * to emit code or data. This is the fundamental building block of a TSAL module.
+ * The "Brain": Represents any part of the assembly language.
+ * An ILayoutable implementation holds all the specific logic for how
+ * it is sized, organized, and written to the ROM.
  */
-export type LayoutFunction<T extends Platform> = (ctx: ExecutionContext<T>) => void; 
+export interface ILayoutable {
+    /**
+     * Pass 2: An optional method to optimize this part.
+     * It can return a new, more efficient ILayoutable to replace itself.
+     */
+    organize?(ctx: OrganizationContext, node: AstNode<this>): ILayoutable;
+
+    /** Pass 3: Calculates the size of this part in bytes. */
+    getSize(): number;
+
+    /** Pass 4: Writes the binary representation of this part. */
+    emit(ctx: EmitContext): void;
+    
+    /** Pass 1: Returns the direct children of this part for AST construction. */
+    getChildren(): ILayoutable[];
+}
+
+/**
+ * The "Skeleton": A generic node in the Abstract Syntax Tree.
+ * Its only job is to wrap a part, manage children, and delegate all
+ * compilation logic back to the part.
+ */
+export class AstNode<T extends ILayoutable> {
+    part: T;
+    children: AstNode<ILayoutable>[];
+    parent: AstNode<ILayoutable> | null = null;
+
+    constructor(part: T) {
+        this.part = part;
+        // Pass 1: Recursively build the tree.
+        this.children = this.part.getChildren().map(p => {
+            const childNode = new AstNode(p);
+            childNode.parent = this;
+            return childNode;
+        });
+    }
+
+    // The node's 'organize' simply calls the part's 'organize'
+    // and rebuilds its own children if the part changes itself.
+    organize(ctx: OrganizationContext): void {
+        if (this.part.organize) {
+            this.part = this.part.organize(ctx, this) as T;
+        }
+        // Then, recursively organize children.
+        this.children.forEach(c => c.organize(ctx));
+    }
+
+    // The node's 'getSize' delegates to the part and sums up the children.
+    getSize(): number {
+        const partSize = this.part.getSize();
+        const childrenSize = this.children.reduce((sum, c) => sum + c.getSize(), 0);
+        return partSize + childrenSize;
+    }
+
+    // The node's 'emit' delegates to the part, then tells children to emit.
+    emit(ctx: EmitContext): void {
+        this.part.emit(ctx);
+        this.children.forEach(c => c.emit(ctx));
+    }
+}

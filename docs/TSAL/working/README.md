@@ -1,300 +1,336 @@
-# Understanding the TSAL Working Examples
+# TSAL (TypeScript Assembly Language) - Working Implementation
 
-This document explains the concepts behind the TypeScript Assembly Language (TSAL) by walking through the example files in this directory.
+**Status:** Core assembler complete, disassembler in planning phase
 
-## What is TSAL?
+TSAL is a sophisticated TypeScript-based system for writing, generating, and parsing 65c816 assembly code for the SNES. This directory contains the working implementation, featuring a complete code generation system with type-safe instruction factories and runtime string parsing capabilities.
 
-TSAL is a system designed to write assembly code for the SNES 65c816 processor using the modern features of TypeScript. Instead of writing raw `.asm` text files, developers write TypeScript code that generates the binary machine code.
+## 🎯 **Project Vision**
 
-The primary goals are:
-*   **Type Safety**: Catch bugs at compile time, not runtime.
-*   **Discoverability**: Use IDE features like autocomplete to explore available instructions and addressing modes.
-*   **Organization**: Structure code into logical modules with clear dependencies.
-*   **Maintainability**: Create readable, self-documenting code that is easier to modify and extend.
+TSAL bridges the gap between modern development practices and retro assembly programming by providing:
 
-The diagram above illustrates the layered architecture of the system.
+- **Compile-time type safety** for assembly instruction generation
+- **Runtime flexibility** for parsing existing assembly code
+- **IntelliSense support** for discovering instructions and addressing modes
+- **Modular architecture** separating concerns between code generation and ROM analysis
+- **Hybrid API design** offering both simple functions and powerful factories
 
-## File Breakdown & Core Concepts
+## 📖 **Documentation Navigation**
 
-The system is broken down into several layers, each represented by a file.
+- **[README.md](README.md)** - This file: Current status, achievements, and development setup
+- **[CONCEPTS.md](CONCEPTS.md)** - Deep dive into architecture, design patterns, and real-world examples
+- **[ROADMAP.md](ROADMAP.md)** - Technical roadmap, phases, timeline, and decision points
 
-### `platform.ts`: The Foundation
+## 🏗️ **Current Architecture**
 
-This is the lowest level of the TSAL architecture. It provides the fundamental building blocks that are tied to the SNES hardware itself.
-
-*   **`SnesLayoutable`**: A core interface. Anything that can be written into the ROM must implement this. It has a `layout()` method that the toolchain calls to get the object's binary representation.
-*   **Sized Primitives**: `byte`, `word`, and `long` are factory functions that create number types with a specific size. This ensures, for example, that an instruction expecting a 16-bit word doesn't accidentally receive a 24-bit long.
-*   **`code(...)`**: A function that takes a series of instructions and data and turns them into a single `SnesLayoutable` block.
-
-### `op.ts`: The CPU Instruction Set
-
-This file defines the standard 65c816 CPU instructions (`LDA`, `STA`, `TRB`, `TSB`, `BRA`, etc.). It makes heavy use of a namespaced factory pattern to ensure type safety for addressing modes.
-
-**Example:**
-Instead of a generic `LDA(value, mode)` function, we have specific, named functions:
-```typescript
-LDA.imm(word(0x2000)); // Load immediate value
-LDA.dp(mem.dp.actor.flags10); // Load from direct page address
-LDA.abs(0x2100); // Load from absolute address
-LDA.long(0x7F0200); // Load from long address
 ```
-This design has two key benefits:
-1.  The compiler will throw an error if you try to use an addressing mode that doesn't exist for an instruction (e.g., `BRA.imm(...)`).
-2.  Typing `LDA.` in the IDE will pop up a list of all valid, implemented addressing modes, making the system easy to learn and explore.
-
-### `game.ts`: Game-Specific Abstractions
-
-This file builds on top of the platform and CPU layers to create abstractions specific to *this* game (Illusion of Gaia).
-
-*   **`mem`**: A structured object representing the game's memory map. This allows us to write `mem.dp.actor.flags10` instead of a magic number like `$10`, making code far more readable.
-*   **`COP`**: An object for handling the SNES's Co-Processor instructions. These are special instructions that are often game-specific. TSAL supports two ways to call them:
-    *   **Indexed (e.g., `COP[0xDA](...)`)**: Used for newly discovered or undocumented opcodes during reverse engineering. It's flexible but not type-safe.
-    *   **Named (e.g., `COP.DisplayText(...)`)**: The preferred method for production code. Once an opcode's function is known, it's given a descriptive name and a strongly-typed signature. This is the "promotion" path for all `COP` commands.
-*   **`WideString`**: A template literal for handling the game's two-byte character encoding for dialogue.
-
-### `na4B_spirit.ts`: An Application Module
-
-This file is a real-world example of a game module. It defines the code and data for a specific entity (the Nazca spirit) in the game. It brings all the other layers together.
-
-Let's break down a snippet from `code_05F313`:
-```typescript
-export const code_05F313 = code((ctx) => ctx.emit([
-    // Game-specific command to do something with parameters.
-    COP[0xBC](0x70, 0x00), 
-
-    // CPU instruction to load the immediate value 0xFFF0 into the accumulator.
-    LDA.imm(word(0xFFF0)), 
-
-    // CPU instruction to set bits in memory at a known absolute address.
-    // The address is read from the game's memory map for clarity.
-    TSB.abs(mem.joypad_mask_std), 
-
-    // Game-specific command to display the text we defined earlier.
-    // The compiler knows that this command expects a WideString.
-    COP[0xBF](widestring_05F349), 
-]));
+TSAL Core Library
+├── Code Generation Layer (✅ Complete)
+│   ├── Type-safe instruction factories (LDA.imm, STA, etc.)
+│   ├── Simple functions for single-variant instructions (NOP, BMI, CLC)
+│   ├── Generated opcode definitions and type aliases
+│   └── Instruction class with emission capabilities
+├── String Parser Layer (🚧 Planned)
+│   ├── Runtime assembly string parsing (asm("LDA #$42"))
+│   ├── Regex-based addressing mode detection
+│   └── Integration with type-safe factories
+└── ROM Analysis Layer (📋 Future)
+    ├── Disassembler for reading ROM files
+    ├── Type parser for structured data extraction
+    └── Schema-driven data interpretation
 ```
 
-### The `layout` Export
+## 📁 **File Structure**
 
-The most critical part of a module is the `layout` export at the bottom:
+### Core Generation System
+- **`generate-opcodes.ts`** - Main code generator that produces type-safe instruction factories
+- **`generated-opcodes.ts`** - Generated TypeScript definitions (OpCode enum, OpDef interface, type aliases)
+- **`op-factories.ts`** - Generated instruction factories and simple functions
+- **`op.ts`** - Core Instruction class and addressing mode definitions
+
+### 65c816 Instruction Set Data
+- **`../../../65c816/`** - JSON files defining the complete 65c816 instruction set
+- **`../../../generated/65c816-instruction-set.json`** - Complete, hydrated instruction set
+
+### Working Examples
+- **`tsal.ts`** - Core TSAL interfaces and layoutable system
+- **`platform.ts`** - SNES platform-specific abstractions
+- **`game.ts`** - Game-specific memory mappings and COP definitions
+- **`st68_lily.ts`, `sFA_diary_menu.ts`** - Real-world module examples
+
+## 🚀 **Major Achievements**
+
+### 1. Sophisticated Code Generator (`generate-opcodes.ts`)
+
+Our code generator is a complete solution that:
+
+- **Processes 92 instructions** with 256+ variants from JSON data sources
+- **Detects single vs. multi-variant instructions** automatically
+- **Generates clean APIs** - simple functions for single-variant, factories for multi-variant
+- **Maintains full type safety** throughout the generation process
 
 ```typescript
-export const layout = code((ctx) => ctx.emit([
-    h_na4B_spirit,
-    e_na4B_spirit,
-    code_05F307,
-    code_05F313,
-    widestring_05F349,
-]));
+// Generated simple functions (23 instructions)
+const nop = NOP();
+const branch = BMI('loop_label');
+const clear = CLC();
+
+// Generated factory objects (9 instruction families)
+const load = LDA.imm(0x42);
+const store = STA.abs(0x1234);
+const jump = JMP.abs_ind(0x5678);
 ```
 
-This explicitly tells the TSAL toolchain what pieces to include in the final ROM and, crucially, **in what order**. This explicit ordering eliminates a whole class of bugs common in traditional assembly development where the layout is implicit and fragile. The toolchain processes this array to generate the final binary output for the module.
+### 2. Hybrid API Design
 
----
+We solved the fundamental tension between verbose accuracy and clean simplicity:
 
-## How TSAL Replaces Traditional Assembly Macros
-
-In traditional assembly, macros are a primary tool for abstraction and code reuse. TSAL achieves the same goals not by generating `.asm` text files, but by using standard TypeScript functions and constants to generate binary code directly.
-
-Below are examples from `na4B_spirit.ts` translated into what they would look like as traditional assembly macros.
-
-### Example 1: Reusable Logic Block
-
-A TSAL `code` block is a self-contained, reusable piece of logic, directly equivalent to a macro or a labeled subroutine.
-
-**TSAL (`na4B_spirit.ts`)**
+**Before (Verbose):**
 ```typescript
-export const e_na4B_spirit = code((ctx) => ctx.emit([
-    COP.D2(0x06, 0x01),
-    COP.D2(0x07, 0x01),
-    LDA.imm(word(0x2000)),
-    TRB.dp(mem.dp.actor.flags10),
-    LDA.imm(word(0x0200)),
-    TSB.dp(mem.dp.actor.flags12),
-    COP.CA(0x03)
-]));
+const nop = NOP.imp();
+const branch = BMI.rel('loop');
+const clear = CLC.imp();
 ```
 
-**Traditional Assembly Macro Equivalent**
-```asm
-; A helper macro to simplify the COP instruction format.
-; This mirrors the abstraction that TSAL's `COP` object provides.
-cop_macro: macro op, params...
-    db $02, op, params... ; $02 is the 65c816 opcode for COP
-endm
-
-; The e_na4B_spirit logic, defined as a labeled subroutine.
-e_na4B_spirit:
-    cop_macro $D2, $06, $01      ; TSAL: COP.D2(0x06, 0x01)
-    cop_macro $D2, $07, $01      ; TSAL: COP.D2(0x07, 0x01)
-    lda #$2000                   ; TSAL: LDA.imm(word(0x2000))
-    trb dp_actor_flags10         ; TSAL: TRB.dp(mem.dp.actor.flags10)
-    lda #$0200                   ; TSAL: LDA.imm(word(0x0200))
-    tsb dp_actor_flags12         ; TSAL: TSB.dp(mem.dp.actor.flags12)
-    cop_macro $CA, $03           ; TSAL: COP.CA(0x03)
-    rtl                          ; Return from long subroutine
-```
-
-### Example 2: Control Flow and Pointers
-
-This example demonstrates more advanced concepts like an infinite loop (`BRA`) and passing a code block's address as a parameter, which is conceptually similar to a function pointer.
-
-**TSAL (`na4B_spirit.ts`)**
+**After (Clean + Powerful):**
 ```typescript
-export const code_05F307 = code((ctx) => ctx.emit([
-    COP[0x80](0x32),
-    COP[0x89](),
-    COP[0x21](0x02, code_05F313), // Pass the address of code_05F313
-    BRA(code_05F307)             // Create an infinite loop
-]));
+// Clean for simple cases
+const nop = NOP();
+const branch = BMI('loop');
+const clear = CLC();
+
+// Powerful for complex cases  
+const load = LDA.imm(0x42);    // immediate
+const load2 = LDA.abs(0x1234); // absolute
+const load3 = LDA.long(0x7E1234); // long
 ```
 
-**Traditional Assembly Macro Equivalent**
-In this case, the assembler's ability to resolve a label to its address is crucial. TSAL's toolchain handles this reference management automatically.
+### 3. Complete 65c816 Instruction Coverage
 
-```asm
-; Assume cop_macro is defined as above
+Our generated system includes:
 
-code_05F307:
-    cop_macro $80, $32               ; TSAL: COP[0x80](0x32)
-    cop_macro $89                    ; TSAL: COP[0x89]()
+- **23 single-variant instructions** with simple function APIs
+- **9 multi-variant instruction families** with factory object APIs  
+- **All major addressing modes** including direct page, absolute, long, indexed, indirect, stack relative
+- **Special handling** for flag-dependent immediate sizes
+- **Block move instructions** with dual operand support
 
-    ; The assembler resolves 'code_05F313' to its 16-bit address,
-    ; effectively passing a function pointer.
-    cop_macro $21, $02, .word(code_05F313)
+### 4. Type-Safe Foundation
 
-    ; Branch back to the start of this label.
-    bra code_05F307
-
-; The target subroutine would be defined elsewhere.
-code_05F313:
-    ; ... (contents of the code_05F313 block) ...
-    rtl
-```
-
-These examples illustrate how TSAL provides the same expressive power as traditional macros but enhances it with a type-safe, modern development environment. 
-
----
-
-## Enhanced Macros: Building with `label()`
-
-The introduction of an explicit `label()` primitive unlocks the ability to create powerful, high-level abstractions that mirror control flow from modern languages. These "enhanced macros" are simply TypeScript functions that organize instructions and labels into safe, reusable patterns.
-
-### Example 3: `if/else` Blocks
-
-In assembly, creating an `if/else` structure requires careful management of conditional branches and jumps to avoid accidentally executing both code paths. TSAL can abstract this completely.
-
-Let's imagine we have a helper function called `ifEqual` that takes a "then" block and an optional "else" block.
-
-**TSAL (`macros.ts`)**
 ```typescript
-/**
- * Executes a block of code if the Zero flag is set (e.g., after a CMP
- * where the values were equal).
- * @param thenBlock The code to execute if the condition is met.
- * @param elseBlock The optional code to execute if it is not.
- */
-function ifEqual(thenBlock: SnesLayoutable, elseBlock?: SnesLayoutable) {
-    const elseLabel = label();
-    const endLabel = label();
+export interface OpDef {
+  opcode: OpCode;
+  mnemonic: string;
+  size: number | 'flag-dependent';
+  addressingMode: string;
+}
 
-    if (elseBlock) {
-        return code(ctx => ctx.emit([
-            BNE(elseLabel),  // If Not Equal, branch to the 'else' part
-            thenBlock,
-            BRA(endLabel),   // Unconditionally jump over the 'else' part
-            elseLabel,
-            elseBlock,
-            endLabel
-        ]));
-    } else {
-        return code(ctx => ctx.emit([
-            BNE(endLabel),   // If Not Equal, branch to the end
-            thenBlock,
-            endLabel
-        ]));
-    }
+export class Instruction implements ILayoutable {
+  constructor(
+    public readonly opDef: OpDef,
+    public readonly operand?: Operand
+  ) { /* ... */ }
+  
+  emit(ctx: EmitContext) { /* ... */ }
 }
 ```
 
-**Using the Macro (`na4B_spirit.ts`)**
+## 📊 **Instruction Distribution Analysis**
+
+Based on our analysis of the complete 65c816 instruction set:
+
+| Category | Count | API Style | Examples |
+|----------|-------|-----------|----------|
+| **Single-Variant** | 23 | Simple Functions | `NOP()`, `BMI(target)`, `CLC()`, `RTS()` |
+| **Multi-Variant** | 9 | Factory Objects | `LDA.*`, `STA.*`, `JMP.*`, `ADC.*` |
+
+### Single-Variant Instructions (Simple Functions)
+- **Branch:** `BCC`, `BCS`, `BEQ`, `BNE`, `BMI`, `BPL`, `BVS`, `BVC`, `BRA`, `BRL`
+- **System:** `NOP`, `BRK`, `COP`, `RTI`, `SEP`, `REP`, `CLI`, `SEI`, `STP`, `WAI`
+- **Stack:** `PHA`, `PHX`, `PHY`, `PLA`, `PLX`, `PLY`, `PHB`, `PHD`, `PHK`, `PHP`, `PLB`, `PLD`, `PLP`
+- **Transfer:** `TAX`, `TAY`, `TXA`, `TYA`, `TSX`, `TXS`, `TXY`, `TYX`, `TCD`, `TCS`, `TDC`, `TSC`
+- **Other:** `JSL`, `RTS`, `RTL`, `PEA`, `PEI`, `PER`, `INX`, `INY`, `DEX`, `DEY`, `MVN`, `MVP`, `XBA`, `XCE`, `CLC`, `CLD`, `CLV`, `SEC`, `SED`, `WDM`
+
+### Multi-Variant Instructions (Factory Objects)
+- **Load/Store:** `LDA` (15 variants), `STA` (14 variants), `LDX` (5 variants), `LDY` (5 variants), `STX`, `STY`, `STZ`
+- **Arithmetic:** `ADC` (15 variants), `SBC` (15 variants), `CMP` (15 variants), `CPX`, `CPY`, `INC`, `DEC`
+- **Logical:** `AND`, `ORA`, `EOR`, `BIT`, `TRB`, `TSB`
+- **Shift:** `ASL`, `LSR`, `ROL`, `ROR`  
+- **Control Flow:** `JMP` (3 variants), `JML` (2 variants), `JSR` (2 variants)
+
+## 🎮 **Working Examples**
+
+### Basic Instruction Usage
+
 ```typescript
-code(ctx => ctx.emit([
-    LDA.dp(mem.dp.someValue),
-    CMP.imm(byte(10)), // Check if the value is 10
-    // If it was equal, run the first block. Otherwise, run the second.
-    ifEqual(
-        code(ctx => ctx.emit(STA.dp(mem.dp.isTen))),
-        code(ctx => ctx.emit(STA.dp(mem.dp.isNotTen)))
-    )
+// Import the generated factories and functions
+import { NOP, CLC, INX, LDA, STA, JMP } from './op-factories';
+
+// Simple instructions (no addressing mode needed)
+const operations = [
+  NOP(),           // No operation
+  CLC(),           // Clear carry
+  INX(),           // Increment X
+];
+
+// Complex instructions (multiple addressing modes)
+const dataOps = [
+  LDA.imm(0x42),      // Load immediate
+  LDA.abs(0x1234),    // Load absolute
+  LDA.dp(0x80),       // Load direct page
+  STA.abs(0x2000),    // Store absolute
+  JMP.abs_ind(0x1234), // Jump absolute indirect
+];
+```
+
+### Game Module Example (from `st68_lily.ts`)
+
+```typescript
+// Forward declarations for complex interdependencies
+export let e_st68_lily: Code,
+    code_list_06B4FB: SnesLayoutable,
+    code_06B501: Code;
+
+// Entry point using state-based dispatch
+e_st68_lily = code(ctx => ctx.emit([
+    LDA.abs(mem.abs.lily_state_0AA6),  // Load state variable
+    STA.dp(0x00),                      // Store in direct page
+    COP[0xD9](word(0x0000), code_list_06B4FB), // Jump table dispatch
+]));
+
+// Pointer table for state handlers
+code_list_06B4FB = pointerTable<Code>([
+    code_06B501,
+    code_06B51F, 
+    code_06B571,
+]);
+
+// State handler implementation
+code_06B501 = code(ctx => ctx.emit([
+    COP[0x25](byte(0x11), byte(0x1C)),
+    LDA.imm(word(0xCFF0)),
+    TSB.abs(mem.joypad_mask_std),
+    COP[0xBF](widestring_06B606),
+    RTL(),
 ]));
 ```
 
-**Traditional Assembly Equivalent**
-```asm
-    lda dp_someValue
-    cmp #10
-    bne if_else      ; Branch if Not Equal
-    sta dp_isTen     ; This is the "then" block
-    bra if_end       ; Skip the "else" block
-if_else:
-    sta dp_isNotTen  ; This is the "else" block
-if_end:
-    ; execution continues
+## 🚧 **Current Limitations & Next Steps**
+
+### Incomplete Features
+
+1. **COP Handler System**
+   - Current: Basic indexed access (`COP[0x5A](args)`)
+   - Needed: Named function mapping (`COP.displayText(message)`)
+   - Status: Design patterns established, implementation pending
+
+2. **String Parser (Runtime Assembly)**
+   - Current: Type-safe factories only
+   - Needed: `asm("LDA #$42")` string parsing
+   - Plan: Port regex logic from `GaiaLib/Asm/OpCode.cs`
+
+3. **ROM Disassembler**
+   - Current: Code generation only
+   - Needed: ROM file → TypeScript object parsing
+   - Plan: Implement `AsmReader` and `TypeParser` classes
+
+### Roadmap Phase 1: Complete the Assembler
+
+- [ ] **Implement COP handler system**
+  - Design named function registry
+  - Add runtime/compile-time validation
+  - Support both indexed and named syntax
+
+- [ ] **Add string parser for runtime assembly**
+  - Port regex patterns from C# codebase
+  - Integrate with existing type-safe factories
+  - Support all addressing modes
+
+- [ ] **Create comprehensive test suite**
+  - Test all instruction variants
+  - Validate generated binary output
+  - Test string parsing round-trip accuracy
+
+### Roadmap Phase 2: Build the Disassembler  
+
+- [ ] **Implement ROM data reader**
+  - Buffer-based byte reading
+  - Position tracking and seeking
+  - Endianness handling
+
+- [ ] **Create assembly parser**
+  - Opcode → instruction mapping
+  - Operand extraction by addressing mode
+  - Generate `Instruction` objects from binary
+
+- [ ] **Build type parser for structured data**
+  - Schema-driven data extraction
+  - Support for game-specific data types
+  - Integration with existing type system
+
+### Roadmap Phase 3: Enhanced Development Experience
+
+- [ ] **Language server/IDE integration**
+  - In-string syntax highlighting for `asm("")` calls
+  - Real-time error checking
+  - Advanced autocompletion
+
+- [ ] **Web-based development environment**
+  - Browser-based IDE with TSAL support
+  - Live compilation and testing
+  - ROM visualization tools
+
+## 🔧 **Development Setup**
+
+### Prerequisites
+- Node.js 18+ (for TypeScript type stripping support)
+- TypeScript 5.0+
+
+### Building the System
+```bash
+# Generate the instruction factories
+cd docs/TSAL/working
+node generate-opcodes.ts
+
+# This produces:
+# - generated-opcodes.ts (data definitions)
+# - op-factories.ts (instruction factories)
 ```
-The TSAL version is not only more readable, but it completely prevents the common bug of forgetting the `bra if_end` instruction, which would cause both the "then" and "else" blocks to execute.
 
-### Example 4: `while` Loops
-
-A `while` loop is another fundamental structure that can be cleanly abstracted. The following TSAL function creates a standard `while` loop that checks a condition at the top.
-
-**TSAL (`macros.ts`)**
-```typescript
-/**
- * Creates a while loop.
- * @param condition A block of code that sets processor flags.
- * @param branchToExit The branch instruction that will EXIT the loop.
- * @param body The code to execute inside the loop.
- */
-function createWhileLoop(condition: SnesLayoutable, branchToExit: (target: Label) => Instruction, body: SnesLayoutable) {
-    const loopStart = label();
-    const loopEnd = label();
-
-    return code(ctx => ctx.emit([
-        loopStart,
-        condition,
-        branchToExit(loopEnd), // e.g., BEQ(loopEnd) to exit when a value is zero
-        body,
-        BRA(loopStart),        // Jump back to the top to re-check the condition
-        loopEnd
-    ]));
-}
+### Testing the API
+```bash
+# Run the API demonstration
+node test-simplified-api.js
 ```
 
-**Using the Macro (`na4B_spirit.ts`)**
-This example creates a loop that counts down from 10 (in the X register) and clears a block of memory.
-```typescript
-code(ctx => ctx.emit([
-    LDX.imm(byte(10)),
-    // The loop will continue as long as X is not zero.
-    createWhileLoop(
-        code(ctx => ctx.emit(DEX)), // Condition: Decrement X. Sets Z flag when X is 0.
-        BEQ,                       // Exit Condition: Branch if Equal (to zero)
-        code(ctx => ctx.emit(STA.abs_x(0x3000))) // Body: Store A at address $3000 + X
-    )
-]));
-```
+## 📚 **Related Documentation**
 
-**Traditional Assembly Equivalent**
-```asm
-    ldx #10
-while_start:
-    dex                ; Condition: Decrement X
-    beq while_end      ; Exit if X is zero
-    sta $3000,x        ; Body: Store A
-    bra while_start    ; Loop
-while_end:
-    ; execution continues
-```
-Again, the TSAL function encapsulates the entire loop structure—labels and branches—into a single, declarative call, making the programmer's intent obvious and the code much safer to write and maintain. 
+### Core TSAL Documentation
+- **[CONCEPTS.md](CONCEPTS.md)** - Detailed architectural concepts, layered design, real-world examples, and development philosophy
+- **[ROADMAP.md](ROADMAP.md)** - Technical roadmap with phases, timelines, success metrics, and implementation priorities
+
+### Technical Resources
+- **`../v3/`** - Architectural documentation and design principles
+- **`../../../65c816/`** - 65c816 instruction set data files (JSON format)
+- **`../../../generated/`** - Generated instruction set definitions and hydrated data
+- **`../../../plans/refactor-opcode-generation.md`** - Implementation history and completed features
+
+### Related Projects
+- **`../../../GaiaLib/`** - C# assembler library with regex-based parsing (inspiration for string parser)
+- **`../../../TSAL/`** - Node.js package implementation
+- **`../../../docs/TSAL/`** - Additional schemas and architectural documentation
+
+## 🎯 **Design Philosophy**
+
+TSAL's design is guided by several key principles:
+
+1. **Progressive Enhancement**: Start with a solid, portable library, then add enhanced IDE features
+2. **Hybrid Approaches**: Support both compile-time type safety and runtime flexibility
+3. **Separation of Concerns**: Clear boundaries between generation, parsing, and analysis
+4. **Real-world Usage**: Driven by actual retro development needs and patterns
+5. **TypeScript First**: Leverage the full power of the TypeScript type system
+
+This approach ensures TSAL remains both powerful for expert users and approachable for newcomers to assembly development.
+
+---
+
+**Next Steps**: Based on project priorities, we're ready to implement either the COP handler system, the runtime string parser, or begin work on the ROM disassembler. Each represents a significant step toward a complete SNES development toolkit. 

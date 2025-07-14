@@ -5,7 +5,7 @@
  * and helpers that are imported by TSAL modules.
  */
 
-import { byte, dp, abs, SnesContext, SnesLayoutable } from './platform';
+import { byte, SnesContext, SnesLayoutable } from './platform';
 import { Locational } from './tsal';
 
 // A mock Address type for type-safety in this example.
@@ -17,17 +17,45 @@ import { Locational } from './tsal';
 export const mem = {
     dp: {
         actor: {
-            flags10: dp(0x10),
-            flags12: dp(0x12)
+            flags10: 0x10,
+            flags12: 0x12
         }
     },
-    joypad_mask_std: abs(0x065A) // Example address
+    abs: {
+        inventory_slots: 0x0AB4,
+        inventory_equipped_index: 0x0AC4,
+        inventory_equipped_type: 0x0AC6,
+        lily_state_0AA6: 0x0AA6,
+        some_var_064A: 0x064A,
+        player_actor: 0x09AA,
+        player_flags: 0x09AE,
+    },
+    // System addresses from sFA_diary_menu
+    scene_next: 0x0642,
+    joypad_mask_std: 0x065A,
+    joypad_mask_inv: 0x065C,
+    M7A: 0x211B,
+    M7B: 0x211C,
+    M7C: 0x211D,
+    M7D: 0x211E,
+    M7X: 0x211F,
+    M7Y: 0x2120,
+    W34SEL: 0x2124,
+    WOBJSEL: 0x2125,
+    _TM: 0x212C,
+    _TS: 0x212D,
+    CGWSEL: 0x2130,
+    CGADSUB: 0x2131,
+    APUIO0: 0x2140,
+    RDNMI: 0x4210,
+    JOY2L: 0x421A,
 };
 
 // 2. Mock 'WideString' template literal tag
 // This is now a factory that returns a full SnesLayoutable object.
-interface WideStringObject extends SnesLayoutable, Partial<Locational> {
+export interface WideStringObject extends SnesLayoutable, Locational {
     readonly content: string;
+    readonly location: number;
 }
 
 /**
@@ -151,6 +179,32 @@ registerCopHandler(0xCC);
 registerCopHandler(0x87);
 registerCopHandler(0x8A);
 registerCopHandler(0xE0);
+// New handlers from inventory_menu
+registerCopHandler(0x88);
+registerCopHandler(0xBD);
+registerCopHandler(0x9C);
+registerCopHandler(0xC2);
+registerCopHandler(0xD9);
+registerCopHandler(0x06);
+registerCopHandler(0x40);
+registerCopHandler(0xA7);
+registerCopHandler(0xA9);
+registerCopHandler(0xC1);
+registerCopHandler(0x8B);
+registerCopHandler(0x8D);
+// New handlers from st68_lily
+registerCopHandler(0xDA);
+registerCopHandler(0x0B);
+registerCopHandler(0xC0);
+registerCopHandler(0x25);
+registerCopHandler(0x85);
+registerCopHandler(0x84);
+registerCopHandler(0x26);
+// New handlers from sFA_diary_menu
+registerCopHandler(0x6B);
+registerCopHandler(0xC8);
+registerCopHandler(0xE2);
+registerCopHandler(0xC5);
 
 // A Proxy creates a dynamic COP object that handles both named properties (COP.D2)
 // and numeric indices (COP[0xD2]), fulfilling the design for interchangeable syntax.
