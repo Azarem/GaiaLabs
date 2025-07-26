@@ -9,5 +9,6 @@
         public string StorePath { get; set; }
         public string Version { get; set; }
         public bool UseStore { get; set; }
+        public string AuthToken { get; set; }
     }
 }

@@ -9,4 +9,8 @@
     <FileVersion>0.1.0</FileVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GaiaLib\GaiaLib.csproj" />
+  </ItemGroup>
+
 </Project>

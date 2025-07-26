@@ -1,5 +1,4 @@
 ﻿
-
 ---------------------------------------------
 
 itemcomp_table_01EB0F [
@@ -49,4 +48,3 @@ asciistring_01EB94 |Statue |
 asciistring_01EB9C |Uses |
 
 asciistring_01EBA2 |from |
-

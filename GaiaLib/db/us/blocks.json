@@ -3853,7 +3853,8 @@
     },
     {
         "name": "scene_meta",
-        "movable": true
+        "movable": true,
+        "postProcess": "Lookup(0,1)"
     },
     {
         "name": "table_0E8000"

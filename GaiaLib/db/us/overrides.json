@@ -2,101 +2,101 @@
   {
     "location": 36650,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 36702,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 164770,
     "register": "M",
-    "value": "01"
+    "value": 1
   },
   {
     "location": 165820,
     "register": "M",
-    "value": "01"
+    "value": 1
   },
   {
     "location": 166269,
     "register": "M",
-    "value": "01"
+    "value": 1
   },
   {
     "location": 166765,
     "register": "M",
-    "value": "01"
+    "value": 0
   },
   {
     "location": 167229,
     "register": "M",
-    "value": "01"
+    "value": 1
   },
   {
     "location": 172332,
     "register": "M",
-    "value": "01"
+    "value": 1
   },
   {
     "location": 186244,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 186438,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 186690,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 186761,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 186893,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 187021,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 187444,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 187638,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 187909,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 187988,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 188255,
     "register": "M",
-    "value": "00"
+    "value": 0
   },
   {
     "location": 637860,
     "register": "B",
-    "value": "7E"
+    "value": 126
   }
 ]

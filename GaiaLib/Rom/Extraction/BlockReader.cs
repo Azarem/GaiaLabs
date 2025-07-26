@@ -82,13 +82,13 @@ internal partial class BlockReader
             switch (over.Register)
             {
                 case RegisterType.M:
-                    _stateManager.SetAccumulatorFlag(over.Location, over.Value != 0u);
+                    _stateManager.SetAccumulatorFlag(over.Location, over.Value == 1);
                     break;
                 case RegisterType.X:
-                    _stateManager.SetIndexFlag(over.Location, over.Value != 0u);
+                    _stateManager.SetIndexFlag(over.Location, over.Value == 1);
                     break;
                 case RegisterType.B:
-                    _stateManager.SetBankNote(over.Location, (byte)over.Value.Value);
+                    _stateManager.SetBankNote(over.Location, (byte)over.Value);
                     break;
             }
         }

@@ -1,0 +1,376 @@
+[
+  {
+    "block": "sEA_solid_arm",
+    "transforms": [
+      {
+        "key": "COP \\[DA\\] \\( #\\d7 \\)\\s+COP \\[05\\] \\( #1B \\)\\s+COP \\[DA\\] \\( #B3 \\)",
+        "value": "COP [05] ( #1B )\r\n    COP [DB] ( #$0120 )"
+      }
+    ]
+  },
+  {
+    "block": "av69_erik",
+    "transforms": [
+      {
+        "key": "av6A_erik_destroy",
+        "value": "av69_erik_destroy"
+      }
+    ]
+  },
+  {
+    "block": "av69_kara",
+    "transforms": [
+      {
+        "key": "av6A_kara_destroy",
+        "value": "av69_kara_destroy"
+      }
+    ]
+  },
+  {
+    "block": "av69_lance",
+    "transforms": [
+      {
+        "key": "av6A_lance_destroy",
+        "value": "av69_lance_destroy"
+      }
+    ]
+  },
+  {
+    "block": "av69_lily",
+    "transforms": [
+      {
+        "key": "av6A_lily_destroy",
+        "value": "av69_lily_destroy"
+      }
+    ]
+  },
+  {
+    "block": "av69_neil",
+    "transforms": [
+      {
+        "key": "av6A_neil_destroy",
+        "value": "av69_neil_destroy"
+      }
+    ]
+  },
+  {
+    "block": "btDE_kara_missing",
+    "transforms": [
+      {
+        "key": "btE3_kara_destroy",
+        "value": "btDE_kara_missing_destroy"
+      }
+    ]
+  },
+  {
+    "block": "btE1_comet_soon",
+    "transforms": [
+      {
+        "key": "COP \\[50\\] \\( @palette_1F00C0, #00, #A0, #50 \\)",
+        "value": "COP [50] ( @palette_1F00C0, #10, #B0, #40 )"
+      }
+    ]
+  },
+  {
+    "block": "chunk_008000",
+    "transforms": [
+      {
+        "key": "(?<!STA \\$02\\s+)LDA \\$0A\\s+STA \\$00\\s+STA \\$02, S",
+        "value": "LDA $$0C\r\n    STA $$02\r\n    $&"
+      }
+    ]
+  },
+  {
+    "block": "chunk_028000",
+    "transforms": [
+      {
+        "key": "const < #\\$003A, #\\$8000 >",
+        "value": "const < #$$003A, #$$&scene_meta >"
+      },
+      {
+        "key": "const < #\\$003C, #\\$008D >",
+        "value": "const < #$$003C, #$$^scene_meta, #00 >"
+      }
+    ]
+  },
+  {
+    "block": "func_09E8E4",
+    "transforms": [
+      {
+        "key": "RTS",
+        "value": "RTL"
+      }
+    ]
+  },
+  {
+    "block": "misc_actors_09E64B",
+    "transforms": [
+      {
+        "key": "JSR \\$&func_09E8E4",
+        "value": "JSL $$@func_09E8E4"
+      }
+    ]
+  },
+  {
+    "block": "sF7_actor_09DFF8",
+    "transforms": [
+      {
+        "key": "JSR \\$&func_09E8E4",
+        "value": "JSL $$@func_09E8E4"
+      }
+    ]
+  },
+  {
+    "block": "sF7_actor_09E26C",
+    "transforms": [
+      {
+        "key": "JSR \\$&func_09E8E4",
+        "value": "JSL $$@func_09E8E4"
+      }
+    ]
+  },
+  {
+    "block": "sF7_actor_09E3EB",
+    "transforms": [
+      {
+        "key": "JSR \\$&func_09E8E4",
+        "value": "JSL $$@func_09E8E4"
+      }
+    ]
+  },
+  {
+    "block": "sF7_actor_09E4DD",
+    "transforms": [
+      {
+        "key": "JSR \\$&func_09E8E4",
+        "value": "JSL $$@func_09E8E4"
+      }
+    ]
+  },
+  {
+    "block": "sF7_actor_09E591",
+    "transforms": [
+      {
+        "key": "JSR \\$&func_09E8E4",
+        "value": "JSL $$@func_09E8E4"
+      }
+    ]
+  },
+  {
+    "block": "sF7_actor_09E607",
+    "transforms": [
+      {
+        "key": "JSR \\$&func_09E8E4",
+        "value": "JSL $$@func_09E8E4"
+      }
+    ]
+  },
+  {
+    "block": "sF7_credits",
+    "transforms": [
+      {
+        "key": "JSR \\$&func_09E8E4",
+        "value": "JSL $$@func_09E8E4"
+      }
+    ]
+  },
+  {
+    "block": "dm47_imas",
+    "transforms": [
+      {
+        "key": "dm47_remus_destroy",
+        "value": "dm47_imas_destroy"
+      }
+    ]
+  },
+  {
+    "block": "dm47_sam",
+    "transforms": [
+      {
+        "key": "dm47_remus_destroy",
+        "value": "dm47_sam_destroy"
+      }
+    ]
+  },
+  {
+    "block": "eu9A_friezer",
+    "transforms": [
+      {
+        "key": "eu9A_max_destroy",
+        "value": "eu9A_friezer_destroy"
+      }
+    ]
+  },
+  {
+    "block": "eu9A_rudy",
+    "transforms": [
+      {
+        "key": "eu9A_max_destroy",
+        "value": "eu9A_rudy_destroy"
+      }
+    ]
+  },
+  {
+    "block": "mtA0_skulker",
+    "transforms": [
+      {
+        "key": "sub_0B9CE8",
+        "value": "sub2_0B9CE8"
+      },
+      {
+        "key": "code_0B9CF9",
+        "value": "code2_0B9CF9"
+      },
+      {
+        "key": "code_0B9D0E",
+        "value": "code2_0B9D0E"
+      }
+    ]
+  },
+  {
+    "block": "mtA5_actor_07E843",
+    "transforms": [
+      {
+        "key": "f_mtA2_actor_07E7F0_destroy",
+        "value": "f_mtA5_actor_07E843_destroy"
+      }
+    ]
+  },
+  {
+    "block": "mtA5_actor_07E896",
+    "transforms": [
+      {
+        "key": "f_mtA2_actor_07E7F0_destroy",
+        "value": "f_mtA5_actor_07E896_destroy"
+      }
+    ]
+  },
+  {
+    "block": "nvAC_hand_man",
+    "transforms": [
+      {
+        "key": "nvAC_staring_man2_destroy",
+        "value": "nvAC_hand_man1_destroy"
+      }
+    ]
+  },
+  {
+    "block": "pyDA_lithograph1",
+    "transforms": [
+      {
+        "key": "pyDA_lithograph2_full",
+        "value": "pyDA_lithograph1_full"
+      }
+    ]
+  },
+  {
+    "block": "pyDA_lithograph3",
+    "transforms": [
+      {
+        "key": "pyDA_lithograph2_full",
+        "value": "pyDA_lithograph3_full"
+      }
+    ]
+  },
+  {
+    "block": "pyDA_lithograph4",
+    "transforms": [
+      {
+        "key": "pyDA_lithograph2_full",
+        "value": "pyDA_lithograph4_full"
+      }
+    ]
+  },
+  {
+    "block": "pyDA_lithograph5",
+    "transforms": [
+      {
+        "key": "pyDA_lithograph2_full",
+        "value": "pyDA_lithograph5_full"
+      }
+    ]
+  },
+  {
+    "block": "pyDA_lithograph6",
+    "transforms": [
+      {
+        "key": "pyDA_lithograph2_full",
+        "value": "pyDA_lithograph6_full"
+      }
+    ]
+  },
+  {
+    "block": "pyDD_teleporter",
+    "transforms": [
+      {
+        "key": "LDA \\$00\\s+PHA",
+        "value": "$&\r\n    LDA $$02\r\n    PHA"
+      },
+      {
+        "key": "PLA\\s+STA \\$00",
+        "value": "PLA\r\n    STA $$02\r\n    $&"
+      }
+    ]
+  },
+  {
+    "block": "scene_actors",
+    "transforms": [
+      {
+        "key": "actor < #08, #0C, #03, @h_hidden_red_jewel >",
+        "value": "$&\r\n    actor < #0C, #2F, #00, @SouthCapeDeliveryman >"
+      },
+      {
+        "key": "actor < #12, #38, #11, @h_hidden_red_jewel >",
+        "value": "$&\r\n    actor < #14, #23, #07, @h_wa78_men >"
+      }
+    ]
+  },
+  {
+    "block": "scene_meta",
+    "transforms": [
+      {
+        "key": "music < #06, #00, @bgm_ominous_whispers >",
+        "value": "music < #04, #00, @bgm_ominous_whispers >"
+      },
+      {
+        "key": "music < #04, #00, @bgm_descent_into_darkness >",
+        "value": "music < #06, #00, @bgm_descent_into_darkness >"
+      },
+      {
+        "key": "music < #1D, #00, @bgm_lively_city_by_the_sea >",
+        "value": "music < #1C, #00, @bgm_lively_city_by_the_sea >"
+      },
+      {
+        "key": "music < #14, #00, @bgm_illusion_of_gaia >",
+        "value": "music < #1F, #00, @bgm_illusion_of_gaia >"
+      },
+      {
+        "key": "entry_41 \\[\\s+ppu < #00 >",
+        "value": "entry_41 [\r\n  ppu < #11 >"
+      }
+    ]
+  },
+  {
+    "block": "thinker_00BBAF",
+    "transforms": [
+      {
+        "key": "(dma_data_00BC4C\\s\\[\\s*\\])[\\s]*(dma_data_00BC4D\\s\\[[^\\]]*\\])",
+        "value": "$2\r\n\r\n$1"
+      }
+    ]
+  },
+  {
+    "block": "system_strings",
+    "transforms": [
+      { "key": "█", "value": " "},
+      { "key": "\\| Will \\|", "value": "| Will|"},
+      { "key": "(?<=asciistring_01EADC \\|[^|]*) (?=[^|]*\\|)", "value": "█"}
+    ]
+  },
+  {
+    "block": "itemcomp_table_01EB0F",
+    "transforms": [
+      { "key": "█", "value": " "}
+    ]
+  }
+]

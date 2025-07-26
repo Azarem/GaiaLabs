@@ -103,9 +103,13 @@ namespace GaiaLib.Database
             var stringCommands = ReadTable<List<DbStringCommand>>(Path.Combine(folderPath, "stringCommands.json"));
             var stringLayers = ReadTable<List<DbStringLayer>>(Path.Combine(folderPath, "stringLayers.json"));
 
+            var transforms = ReadTable<List<DbTransform>>(Path.Combine(folderPath, "transforms.json"));
 
             foreach (var block in blocks)
+            {
                 block.Parts = [.. parts.Where(x => x.Block == block.Name)];
+                block.Transforms = transforms.FirstOrDefault(x => x.Block == block.Name)?.Transforms;
+            }
 
             var cfg = config.FirstOrDefault();
 

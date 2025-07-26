@@ -1,6 +1,5 @@
 ﻿?BANK 01
 
-
 ---------------------------------------------
 
 asciistring_01D9D8 |[NHM:4][CUR:18,2]WARNING![DBL][DBL][NHM:0][CUR:0,3] This game pak is not designed[DBL] for your SUPER FAMICOM or[DBL] Super NES.[DBL][DBL][CUR:DC,4]ENIX CORPORATION|
@@ -810,4 +809,3 @@ asciistring_01EAD1 |[CUR:C6,1][NHM:14]FORCE|
 ---------------------------------------------
 
 asciistring_01EADC |[NHM:0][RCT:B,4,A4][CUR:E6,0]Ạ█Ḇṵṯṯōṉ█˭[N]███Ḛṉṯḛṟ[N]Ḃ█Ḇṵṯṯōṉ█˭[N]███Ĉāṉĉḛḻ|
-

@@ -7,6 +7,6 @@ namespace GaiaLib.Database
     {
         public int Location { get; set; }
         public RegisterType Register { get; set; }
-        public HexString Value { get; set; }
+        public int Value { get; set; }
     }
 }
