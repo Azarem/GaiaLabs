@@ -142,7 +142,7 @@ namespace GaiaLib.Rom.Rebuild
                 }
 
                 //Stop when we have an "exact" match
-                if (newRemain < 0x20)
+                if (newRemain < MinAcceptedRemaining)
                     return true;
 
                 //Stop processing if nothing else can fit

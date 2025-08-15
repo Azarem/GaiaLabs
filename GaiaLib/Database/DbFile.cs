@@ -9,7 +9,7 @@ namespace GaiaLib.Database
         public int Start { get; set; }
         public int End { get; set; }
         public bool? Compressed { get; set; }
-        public bool? Move { get; set; }
+        //public bool? Move { get; set; }
         public bool? Upper { get; set; }
     }
 }
