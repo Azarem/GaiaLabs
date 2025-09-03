@@ -137,9 +137,9 @@ internal class TypeParser
         return objects;
     }
 
-    private object ParseWordSafe()
+    private ushort ParseWordSafe()
         => _referenceManager.ContainsStruct(_romDataReader.Position + 1)
-            ? (object)_romDataReader.ReadByte()
+            ? _romDataReader.ReadByte()
             : _romDataReader.ReadUShort();
 
     private byte[] ParseBinary()

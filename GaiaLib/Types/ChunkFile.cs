@@ -64,6 +64,8 @@ public class ChunkFile
     {
         if (Blocks != null)
             Size = CalculateSize(Blocks);
+        else if (Compressed != null || Type == BinType.Sound)
+            Size += 2;
         return Size;
     }
 
@@ -79,4 +81,9 @@ public class ChunkFile
         }
         return size;
     }
-} 
+
+    public override string ToString()
+    {
+        return $"{{{Name}({Location:X}), {Size}, {Type}, B={Bank:X}, C={Compressed}}}";
+    }
+}

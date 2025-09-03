@@ -5457,20 +5457,20 @@
     "size": 245
   },
   {
-    "start": 165205,
-    "end": 165216,
-    "name": "func_028555",
-    "struct": "Code",
-    "block": "chunk_028000",
-    "size": 11
-  },
-  {
     "start": 165202,
     "end": 165205,
     "name": "sub_028552",
     "struct": "Code",
     "block": "chunk_028000",
     "size": 3
+  },
+  {
+    "start": 165205,
+    "end": 165216,
+    "name": "func_028555",
+    "struct": "Code",
+    "block": "chunk_028000",
+    "size": 11
   },
   {
     "start": 165216,

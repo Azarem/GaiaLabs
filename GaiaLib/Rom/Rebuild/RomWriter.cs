@@ -84,7 +84,7 @@ public class RomWriter : IDisposable
         //Calculate checksum
         int sum = 0;
         OutStream.Position = 0;
-        for (uint x = 0, size = (uint)OutStream.Length; x++ < size;)
+        for (uint x = 0, size = (uint)OutStream.Length; x < size; x++)
             sum += OutStream.ReadByte();
 
         //Write checksum
@@ -261,7 +261,7 @@ public class RomWriter : IDisposable
 
                     var ix = 0;
                     while (RomProcessingConstants.AddressSpace.Contains(label[ix]))
-                        ix++;
+                        ix++;   
 
                     if (ix > 0)
                         label = label[ix..];

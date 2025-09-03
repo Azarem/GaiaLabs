@@ -2396,8 +2396,8 @@
         { "start": "028446", "end": "02845B", "name": "func_028446", "struct": "Code" },
         { "start": "02845B", "end": "02845D", "name": "func_02845B", "struct": "Code" },
         { "start": "02845D", "end": "028552", "name": "func_02845D", "struct": "Code" },
-        { "start": "028555", "end": "028560", "name": "func_028555", "struct": "Code" },
         { "start": "028552", "end": "028555", "name": "sub_028552", "struct": "Code" },
+        { "start": "028555", "end": "028560", "name": "func_028555", "struct": "Code" },
         { "start": "028560", "end": "028592", "name": "func_028560", "struct": "Code" },
         { "start": "028592", "end": "0285DB", "name": "func_028592", "struct": "Code" },
         { "start": "0285DB", "end": "02868C", "name": "func_0285DB", "struct": "Code" },
@@ -6194,7 +6194,7 @@
         { "start": "0CF61F", "end": "0CF622", "name": "h_actor_0CF61F", "struct": "h_actor" },
         { "start": "0CF622", "end": "0CF623", "name": "e_actor_0CF61F", "struct": "Code" }
       ] },
-    { "name": "scene_meta", "movable": true, "parts": [
+    { "name": "scene_meta", "movable": true, "postProcess": "Lookup(0,1)", "parts": [
         { "start": "0D8000", "end": "0DAFFF", "name": "scene_meta", "struct": "mapdef" }
       ] },
     { "name": "table_0E8000", "parts": [

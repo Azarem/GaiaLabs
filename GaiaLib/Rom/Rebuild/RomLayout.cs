@@ -1,4 +1,5 @@
 ﻿using GaiaLib.Types;
+using System.Text.Json;
 
 namespace GaiaLib.Rom.Rebuild
 {
@@ -20,8 +21,20 @@ namespace GaiaLib.Rom.Rebuild
                 .Where(x => x.Size > 0)
                 .OrderBy(x => x.Blocks != null ? 0 : 1)
                 .ThenByDescending(x => x.Size)
+                .ThenBy(x => x.Location)
                 .ToList();
 
+            //var unmatchedJson = JsonSerializer.Serialize(new { 
+            //    files = unmatchedFiles.Select(x => new {
+            //        name = x.Name,
+            //        type = x.Type,
+            //        location = x.Location,
+            //        size = x.Size,
+            //        //bank = x.Bank,
+            //        //upper = x.Upper,
+            //        //compressed = x.Compressed
+            //    })
+            //}, new JsonSerializerOptions { WriteIndented = true });
         }
 
         public void Organize()

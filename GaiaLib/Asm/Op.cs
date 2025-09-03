@@ -59,5 +59,10 @@ namespace GaiaLib.Asm
 
         //    return str;
         //}
+
+        public override string ToString()
+        {
+            return $"{Code.Mnem} {string.Join(", ", Operands.Select(x => x.ToString()))} ({Size})";
+        }
     }
 }
