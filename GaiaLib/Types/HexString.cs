@@ -114,7 +114,12 @@ namespace GaiaLib.Types
         public HexStringConverter() { }
 
         public override HexString Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            => reader.GetString();
+            => reader.TokenType switch
+            {
+                JsonTokenType.String => new HexString(reader.GetString()!),
+                JsonTokenType.Number => new HexString(Convert.ToUInt32(reader.GetInt64())),
+                _ => throw new JsonException($"Cannot convert {reader.TokenType} to HexString.")
+            };
 
         public override void Write(Utf8JsonWriter writer, HexString value, JsonSerializerOptions options)
             => writer.WriteStringValue(value);

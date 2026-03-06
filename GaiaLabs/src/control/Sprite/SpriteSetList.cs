@@ -39,11 +39,12 @@ public partial class SpriteSetList : VBoxContainer
     {
         base._Ready();
 
-        _window = new Window() { Owner = GetWindow() };
+        _window = new Window();
+        _window.Visible = false; // Context menu: show only on right-click, not at startup
+        _window.Unresizable = true;
+        _window.Owner = GetTree().Root; // Root is always an ancestor of any window in the tree
 
-
-        _contextMenu = new VBoxContainer() { };
-        //_contextMenu.GuiInput += _contextMenu_GuiInput;
+        _contextMenu = new VBoxContainer();
         var newBtn = new MenuButton() { Text = "New" };
         var delBtn = new MenuButton() { Text = "Delete" };
 
@@ -52,8 +53,7 @@ public partial class SpriteSetList : VBoxContainer
 
         _window.AddChild(_contextMenu);
 
-        ControlTest.Instance.AddChild(_window);
-
+        ControlTest.Instance.CallDeferred(Node.MethodName.AddChild, _window);
         //GetWindow().AddChild(_window);
         //GetParent().GetParent().AddChild(_contextMenu);
         //AddChild(_contextMenu);

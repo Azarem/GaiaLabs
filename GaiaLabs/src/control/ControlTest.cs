@@ -20,8 +20,8 @@ public partial class ControlTest : Control
 	//private ImageTexture _texture;
 	internal static byte[] PaletteData;
 	internal static RomState RomState;
-	internal static byte[] TilemapCurrent { get => IsEffect ? RomState.EffectTilemap : RomState.MainTilemap; }
-	internal static byte[] TilesetCurrent { get => IsEffect ? RomState.EffectTileset : RomState.MainTileset; }
+	internal static byte[] TilemapCurrent { get => RomState == null ? Array.Empty<byte>() : (IsEffect ? RomState.EffectTilemap : RomState.MainTilemap); }
+	internal static byte[] TilesetCurrent { get => RomState == null ? Array.Empty<byte>() : (IsEffect ? RomState.EffectTileset : RomState.MainTileset); }
 	internal static byte[] TilesetBitmap;
 	internal static Image TilesetImage;
 	internal static ImageTexture TilesetTexture;
@@ -29,8 +29,8 @@ public partial class ControlTest : Control
 	internal static Image TilemapImage;
 	internal static ImageTexture TilemapTexture;
 	internal static float TilemapRatio;
-	internal static int TilemapWidth { get => IsEffect ? RomState.EffectTilemapW : RomState.MainTilemapW; }
-	internal static int TilemapHeight { get => IsEffect ? RomState.EffectTilemapH : RomState.MainTilemapH; }
+	internal static int TilemapWidth { get => RomState == null ? 0 : (IsEffect ? RomState.EffectTilemapW : RomState.MainTilemapW); }
+	internal static int TilemapHeight { get => RomState == null ? 0 : (IsEffect ? RomState.EffectTilemapH : RomState.MainTilemapH); }
 	internal static int SelectedIndex;
 	internal static int CurrentScene;
 
@@ -43,7 +43,7 @@ public partial class ControlTest : Control
 	internal static Image GfxImage;
 	internal static ImageTexture GfxTexture;
 
-	internal static SpriteMap SpriteMap { get => RomState.SpriteMap; }
+	internal static SpriteMap SpriteMap { get => RomState == null ? null : GaiaLib.Rom.RomState.SpriteMap; }
 
 	internal static int _mapWidth, _mapHeight;
 
@@ -295,7 +295,18 @@ public partial class ControlTest : Control
 	public override void _Ready()
 	{
 		base._Ready();
-		LoadScene(0x01);
+		try
+		{
+			LoadScene(0x01);
+		}
+		catch (FileNotFoundException ex)
+		{
+			GD.PrintErr("Scene data not found (unpack the ROM first): ", ex.Message);
+		}
+		catch (IOException ex)
+		{
+			GD.PrintErr("Could not load scene: ", ex.Message);
+		}
 	}
 
 	//private Vector2 GetDrawSize()

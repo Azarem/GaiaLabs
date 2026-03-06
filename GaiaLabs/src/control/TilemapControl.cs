@@ -35,8 +35,11 @@ public partial class TilemapControl : Control
 
     public override void _Draw()
     {
+        if (ControlTest.RomState == null || ControlTest.TilemapTexture == null)
+            return;
         //_drawSize = GetDrawSize();
-        _tileSize = Size.X / (ControlTest.TilemapWidth << 4);
+        var w = ControlTest.TilemapWidth << 4;
+        _tileSize = w > 0 ? Size.X / w : 0;
         DrawTextureRect(ControlTest.TilemapTexture, new(_drawPos, Size), false);
 
         var newBox = new[] {
